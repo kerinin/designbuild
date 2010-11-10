@@ -25,6 +25,12 @@ gem 'rails3-generators', :group => :development
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'compass', ">= 0.10.6"
+gem 'authlogic', '>= 2.1.6'
+gem "aws-s3" #, :lib => "aws/s3"
+gem 'paperclip', ">= 2.3.5"
+gem "friendly_id", "~> 3.1"
+# gem "memcached"
+gem "acts_as_list"
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators
