@@ -25,7 +25,8 @@ gem 'rails3-generators', :group => :development
 gem 'haml-rails'
 gem 'jquery-rails'
 gem 'compass', ">= 0.10.6"
-gem 'authlogic', '>= 2.1.6'
+#gem 'authlogic', '>= 2.1.6'
+gem 'devise'
 gem "aws-s3" #, :lib => "aws/s3"
 gem 'paperclip', ">= 2.3.5"
 gem "friendly_id", "~> 3.1"

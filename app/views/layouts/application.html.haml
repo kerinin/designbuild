@@ -9,5 +9,9 @@
     = javascript_include_tag :defaults
     = csrf_meta_tag
     
-  %body
+  %body.bp
+    -if notice
+      %p.notice= notice
+    -if alert
+      %p.alert= alert
     = yield
