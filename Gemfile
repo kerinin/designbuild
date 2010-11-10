@@ -24,6 +24,7 @@ gem 'sqlite3-ruby', :require => 'sqlite3'
 gem 'rails3-generators', :group => :development
 gem 'haml-rails'
 gem 'jquery-rails'
+gem 'compass', ">= 0.10.6"
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

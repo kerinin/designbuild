@@ -1,2 +1,6 @@
 .bundle
 Gemfile.lock
+log
+tmp
+public/stylesheets/compiled
+db/*
