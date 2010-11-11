@@ -58,7 +58,6 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.string   "name"
     t.float    "multiplier"
     t.integer  "component_id"
-    t.string   "component_type"
     t.integer  "parent_quantity_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -68,7 +67,6 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.string   "name"
     t.float    "cost"
     t.integer  "component_id"
-    t.string   "component_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -116,7 +114,6 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.string   "unit"
     t.float    "drop"
     t.integer  "component_id"
-    t.string   "component_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -147,7 +144,6 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.float    "unit_cost"
     t.float    "tax"
     t.integer  "component_id"
-    t.string   "component_type"
     t.integer  "quantity_id"
     t.string   "quantity_type"
     t.datetime "created_at"

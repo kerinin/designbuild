@@ -62,15 +62,20 @@ class ComponentTest < ActiveSupport::TestCase
     should "have multiple quantities" do
       assert_contains @obj.quantities, @q1
       assert_contains @obj.quantities, @q2
-      assert_contains @obj.quantities, @dq1
-      assert_contains @obj.quantities, @dq2
-      assert_contains @obj.quantities, @dq3
     end
     
     should "have multiple fixed costs" do
       assert_contains @obj.fixed_cost_estimates, @fc1
       assert_contains @obj.fixed_cost_estimates, @fc2
     end
+    
+    should "aggregate all quantities" do
+      assert_contains @obj.all_quantities, @q1
+      assert_contains @obj.all_quantities, @q2
+      assert_contains @obj.all_quantities, @dq1
+      assert_contains @obj.all_quantities, @dq2
+      assert_contains @obj.all_quantities, @dq3
+    end      
     
     should "have multiple unit costs" do
       assert_contains @obj.unit_cost_estimates, @uc1

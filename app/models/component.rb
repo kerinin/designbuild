@@ -10,10 +10,10 @@ class Component < ActiveRecord::Base
   has_and_belongs_to_many :tags
   
   def all_quantities
-    self.quantities + self.derived_quantities
+    self.quantities.all + self.derived_quantities.all
   end
   
   def cost_estimates
-    self.fixed_cost_estimates + self.unit_cost_estimates
+    self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end
 end
