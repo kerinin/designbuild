@@ -20,9 +20,12 @@ class DerivedQuantityTest < ActiveSupport::TestCase
       assert_not_nil @obj.multiplier
     end
     
-    should "require a parent quantity" do
+    should "require a parent quantity and component" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :derived_quantity, :parent_quantity => nil
+      end
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :derived_quantity, :component => nil
       end
     end
   end
