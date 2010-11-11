@@ -4,6 +4,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
   context "A Unit Cost Estimate" do
     setup do
       @obj = Factory :unit_cost_estimate
+      
+      @t1 = Factory :task, :estimate => @obj
     end
 
     teardown do
@@ -30,6 +32,10 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
         
     should "inherit a component" do
       assert_not_nil @obj.component
+    end
+    
+    should "allow a task" do
+      assert_equal @obj.task, @t1
     end
   end
 end
