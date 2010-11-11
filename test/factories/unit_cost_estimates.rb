@@ -6,4 +6,5 @@ Factory.define :unit_cost_estimate do |f|
   f.tax 0.0825
   
   f.quantity {|p| p.association(:quantity)}
+  f.task {|p| p.association(:task)}
 end

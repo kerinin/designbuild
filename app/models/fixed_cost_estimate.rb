@@ -1,7 +1,6 @@
 class FixedCostEstimate < ActiveRecord::Base
   belongs_to :component
-  
-  has_one :task, :as => :estimate
+  belongs_to :task
   
   validates_presence_of :component
 end

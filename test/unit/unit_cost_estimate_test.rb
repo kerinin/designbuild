@@ -31,12 +31,10 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       end
     end
         
-    should "inherit a component" do
-      assert_not_nil @obj.component
-    end
-    
-    should "allow a task" do
-      assert_equal @obj.task, @t1
+    should "require a task" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :unit_cost_estimate, :task => nil
+      end
     end
   end
 end

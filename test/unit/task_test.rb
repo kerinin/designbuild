@@ -39,7 +39,7 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     should "allow a deadline" do
-      assert_qual @obj.deadline, @dl1
+      assert_equal @obj.deadline, @dl1
       assert_contains @dl1.tasks, @obj
     end
     
