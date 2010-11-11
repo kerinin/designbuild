@@ -1,0 +1,21 @@
+%h1 Listing relative_deadlines
+
+%table
+  %tr
+    %th Name
+    %th Interval
+    %th
+    %th
+    %th
+
+  - @relative_deadlines.each do |relative_deadline|
+    %tr
+      %td= relative_deadline.name
+      %td= relative_deadline.interval
+      %td= link_to 'Show', relative_deadline
+      %td= link_to 'Edit', edit_relative_deadline_path(relative_deadline)
+      %td= link_to 'Destroy', relative_deadline, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Relative deadline', new_relative_deadline_path

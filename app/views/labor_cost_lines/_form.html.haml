@@ -1,0 +1,13 @@
+= form_for @labor_cost_line do |f|
+  -if @labor_cost_line.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@labor_cost_line.errors.count, "error")} prohibited this labor_cost_line from being saved:"
+      %ul
+        - @labor_cost_line.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :hours
+    = f.text_field :hours
+  .actions
+    = f.submit 'Save'

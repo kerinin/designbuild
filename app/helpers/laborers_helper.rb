@@ -1,0 +1,2 @@
+module LaborersHelper
+end

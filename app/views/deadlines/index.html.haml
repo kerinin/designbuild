@@ -1,0 +1,21 @@
+%h1 Listing deadlines
+
+%table
+  %tr
+    %th Name
+    %th Date
+    %th
+    %th
+    %th
+
+  - @deadlines.each do |deadline|
+    %tr
+      %td= deadline.name
+      %td= deadline.date
+      %td= link_to 'Show', deadline
+      %td= link_to 'Edit', edit_deadline_path(deadline)
+      %td= link_to 'Destroy', deadline, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Deadline', new_deadline_path

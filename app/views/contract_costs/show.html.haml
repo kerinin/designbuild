@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Date:
+  = @contract_cost.date
+%p
+  %b Amount:
+  = @contract_cost.amount
+
+= link_to 'Edit', edit_contract_cost_path(@contract_cost)
+\|
+= link_to 'Back', contract_costs_path

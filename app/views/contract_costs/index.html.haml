@@ -1,0 +1,21 @@
+%h1 Listing contract_costs
+
+%table
+  %tr
+    %th Date
+    %th Amount
+    %th
+    %th
+    %th
+
+  - @contract_costs.each do |contract_cost|
+    %tr
+      %td= contract_cost.date
+      %td= contract_cost.amount
+      %td= link_to 'Show', contract_cost
+      %td= link_to 'Edit', edit_contract_cost_path(contract_cost)
+      %td= link_to 'Destroy', contract_cost, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Contract cost', new_contract_cost_path

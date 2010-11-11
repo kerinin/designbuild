@@ -1,0 +1,6 @@
+# Read about factories at http://github.com/thoughtbot/factory_girl
+
+Factory.define :bid do |f|
+  f.date "2010-11-10"
+  f.amount 1.5
+end

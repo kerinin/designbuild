@@ -1,0 +1,19 @@
+%h1 Listing labor_costs
+
+%table
+  %tr
+    %th Date
+    %th
+    %th
+    %th
+
+  - @labor_costs.each do |labor_cost|
+    %tr
+      %td= labor_cost.date
+      %td= link_to 'Show', labor_cost
+      %td= link_to 'Edit', edit_labor_cost_path(labor_cost)
+      %td= link_to 'Destroy', labor_cost, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Labor cost', new_labor_cost_path

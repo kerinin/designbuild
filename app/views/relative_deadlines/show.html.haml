@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @relative_deadline.name
+%p
+  %b Interval:
+  = @relative_deadline.interval
+
+= link_to 'Edit', edit_relative_deadline_path(@relative_deadline)
+\|
+= link_to 'Back', relative_deadlines_path

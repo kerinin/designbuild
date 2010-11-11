@@ -1,0 +1,21 @@
+%h1 Listing laborers
+
+%table
+  %tr
+    %th Name
+    %th Pay rate
+    %th
+    %th
+    %th
+
+  - @laborers.each do |laborer|
+    %tr
+      %td= laborer.name
+      %td= laborer.pay_rate
+      %td= link_to 'Show', laborer
+      %td= link_to 'Edit', edit_laborer_path(laborer)
+      %td= link_to 'Destroy', laborer, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Laborer', new_laborer_path

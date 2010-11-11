@@ -1,0 +1,21 @@
+%h1 Listing derived_quantities
+
+%table
+  %tr
+    %th Name
+    %th Multiplier
+    %th
+    %th
+    %th
+
+  - @derived_quantities.each do |derived_quantity|
+    %tr
+      %td= derived_quantity.name
+      %td= derived_quantity.multiplier
+      %td= link_to 'Show', derived_quantity
+      %td= link_to 'Edit', edit_derived_quantity_path(derived_quantity)
+      %td= link_to 'Destroy', derived_quantity, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Derived quantity', new_derived_quantity_path

@@ -43,6 +43,7 @@ module Designbuild
       g.stylesheets false  
       g.test_framework :shoulda  
       g.fixture_replacement :factory_girl  
+      g.fallbacks[:shoulda] = :test_unit
     end 
   end
 end

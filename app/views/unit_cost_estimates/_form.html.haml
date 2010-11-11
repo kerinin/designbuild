@@ -1,0 +1,19 @@
+= form_for @unit_cost_estimate do |f|
+  -if @unit_cost_estimate.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+      %ul
+        - @unit_cost_estimate.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :unit_cost
+    = f.text_field :unit_cost
+  .field
+    = f.label :tax
+    = f.text_field :tax
+  .actions
+    = f.submit 'Save'

@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @deadline.name
+%p
+  %b Date:
+  = @deadline.date
+
+= link_to 'Edit', edit_deadline_path(@deadline)
+\|
+= link_to 'Back', deadlines_path

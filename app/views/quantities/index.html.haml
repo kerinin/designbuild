@@ -1,0 +1,25 @@
+%h1 Listing quantities
+
+%table
+  %tr
+    %th Name
+    %th Value
+    %th Unit
+    %th Drop
+    %th
+    %th
+    %th
+
+  - @quantities.each do |quantity|
+    %tr
+      %td= quantity.name
+      %td= quantity.value
+      %td= quantity.unit
+      %td= quantity.drop
+      %td= link_to 'Show', quantity
+      %td= link_to 'Edit', edit_quantity_path(quantity)
+      %td= link_to 'Destroy', quantity, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Quantity', new_quantity_path

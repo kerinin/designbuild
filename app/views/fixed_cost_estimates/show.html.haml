@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @fixed_cost_estimate.name
+%p
+  %b Cost:
+  = @fixed_cost_estimate.cost
+
+= link_to 'Edit', edit_fixed_cost_estimate_path(@fixed_cost_estimate)
+\|
+= link_to 'Back', fixed_cost_estimates_path

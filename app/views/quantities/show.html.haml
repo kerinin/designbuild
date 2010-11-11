@@ -1,0 +1,18 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @quantity.name
+%p
+  %b Value:
+  = @quantity.value
+%p
+  %b Unit:
+  = @quantity.unit
+%p
+  %b Drop:
+  = @quantity.drop
+
+= link_to 'Edit', edit_quantity_path(@quantity)
+\|
+= link_to 'Back', quantities_path

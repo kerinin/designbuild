@@ -1,6 +1,41 @@
 Designbuild::Application.routes.draw do
-  devise_for :users
 
+  resources :bids
+
+  resources :contracts
+
+  resources :laborers
+
+  resources :labor_cost_lines
+
+  resources :labor_costs
+
+  resources :material_cost_lines
+
+  resources :material_costs
+
+  resources :contract_costs
+
+  resources :relative_deadlines
+
+  resources :deadlines
+
+  resources :tasks
+
+  resources :fixed_cost_estimates
+
+  resources :unit_cost_estimates
+
+  resources :derived_quantities
+
+  resources :quantities
+
+  resources :tags
+
+  resources :components
+
+  devise_for :users
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
@@ -51,7 +86,10 @@ Designbuild::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => "welcome#index"
-
+  as :user do
+    root :to => "devise/sessions#new"
+  end
+  
   # See how all your routes lay out with "rake routes"
 
   # This is a legacy wild controller route that's not recommended for RESTful applications.

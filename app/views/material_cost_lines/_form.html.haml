@@ -1,0 +1,16 @@
+= form_for @material_cost_line do |f|
+  -if @material_cost_line.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@material_cost_line.errors.count, "error")} prohibited this material_cost_line from being saved:"
+      %ul
+        - @material_cost_line.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :name
+    = f.text_field :name
+  .field
+    = f.label :quantity
+    = f.text_field :quantity
+  .actions
+    = f.submit 'Save'

@@ -1,0 +1,15 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @unit_cost_estimate.name
+%p
+  %b Unit cost:
+  = @unit_cost_estimate.unit_cost
+%p
+  %b Tax:
+  = @unit_cost_estimate.tax
+
+= link_to 'Edit', edit_unit_cost_estimate_path(@unit_cost_estimate)
+\|
+= link_to 'Back', unit_cost_estimates_path

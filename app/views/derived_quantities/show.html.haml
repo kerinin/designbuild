@@ -1,0 +1,12 @@
+%p#notice= notice
+
+%p
+  %b Name:
+  = @derived_quantity.name
+%p
+  %b Multiplier:
+  = @derived_quantity.multiplier
+
+= link_to 'Edit', edit_derived_quantity_path(@derived_quantity)
+\|
+= link_to 'Back', derived_quantities_path

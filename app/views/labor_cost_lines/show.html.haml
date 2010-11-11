@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Hours:
+  = @labor_cost_line.hours
+
+= link_to 'Edit', edit_labor_cost_line_path(@labor_cost_line)
+\|
+= link_to 'Back', labor_cost_lines_path

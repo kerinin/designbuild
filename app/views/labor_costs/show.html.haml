@@ -1,0 +1,9 @@
+%p#notice= notice
+
+%p
+  %b Date:
+  = @labor_cost.date
+
+= link_to 'Edit', edit_labor_cost_path(@labor_cost)
+\|
+= link_to 'Back', labor_costs_path
