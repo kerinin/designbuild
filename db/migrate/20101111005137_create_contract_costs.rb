@@ -3,6 +3,8 @@ class CreateContractCosts < ActiveRecord::Migration
     create_table :contract_costs do |t|
       t.date :date
       t.float :amount
+      
+      t.belongs_to :contract
 
       t.timestamps
     end

@@ -3,6 +3,8 @@ class CreateBids < ActiveRecord::Migration
     create_table :bids do |t|
       t.date :date
       t.float :amount
+      
+      t.belongs_to :contract
 
       t.timestamps
     end

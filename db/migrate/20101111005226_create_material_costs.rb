@@ -4,6 +4,8 @@ class CreateMaterialCosts < ActiveRecord::Migration
       t.date :date
       t.float :amount
       
+      t.belongs_to :task
+      
       t.timestamps
     end
   end

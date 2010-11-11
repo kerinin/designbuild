@@ -15,6 +15,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "bids", :force => true do |t|
     t.date     "date"
     t.float    "amount"
+    t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -28,6 +29,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "contract_costs", :force => true do |t|
     t.date     "date"
     t.float    "amount"
+    t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -49,6 +51,8 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "derived_quantities", :force => true do |t|
     t.string   "name"
     t.float    "multiplier"
+    t.integer  "component_id"
+    t.integer  "parent_quantity_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -56,18 +60,21 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string   "name"
     t.float    "cost"
+    t.integer  "component_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "labor_cost_lines", :force => true do |t|
     t.float    "hours"
+    t.integer  "labor_set_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "labor_costs", :force => true do |t|
     t.date     "date"
+    t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -82,6 +89,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "material_cost_lines", :force => true do |t|
     t.string   "name"
     t.float    "quantity"
+    t.integer  "material_set_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -89,6 +97,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "material_costs", :force => true do |t|
     t.date     "date"
     t.float    "amount"
+    t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -98,6 +107,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.float    "value"
     t.string   "unit"
     t.float    "drop"
+    t.integer  "component_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -105,6 +115,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
   create_table "relative_deadlines", :force => true do |t|
     t.string   "name"
     t.integer  "interval"
+    t.integer  "parent_deadline_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -117,6 +128,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name"
+    t.integer  "component_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -125,6 +137,8 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.string   "name"
     t.float    "unit_cost"
     t.float    "tax"
+    t.integer  "component_id"
+    t.integer  "quantity_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

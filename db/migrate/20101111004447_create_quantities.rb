@@ -5,6 +5,8 @@ class CreateQuantities < ActiveRecord::Migration
       t.float :value
       t.string :unit
       t.float :drop
+      
+      t.belongs_to :component
 
       t.timestamps
     end

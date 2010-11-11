@@ -3,6 +3,8 @@ class CreateRelativeDeadlines < ActiveRecord::Migration
     create_table :relative_deadlines do |t|
       t.string :name
       t.integer :interval
+      
+      t.belongs_to :parent_deadline
 
       t.timestamps
     end

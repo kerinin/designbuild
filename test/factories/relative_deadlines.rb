@@ -2,7 +2,7 @@
 
 Factory.define :relative_deadline do |f|
   f.name Faker::Lorem.sentence
-  f.interval 1
+  f.interval 10
   
   f.parent_deadline {|p| p.association(:deadline)}
 end

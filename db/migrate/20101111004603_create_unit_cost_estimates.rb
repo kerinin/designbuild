@@ -4,6 +4,9 @@ class CreateUnitCostEstimates < ActiveRecord::Migration
       t.string :name
       t.float :unit_cost
       t.float :tax
+      
+      t.belongs_to :component
+      t.belongs_to :quantity
 
       t.timestamps
     end

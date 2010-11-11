@@ -3,6 +3,8 @@ class CreateFixedCostEstimates < ActiveRecord::Migration
     create_table :fixed_cost_estimates do |t|
       t.string :name
       t.float :cost
+      
+      t.belongs_to :component
 
       t.timestamps
     end

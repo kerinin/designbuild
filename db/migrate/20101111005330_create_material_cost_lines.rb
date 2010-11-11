@@ -3,6 +3,8 @@ class CreateMaterialCostLines < ActiveRecord::Migration
     create_table :material_cost_lines do |t|
       t.string :name
       t.float :quantity
+      
+      t.belongs_to :material_set
 
       t.timestamps
     end
