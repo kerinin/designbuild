@@ -8,6 +8,7 @@ class DerivedQuantityTest < ActiveSupport::TestCase
 
     teardown do
       DerivedQuantity.delete_all
+      Quantity.delete_all
     end
     
     should "be valid" do

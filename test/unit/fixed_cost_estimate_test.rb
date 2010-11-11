@@ -8,6 +8,7 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
 
     teardown do
       FixedCostEstimate.delete_all
+      Component.delete_all
     end
     
     should "be valid" do

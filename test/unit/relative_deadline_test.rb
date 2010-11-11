@@ -8,6 +8,7 @@ class RelativeDeadlineTest < ActiveSupport::TestCase
 
     teardown do
       RelativeDeadline.delete_all
+      Deadline.delete_all
     end
     
     should "be valid" do

@@ -8,6 +8,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
 
     teardown do
       UnitCostEstimate.delete_all
+      Component.delete_all
+      Quantity.delete_all
     end
     
     should "be valid" do

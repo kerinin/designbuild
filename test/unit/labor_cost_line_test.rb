@@ -8,6 +8,8 @@ class LaborCostLineTest < ActiveSupport::TestCase
 
     teardown do
       LaborCostLine.delete_all
+      LaborCost.delete_all
+      Task.delete_all
     end
     
     should "be valid" do

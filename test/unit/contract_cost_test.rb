@@ -8,6 +8,7 @@ class ContractCostTest < ActiveSupport::TestCase
 
     teardown do
       ContractCost.delete_all
+      Contract.delete_all
     end
     
     should "be valid" do

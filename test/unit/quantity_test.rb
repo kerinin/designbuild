@@ -8,6 +8,7 @@ class QuantityTest < ActiveSupport::TestCase
 
     teardown do
       Quantity.delete_all
+      Component.delete_all
     end
     
     should "be valid" do

@@ -8,6 +8,7 @@ class BidTest < ActiveSupport::TestCase
 
     teardown do
       Bid.delete_all
+      Contract.delete_all
     end
     
     should "be valid" do

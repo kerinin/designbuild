@@ -7,7 +7,9 @@ class MaterialCostLineTest < ActiveSupport::TestCase
     end
 
     teardown do
-      Contract.delete_all
+      MaterialCostLine.delete_all
+      MaterialCost.delete_all
+      Task.delete_all
     end
     
     should "be valid" do

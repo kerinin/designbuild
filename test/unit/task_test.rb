@@ -8,6 +8,7 @@ class TaskTest < ActiveSupport::TestCase
 
     teardown do
       Task.delete_all
+      Component.delete_all
     end
     
     should "be valid" do
