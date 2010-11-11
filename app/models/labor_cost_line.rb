@@ -1,3 +1,3 @@
 class LaborCostLine < ActiveRecord::Base
-  belongs_to :labor_set, :class_name => :labor_cost
+  belongs_to :labor_set, :class_name => "LaborCost"
 end

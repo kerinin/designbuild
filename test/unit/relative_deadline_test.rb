@@ -3,7 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class RelativeDeadlineTest < ActiveSupport::TestCase
   context "A Relative Deadline" do
     setup do
-      @obj = Factory :relative_deadline
+      @parent = Deadline.new
+      @obj = RelativeDeadline.new :name => 'test', :interval => 10, :parent_deadline => @parent #Factory :relative_deadline
     end
 
     teardown do
