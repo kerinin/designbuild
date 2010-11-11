@@ -32,7 +32,13 @@ gem 'paperclip', ">= 2.3.5"
 gem "friendly_id", "~> 3.1"
 # gem "memcached"
 gem "acts_as_list"
-gem "hpricot"
+
+group :test do
+  gem "shoulda"
+  gem "rspec-rails", "2.0.0.beta.12"
+  #gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
+  gem 'factory_girl_rails'
+end
 
 # Bundle gems for the local environment. Make sure to
 # put test-only gems in this group so their generators

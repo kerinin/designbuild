@@ -1,7 +1,7 @@
 class CreateFixedCostEstimates < ActiveRecord::Migration
   def self.up
     create_table :fixed_cost_estimates do |t|
-      t.strong :name
+      t.string :name
       t.float :cost
 
       t.timestamps
