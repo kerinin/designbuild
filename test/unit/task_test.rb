@@ -18,5 +18,11 @@ class TaskTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
     end
+    
+    should "require a component" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :task, :component => nil
+      end
+    end
   end
 end

@@ -21,5 +21,11 @@ class QuantityTest < ActiveSupport::TestCase
       assert_not_nil @obj.unit
       assert_not_nil @obj.drop
     end
+    
+    should "require a component" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :quantity, :component => nil
+      end
+    end
   end
 end

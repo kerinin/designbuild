@@ -20,5 +20,11 @@ class MaterialCostLineTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
       assert_not_nil @obj.quantity
     end
+    
+    should "require a material set" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :material_cost_line, :material_set => nil
+      end
+    end
   end
 end

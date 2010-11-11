@@ -19,5 +19,11 @@ class BidTest < ActiveSupport::TestCase
       assert_not_nil @bid.date
       assert_not_nil @bid.amount
     end
+    
+    should "require a contract" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :bid, :contract => nil
+      end
+    end
   end
 end

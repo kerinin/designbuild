@@ -19,5 +19,12 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
       assert_not_nil @obj.cost
     end
+    
+    should "require a component" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :fixed_cost_estimate, :component => nil
+      end
+    end
+    
   end
 end

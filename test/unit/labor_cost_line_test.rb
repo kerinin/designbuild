@@ -19,5 +19,11 @@ class LaborCostLineTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.hours
     end
+    
+    should "require a labor set" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :labor_cost_line, :labor_set => nil
+      end
+    end
   end
 end

@@ -18,5 +18,11 @@ class LaborCostTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.date
     end
+    
+    should "require a task" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :labor_cost, :task => nil
+      end
+    end
   end
 end

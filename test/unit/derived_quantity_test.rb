@@ -19,5 +19,11 @@ class DerivedQuantityTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
       assert_not_nil @obj.multiplier
     end
+    
+    should "require a parent quantity" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :derived_quantity, :parent_quantity => nil
+      end
+    end
   end
 end

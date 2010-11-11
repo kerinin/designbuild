@@ -18,5 +18,11 @@ class MaterialCostTest < ActiveSupport::TestCase
       assert_not_nil @obj.date
       assert_not_nil @obj.amount
     end
+    
+    should "require a task" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :material_cost, :task => nil
+      end
+    end
   end
 end

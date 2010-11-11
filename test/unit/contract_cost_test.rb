@@ -19,5 +19,11 @@ class ContractCostTest < ActiveSupport::TestCase
       assert_not_nil @obj.date
       assert_not_nil @obj.amount
     end
+    
+    should "require a contract" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :contract_cost, :contract => nil
+      end
+    end
   end
 end
