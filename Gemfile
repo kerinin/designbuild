@@ -38,6 +38,7 @@ group :test do
   gem "rspec-rails", "2.0.0.beta.12"
   #gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
   gem 'factory_girl_rails'
+  gem 'faker'
 end
 
 # Bundle gems for the local environment. Make sure to
