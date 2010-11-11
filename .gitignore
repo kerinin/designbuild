@@ -3,4 +3,4 @@ Gemfile.lock
 log
 tmp
 public/stylesheets/compiled
-db/*
+db/*.sqlite3
