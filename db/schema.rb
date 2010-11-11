@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string   "name"
     t.float    "cost"
+    t.integer  "component_id"
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -134,8 +135,6 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name"
-    t.integer  "estimate_id"
-    t.string   "estimate_type"
     t.integer  "contract_id"
     t.integer  "deadline_id"
     t.string   "deadline_type"
@@ -147,9 +146,10 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.string   "name"
     t.float    "unit_cost"
     t.float    "tax"
-    t.integer  "task_id"
+    t.integer  "component_id"
     t.integer  "quantity_id"
     t.string   "quantity_type"
+    t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

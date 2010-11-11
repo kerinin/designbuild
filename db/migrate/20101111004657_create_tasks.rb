@@ -3,7 +3,6 @@ class CreateTasks < ActiveRecord::Migration
     create_table :tasks do |t|
       t.string :name
       
-      t.belongs_to :estimate, :polymorphic => true
       t.belongs_to :contract
       t.belongs_to :deadline, :polymorphic => true
 

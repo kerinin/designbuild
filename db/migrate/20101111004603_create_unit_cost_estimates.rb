@@ -5,9 +5,10 @@ class CreateUnitCostEstimates < ActiveRecord::Migration
       t.float :unit_cost
       t.float :tax
       
-      t.belongs_to :task
+      t.belongs_to :component
       t.belongs_to :quantity, :polymorphic => true
-
+      t.belongs_to :task
+      
       t.timestamps
     end
   end

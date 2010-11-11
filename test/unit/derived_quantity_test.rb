@@ -24,20 +24,18 @@ class DerivedQuantityTest < ActiveSupport::TestCase
       assert_not_nil @obj.multiplier
     end
     
-    should "require a parent quantity and component" do
+    should "require a parent quantity" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :derived_quantity, :parent_quantity => nil
       end
-      #assert_raise ActiveRecord::RecordInvalid do
-      #  Factory :derived_quantity, :component => nil
-      #end
     end
     
-    should "inherit component" do
+    should "inherit component from parent" do
       assert_not_nil @obj.component
+      assert_equal @obj.component, @obj.parent_quantity.component
     end
     
-    should "have multiple unit costs" do
+    should "allow multiple unit costs" do
       assert_contains @obj.unit_cost_estimates, @uc1
       assert_contains @obj.unit_cost_estimates, @uc2
     end

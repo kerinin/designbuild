@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UnitCostEstimateTest < ActiveSupport::TestCase
   context "A Unit Cost Estimate" do
     setup do
-      @obj = Factory :unit_cost_estimate
+      @t1 = Factory :task
       
-      @t1 = Factory :task, :estimate => @obj
+      @obj = Factory :unit_cost_estimate, :task => @t1
     end
 
     teardown do
@@ -31,10 +31,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       end
     end
         
-    should "require a task" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :unit_cost_estimate, :task => nil
-      end
+    should "allow a task" do
+      assert_equal @obj.task, @t1
     end
   end
 end

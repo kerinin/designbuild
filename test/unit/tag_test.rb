@@ -22,7 +22,7 @@ class TagTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
-    should "have multiple components" do
+    should "allow multiple components" do
       assert_contains @obj.components, @c1
       assert_contains @obj.components, @c2
       assert_contains @c1.tags, @obj

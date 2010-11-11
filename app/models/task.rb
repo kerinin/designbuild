@@ -1,5 +1,4 @@
 class Task < ActiveRecord::Base
-  belongs_to :estimate, :polymorphic => true
   belongs_to :contract
   belongs_to :deadline, :polymorphic => true
   

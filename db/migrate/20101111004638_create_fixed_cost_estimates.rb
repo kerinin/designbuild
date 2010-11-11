@@ -4,6 +4,7 @@ class CreateFixedCostEstimates < ActiveRecord::Migration
       t.string :name
       t.float :cost
       
+      t.belongs_to :component
       t.belongs_to :task
 
       t.timestamps

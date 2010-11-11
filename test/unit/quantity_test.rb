@@ -35,12 +35,12 @@ class QuantityTest < ActiveSupport::TestCase
       end
     end
     
-    should "have multiple derived quantities" do
+    should "allow multiple derived quantities" do
       assert_contains @obj.derived_quantities, @dq1
       assert_contains @obj.derived_quantities, @dq2
     end
     
-    should "have multiple unit costs" do
+    should "allow multiple unit costs" do
       assert_contains @obj.unit_cost_estimates, @uc1
       assert_contains @obj.unit_cost_estimates, @uc2
     end
