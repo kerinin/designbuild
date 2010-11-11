@@ -2,4 +2,6 @@
 
 Factory.define :labor_cost do |f|
   f.date "2010-11-10"
+  
+  f.task {|p| p.association(:task)}
 end

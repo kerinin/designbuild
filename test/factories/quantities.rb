@@ -5,4 +5,6 @@ Factory.define :quantity do |f|
   f.value 1.5
   f.unit "sf"
   f.drop 1.5
+  
+  f.component {|p| p.association(:component)}
 end
