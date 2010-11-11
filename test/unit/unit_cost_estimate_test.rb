@@ -12,6 +12,7 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       UnitCostEstimate.delete_all
       Component.delete_all
       Quantity.delete_all
+      Task.delete_all
     end
     
     should "be valid" do

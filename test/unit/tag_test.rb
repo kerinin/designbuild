@@ -11,6 +11,7 @@ class TagTest < ActiveSupport::TestCase
 
     teardown do
       Tag.delete_all
+      Component.delete_all
     end
     
     should "be valid" do
