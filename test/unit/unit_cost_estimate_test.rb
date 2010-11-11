@@ -21,17 +21,15 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       assert_not_nil @obj.unit_cost
       assert_not_nil @obj.tax
     end
-    
-    should "require a component" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :unit_cost_estimate, :component => nil
-      end
-    end
-  
+
     should "require a quantity" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :unit_cost_estimate, :quantity => nil
       end
+    end
+        
+    should "inherit a component" do
+      assert_not_nil @obj.component
     end
   end
 end

@@ -24,9 +24,13 @@ class DerivedQuantityTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :derived_quantity, :parent_quantity => nil
       end
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :derived_quantity, :component => nil
-      end
+      #assert_raise ActiveRecord::RecordInvalid do
+      #  Factory :derived_quantity, :component => nil
+      #end
+    end
+    
+    should "inherit component" do
+      assert_not_nil @obj.component
     end
   end
 end

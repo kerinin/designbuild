@@ -4,7 +4,6 @@ class CreateDerivedQuantities < ActiveRecord::Migration
       t.string :name
       t.float :multiplier
       
-      t.belongs_to :component
       t.belongs_to :parent_quantity
 
       t.timestamps
