@@ -1,5 +1,3 @@
 class Task < ActiveRecord::Base
-  belongs_to :component
-  
-  validates_presence_of :component
+  belongs_to :estimate, :polymorphic => true
 end

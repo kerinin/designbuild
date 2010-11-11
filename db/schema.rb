@@ -134,7 +134,8 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name"
-    t.integer  "component_id"
+    t.integer  "estimate_id"
+    t.string   "estimate_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

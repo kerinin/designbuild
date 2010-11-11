@@ -4,6 +4,8 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
   context "A Fixed Cost Estimate" do
     setup do
       @obj = Factory :fixed_cost_estimate
+      
+      @t1 = Factory :task, :estimate => @obj
     end
 
     teardown do
@@ -26,5 +28,8 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
       end
     end
     
+    should "allow a task" do
+      assert_equal @obj.task, @t1
+    end
   end
 end

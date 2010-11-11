@@ -3,7 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class TaskTest < ActiveSupport::TestCase
   context "A Task" do
     setup do
-      @obj = Factory :task
+      @est = Factory :fixed_cost_estimate
+      @obj = Factory :task, :estimate => @est
     end
 
     teardown do
@@ -19,10 +20,8 @@ class TaskTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
-    should "require a component" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :task, :component => nil
-      end
+    should "allow an estimate" do
+      assert_equal @obj.estimate, @est
     end
   end
 end
