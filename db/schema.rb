@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101111005722) do
+ActiveRecord::Schema.define(:version => 20101111145547) do
 
   create_table "bids", :force => true do |t|
     t.date     "date"
@@ -22,8 +22,14 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
 
   create_table "components", :force => true do |t|
     t.string   "name"
+    t.integer  "parent_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+  end
+
+  create_table "components_tags", :id => false, :force => true do |t|
+    t.integer "tag_id"
+    t.integer "component_id"
   end
 
   create_table "contract_costs", :force => true do |t|
@@ -52,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.string   "name"
     t.float    "multiplier"
     t.integer  "component_id"
+    t.string   "component_type"
     t.integer  "parent_quantity_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -61,6 +68,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.string   "name"
     t.float    "cost"
     t.integer  "component_id"
+    t.string   "component_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -108,6 +116,7 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.string   "unit"
     t.float    "drop"
     t.integer  "component_id"
+    t.string   "component_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -138,7 +147,9 @@ ActiveRecord::Schema.define(:version => 20101111005722) do
     t.float    "unit_cost"
     t.float    "tax"
     t.integer  "component_id"
+    t.string   "component_type"
     t.integer  "quantity_id"
+    t.string   "quantity_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

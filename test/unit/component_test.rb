@@ -6,7 +6,7 @@ class ComponentTest < ActiveSupport::TestCase
       @tag1 = Factory :tag
       @tag2 = Factory :tag
       
-      @parent = Factory :compontent
+      @parent = Factory :component
       @obj = Factory :component, :tags => [@tag1, @tag2], :parent => @parent
       
       @sub1 = Factory :component, :parent => @obj
@@ -41,7 +41,7 @@ class ComponentTest < ActiveSupport::TestCase
     end
     
     should "have a parent component" do
-      assert_equals @obj.parent, @parent
+      assert_equal @obj.parent, @parent
     end
     
     should "have multiple subcomponents" do
@@ -56,7 +56,7 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.tags, @tag1
       assert_contains @obj.tags, @tag2
       assert_contains @tag1.components, @obj
-      assert_contains @tag2.compontnts, @obj
+      assert_contains @tag2.components, @obj
     end
     
     should "have multiple quantities" do
