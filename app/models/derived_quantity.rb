@@ -4,7 +4,7 @@ class DerivedQuantity < ActiveRecord::Base
   
   validates_presence_of :parent_quantity
   
-  after_validation :set_component
+  before_save :set_component
   
   private
   

@@ -4,7 +4,7 @@ class UnitCostEstimate < ActiveRecord::Base
 
   validates_presence_of :quantity
   
-  after_validation :set_component
+  before_save :set_component
   private
   
   def set_component
