@@ -1,4 +1,4 @@
-= form_for @component do |f|
+= form_for [@project, @component] do |f|
   -if @component.errors.any?
     #error_explanation
       %h2= "#{pluralize(@component.errors.count, "error")} prohibited this component from being saved:"

@@ -4,6 +4,6 @@
   %b Name:
   = @component.name
 
-= link_to 'Edit', edit_component_path(@component)
+= link_to 'Edit', edit_project_component_path(@project, @component)
 \|
-= link_to 'Back', components_path
+= link_to 'Back', project_components_path(@project)

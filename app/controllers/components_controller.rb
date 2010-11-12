@@ -1,4 +1,6 @@
 class ComponentsController < ApplicationController
+  before_filter :get_project
+  
   # GET /components
   # GET /components.xml
   def index
@@ -44,7 +46,7 @@ class ComponentsController < ApplicationController
 
     respond_to do |format|
       if @component.save
-        format.html { redirect_to(@component, :notice => 'Component was successfully created.') }
+        format.html { redirect_to(project_component_path(@project, @component), :notice => 'Component was successfully created.') }
         format.xml  { render :xml => @component, :status => :created, :location => @component }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class ComponentsController < ApplicationController
 
     respond_to do |format|
       if @component.update_attributes(params[:component])
-        format.html { redirect_to(@component, :notice => 'Component was successfully updated.') }
+        format.html { redirect_to(project_component_path(@project, @component), :notice => 'Component was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class ComponentsController < ApplicationController
     @component.destroy
 
     respond_to do |format|
-      format.html { redirect_to(components_url) }
+      format.html { redirect_to(project_components_url(@project)) }
       format.xml  { head :ok }
     end
   end
