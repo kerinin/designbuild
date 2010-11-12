@@ -4,6 +4,9 @@ class DeadlineTest < ActiveSupport::TestCase
   context "A Deadline" do
     setup do
       @obj = Factory :deadline
+      
+      @t1 = Factory :task, :deadline => @obj
+      @t2 = Factory :task, :deadline => @obj
     end
 
     teardown do
@@ -17,6 +20,11 @@ class DeadlineTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
       assert_not_nil @obj.date
+    end
+    
+    should "allow multiple tasks" do
+      assert_contains @obj.tasks, @t1
+      assert_contains @obj.tasks, @t2
     end
   end
 end
