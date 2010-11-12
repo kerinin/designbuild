@@ -43,6 +43,7 @@ class ComponentsController < ApplicationController
   # POST /components.xml
   def create
     @component = Component.new(params[:component])
+    @component.project = @project
 
     respond_to do |format|
       if @component.save
