@@ -15,8 +15,14 @@ class TaskTest < ActiveSupport::TestCase
       @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000
       @lc1 = Factory :labor_cost, :task => @obj
       @lc2 = Factory :labor_cost, :task => @obj
-      @mc1 = Factory :material_cost, :task => @obj
-      @mc2 = Factory :material_cost, :task => @obj
+      @mc1 = Factory :material_cost, :task => @obj, :cost => 2
+      @mc2 = Factory :material_cost, :task => @obj, :cost => 20
+      
+      @laborer = Factory :laborer, :bill_rate => 1
+      Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 200
+      Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 2000
+      Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
+      Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
     end
 
     teardown do
@@ -110,10 +116,23 @@ class TaskTest < ActiveSupport::TestCase
       assert_equal nil, @obj2.estimated_cost
     end
     
-    should_eventually "aggregate material costs" do
+    should "aggregate material costs" do
+      assert_equal 22, @obj.material_cost
     end
     
-    should_eventually "aggregate labor costs" do
+    should "aggregate labor costs" do
+      assert_equal 222200, @obj.labor_cost
+    end
+    
+    should "aggregate costs" do
+      assert_equal 222222, @obj.cost
+    end
+    
+    should "return cost nil if no costs" do
+      @obj2 = Factory :task
+      assert_equal nil, @obj2.material_cost
+      assert_equal nil, @obj2.labor_cost
+      assert_equal nil, @obj2.cost
     end
   end
 end

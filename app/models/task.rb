@@ -35,4 +35,22 @@ class Task < ActiveRecord::Base
       return ( fixed.nil? ? 0 : fixed ) + ( unit.nil? ? 0 : unit )
     end
   end
+  
+  def labor_cost
+    self.labor_costs.empty? ? nil : self.labor_costs.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+  end
+
+  def material_cost
+    self.material_costs.empty? ? nil : self.material_costs.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+  end  
+  
+  def cost
+    material = labor_cost
+    labor = material_cost
+    if material.nil? && labor.nil?
+      return nil
+    else
+      return ( material.nil? ? 0 : material ) + ( labor.nil? ? 0 : labor )
+    end
+  end
 end
