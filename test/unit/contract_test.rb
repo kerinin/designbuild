@@ -24,6 +24,12 @@ class ContractTest < ActiveSupport::TestCase
       assert_not_nil @obj.bid
     end
     
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :contract, :project => nil
+      end
+    end
+    
     should "allow multiple costs" do
       assert_contains @obj.costs, @c1
       assert_contains @obj.costs, @c2

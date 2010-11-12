@@ -44,6 +44,12 @@ class ComponentTest < ActiveSupport::TestCase
       assert_equal @obj.parent, @parent
     end
     
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :component, :project => nil
+      end
+    end
+    
     should "have multiple subcomponents" do
       assert_contains @obj.subcomponents, @sub1
       assert_contains @obj.subcomponents, @sub2

@@ -38,6 +38,12 @@ class TaskTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :task, :project => nil
+      end
+    end
+    
     should "allow a deadline" do
       assert_equal @obj.deadline, @dl1
       assert_contains @dl1.tasks, @obj

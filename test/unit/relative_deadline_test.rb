@@ -29,6 +29,12 @@ class RelativeDeadlineTest < ActiveSupport::TestCase
       end
     end
     
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :relative_deadline, :project => nil
+      end
+    end
+    
     should "allow multiple tasks" do
       assert_contains @obj.tasks, @t1
       assert_contains @obj.tasks, @t2
