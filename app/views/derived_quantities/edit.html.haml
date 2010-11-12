@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', @derived_quantity
+= link_to 'Show', project_component_derived_quantity_path(@project, @component, @derived_quantity)
 \|
-= link_to 'Back', derived_quantities_path
+= link_to 'Back', project_component_derived_quantities_path(@project, @component)

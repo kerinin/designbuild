@@ -1,4 +1,4 @@
-= form_for @derived_quantity do |f|
+= form_for [@project, @component, @derived_quantity] do |f|
   -if @derived_quantity.errors.any?
     #error_explanation
       %h2= "#{pluralize(@derived_quantity.errors.count, "error")} prohibited this derived_quantity from being saved:"
