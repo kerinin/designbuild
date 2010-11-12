@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', @quantity
+= link_to 'Show', [@project, @component, @quantity]
 \|
-= link_to 'Back', quantities_path
+= link_to 'Back', project_component_quantities_path(@project, @component)

@@ -13,6 +13,6 @@
   %b Drop:
   = @quantity.drop
 
-= link_to 'Edit', edit_quantity_path(@quantity)
+= link_to 'Edit', edit_project_component_quantity_path(@project, @component, @quantity)
 \|
-= link_to 'Back', quantities_path
+= link_to 'Back', project_component_quantities_path(@project, @component)
