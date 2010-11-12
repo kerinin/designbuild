@@ -3,12 +3,14 @@ require File.dirname(__FILE__) + '/../test_helper'
 class LaborCostLineTest < ActiveSupport::TestCase
   context "A Labor Cost Line" do
     setup do
-      @obj = Factory :labor_cost_line
+      @l = Factory :laborer, :pay_rate => 2
+      @obj = Factory :labor_cost_line, :hours => 3, :laborer => @l
     end
 
     teardown do
       LaborCostLine.delete_all
       LaborCost.delete_all
+      Laborer.delete_all
       Task.delete_all
     end
     
@@ -30,6 +32,12 @@ class LaborCostLineTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :labor_cost_line, :laborer => nil
       end
+    end
+    
+    #---------------------CALCULATIONS
+    
+    should "determine cost" do
+      assert_equal 6, @obj.cost
     end
   end
 end
