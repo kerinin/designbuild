@@ -2,5 +2,5 @@
 
 Factory.define :laborer do |f|
   f.name Faker::Name.name
-  f.pay_rate 1.5
+  f.bill_rate 1.5
 end

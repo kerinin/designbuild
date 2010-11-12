@@ -16,7 +16,7 @@ class LaborerTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @obj.name
-      assert_not_nil @obj.pay_rate
+      assert_not_nil @obj.bill_rate
     end
   end
 end

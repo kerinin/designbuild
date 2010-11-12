@@ -5,6 +5,6 @@ class LaborCostLine < ActiveRecord::Base
   validates_presence_of :labor_set, :laborer, :hours
   
   def cost
-    self.hours * self.laborer.pay_rate
+    self.hours * self.laborer.bill_rate
   end
 end

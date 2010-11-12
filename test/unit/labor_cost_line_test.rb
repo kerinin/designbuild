@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class LaborCostLineTest < ActiveSupport::TestCase
   context "A Labor Cost Line" do
     setup do
-      @l = Factory :laborer, :pay_rate => 2
+      @l = Factory :laborer, :bill_rate => 2
       @obj = Factory :labor_cost_line, :hours => 3, :laborer => @l
     end
 
