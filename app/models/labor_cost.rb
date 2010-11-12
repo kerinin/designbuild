@@ -1,4 +1,6 @@
 class LaborCost < ActiveRecord::Base
+  include AddOrNil
+  
   belongs_to :task
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id
@@ -6,6 +8,6 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task
   
   def cost
-    self.line_items.empty? ? nil : self.line_items.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+    self.line_items.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 end

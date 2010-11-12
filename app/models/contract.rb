@@ -1,4 +1,6 @@
 class Contract < ActiveRecord::Base
+  include AddOrNil
+  
   belongs_to :project
   
   has_many :tasks
@@ -8,6 +10,6 @@ class Contract < ActiveRecord::Base
   validates_presence_of :project
   
   def cost
-    self.costs.empty? ? nil : self.costs.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+    self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 end

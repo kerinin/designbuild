@@ -1,4 +1,6 @@
 class Task < ActiveRecord::Base
+  include AddOrNil
+  
   belongs_to :contract
   belongs_to :deadline, :polymorphic => true
   belongs_to :project
@@ -19,38 +21,26 @@ class Task < ActiveRecord::Base
   end
   
   def estimated_unit_cost
-    self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
   
   def estimated_fixed_cost
-    self.fixed_cost_estimates.empty? ? nil : self.fixed_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo,obj.cost)}
   end
   
   def estimated_cost
-    fixed = estimated_fixed_cost
-    unit = estimated_unit_cost
-    if fixed.nil? && unit.nil?
-      return nil
-    else
-      return ( fixed.nil? ? 0 : fixed ) + ( unit.nil? ? 0 : unit )
-    end
+    add_or_nil(estimated_fixed_cost, estimated_unit_cost)
   end
   
   def labor_cost
-    self.labor_costs.empty? ? nil : self.labor_costs.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+    self.labor_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 
   def material_cost
-    self.material_costs.empty? ? nil : self.material_costs.inject(nil) {|memo, obj| cost = obj.cost; memo.nil? ? obj.cost : memo + (cost.nil? ? 0 : cost)}
+    self.material_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end  
   
   def cost
-    material = labor_cost
-    labor = material_cost
-    if material.nil? && labor.nil?
-      return nil
-    else
-      return ( material.nil? ? 0 : material ) + ( labor.nil? ? 0 : labor )
-    end
+    add_or_nil(labor_cost, material_cost)
   end
 end

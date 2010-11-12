@@ -1,4 +1,6 @@
 class Component < ActiveRecord::Base
+  include AddOrNil
+  
   belongs_to :parent, :class_name => "Component"
   belongs_to :project
   
@@ -23,48 +25,27 @@ class Component < ActiveRecord::Base
   end
   
   def estimated_component_fixed_cost
-    self.fixed_cost_estimates.empty? ? nil : self.fixed_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
   
   def estimated_fixed_cost
-    if self.subcomponents.empty?
-      return self.estimated_component_fixed_cost
-    else
-      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_fixed_cost; memo.nil? ? obj.estimated_fixed_cost : memo + (cost.nil? ? 0 : cost ) }
-      return sub.nil? ? self.estimated_component_fixed_cost : sub + self.estimated_component_fixed_cost
-    end
+    add_or_nil( self.estimated_component_fixed_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)} )
   end
   
   def estimated_component_unit_cost
-    self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
   
   def estimated_unit_cost
-    if self.subcomponents.empty?
-      return self.estimated_component_unit_cost
-    else
-      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_unit_cost; memo.nil? ? obj.estimated_unit_cost : memo + (cost.nil? ? 0 : cost ) }
-      return sub.nil? ? self.estimated_component_unit_cost : sub + self.estimated_component_unit_cost
-    end
+    add_or_nil( self.estimated_component_unit_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)} )
   end
   
   def estimated_component_cost
-    fixed = estimated_component_fixed_cost
-    unit = estimated_component_unit_cost
-    if fixed.nil? && unit.nil?
-      return nil
-    else
-      return ( fixed.nil? ? 0 : fixed ) + ( unit.nil? ? 0 : unit )
-    end
+    add_or_nil( estimated_component_fixed_cost, estimated_component_unit_cost )
   end
   
   def estimated_cost
-    if self.subcomponents.empty?
-      return self.estimated_component_cost
-    else
-      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_cost; memo.nil? ? obj.estimated_cost : memo + (cost.nil? ? 0 : cost) }
-      return sub.nil? ? self.estimated_component_cost : sub + self.estimated_component_cost
-    end
+    add_or_nil( self.estimated_component_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)} )
   end
   
   private
