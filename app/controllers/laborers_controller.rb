@@ -1,4 +1,6 @@
 class LaborersController < ApplicationController
+  before_filter :get_project
+  
   # GET /laborers
   # GET /laborers.xml
   def index
@@ -44,7 +46,7 @@ class LaborersController < ApplicationController
 
     respond_to do |format|
       if @laborer.save
-        format.html { redirect_to(@laborer, :notice => 'Laborer was successfully created.') }
+        format.html { redirect_to([@project, @laborer], :notice => 'Laborer was successfully created.') }
         format.xml  { render :xml => @laborer, :status => :created, :location => @laborer }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class LaborersController < ApplicationController
 
     respond_to do |format|
       if @laborer.update_attributes(params[:laborer])
-        format.html { redirect_to(@laborer, :notice => 'Laborer was successfully updated.') }
+        format.html { redirect_to([@project, @laborer], :notice => 'Laborer was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class LaborersController < ApplicationController
     @laborer.destroy
 
     respond_to do |format|
-      format.html { redirect_to(laborers_url) }
+      format.html { redirect_to(project_laborers_url(@project)) }
       format.xml  { head :ok }
     end
   end

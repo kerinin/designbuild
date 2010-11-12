@@ -7,6 +7,6 @@
   %b Pay rate:
   = @laborer.pay_rate
 
-= link_to 'Edit', edit_laborer_path(@laborer)
+= link_to 'Edit', edit_project_laborer_path(@project, @laborer)
 \|
-= link_to 'Back', laborers_path
+= link_to 'Back', project_laborers_path(@project)

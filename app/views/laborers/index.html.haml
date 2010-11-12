@@ -12,10 +12,10 @@
     %tr
       %td= laborer.name
       %td= laborer.pay_rate
-      %td= link_to 'Show', laborer
-      %td= link_to 'Edit', edit_laborer_path(laborer)
-      %td= link_to 'Destroy', laborer, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', [@project, laborer]
+      %td= link_to 'Edit', edit_project_laborer_path(@project, laborer)
+      %td= link_to 'Destroy', [@project, laborer], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Laborer', new_laborer_path
+= link_to 'New Laborer', new_project_laborer_path(@project)
