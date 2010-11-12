@@ -3,4 +3,6 @@
 Factory.define :contract do |f|
   f.contractor Faker::Lorem.sentence
   f.bid 1.5
+  
+  f.project {|p| p.association(:project)}
 end

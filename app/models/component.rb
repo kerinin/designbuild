@@ -10,11 +10,19 @@ class Component < ActiveRecord::Base
   
   has_and_belongs_to_many :tags
   
+  before_validation :check_project
+  
   def all_quantities
     self.quantities.all + self.derived_quantities.all
   end
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
+  end
+  
+  private
+  
+  def check_project
+    self.project = self.parent.project if !self.project && !self.parent.nil? && !self.parent.project.nil?
   end
 end

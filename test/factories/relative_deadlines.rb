@@ -5,4 +5,5 @@ Factory.define :relative_deadline do |f|
   f.interval 10
   
   f.parent_deadline {|p| p.association(:deadline)}
+  f.project {|p| p.association(:project)}
 end

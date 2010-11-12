@@ -60,14 +60,8 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     should "distribute to sub-componente" do
-      @sub = Factory :component, :parent => @c1
+      @sub = Factory :component, :parent => @c1, :project => nil
       assert_equal @obj, @sub.project
-    end
-    
-    should "distribute to tasks" do
-      @est_cost = Factory :fixed_cost_estimate, :component = @c1
-      @task = Factory :task, :fixed_cost_estimates => [@est_cost]
-      assert_equal @obj, @task.project
     end
   end
 end

@@ -2,4 +2,6 @@
 
 Factory.define :component do |f|
   f.name Faker::Lorem.sentence
+  
+  f.project {|p| p.association(:project)}
 end
