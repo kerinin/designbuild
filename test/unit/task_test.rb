@@ -86,10 +86,10 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     should "aggregate estimates" do
-      assert_contains @obj.estimates, @fce1
-      assert_contains @obj.estimates, @fce2     
-      assert_contains @obj.estimates, @uce1
-      assert_contains @obj.estimates, @uce2
+      assert_contains @obj.cost_estimates, @fce1
+      assert_contains @obj.cost_estimates, @fce2     
+      assert_contains @obj.cost_estimates, @uce1
+      assert_contains @obj.cost_estimates, @uce2
     end
        
     should "aggregate costs" do

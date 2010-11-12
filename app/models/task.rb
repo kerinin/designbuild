@@ -10,7 +10,7 @@ class Task < ActiveRecord::Base
   
   validates_presence_of :project
 
-  def estimates
+  def cost_estimates
     self.unit_cost_estimates + self.fixed_cost_estimates
   end
   
