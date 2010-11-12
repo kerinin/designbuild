@@ -1,40 +1,31 @@
 Designbuild::Application.routes.draw do
 
-  resources :projects
+  resources :projects do
+    resources :laborers
+    
+    resources :components do
+      resources :quantities
+      resources :derived_quantities
+      resources :fixed_cost_estimates
+      resources :unit_cost_estimates
+    end
+            
+    resources :tasks do
+      resources :labor_costs      
+      resources :labor_cost_lines
+      resources :material_costs
+      resources :material_cost_lines
+    end
+            
+    resources :contracts do
+      resources :bids
+      resources :contract_costs
+    end
 
-  resources :bids
-
-  resources :contracts
-
-  resources :laborers
-
-  resources :labor_cost_lines
-
-  resources :labor_costs
-
-  resources :material_cost_lines
-
-  resources :material_costs
-
-  resources :contract_costs
-
-  resources :relative_deadlines
-
-  resources :deadlines
-
-  resources :tasks
-
-  resources :fixed_cost_estimates
-
-  resources :unit_cost_estimates
-
-  resources :derived_quantities
-
-  resources :quantities
-
-  resources :tags
-
-  resources :components
+    resources :deadlines do
+      resources :relative_deadlines
+    end
+  end
 
   devise_for :users
   
@@ -88,9 +79,10 @@ Designbuild::Application.routes.draw do
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
   # root :to => "welcome#index"
-  as :user do
-    root :to => "devise/sessions#new"
-  end
+  #as :user do
+  #  root :to => "devise/sessions#new"
+  #end
+  root :to => "projects#index"
   
   # See how all your routes lay out with "rake routes"
 
