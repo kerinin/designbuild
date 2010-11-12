@@ -11,16 +11,16 @@ class ComponentTest < ActiveSupport::TestCase
       
       @sub1 = Factory :component, :parent => @obj
       @sub2 = Factory :component, :parent => @obj
-      @q1 = Factory :quantity, :component => @obj
-      @q2 = Factory :quantity, :component => @obj
-      @dq1 = Factory :derived_quantity, :parent_quantity => @q1
-      @dq2 = Factory :derived_quantity, :parent_quantity => @q1
-      @dq3 = Factory :derived_quantity, :parent_quantity => @q2
-      @fc1 = Factory :fixed_cost_estimate, :component => @obj
-      @fc2 = Factory :fixed_cost_estimate, :component => @obj
-      @uc1 = Factory :unit_cost_estimate, :quantity => @q1
-      @uc2 = Factory :unit_cost_estimate, :quantity => @q2
-      @uc3 = Factory :unit_cost_estimate, :quantity => @fc1
+      @q1 = Factory :quantity, :component => @obj, :value => 1
+      @q2 = Factory :quantity, :component => @obj, :value => 2
+      @dq1 = Factory :derived_quantity, :parent_quantity => @q1, :multiplier => 1
+      @dq2 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 2
+      @dq3 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 1
+      @fc1 = Factory :fixed_cost_estimate, :component => @obj, :cost => 1
+      @fc2 = Factory :fixed_cost_estimate, :component => @obj, :cost => 10
+      @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100 # x1
+      @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000 # x2
+      @uc3 = Factory :unit_cost_estimate, :quantity => @dq2, :unit_cost => 10000 # x4
     end
 
     teardown do
@@ -31,6 +31,8 @@ class ComponentTest < ActiveSupport::TestCase
       FixedCostEstimate.delete_all
       UnitCostEstimate.delete_all
     end
+    
+    #---------------REQUIRED
     
     should "be valid" do
       assert @obj.valid?
@@ -49,6 +51,8 @@ class ComponentTest < ActiveSupport::TestCase
         Factory :component, :project => nil
       end
     end
+    
+    #-----------------ASSOCIATIONS
     
     should "have multiple subcomponents" do
       assert_contains @obj.subcomponents, @sub1
@@ -95,6 +99,15 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @uc1
       assert_contains @obj.cost_estimates, @uc2
       assert_contains @obj.cost_estimates, @uc3
+    end
+
+    should "aggregate estimated costs" do
+      assert_equal 42111, @obj.estimated_cost
+    end
+    
+    should "return estimated cost nil if no estimates" do
+      @obj2 = Factory :component
+      assert_equal nil, @obj2.estimated_cost
     end
   end
 end

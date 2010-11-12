@@ -8,6 +8,10 @@ class DerivedQuantity < ActiveRecord::Base
   
   before_save :set_component
   
+  def value
+    self.multiplier * self.parent_quantity.value
+  end
+  
   private
   
   def set_component
