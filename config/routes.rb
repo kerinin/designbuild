@@ -1,5 +1,7 @@
 Designbuild::Application.routes.draw do
 
+  resources :projects
+
   resources :bids
 
   resources :contracts
