@@ -36,7 +36,7 @@ class Component < ActiveRecord::Base
   end
   
   def estimated_component_unit_cost
-    self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + (obj.unit_cost * obj.quantity.value)}
+    self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
   end
   
   def estimated_unit_cost
