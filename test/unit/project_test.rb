@@ -36,6 +36,8 @@ class ProjectTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
+    #--------------------ASSOCIATIONS
+    
     should "allow multiple users" do
       assert_contains @obj.users, @u1
       #assert_contains @obj.users, @u2
@@ -66,6 +68,36 @@ class ProjectTest < ActiveSupport::TestCase
     should "distribute to sub-componente" do
       @sub = Factory :component, :parent => @c1, :project => nil
       assert_equal @obj, @sub.project
+    end
+    
+    #---------------------CALCULATIONS
+    
+    should "aggregate estimated fixed costs" do
+      assert_equal 0, @obj.estimated_fixed_cost
+    end
+    
+    should "aggregate estimated unit costs" do
+      assert_equal 0, @obj.estimated_unit_cost
+    end
+    
+    should "aggregate estimated costs" do
+      assert_equal 0, @obj.estimated_cost
+    end
+    
+    should "aggregate material costs" do
+      assert_equal 0, @obj.material_cost
+    end
+    
+    should "aggregate labor costs" do
+      assert_equal 0, @obj.labor_cost
+    end
+    
+    should "aggregate contract costs" do
+      assert_equal 0, @obj.contract_cost
+    end
+    
+    should "aggregate costs" do
+      assert_equal 0, @obj.cost
     end
   end
 end
