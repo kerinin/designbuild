@@ -46,7 +46,7 @@ class ContractCostsController < ApplicationController
 
     respond_to do |format|
       if @contract_cost.save
-        format.html { redirect_to(project_contract_contract_cost_path(@project, @contract, @contract_cost), :notice => 'Contract cost was successfully created.') }
+        format.html { redirect_to([@project, @contract, @contract_cost], :notice => 'Contract cost was successfully created.') }
         format.xml  { render :xml => @contract_cost, :status => :created, :location => @contract_cost }
       else
         format.html { render :action => "new" }
@@ -62,7 +62,7 @@ class ContractCostsController < ApplicationController
 
     respond_to do |format|
       if @contract_cost.update_attributes(params[:contract_cost])
-        format.html { redirect_to(project_contract_contract_cost_path(@project, @contract, @contract_cost), :notice => 'Contract cost was successfully updated.') }
+        format.html { redirect_to([@project, @contract, @contract_cost], :notice => 'Contract cost was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

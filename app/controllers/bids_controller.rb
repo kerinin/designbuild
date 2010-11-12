@@ -46,7 +46,7 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.save
-        format.html { redirect_to( project_contract_bid_path(@project, @contract, @bid), :notice => 'Bid was successfully created.') }
+        format.html { redirect_to( [@project, @contract, @bid], :notice => 'Bid was successfully created.') }
         format.xml  { render :xml => @bid, :status => :created, :location => @bid }
       else
         format.html { render :action => "new" }
@@ -62,7 +62,7 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.update_attributes(params[:bid])
-        format.html { redirect_to(project_contract_bid_path(@project, @contract, @bid), :notice => 'Bid was successfully updated.') }
+        format.html { redirect_to([@project, @contract, @bid], :notice => 'Bid was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

@@ -1,4 +1,6 @@
 class LaborCostsController < ApplicationController
+  before_filter :get_project, :get_task
+  
   # GET /labor_costs
   # GET /labor_costs.xml
   def index
@@ -44,7 +46,7 @@ class LaborCostsController < ApplicationController
 
     respond_to do |format|
       if @labor_cost.save
-        format.html { redirect_to(@labor_cost, :notice => 'Labor cost was successfully created.') }
+        format.html { redirect_to([@project, @task, @labor_cost], :notice => 'Labor cost was successfully created.') }
         format.xml  { render :xml => @labor_cost, :status => :created, :location => @labor_cost }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class LaborCostsController < ApplicationController
 
     respond_to do |format|
       if @labor_cost.update_attributes(params[:labor_cost])
-        format.html { redirect_to(@labor_cost, :notice => 'Labor cost was successfully updated.') }
+        format.html { redirect_to([@project, @task, @labor_cost], :notice => 'Labor cost was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class LaborCostsController < ApplicationController
     @labor_cost.destroy
 
     respond_to do |format|
-      format.html { redirect_to(labor_costs_url) }
+      format.html { redirect_to(project_task_labor_costs_url(@project, @task)) }
       format.xml  { head :ok }
     end
   end

@@ -46,7 +46,7 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.save
-        format.html { redirect_to(project_component_fixed_cost_estimate_path(@project, @component, @fixed_cost_estimate), :notice => 'Fixed cost estimate was successfully created.') }
+        format.html { redirect_to([@project, @component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
         format.xml  { render :xml => @fixed_cost_estimate, :status => :created, :location => @fixed_cost_estimate }
       else
         format.html { render :action => "new" }
@@ -62,7 +62,7 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.update_attributes(params[:fixed_cost_estimate])
-        format.html { redirect_to(project_component_fixed_cost_estimate_path(@project, @component, @fixed_cost_estimate), :notice => 'Fixed cost estimate was successfully updated.') }
+        format.html { redirect_to([@project, @component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

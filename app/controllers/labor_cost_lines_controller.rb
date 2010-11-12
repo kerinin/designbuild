@@ -46,7 +46,7 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.save
-        format.html { redirect_to(project_task_labor_cost_line_path(@project, @task, @labor_cost_line), :notice => 'Labor cost line was successfully created.') }
+        format.html { redirect_to([@project, @task, @labor_cost_line], :notice => 'Labor cost line was successfully created.') }
         format.xml  { render :xml => @labor_cost_line, :status => :created, :location => @labor_cost_line }
       else
         format.html { render :action => "new" }
@@ -62,7 +62,7 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.update_attributes(params[:labor_cost_line])
-        format.html { redirect_to(project_task_labor_cost_line_path(@project, @task, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
+        format.html { redirect_to([@project, @task, @labor_cost_line], :notice => 'Labor cost line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
