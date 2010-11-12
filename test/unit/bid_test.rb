@@ -17,7 +17,7 @@ class BidTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @bid.date
-      assert_not_nil @bid.amount
+      assert_not_nil @bid.cost
     end
     
     should "require a contract" do

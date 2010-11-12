@@ -2,7 +2,7 @@
 
 Factory.define :bid do |f|
   f.date "2010-11-10"
-  f.amount 1.5
+  f.cost 1.5
   
   f.contract {|p| p.association(:contract)}
 end
