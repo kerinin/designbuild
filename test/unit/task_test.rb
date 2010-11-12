@@ -8,10 +8,11 @@ class TaskTest < ActiveSupport::TestCase
       
       @obj = Factory :task, :deadline => @dl1, :contract => @ctr
       
-      @fce1 = Factory :fixed_cost_estimate, :task => @obj
-      @fce2 = Factory :fixed_cost_estimate, :task => @obj
-      @uce1 = Factory :unit_cost_estimate, :task => @obj
-      @uce2 = Factory :unit_cost_estimate, :task => @obj
+      @q = Factory :quantity, :value => 1
+      @fce1 = Factory :fixed_cost_estimate, :task => @obj, :cost => 1
+      @fce2 = Factory :fixed_cost_estimate, :task => @obj, :cost => 10
+      @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100
+      @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000
       @lc1 = Factory :labor_cost, :task => @obj
       @lc2 = Factory :labor_cost, :task => @obj
       @mc1 = Factory :material_cost, :task => @obj
@@ -29,6 +30,8 @@ class TaskTest < ActiveSupport::TestCase
       LaborCost.delete_all
       MaterialCost.delete_all
     end
+    
+    #-----------------------REQUIRED
     
     should "be valid" do
       assert @obj.valid?
@@ -54,6 +57,8 @@ class TaskTest < ActiveSupport::TestCase
         @obj.deadline = Factory :relative_deadline
       end
     end
+    
+    #---------------ASSOCIATIONS
     
     should "allow a contract" do
       assert_equal @obj.contract, @ctr
@@ -92,6 +97,17 @@ class TaskTest < ActiveSupport::TestCase
       assert_contains @obj.costs, @lc2
       assert_contains @obj.costs, @mc1
       assert_contains @obj.costs, @mc2
+    end
+    
+    #-----------------CALCULATIONS
+    
+    should "aggregate estimated costs" do
+      assert_equal 1111, @obj.estimated_cost
+    end
+        
+    should "return estimated cost nil if no estimates" do
+      @obj2 = Factory :task
+      assert_equal nil, @obj2.estimated_cost
     end
   end
 end

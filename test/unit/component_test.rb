@@ -102,6 +102,8 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @uc3
     end
 
+    #--------------------------CALCULATIONS
+    
     should "aggregate estimated component costs" do
       assert_equal 42111, @obj.estimated_component_cost
     end
