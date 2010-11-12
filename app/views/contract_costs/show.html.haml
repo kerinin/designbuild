@@ -4,9 +4,9 @@
   %b Date:
   = @contract_cost.date
 %p
-  %b Amount:
-  = @contract_cost.amount
+  %b Cost:
+  = @contract_cost.cost
 
-= link_to 'Edit', edit_contract_cost_path(@contract_cost)
+= link_to 'Edit', edit_project_contract_contract_cost_path(@project, @contract, @contract_cost)
 \|
-= link_to 'Back', contract_costs_path
+= link_to 'Back', project_contract_contract_costs_path(@project, @contract)

@@ -1,4 +1,4 @@
-= form_for @contract_cost do |f|
+= form_for [@project, @contract, @contract_cost] do |f|
   -if @contract_cost.errors.any?
     #error_explanation
       %h2= "#{pluralize(@contract_cost.errors.count, "error")} prohibited this contract_cost from being saved:"
@@ -10,7 +10,7 @@
     = f.label :date
     = f.date_select :date
   .field
-    = f.label :amount
-    = f.text_field :amount
+    = f.label :cost
+    = f.text_field :cost
   .actions
     = f.submit 'Save'
