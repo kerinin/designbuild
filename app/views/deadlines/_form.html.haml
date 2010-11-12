@@ -1,4 +1,4 @@
-= form_for @deadline do |f|
+= form_for [@project, @deadline] do |f|
   -if @deadline.errors.any?
     #error_explanation
       %h2= "#{pluralize(@deadline.errors.count, "error")} prohibited this deadline from being saved:"

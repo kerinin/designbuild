@@ -12,10 +12,10 @@
     %tr
       %td= deadline.name
       %td= deadline.date
-      %td= link_to 'Show', deadline
-      %td= link_to 'Edit', edit_deadline_path(deadline)
-      %td= link_to 'Destroy', deadline, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', project_deadline_path(@project, deadline)
+      %td= link_to 'Edit', edit_project_deadline_path(@project, deadline)
+      %td= link_to 'Destroy', project_deadline_path(@project, deadline), :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Deadline', new_deadline_path
+= link_to 'New Deadline', new_project_deadline_path(@project)
