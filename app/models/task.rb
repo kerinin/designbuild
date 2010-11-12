@@ -17,4 +17,22 @@ class Task < ActiveRecord::Base
   def costs
     self.labor_costs + self.material_costs
   end
+  
+  def estimated_unit_cost
+    self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+  end
+  
+  def estimated_fixed_cost
+    self.fixed_cost_estimates.empty? ? nil : self.fixed_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
+  end
+  
+  def estimated_cost
+    fixed = estimated_fixed_cost
+    unit = estimated_unit_cost
+    if fixed.nil? && unit.nil?
+      return nil
+    else
+      return ( fixed.nil? ? 0 : fixed ) + ( unit.nil? ? 0 : unit )
+    end
+  end
 end
