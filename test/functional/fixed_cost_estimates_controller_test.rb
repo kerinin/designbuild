@@ -1,49 +1,51 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class FixedCostEstimatesControllerTest < ActionController::TestCase
   setup do
-    @fixed_cost_estimate = fixed_cost_estimates(:one)
+    @project = Factory :project
+    @component = Factory :component, :project => @project
+    @fixed_cost_estimate = Factory :fixed_cost_estimate, :component => @component
   end
 
   test "should get index" do
-    get :index
+    get :index, :project_id => @project.to_param, :component_id => @component.to_param
     assert_response :success
     assert_not_nil assigns(:fixed_cost_estimates)
   end
 
   test "should get new" do
-    get :new
+    get :new, :project_id => @project.to_param, :component_id => @component.to_param
     assert_response :success
   end
 
   test "should create fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count') do
-      post :create, :fixed_cost_estimate => @fixed_cost_estimate.attributes
+      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :fixed_cost_estimate => @fixed_cost_estimate.attributes
     end
 
-    assert_redirected_to fixed_cost_estimate_path(assigns(:fixed_cost_estimate))
+    assert_redirected_to project_component_fixed_cost_estimate_path(@project, @component, assigns(:fixed_cost_estimate))
   end
 
   test "should show fixed_cost_estimate" do
-    get :show, :id => @fixed_cost_estimate.to_param
+    get :show, :project_id => @project.to_param, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => @fixed_cost_estimate.to_param
+    get :edit, :project_id => @project.to_param, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param
     assert_response :success
   end
 
   test "should update fixed_cost_estimate" do
-    put :update, :id => @fixed_cost_estimate.to_param, :fixed_cost_estimate => @fixed_cost_estimate.attributes
-    assert_redirected_to fixed_cost_estimate_path(assigns(:fixed_cost_estimate))
+    put :update, :project_id => @project.to_param, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param, :fixed_cost_estimate => @fixed_cost_estimate.attributes
+    assert_redirected_to project_component_fixed_cost_estimate_path(@project, @component, assigns(:fixed_cost_estimate))
   end
 
   test "should destroy fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count', -1) do
-      delete :destroy, :id => @fixed_cost_estimate.to_param
+      delete :destroy, :project_id => @project.to_param, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param
     end
 
-    assert_redirected_to fixed_cost_estimates_path
+    assert_redirected_to project_component_fixed_cost_estimates_path(@project, @component)
   end
 end

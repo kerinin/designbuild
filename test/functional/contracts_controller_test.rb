@@ -1,49 +1,50 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class ContractsControllerTest < ActionController::TestCase
   setup do
-    @contract = contracts(:one)
+    @project = Factory :project
+    @contract = Factory :contract, :project => @project
   end
 
   test "should get index" do
-    get :index
+    get :index, :project_id => @project.to_param
     assert_response :success
     assert_not_nil assigns(:contracts)
   end
 
   test "should get new" do
-    get :new
+    get :new, :project_id => @project.to_param
     assert_response :success
   end
 
   test "should create contract" do
     assert_difference('Contract.count') do
-      post :create, :contract => @contract.attributes
+      post :create, :project_id => @project.to_param, :contract => @contract.attributes
     end
 
-    assert_redirected_to contract_path(assigns(:contract))
+    assert_redirected_to project_contract_path(@project, assigns(:contract))
   end
 
   test "should show contract" do
-    get :show, :id => @contract.to_param
+    get :show, :project_id => @project.to_param, :id => @contract.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :id => @contract.to_param
+    get :edit, :project_id => @project.to_param, :id => @contract.to_param
     assert_response :success
   end
 
   test "should update contract" do
-    put :update, :id => @contract.to_param, :contract => @contract.attributes
-    assert_redirected_to contract_path(assigns(:contract))
+    put :update, :project_id => @project.to_param, :id => @contract.to_param, :contract => @contract.attributes
+    assert_redirected_to project_contract_path(@project, assigns(:contract))
   end
 
   test "should destroy contract" do
     assert_difference('Contract.count', -1) do
-      delete :destroy, :id => @contract.to_param
+      delete :destroy, :project_id => @project.to_param, :id => @contract.to_param
     end
 
-    assert_redirected_to contracts_path
+    assert_redirected_to project_contracts_path(@project)
   end
 end

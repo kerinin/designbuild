@@ -27,6 +27,8 @@ Designbuild::Application.routes.draw do
     end
   end
 
+  resources :tags
+
   devise_for :users
   
   # The priority is based upon order of creation:
