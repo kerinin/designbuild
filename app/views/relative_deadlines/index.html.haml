@@ -12,10 +12,10 @@
     %tr
       %td= relative_deadline.name
       %td= relative_deadline.interval
-      %td= link_to 'Show', relative_deadline
-      %td= link_to 'Edit', edit_relative_deadline_path(relative_deadline)
-      %td= link_to 'Destroy', relative_deadline, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', [@project, @deadline, relative_deadline]
+      %td= link_to 'Edit', edit_project_deadline_relative_deadline_path(@project, @deadline, relative_deadline)
+      %td= link_to 'Destroy', [@project, @deadline, relative_deadline], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Relative deadline', new_relative_deadline_path
+= link_to 'New Relative deadline', new_project_deadline_relative_deadline_path(@project, @deadline)

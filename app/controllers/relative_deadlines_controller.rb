@@ -1,4 +1,6 @@
 class RelativeDeadlinesController < ApplicationController
+  before_filter :get_project, :get_deadline
+  
   # GET /relative_deadlines
   # GET /relative_deadlines.xml
   def index
@@ -44,7 +46,7 @@ class RelativeDeadlinesController < ApplicationController
 
     respond_to do |format|
       if @relative_deadline.save
-        format.html { redirect_to(@relative_deadline, :notice => 'Relative deadline was successfully created.') }
+        format.html { redirect_to([@project, @deadline, @relative_deadline], :notice => 'Relative deadline was successfully created.') }
         format.xml  { render :xml => @relative_deadline, :status => :created, :location => @relative_deadline }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class RelativeDeadlinesController < ApplicationController
 
     respond_to do |format|
       if @relative_deadline.update_attributes(params[:relative_deadline])
-        format.html { redirect_to(@relative_deadline, :notice => 'Relative deadline was successfully updated.') }
+        format.html { redirect_to([@project, @deadline, @relative_deadline], :notice => 'Relative deadline was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class RelativeDeadlinesController < ApplicationController
     @relative_deadline.destroy
 
     respond_to do |format|
-      format.html { redirect_to(relative_deadlines_url) }
+      format.html { redirect_to(project_deadline_relative_deadlines_url(@project, @deadline)) }
       format.xml  { head :ok }
     end
   end
