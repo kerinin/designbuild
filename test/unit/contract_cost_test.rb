@@ -17,7 +17,7 @@ class ContractCostTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @obj.date
-      assert_not_nil @obj.amount
+      assert_not_nil @obj.cost
     end
     
     should "require a contract" do

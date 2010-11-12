@@ -2,7 +2,7 @@ class CreateContractCosts < ActiveRecord::Migration
   def self.up
     create_table :contract_costs do |t|
       t.date :date
-      t.float :amount
+      t.float :cost
       
       t.belongs_to :contract
 

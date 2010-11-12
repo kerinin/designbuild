@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(:version => 20101112011354) do
 
   create_table "contract_costs", :force => true do |t|
     t.date     "date"
-    t.float    "amount"
+    t.float    "cost"
     t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
