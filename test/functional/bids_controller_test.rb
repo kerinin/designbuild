@@ -23,7 +23,7 @@ class BidsControllerTest < ActionController::TestCase
       post :create, :project_id => @project.to_param, :contract_id => @contract.to_param, :bid => @bid.attributes
     end
 
-    assert_redirected_to bid_path(assigns(:bid))
+    assert_redirected_to project_contract_bid_path(@project, @contract, assigns(:bid))
   end
 
   test "should show bid" do

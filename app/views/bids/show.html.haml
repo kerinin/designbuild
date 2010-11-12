@@ -4,9 +4,9 @@
   %b Date:
   = @bid.date
 %p
-  %b Amount:
-  = @bid.amount
+  %b Cost:
+  = @bid.cost
 
-= link_to 'Edit', edit_bid_path(@bid)
+= link_to 'Edit', edit_project_contract_bid_path(@project, @contract, @bid)
 \|
-= link_to 'Back', bids_path
+= link_to 'Back', project_contract_bids_path(@project, @contract)
