@@ -4,6 +4,6 @@
   %b Date:
   = @material_cost.date
 
-= link_to 'Edit', edit_material_cost_path(@material_cost)
+= link_to 'Edit', edit_project_task_material_cost_path(@project, @task, @material_cost)
 \|
-= link_to 'Back', material_costs_path
+= link_to 'Back', project_task_material_costs_path(@project, @task)

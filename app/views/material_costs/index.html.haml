@@ -10,10 +10,10 @@
   - @material_costs.each do |material_cost|
     %tr
       %td= material_cost.date
-      %td= link_to 'Show', material_cost
-      %td= link_to 'Edit', edit_material_cost_path(material_cost)
-      %td= link_to 'Destroy', material_cost, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', [@project, @task, material_cost]
+      %td= link_to 'Edit', edit_project_task_material_cost_path(@project, @task, material_cost)
+      %td= link_to 'Destroy', [@project, @task, material_cost], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Material cost', new_material_cost_path
+= link_to 'New Material cost', new_project_task_material_cost_path(@project, @task)
