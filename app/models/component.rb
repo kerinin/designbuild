@@ -22,21 +22,48 @@ class Component < ActiveRecord::Base
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end
   
-  def estimated_fixed_cost
+  def estimated_component_fixed_cost
     self.fixed_cost_estimates.empty? ? nil : self.fixed_cost_estimates.inject(0) {|memo, obj| memo + obj.cost}
   end
   
-  def estimated_unit_cost
+  def estimated_fixed_cost
+    if self.subcomponents.empty?
+      return self.estimated_component_fixed_cost
+    else
+      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_fixed_cost; memo.nil? ? obj.estimated_fixed_cost : memo + (cost.nil? ? 0 : cost ) }
+      return sub.nil? ? self.estimated_component_fixed_cost : sub + self.estimated_component_fixed_cost
+    end
+  end
+  
+  def estimated_component_unit_cost
     self.unit_cost_estimates.empty? ? nil : self.unit_cost_estimates.inject(0) {|memo, obj| memo + (obj.unit_cost * obj.quantity.value)}
   end
   
-  def estimated_cost
-    fixed = estimated_fixed_cost
-    unit = estimated_unit_cost
+  def estimated_unit_cost
+    if self.subcomponents.empty?
+      return self.estimated_component_unit_cost
+    else
+      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_unit_cost; memo.nil? ? obj.estimated_unit_cost : memo + (cost.nil? ? 0 : cost ) }
+      return sub.nil? ? self.estimated_component_unit_cost : sub + self.estimated_component_unit_cost
+    end
+  end
+  
+  def estimated_component_cost
+    fixed = estimated_component_fixed_cost
+    unit = estimated_component_unit_cost
     if fixed.nil? && unit.nil?
       return nil
     else
       return ( fixed.nil? ? 0 : fixed ) + ( unit.nil? ? 0 : unit )
+    end
+  end
+  
+  def estimated_cost
+    if self.subcomponents.empty?
+      return self.estimated_component_cost
+    else
+      sub = self.subcomponents.inject(nil) {|memo, obj| cost = obj.estimated_cost; memo.nil? ? obj.estimated_cost : memo + (cost.nil? ? 0 : cost) }
+      return sub.nil? ? self.estimated_component_cost : sub + self.estimated_component_cost
     end
   end
   

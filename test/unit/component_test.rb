@@ -18,6 +18,7 @@ class ComponentTest < ActiveSupport::TestCase
       @dq3 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 1
       @fc1 = Factory :fixed_cost_estimate, :component => @obj, :cost => 1
       @fc2 = Factory :fixed_cost_estimate, :component => @obj, :cost => 10
+      @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :cost => 100000
       @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100 # x1
       @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000 # x2
       @uc3 = Factory :unit_cost_estimate, :quantity => @dq2, :unit_cost => 10000 # x4
@@ -101,10 +102,14 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @uc3
     end
 
-    should "aggregate estimated costs" do
-      assert_equal 42111, @obj.estimated_cost
+    should "aggregate estimated component costs" do
+      assert_equal 42111, @obj.estimated_component_cost
     end
-    
+
+    should "aggregate estimated costs" do
+      assert_equal 142111, @obj.estimated_cost
+    end
+        
     should "return estimated cost nil if no estimates" do
       @obj2 = Factory :component
       assert_equal nil, @obj2.estimated_cost
