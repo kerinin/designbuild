@@ -5,6 +5,7 @@ class CreateRelativeDeadlines < ActiveRecord::Migration
       t.integer :interval
       
       t.belongs_to :parent_deadline
+      t.belongs_to :project
 
       t.timestamps
     end

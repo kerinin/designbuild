@@ -1,5 +1,6 @@
 class Component < ActiveRecord::Base
   belongs_to :parent, :class_name => "Component"
+  belongs_to :project
   
   has_many :subcomponents, :class_name => "Component", :foreign_key => :parent_id
   has_many :quantities

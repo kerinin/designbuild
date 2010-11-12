@@ -3,7 +3,9 @@ class CreateDeadlines < ActiveRecord::Migration
     create_table :deadlines do |t|
       t.string :name
       t.date :date
-
+      
+      t.belongs_to :project
+      
       t.timestamps
     end
   end

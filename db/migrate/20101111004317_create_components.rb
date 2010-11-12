@@ -4,6 +4,7 @@ class CreateComponents < ActiveRecord::Migration
       t.string :name
       
       t.belongs_to :parent
+      t.belongs_to :project
 
       t.timestamps
     end

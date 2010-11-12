@@ -5,6 +5,7 @@ class CreateTasks < ActiveRecord::Migration
       
       t.belongs_to :contract
       t.belongs_to :deadline, :polymorphic => true
+      t.belongs_to :project
 
       t.timestamps
     end

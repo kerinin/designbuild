@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101111145547) do
+ActiveRecord::Schema.define(:version => 20101112011354) do
 
   create_table "bids", :force => true do |t|
     t.date     "date"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
   create_table "components", :force => true do |t|
     t.string   "name"
     t.integer  "parent_id"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -43,6 +44,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
   create_table "contracts", :force => true do |t|
     t.string   "contractor"
     t.float    "bid"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -50,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
   create_table "deadlines", :force => true do |t|
     t.string   "name"
     t.date     "date"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -109,6 +112,17 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.datetime "updated_at"
   end
 
+  create_table "projects", :force => true do |t|
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "projects_users", :id => false, :force => true do |t|
+    t.integer "project_id"
+    t.integer "user_id"
+  end
+
   create_table "quantities", :force => true do |t|
     t.string   "name"
     t.float    "value"
@@ -123,6 +137,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.string   "name"
     t.integer  "interval"
     t.integer  "parent_deadline_id"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -138,6 +153,7 @@ ActiveRecord::Schema.define(:version => 20101111145547) do
     t.integer  "contract_id"
     t.integer  "deadline_id"
     t.string   "deadline_type"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -4,6 +4,8 @@ class CreateContracts < ActiveRecord::Migration
       t.string :contractor
       t.float :bid
 
+      t.belongs_to :project
+      
       t.timestamps
     end
   end
