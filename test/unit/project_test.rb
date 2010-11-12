@@ -15,6 +15,8 @@ class ProjectTest < ActiveSupport::TestCase
       @cont2 = Factory :contract, :project => @obj
       @dl1 = Factory :deadline, :project => @obj
       @dl2 = Factory :deadline, :project => @obj
+      @rdl1 = Factory :relative_deadline, :project => @obj
+      @rdl2 = Factory :relative_deadline, :project => @obj
     end
 
     teardown do
@@ -54,9 +56,11 @@ class ProjectTest < ActiveSupport::TestCase
       assert_contains @obj.contracts, @cont2
     end
     
-    should "allow multiple deadlines" do
+    should_eventually "allow multiple deadlines" do
       assert_contains @obj.deadlines, @dl1
       assert_contains @obj.deadlines, @dl2
+      assert_contains @obj.deadlines, @rdl1
+      assert_contains @obj.deadlines, @rdl2
     end
     
     should "distribute to sub-componente" do
