@@ -7,6 +7,8 @@ class Task < ActiveRecord::Base
   has_many :fixed_cost_estimates
   has_many :labor_costs
   has_many :material_costs
+  
+  validates_presence_of :project
 
   def estimates
     self.unit_cost_estimates + self.fixed_cost_estimates
