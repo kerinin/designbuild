@@ -7,6 +7,6 @@
   %b Quantity:
   = @material_cost_line.quantity
 
-= link_to 'Edit', edit_material_cost_line_path(@material_cost_line)
+= link_to 'Edit', edit_project_task_material_cost_line_path(@project, @task, @material_cost_line)
 \|
-= link_to 'Back', material_cost_lines_path
+= link_to 'Back', project_task_material_cost_lines_path(@project, @task)

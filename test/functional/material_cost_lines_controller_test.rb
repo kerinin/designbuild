@@ -4,8 +4,8 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @task = Factory :task, :project => @project
-    @material_cost => Factory :material_cost_line, :material_set => @material_cost
-    @material_cost_line = material_cost_lines(:one)
+    @material_cost = Factory :material_cost, :task => @task
+    @material_cost_line = Factory :material_cost_line, :material_set => @material_cost
   end
 
   test "should get index" do

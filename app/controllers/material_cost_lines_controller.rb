@@ -1,4 +1,6 @@
 class MaterialCostLinesController < ApplicationController
+  before_filter :get_project, :get_task
+  
   # GET /material_cost_lines
   # GET /material_cost_lines.xml
   def index
@@ -44,7 +46,7 @@ class MaterialCostLinesController < ApplicationController
 
     respond_to do |format|
       if @material_cost_line.save
-        format.html { redirect_to(@material_cost_line, :notice => 'Material cost line was successfully created.') }
+        format.html { redirect_to([@project, @task, @material_cost_line], :notice => 'Material cost line was successfully created.') }
         format.xml  { render :xml => @material_cost_line, :status => :created, :location => @material_cost_line }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class MaterialCostLinesController < ApplicationController
 
     respond_to do |format|
       if @material_cost_line.update_attributes(params[:material_cost_line])
-        format.html { redirect_to(@material_cost_line, :notice => 'Material cost line was successfully updated.') }
+        format.html { redirect_to([@project, @task, @material_cost_line], :notice => 'Material cost line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class MaterialCostLinesController < ApplicationController
     @material_cost_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(material_cost_lines_url) }
+      format.html { redirect_to(project_task_material_cost_lines_url(@project, @task)) }
       format.xml  { head :ok }
     end
   end
