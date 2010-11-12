@@ -4,6 +4,9 @@ class MaterialCostTest < ActiveSupport::TestCase
   context "A Material Cost" do
     setup do
       @obj = Factory :material_cost
+      
+      @li1 = Factory :material_cost_line, :material_set => @obj
+      @li2 = Factory :material_cost_line, :material_set => @obj
     end
 
     teardown do
@@ -23,6 +26,11 @@ class MaterialCostTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :material_cost, :task => nil
       end
+    end
+    
+    should "allow multiple line items" do
+      assert_contains @obj.line_items, @li1
+      assert_contains @obj.line_items, @li2
     end
   end
 end
