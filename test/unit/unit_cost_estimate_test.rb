@@ -4,8 +4,9 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
   context "A Unit Cost Estimate" do
     setup do
       @t1 = Factory :task
+      @q = Factory :quantity, :value => 10
       
-      @obj = Factory :unit_cost_estimate, :task => @t1
+      @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5
     end
 
     teardown do
@@ -33,6 +34,12 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
         
     should "allow a task" do
       assert_equal @obj.task, @t1
+    end
+    
+    #------------------CALCULATIONS
+    
+    should "generate cost" do
+      assert_equal 50, @obj.cost
     end
   end
 end
