@@ -12,9 +12,9 @@
     %tr
       %td= bid.date
       %td= bid.cost
-      %td= link_to 'Show', project_contract_bid_path(@project, @contract, bid)
+      %td= link_to 'Show', [@project, @contract, bid]
       %td= link_to 'Edit', edit_project_contract_bid_path(@project, @contract, bid)
-      %td= link_to 'Destroy', project_contract_bid_path(@project, @contract, bid), :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Destroy', [@project, @contract, bid], :confirm => 'Are you sure?', :method => :delete
 
 %br
 

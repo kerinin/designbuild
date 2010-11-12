@@ -10,9 +10,9 @@
   - @labor_cost_lines.each do |labor_cost_line|
     %tr
       %td= labor_cost_line.hours
-      %td= link_to 'Show', project_task_labor_cost_line_path(@project, @task, labor_cost_line)
+      %td= link_to 'Show', [@project, @task, labor_cost_line]
       %td= link_to 'Edit', edit_project_task_labor_cost_line_path(@project, @task, labor_cost_line)
-      %td= link_to 'Destroy', project_task_labor_cost_line_path(@project, @task, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Destroy', [@project, @task, labor_cost_line], :confirm => 'Are you sure?', :method => :delete
 
 %br
 

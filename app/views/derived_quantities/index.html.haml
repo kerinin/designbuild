@@ -12,9 +12,9 @@
     %tr
       %td= derived_quantity.name
       %td= derived_quantity.multiplier
-      %td= link_to 'Show', project_component_derived_quantity_path(@project, @component, derived_quantity)
+      %td= link_to 'Show', [@project, @component, derived_quantity]
       %td= link_to 'Edit', edit_project_component_derived_quantity_path(@project, @component, derived_quantity)
-      %td= link_to 'Destroy', project_component_derived_quantity_path(@project, @component, derived_quantity), :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Destroy', [@project, @component, derived_quantity], :confirm => 'Are you sure?', :method => :delete
 
 %br
 

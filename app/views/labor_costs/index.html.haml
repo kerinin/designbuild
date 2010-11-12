@@ -10,9 +10,9 @@
   - @labor_costs.each do |labor_cost|
     %tr
       %td= labor_cost.date
-      %td= link_to 'Show', project_task_labor_cost_path(@project, @task, labor_cost)
+      %td= link_to 'Show', [@project, @task, labor_cost]
       %td= link_to 'Edit', edit_project_task_labor_cost_path(@project, @task, labor_cost)
-      %td= link_to 'Destroy', project_task_labor_cost_path(@project, @task, labor_cost), :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Destroy', [@project, @task, labor_cost], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
