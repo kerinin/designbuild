@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(:version => 20101112011354) do
   create_table "labor_cost_lines", :force => true do |t|
     t.float    "hours"
     t.integer  "labor_set_id"
+    t.integer  "laborer_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

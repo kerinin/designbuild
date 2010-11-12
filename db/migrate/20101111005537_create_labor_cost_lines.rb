@@ -4,6 +4,7 @@ class CreateLaborCostLines < ActiveRecord::Migration
       t.float :hours
       
       t.belongs_to :labor_set
+      t.belongs_to :laborer
 
       t.timestamps
     end

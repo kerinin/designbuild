@@ -109,5 +109,11 @@ class TaskTest < ActiveSupport::TestCase
       @obj2 = Factory :task
       assert_equal nil, @obj2.estimated_cost
     end
+    
+    should_eventually "aggregate material costs" do
+    end
+    
+    should_eventually "aggregate labor costs" do
+    end
   end
 end

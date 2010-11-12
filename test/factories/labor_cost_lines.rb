@@ -4,4 +4,5 @@ Factory.define :labor_cost_line do |f|
   f.hours 1.5
   
   f.labor_set {|p| p.association(:labor_cost)}
+  f.laborer {|p| p.association(:laborer)}
 end

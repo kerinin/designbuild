@@ -25,5 +25,11 @@ class LaborCostLineTest < ActiveSupport::TestCase
         Factory :labor_cost_line, :labor_set => nil
       end
     end
+    
+    should "require a laborer" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :labor_cost_line, :laborer => nil
+      end
+    end
   end
 end
