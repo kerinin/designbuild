@@ -3,9 +3,13 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :quantity, :polymorphic => true
   belongs_to :task
 
-  validates_presence_of :quantity
+  validates_presence_of :quantity, :unit_cost
   
   before_save :set_component
+  
+  def cost
+    self.quantity.value * self.unit_cost
+  end
   
   private
   

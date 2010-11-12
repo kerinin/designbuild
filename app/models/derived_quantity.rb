@@ -4,7 +4,7 @@ class DerivedQuantity < ActiveRecord::Base
   
   has_many :unit_cost_estimates, :as => :quantity
   
-  validates_presence_of :parent_quantity
+  validates_presence_of :parent_quantity, :multiplier
   
   before_save :set_component
   
