@@ -12,10 +12,10 @@
     %tr
       %td= contract.contractor
       %td= contract.bid
-      %td= link_to 'Show', contract
-      %td= link_to 'Edit', edit_contract_path(contract)
-      %td= link_to 'Destroy', contract, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', project_contract_path(@project, contract)
+      %td= link_to 'Edit', edit_project_contract_path(@project, contract)
+      %td= link_to 'Destroy', project_contract_path(@project, contract), :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Contract', new_contract_path
+= link_to 'New Contract', new_project_contract_path(@project)

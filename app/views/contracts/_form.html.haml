@@ -1,4 +1,4 @@
-= form_for @contract do |f|
+= form_for [@project, @contract] do |f|
   -if @contract.errors.any?
     #error_explanation
       %h2= "#{pluralize(@contract.errors.count, "error")} prohibited this contract from being saved:"

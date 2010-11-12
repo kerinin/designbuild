@@ -1,4 +1,6 @@
 class ContractsController < ApplicationController
+  before_filter :get_project
+  
   # GET /contracts
   # GET /contracts.xml
   def index
@@ -44,7 +46,7 @@ class ContractsController < ApplicationController
 
     respond_to do |format|
       if @contract.save
-        format.html { redirect_to(@contract, :notice => 'Contract was successfully created.') }
+        format.html { redirect_to(project_contract_path(@project, @contract), :notice => 'Contract was successfully created.') }
         format.xml  { render :xml => @contract, :status => :created, :location => @contract }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class ContractsController < ApplicationController
 
     respond_to do |format|
       if @contract.update_attributes(params[:contract])
-        format.html { redirect_to(@contract, :notice => 'Contract was successfully updated.') }
+        format.html { redirect_to(project_contract_path(@project, @contract), :notice => 'Contract was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class ContractsController < ApplicationController
     @contract.destroy
 
     respond_to do |format|
-      format.html { redirect_to(contracts_url) }
+      format.html { redirect_to(project_contracts_url(@project)) }
       format.xml  { head :ok }
     end
   end
