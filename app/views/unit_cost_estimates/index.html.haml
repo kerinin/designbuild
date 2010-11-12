@@ -14,10 +14,10 @@
       %td= unit_cost_estimate.name
       %td= unit_cost_estimate.unit_cost
       %td= unit_cost_estimate.tax
-      %td= link_to 'Show', unit_cost_estimate
-      %td= link_to 'Edit', edit_unit_cost_estimate_path(unit_cost_estimate)
-      %td= link_to 'Destroy', unit_cost_estimate, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', [@project, @component, unit_cost_estimate]
+      %td= link_to 'Edit', edit_project_component_unit_cost_estimate_path(@project, @component, unit_cost_estimate)
+      %td= link_to 'Destroy', [@project, @component, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Unit cost estimate', new_unit_cost_estimate_path
+= link_to 'New Unit cost estimate', new_project_component_unit_cost_estimate_path(@project, @component)
