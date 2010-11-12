@@ -7,6 +7,6 @@
   %b Cost:
   = @fixed_cost_estimate.cost
 
-= link_to 'Edit', edit_fixed_cost_estimate_path(@fixed_cost_estimate)
+= link_to 'Edit', edit_project_component_fixed_cost_estimate_path(@project, @component, @fixed_cost_estimate)
 \|
-= link_to 'Back', fixed_cost_estimates_path
+= link_to 'Back', project_component_fixed_cost_estimates_path(@project, @component)
