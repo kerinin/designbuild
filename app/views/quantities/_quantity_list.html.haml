@@ -1,0 +1,19 @@
+%table
+  %tr
+    %th Name
+    %th Value
+    %th Unit
+    %th Drop
+    %th
+    %th
+    %th
+
+  - quantities.each do |quantity|
+    %tr
+      %td= quantity.name
+      %td= quantity.value
+      %td= quantity.unit
+      %td= quantity.drop
+      %td= link_to 'Show', [component, quantity]
+      %td= link_to 'Edit', edit_component_quantity_path(component, quantity)
+      %td= link_to 'Destroy', [component, quantity], :confirm => 'Are you sure?', :method => :delete

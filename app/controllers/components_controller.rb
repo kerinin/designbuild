@@ -4,7 +4,7 @@ class ComponentsController < ApplicationController
   # GET /components
   # GET /components.xml
   def index
-    @components = Component.all
+    @components = @project.components.roots
 
     respond_to do |format|
       format.html # index.html.erb

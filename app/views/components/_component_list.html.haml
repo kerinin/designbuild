@@ -1,0 +1,13 @@
+%table
+  %tr
+    %th Name
+    %th
+    %th
+    %th
+
+  - components.each do |component|
+    %tr
+      %td= component.name
+      %td= link_to 'Show', [@project, component]
+      %td= link_to 'Edit', edit_project_component_path(@project, component)
+      %td= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
