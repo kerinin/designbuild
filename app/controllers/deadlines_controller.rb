@@ -43,6 +43,7 @@ class DeadlinesController < ApplicationController
   # POST /deadlines.xml
   def create
     @deadline = Deadline.new(params[:deadline])
+    @deadline.project = @project
 
     respond_to do |format|
       if @deadline.save

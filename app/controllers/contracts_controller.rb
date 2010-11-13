@@ -43,6 +43,7 @@ class ContractsController < ApplicationController
   # POST /contracts.xml
   def create
     @contract = Contract.new(params[:contract])
+    @contract.project = @project
 
     respond_to do |format|
       if @contract.save

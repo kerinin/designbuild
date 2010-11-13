@@ -1,5 +1,5 @@
 class MaterialCostLinesController < ApplicationController
-  before_filter :get_project, :get_task
+  before_filter :get_project, :get_task, :get_material_set
   
   # GET /material_cost_lines
   # GET /material_cost_lines.xml
@@ -43,6 +43,7 @@ class MaterialCostLinesController < ApplicationController
   # POST /material_cost_lines.xml
   def create
     @material_cost_line = MaterialCostLine.new(params[:material_cost_line])
+    @material_cost_line.task = @task
 
     respond_to do |format|
       if @material_cost_line.save

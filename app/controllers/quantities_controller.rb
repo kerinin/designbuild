@@ -43,6 +43,7 @@ class QuantitiesController < ApplicationController
   # POST /quantities.xml
   def create
     @quantity = Quantity.new(params[:quantity])
+    @quantity.component = @component
 
     respond_to do |format|
       if @quantity.save

@@ -43,6 +43,7 @@ class FixedCostEstimatesController < ApplicationController
   # POST /fixed_cost_estimates.xml
   def create
     @fixed_cost_estimate = FixedCostEstimate.new(params[:fixed_cost_estimate])
+    @fixed_cost_estimate.component = @component
 
     respond_to do |format|
       if @fixed_cost_estimate.save

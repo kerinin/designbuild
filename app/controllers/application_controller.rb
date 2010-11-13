@@ -22,4 +22,12 @@ class ApplicationController < ActionController::Base
   def get_deadline
     @deadline = Deadline.find(params[:deadline_id])
   end
+  
+  def get_labor_set
+    @labor_cost = LaborCost.find(params[:labor_cost_id])
+  end
+  
+  def get_material_set
+    @material_cost = MaterialCost.find(params[:material_cost_id])
+  end
 end

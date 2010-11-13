@@ -43,6 +43,7 @@ class DerivedQuantitiesController < ApplicationController
   # POST /derived_quantities.xml
   def create
     @derived_quantity = DerivedQuantity.new(params[:derived_quantity])
+    @derived_quantity.component = @component
 
     respond_to do |format|
       if @derived_quantity.save

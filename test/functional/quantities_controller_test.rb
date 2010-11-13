@@ -21,7 +21,7 @@ class QuantitiesControllerTest < ActionController::TestCase
   test "should create quantity" do
     assert_difference('Quantity.count') do
       post :create, :project_id => @project.to_param, :component_id => @component.to_param, :quantity => {
-        :name => 'blah', :value => 10, :unit => 'ft', :drop => .1
+        :name => 'blah', :value => 10, :unit => 'ft', :drop => 0.1
       }
     end
 

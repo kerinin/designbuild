@@ -11,15 +11,17 @@ Designbuild::Application.routes.draw do
     end
             
     resources :tasks do
-      resources :labor_costs      
-      resources :labor_cost_lines
-      resources :material_costs
-      resources :material_cost_lines
+      resources :labor_costs, :as => :labor do    
+        resources :labor_cost_lines, :as => :lines
+      end
+      resources :material_costs, :as => :material do
+        resources :material_cost_lines, :as => :lines
+      end
     end
             
     resources :contracts do
       resources :bids
-      resources :contract_costs
+      resources :contract_costs, :as => :costs
     end
 
     resources :deadlines do

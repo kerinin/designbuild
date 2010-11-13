@@ -43,6 +43,7 @@ class LaborCostsController < ApplicationController
   # POST /labor_costs.xml
   def create
     @labor_cost = LaborCost.new(params[:labor_cost])
+    @labor_cost.task = @task
 
     respond_to do |format|
       if @labor_cost.save

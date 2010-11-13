@@ -43,6 +43,7 @@ class RelativeDeadlinesController < ApplicationController
   # POST /relative_deadlines.xml
   def create
     @relative_deadline = RelativeDeadline.new(params[:relative_deadline])
+    @relative_deadline.parent_deadline = @deadline
 
     respond_to do |format|
       if @relative_deadline.save

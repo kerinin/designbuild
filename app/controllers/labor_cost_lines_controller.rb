@@ -1,5 +1,5 @@
 class LaborCostLinesController < ApplicationController
-  before_filter :get_project, :get_task
+  before_filter :get_project, :get_task, :get_labor_set
   
   # GET /labor_cost_lines
   # GET /labor_cost_lines.xml
@@ -43,6 +43,7 @@ class LaborCostLinesController < ApplicationController
   # POST /labor_cost_lines.xml
   def create
     @labor_cost_line = LaborCostLine.new(params[:labor_cost_line])
+    @labor_cost_line.task = @task
 
     respond_to do |format|
       if @labor_cost_line.save

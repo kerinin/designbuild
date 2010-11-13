@@ -43,6 +43,7 @@ class MaterialCostsController < ApplicationController
   # POST /material_costs.xml
   def create
     @material_cost = MaterialCost.new(params[:material_cost])
+    @material_cost.task = @task
 
     respond_to do |format|
       if @material_cost.save
