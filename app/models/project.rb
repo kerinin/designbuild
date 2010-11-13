@@ -6,6 +6,7 @@ class Project < ActiveRecord::Base
   has_many :tasks
   has_many :contracts
   has_many :deadlines
+  has_many :laborers
   
   def estimated_fixed_cost
     self.components.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}

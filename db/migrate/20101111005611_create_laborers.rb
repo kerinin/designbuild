@@ -3,6 +3,8 @@ class CreateLaborers < ActiveRecord::Migration
     create_table :laborers do |t|
       t.string :name
       t.float :bill_rate
+      
+      t.belongs_to :project
 
       t.timestamps
     end

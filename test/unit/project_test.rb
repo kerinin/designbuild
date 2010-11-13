@@ -4,7 +4,8 @@ class ProjectTest < ActiveSupport::TestCase
   context "A Project" do
     setup do
       @obj = Factory :project
-      @lab = Factory :laborer, :bill_rate => 1
+      @lab = Factory :laborer, :bill_rate => 1, :project => @obj
+      @lab2 = Factory :laborer, :project => @obj
       
       @u1 = Factory :user, :projects => [@obj]
       #@u2 = Factory :user, :projects => [@obj]
@@ -61,6 +62,11 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     #--------------------ASSOCIATIONS
+    
+    should "allow multiple laborers" do
+      assert_contains @obj.laborers, @lab
+      assert_contains @obj.laborers, @lab2
+    end
     
     should "allow multiple users" do
       assert_contains @obj.users, @u1

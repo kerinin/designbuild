@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(:version => 20101112011354) do
   create_table "laborers", :force => true do |t|
     t.string   "name"
     t.float    "bill_rate"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

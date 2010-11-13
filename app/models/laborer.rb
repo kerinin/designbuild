@@ -1,3 +1,5 @@
 class Laborer < ActiveRecord::Base
-  validates_presence_of :bill_rate
+  belongs_to :project
+  
+  validates_presence_of :project, :bill_rate
 end

@@ -18,5 +18,11 @@ class LaborerTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
       assert_not_nil @obj.bill_rate
     end
+    
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :laborer, :project => nil
+      end
+    end
   end
 end
