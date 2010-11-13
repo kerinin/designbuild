@@ -48,8 +48,21 @@ namespace :db do
         Factory :unit_cost_estimate, :quantity => dq2
       }
       
-      (rand(10)+1).times {
+      # Tasks
+      (rand(5)+1).times {
         Factory :task, :project => project
+      }
+      
+      # Assign costs to tasks
+      rand(UnitCostEstimate.count).times {
+        cost = UnitCostEstimate.unassigned.first
+        cost.task = Task.find rand(Task.count)+1
+        cost.save!
+      }
+      rand(FixedCostEstimate.count).times {
+        cost = FixedCostEstimate.unassigned.first
+        cost.task = Task.find rand(Task.count)+1
+        cost.save!
       }
       
       (rand(10)+1).times {
