@@ -19,7 +19,9 @@ class ContractsControllerTest < ActionController::TestCase
 
   test "should create contract" do
     assert_difference('Contract.count') do
-      post :create, :project_id => @project.to_param, :contract => @contract.attributes
+      post :create, :project_id => @project.to_param, :contract => {
+        :contractor => 'bob', :bid => 100
+      }
     end
 
     assert_redirected_to project_contract_path(@project, assigns(:contract))

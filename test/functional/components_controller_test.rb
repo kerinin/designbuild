@@ -19,7 +19,9 @@ class ComponentsControllerTest < ActionController::TestCase
 
   test "should create component" do
     assert_difference('Component.count') do
-      post :create, :project_id => @project.to_param, :component => @component.attributes
+      post :create, :project_id => @project.to_param, :component => {
+        :name => 'blah'
+      }
     end
 
     assert_redirected_to project_component_path(@project, assigns(:component))

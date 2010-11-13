@@ -20,7 +20,9 @@ class RelativeDeadlinesControllerTest < ActionController::TestCase
 
   test "should create relative_deadline" do
     assert_difference('RelativeDeadline.count') do
-      post :create, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :relative_deadline => @relative_deadline.attributes
+      post :create, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :relative_deadline => {
+        :name => 'blah', :interval => 30
+      }
     end
 
     assert_redirected_to project_deadline_relative_deadline_path(@project, @deadline, assigns(:relative_deadline))

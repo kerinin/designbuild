@@ -20,7 +20,9 @@ class LaborCostsControllerTest < ActionController::TestCase
 
   test "should create labor_cost" do
     assert_difference('LaborCost.count') do
-      post :create, :project_id => @project.to_param, :task_id => @task.to_param, :labor_cost => @labor_cost.attributes
+      post :create, :project_id => @project.to_param, :task_id => @task.to_param, :labor_cost => {
+        :date => '1/1/2000'
+      }
     end
 
     assert_redirected_to project_task_labor_cost_path(@project, @task, assigns(:labor_cost))

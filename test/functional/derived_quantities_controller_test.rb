@@ -21,7 +21,9 @@ class DerivedQuantitiesControllerTest < ActionController::TestCase
 
   test "should create derived_quantity" do
     assert_difference('DerivedQuantity.count') do
-      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :derived_quantity => @derived_quantity.attributes
+      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :derived_quantity => {
+        :name => 'blah', :multplier => 1
+      }
     end
 
     assert_redirected_to project_component_derived_quantity_path(@project, @component, assigns(:derived_quantity))

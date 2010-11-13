@@ -20,7 +20,9 @@ class BidsControllerTest < ActionController::TestCase
 
   test "should create bid" do
     assert_difference('Bid.count') do
-      post :create, :project_id => @project.to_param, :contract_id => @contract.to_param, :bid => @bid.attributes
+      post :create, :project_id => @project.to_param, :contract_id => @contract.to_param, :bid => {
+        :date => '1/1/1999', :cost => 100
+      }
     end
 
     assert_redirected_to project_contract_bid_path(@project, @contract, assigns(:bid))

@@ -21,7 +21,9 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
 
   test "should create unit_cost_estimate" do
     assert_difference('UnitCostEstimate.count') do
-      post :create, :project_id => @project.to_param, :component_id => @component, :unit_cost_estimate => @unit_cost_estimate.attributes
+      post :create, :project_id => @project.to_param, :component_id => @component, :unit_cost_estimate => {
+        :name => 'blah', :unit_cost => 20, :tax => .0825
+      }
     end
 
     assert_redirected_to project_component_unit_cost_estimate_path(@project, @component, assigns(:unit_cost_estimate))

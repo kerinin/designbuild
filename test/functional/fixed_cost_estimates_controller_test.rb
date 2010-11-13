@@ -20,7 +20,9 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
 
   test "should create fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count') do
-      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :fixed_cost_estimate => @fixed_cost_estimate.attributes
+      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :fixed_cost_estimate => {
+        :name => 'blah', :cost => 20
+      }
     end
 
     assert_redirected_to project_component_fixed_cost_estimate_path(@project, @component, assigns(:fixed_cost_estimate))

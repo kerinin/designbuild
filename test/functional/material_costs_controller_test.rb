@@ -20,7 +20,9 @@ class MaterialCostsControllerTest < ActionController::TestCase
 
   test "should create material_cost" do
     assert_difference('MaterialCost.count') do
-      post :create, :project_id => @project.to_param, :task_id => @project.to_param, :material_cost => @material_cost.attributes
+      post :create, :project_id => @project.to_param, :task_id => @project.to_param, :material_cost => {
+        :date => '1/1/2000', :cost => 100
+      }
     end
 
     assert_redirected_to project_task_material_cost_path(@project, @task, assigns(:material_cost))

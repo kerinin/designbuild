@@ -19,7 +19,9 @@ class DeadlinesControllerTest < ActionController::TestCase
 
   test "should create deadline" do
     assert_difference('Deadline.count') do
-      post :create, :project_id => @project.to_param, :deadline => @deadline.attributes
+      post :create, :project_id => @project.to_param, :deadline => {
+        :name => 'blah', :date => '1/1/2000'
+      }
     end
 
     assert_redirected_to project_deadline_path(@project, assigns(:deadline))

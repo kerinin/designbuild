@@ -43,6 +43,7 @@ class BidsController < ApplicationController
   # POST /bids.xml
   def create
     @bid = Bid.new(params[:bid])
+    @bid.contract = @contract
 
     respond_to do |format|
       if @bid.save

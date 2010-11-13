@@ -19,7 +19,9 @@ class LaborersControllerTest < ActionController::TestCase
 
   test "should create laborer" do
     assert_difference('Laborer.count') do
-      post :create, :project_id => @project.to_param, :laborer => @laborer.attributes
+      post :create, :project_id => @project.to_param, :laborer => {
+        :name => 'bob', :bill_rate => 18
+      }
     end
 
     assert_redirected_to project_laborer_path(@project, assigns(:laborer))
