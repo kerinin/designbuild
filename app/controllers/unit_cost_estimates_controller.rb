@@ -43,7 +43,7 @@ class UnitCostEstimatesController < ApplicationController
   # POST /unit_cost_estimates.xml
   def create
     @unit_cost_estimate = UnitCostEstimate.new(params[:unit_cost_estimate])
-    @unit_cost_estimate.quantity = @quantity
+    @unit_cost_estimate.component = @component
 
     respond_to do |format|
       if @unit_cost_estimate.save

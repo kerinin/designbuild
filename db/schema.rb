@@ -139,7 +139,6 @@ ActiveRecord::Schema.define(:version => 20101112011354) do
     t.string   "name"
     t.integer  "interval"
     t.integer  "parent_deadline_id"
-    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -14,7 +14,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   end
 
   test "should get new" do
-    get :new, task_id => @task.to_param
+    get :new, :task_id => @task.to_param
     assert_response :success
   end
 

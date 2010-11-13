@@ -40,8 +40,8 @@ class ProjectTest < ActiveSupport::TestCase
         
       @dl1 = Factory :deadline, :project => @obj
       @dl2 = Factory :deadline, :project => @obj
-      @rdl1 = Factory :relative_deadline, :project => @obj
-      @rdl2 = Factory :relative_deadline, :project => @obj
+      @rdl1 = Factory :relative_deadline, :parent_deadline => @dl1
+      @rdl2 = Factory :relative_deadline, :parent_deadline => @dl2
     end
 
     teardown do
@@ -95,7 +95,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert_contains @obj.deadlines, @rdl2
     end
     
-    should "distribute to sub-componente" do
+    should "distribute to sub-components" do
       @sub = Factory :component, :parent => @c1, :project => nil
       assert_equal @obj, @sub.project
     end
