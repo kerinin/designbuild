@@ -100,6 +100,18 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal @obj, @sub.project
     end
     
+    should "inherit fixed cost estimates" do
+      assert_contains @obj.fixed_cost_estimates, @fc1
+      assert_contains @obj.fixed_cost_estimates, @fc2
+    end
+    
+    should "inherit unit cost estimates" do
+      assert_contains @obj.unit_cost_estimates, @uc1
+      assert_contains @obj.unit_cost_estimates, @uc2
+      assert_contains @obj.unit_cost_estimates, @uc3
+      assert_contains @obj.unit_cost_estimates, @uc4
+    end
+    
     #---------------------CALCULATIONS
     
     should "aggregate estimated fixed costs" do
