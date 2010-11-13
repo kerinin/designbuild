@@ -2,33 +2,41 @@ Designbuild::Application.routes.draw do
 
   resources :projects do
     resources :laborers
-    
-    resources :components do
-      resources :quantities
-      resources :derived_quantities
-      resources :fixed_cost_estimates
-      resources :unit_cost_estimates
-    end
-            
-    resources :tasks do
-      resources :labor_costs, :as => :labor do    
-        resources :labor_cost_lines, :as => :lines
-      end
-      resources :material_costs, :as => :material do
-        resources :material_cost_lines, :as => :lines
-      end
-    end
-            
-    resources :contracts do
-      resources :bids
-      resources :contract_costs, :as => :costs
-    end
-
-    resources :deadlines do
-      resources :relative_deadlines
-    end
+    resources :components      
+    resources :tasks      
+    resources :contracts
+    resources :deadlines
   end
 
+  resources :components do
+    resources :quantities
+    resources :derived_quantities
+    resources :fixed_cost_estimates
+    resources :unit_cost_estimates
+  end
+    
+  resources :tasks do
+    resources :labor_costs, :as => :labor
+    resources :material_costs, :as => :material
+  end
+    
+  resources :labor_costs, :as => :labor do    
+    resources :labor_cost_lines, :as => :lines
+  end
+  
+  resources :material_costs, :as => :material do
+    resources :material_cost_lines, :as => :lines
+  end
+  
+  resources :contracts do
+    resources :bids
+    resources :contract_costs, :as => :costs
+  end
+
+  resources :deadlines do
+    resources :relative_deadlines
+  end
+    
   resources :tags
 
   devise_for :users
