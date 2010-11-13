@@ -17,6 +17,7 @@ class ApplicationController < ActionController::Base
   
   def get_contract
     @contract = Contract.find(params[:contract_id])
+    @project = @contract.project
   end
   
   def get_deadline

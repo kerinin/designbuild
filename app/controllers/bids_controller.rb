@@ -1,5 +1,5 @@
 class BidsController < ApplicationController
-  before_filter :get_project, :get_contract
+  before_filter :get_contract
   
   # GET /bids
   # GET /bids.xml
@@ -47,7 +47,7 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.save
-        format.html { redirect_to( [@project, @contract, @bid], :notice => 'Bid was successfully created.') }
+        format.html { redirect_to( [@contract, @bid], :notice => 'Bid was successfully created.') }
         format.xml  { render :xml => @bid, :status => :created, :location => @bid }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.update_attributes(params[:bid])
-        format.html { redirect_to([@project, @contract, @bid], :notice => 'Bid was successfully updated.') }
+        format.html { redirect_to([@contract, @bid], :notice => 'Bid was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +79,7 @@ class BidsController < ApplicationController
     @bid.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_contract_bids_url(@project, @contract)) }
+      format.html { redirect_to(contract_bids_url(@contract)) }
       format.xml  { head :ok }
     end
   end
