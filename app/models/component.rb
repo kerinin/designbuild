@@ -1,10 +1,10 @@
 class Component < ActiveRecord::Base
   include AddOrNil
   
-  belongs_to :parent, :class_name => "Component"
+  has_ancestry
+  
   belongs_to :project
   
-  has_many :subcomponents, :class_name => "Component", :foreign_key => :parent_id
   has_many :quantities
   has_many :derived_quantities
   has_many :fixed_cost_estimates
@@ -29,7 +29,7 @@ class Component < ActiveRecord::Base
   end
   
   def estimated_fixed_cost
-    add_or_nil( self.estimated_component_fixed_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)} )
+    add_or_nil( self.estimated_component_fixed_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)} )
   end
   
   def estimated_component_unit_cost
@@ -37,7 +37,7 @@ class Component < ActiveRecord::Base
   end
   
   def estimated_unit_cost
-    add_or_nil( self.estimated_component_unit_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)} )
+    add_or_nil( self.estimated_component_unit_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)} )
   end
   
   def estimated_component_cost
@@ -45,7 +45,7 @@ class Component < ActiveRecord::Base
   end
   
   def estimated_cost
-    add_or_nil( self.estimated_component_cost, self.subcomponents.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)} )
+    add_or_nil( self.estimated_component_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)} )
   end
   
   private

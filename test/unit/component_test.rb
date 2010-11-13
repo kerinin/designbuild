@@ -11,6 +11,7 @@ class ComponentTest < ActiveSupport::TestCase
       
       @sub1 = Factory :component, :parent => @obj
       @sub2 = Factory :component, :parent => @obj
+      @subsub = Factory :component, :parent => @sub1
       @q1 = Factory :quantity, :component => @obj, :value => 1
       @q2 = Factory :quantity, :component => @obj, :value => 2
       @dq1 = Factory :derived_quantity, :parent_quantity => @q1, :multiplier => 1
@@ -56,8 +57,8 @@ class ComponentTest < ActiveSupport::TestCase
     #-----------------ASSOCIATIONS
     
     should "have multiple subcomponents" do
-      assert_contains @obj.subcomponents, @sub1
-      assert_contains @obj.subcomponents, @sub2
+      assert_contains @obj.children.all, @sub1
+      assert_contains @obj.children.all, @sub2
     end
     
     should_eventually "have multiple alternates" do
@@ -100,6 +101,19 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @uc1
       assert_contains @obj.cost_estimates, @uc2
       assert_contains @obj.cost_estimates, @uc3
+    end
+    
+    should "return ancestors" do
+      assert_contains @subsub.ancestors.all, @sub1
+      assert_contains @subsub.ancestors.all, @obj
+      assert_contains @subsub.ancestors.all, @parent
+    end
+    
+    should "return descendants" do
+      assert_contains @parent.descendants.all, @obj
+      assert_contains @parent.descendants.all, @sub1
+      assert_contains @parent.descendants.all, @sub2
+      assert_contains @parent.descendants.all, @subsub
     end
 
     #--------------------------CALCULATIONS

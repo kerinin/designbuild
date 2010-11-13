@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101112011354) do
+ActiveRecord::Schema.define(:version => 20101113192800) do
 
   create_table "bids", :force => true do |t|
     t.date     "date"
@@ -22,11 +22,13 @@ ActiveRecord::Schema.define(:version => 20101112011354) do
 
   create_table "components", :force => true do |t|
     t.string   "name"
-    t.integer  "parent_id"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "ancestry"
   end
+
+  add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
 
   create_table "components_tags", :id => false, :force => true do |t|
     t.integer "tag_id"

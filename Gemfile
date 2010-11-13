@@ -32,6 +32,7 @@ gem 'paperclip', ">= 2.3.5"
 gem "friendly_id", "~> 3.1"
 # gem "memcached"
 gem "acts_as_list"
+gem "ancestry"
 
 group :test do
   gem "shoulda"

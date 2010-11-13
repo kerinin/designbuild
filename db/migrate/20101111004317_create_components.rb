@@ -3,7 +3,6 @@ class CreateComponents < ActiveRecord::Migration
     create_table :components do |t|
       t.string :name
       
-      t.belongs_to :parent
       t.belongs_to :project
 
       t.timestamps
