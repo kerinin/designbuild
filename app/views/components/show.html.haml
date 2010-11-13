@@ -1,6 +1,6 @@
 %p#notice= notice
 
-=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project]}
+=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] + @component.ancestors}
 
 %p
   %b Name:
