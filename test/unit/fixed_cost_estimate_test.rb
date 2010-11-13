@@ -8,7 +8,7 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
       @c2 = Factory :component, :project => @proj
       @t1 = Factory :task, :project => @proj
 
-      @obj = Factory :fixed_cost_estimate, :task => @t1
+      @obj = Factory :fixed_cost_estimate, :task => @t1, :component => @c1
     end
 
     teardown do
@@ -37,23 +37,23 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
     end
     
     should "not show up in component unassigned costs if has task" do
-      assert_does_not_contain @c1.fixed_cost_estimates.unassigned, @obj
-      assert_does_not_contain @c2.fixed_cost_estimates.unassigned, @obj
+      assert_does_not_contain @c1.fixed_cost_estimates.unassigned.all, @obj
+      assert_does_not_contain @c2.fixed_cost_estimates.unassigned.all, @obj
     end
     
     should "not show up in project unassigned costs if has task" do
-      assert_does_not_contain @proj.fixed_cost_estimates.unassigned, @obj
+      assert_does_not_contain @proj.fixed_cost_estimates.unassigned.all, @obj
     end
     
     should "show up in component unassigned costs if no task" do
-      cost = Factory :unit_cost_estimate, :quantity => @q
-      assert_contains @c1.fixed_cost_estimates.unassigned, @obj
-      assert_does_not_contain @c2.fixed_cost_estimates.unassigned, @obj
+      cost = Factory :fixed_cost_estimate, :component => @c1
+      assert_contains @c1.fixed_cost_estimates.unassigned.all, cost
+      assert_does_not_contain @c2.fixed_cost_estimates.unassigned.all, cost
     end
     
     should "show up in project unassigned costs if no task" do
-      cost = Factory :unit_cost_estimate, :quantity => @q
-      assert_contains @c1.fixed_cost_estimates.unassigned, @obj
+      cost = Factory :fixed_cost_estimate, :component => @c1
+      assert_contains @proj.fixed_cost_estimates.unassigned.all, cost
     end
   end
 end

@@ -42,23 +42,23 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     end
     
     should "not show up in component unassigned costs if has task" do
-      assert_does_not_contain @c1.unit_cost_estimates.unassigned, @obj
-      assert_does_not_contain @c2.unit_cost_estimates.unassigned, @obj
+      assert_does_not_contain @c1.unit_cost_estimates.unassigned.all, @obj
+      assert_does_not_contain @c2.unit_cost_estimates.unassigned.all, @obj
     end
     
     should "not show up in project unassigned costs if has task" do
-      assert_does_not_contain @proj.unit_cost_estimates.unassigned, @obj
+      assert_does_not_contain @proj.unit_cost_estimates.unassigned.all, @obj
     end
     
     should "show up in component unassigned costs if no task" do
       cost = Factory :unit_cost_estimate, :quantity => @q
-      assert_contains @c1.unit_cost_estimates.unassigned, @obj
-      assert_does_not_contain @c2.unit_cost_estimates.unassigned, @obj
+      assert_contains @c1.unit_cost_estimates.unassigned.all, cost
+      assert_does_not_contain @c2.unit_cost_estimates.unassigned.all, cost
     end
     
     should "show up in project unassigned costs if no task" do
       cost = Factory :unit_cost_estimate, :quantity => @q
-      assert_contains @c1.unit_cost_estimates.unassigned, @obj
+      assert_contains @proj.unit_cost_estimates.unassigned.all, cost
     end
     
     #------------------CALCULATIONS
