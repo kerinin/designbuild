@@ -1,20 +1,6 @@
 %h1 Listing fixed_cost_estimates
 
-%table
-  %tr
-    %th Name
-    %th Cost
-    %th
-    %th
-    %th
-
-  - @fixed_cost_estimates.each do |fixed_cost_estimate|
-    %tr
-      %td= fixed_cost_estimate.name
-      %td= fixed_cost_estimate.cost
-      %td= link_to 'Show', [@component, fixed_cost_estimate]
-      %td= link_to 'Edit', edit_component_fixed_cost_estimate_path(@component, fixed_cost_estimate)
-      %td= link_to 'Destroy', [@component, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+=render :partial => 'fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @fixed_cost_estimates}
 
 %br
 

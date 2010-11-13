@@ -3,18 +3,18 @@ namespace :db do
   task :seed => ['fixtures:load'] do
 
     Factory :user, :email => 'test@example.com', :password => 'password'
-    6.times { Factory :user }
+    (rand(10)+1).times { Factory :user }
     
-    4.times { 
+    (rand(10)+1).times { 
       project = Factory :project 
       
-      6.times { Factory :laborer, :project => project }
+      (rand(10)+1).times { Factory :laborer, :project => project }
       
       # Components
-      4.times { 
+      (rand(10)+1).times { 
         c = Factory :component, :project => project 
 
-        4.times {
+        (rand(10)+1).times {
           c2 = Factory :component, :project => project, :parent => c
           c3 = Factory :component, :project => project, :parent => c2
         
@@ -24,8 +24,8 @@ namespace :db do
           dq1 = Factory :derived_quantity, :parent_quantity => q1
           dq2 = Factory :derived_quantity, :parent_quantity => q2
           
-          2.times { Factory :fixed_cost_estimate, :component => c2 }
-          2.times { Factory :fixed_cost_estimate, :component => c3 }
+          rand(5).times { Factory :fixed_cost_estimate, :component => c2 }
+          rand(5).times { Factory :fixed_cost_estimate, :component => c3 }
    
           Factory :unit_cost_estimate, :quantity => q1
           Factory :unit_cost_estimate, :quantity => q2
@@ -39,13 +39,36 @@ namespace :db do
         dq1 = Factory :derived_quantity, :parent_quantity => q1
         dq2 = Factory :derived_quantity, :parent_quantity => q2
         
-        2.times { Factory :fixed_cost_estimate, :component => c }
-        2.times { Factory :fixed_cost_estimate, :component => c }
+        rand(5).times { Factory :fixed_cost_estimate, :component => c }
+        rand(5).times { Factory :fixed_cost_estimate, :component => c }
         
         Factory :unit_cost_estimate, :quantity => q1
         Factory :unit_cost_estimate, :quantity => q2
         Factory :unit_cost_estimate, :quantity => dq1
         Factory :unit_cost_estimate, :quantity => dq2
+      }
+      
+      (rand(10)+1).times {
+        Factory :task, :project => project
+      }
+      
+      (rand(10)+1).times {
+        contract = Factory :contract, :project => project
+        
+        (rand(10)+1).times {
+          Factory :bid, :contract => contract
+        }
+        (rand(10)+1).times {
+          Factory :contract_cost, :contract => contract
+        }
+      }
+      
+      (rand(10)+1).times {
+        deadline = Factory :deadline, :project => project
+        
+        (rand(10)+1).times {
+          Factory :relative_deadline, :parent_deadline => deadline
+        }
       }
     }
     

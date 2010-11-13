@@ -2,7 +2,7 @@
 
 Factory.define :fixed_cost_estimate do |f|
   f.name {Forgery::LoremIpsum.sentence :random => true}
-  f.cost 1.5
+  f.cost {Forgery::Monetary.money :min => 100, :max => 1000}
   
   f.component {|p| p.association(:component)}
 end

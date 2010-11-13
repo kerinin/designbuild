@@ -2,7 +2,7 @@
 
 Factory.define :contract do |f|
   f.contractor {Forgery::LoremIpsum.sentence :random => true}
-  f.bid 1.5
+  f.bid {Forgery::Monetary.money :min => 1000, :max => 100000}
   
   f.project {|p| p.association(:project)}
 end

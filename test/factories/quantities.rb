@@ -2,9 +2,9 @@
 
 Factory.define :quantity do |f|
   f.name {Forgery::LoremIpsum.sentence}
-  f.value 1.5
+  f.value {rand(1000)}
   f.unit "sf"
-  f.drop 1.5
+  f.drop 0.1
   
   f.component {|p| p.association(:component)}
 end
