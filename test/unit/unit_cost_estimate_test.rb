@@ -3,8 +3,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 class UnitCostEstimateTest < ActiveSupport::TestCase
   context "A Unit Cost Estimate" do
     setup do
-      @t1 = Factory :task
-      @q = Factory :quantity, :value => 10
+      @proj = Factory :project
+      @c1 = Factory :component, :project => @proj
+      @c2 = Factory :component, :project => @proj
+      @t1 = Factory :task, :project => @proj
+      @q = Factory :quantity, :value => 10, :component => @c1
       @dq = Factory :derived_quantity, :parent_quantity => @q, :multiplier => 2
       
       @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5
@@ -36,6 +39,26 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
         
     should "allow a task" do
       assert_equal @obj.task, @t1
+    end
+    
+    should "not show up in component unassigned costs if has task" do
+      assert_does_not_contain @c1.unit_cost_estimates.unassigned, @obj
+      assert_does_not_contain @c2.unit_cost_estimates.unassigned, @obj
+    end
+    
+    should "not show up in project unassigned costs if has task" do
+      assert_does_not_contain @proj.unit_cost_estimates.unassigned, @obj
+    end
+    
+    should "show up in component unassigned costs if no task" do
+      cost = Factory :unit_cost_estimate, :quantity => @q
+      assert_contains @c1.unit_cost_estimates.unassigned, @obj
+      assert_does_not_contain @c2.unit_cost_estimates.unassigned, @obj
+    end
+    
+    should "show up in project unassigned costs if no task" do
+      cost = Factory :unit_cost_estimate, :quantity => @q
+      assert_contains @c1.unit_cost_estimates.unassigned, @obj
     end
     
     #------------------CALCULATIONS
