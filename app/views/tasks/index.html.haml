@@ -1,18 +1,6 @@
 %h1 Listing tasks
 
-%table
-  %tr
-    %th Name
-    %th
-    %th
-    %th
-
-  - @tasks.each do |task|
-    %tr
-      %td= task.name
-      %td= link_to 'Show', [@project, task]
-      %td= link_to 'Edit', edit_project_task_path(@project, task)
-      %td= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
+=render :partial => 'task_list', :locals => {:tasks => @tasks}
 
 %br
 

@@ -1,0 +1,17 @@
+%table
+  %tr
+    %th Name
+    %th Est. Cost
+    %th Cost-to-Date
+    %th
+    %th
+    %th
+
+  - tasks.each do |task|
+    %tr
+      %td= task.name
+      %td= task.estimated_cost
+      %td= task.cost
+      %td= link_to 'Show', [@project, task]
+      %td= link_to 'Edit', edit_project_task_path(@project, task)
+      %td= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
