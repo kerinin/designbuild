@@ -8,46 +8,46 @@ class QuantitiesControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index, :project_id => @project.to_param, :component_id => @component.to_param
+    get :index, :component_id => @component.to_param
     assert_response :success
     assert_not_nil assigns(:quantities)
   end
 
   test "should get new" do
-    get :new, :project_id => @project.to_param, :component_id => @component.to_param
+    get :new, :component_id => @component.to_param
     assert_response :success
   end
 
   test "should create quantity" do
     assert_difference('Quantity.count') do
-      post :create, :project_id => @project.to_param, :component_id => @component.to_param, :quantity => {
+      post :create, :component_id => @component.to_param, :quantity => {
         :name => 'blah', :value => 10, :unit => 'ft', :drop => 0.1
       }
     end
 
-    assert_redirected_to project_component_quantity_path(@project, @component, assigns(:quantity))
+    assert_redirected_to component_quantity_path(@component, assigns(:quantity))
   end
 
   test "should show quantity" do
-    get :show, :project_id => @project.to_param, :component_id => @component.to_param, :id => @quantity.to_param
+    get :show, :component_id => @component.to_param, :id => @quantity.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :project_id => @project.to_param, :component_id => @component.to_param, :id => @quantity.to_param
+    get :edit, :component_id => @component.to_param, :id => @quantity.to_param
     assert_response :success
   end
 
   test "should update quantity" do
-    put :update, :project_id => @project.to_param, :component_id => @component.to_param, :id => @quantity.to_param, :quantity => @quantity.attributes
-    assert_redirected_to project_component_quantity_path(@project, @component, assigns(:quantity))
+    put :update, :component_id => @component.to_param, :id => @quantity.to_param, :quantity => @quantity.attributes
+    assert_redirected_to component_quantity_path(@component, assigns(:quantity))
   end
 
   test "should destroy quantity" do
     assert_difference('Quantity.count', -1) do
-      delete :destroy, :project_id => @project.to_param, :component_id => @component.to_param, :id => @quantity.to_param
+      delete :destroy, :component_id => @component.to_param, :id => @quantity.to_param
     end
 
-    assert_redirected_to project_component_quantities_path(@project, @component)
+    assert_redirected_to component_quantities_path(@component)
   end
 end

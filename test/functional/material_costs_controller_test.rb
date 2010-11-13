@@ -8,46 +8,46 @@ class MaterialCostsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index, :project_id => @project.to_param, :task_id => @project.to_param
+    get :index, :task_id => @project.to_param
     assert_response :success
     assert_not_nil assigns(:material_costs)
   end
 
   test "should get new" do
-    get :new, :project_id => @project.to_param, :task_id => @project.to_param
+    get :new, :task_id => @project.to_param
     assert_response :success
   end
 
   test "should create material_cost" do
     assert_difference('MaterialCost.count') do
-      post :create, :project_id => @project.to_param, :task_id => @project.to_param, :material_cost => {
+      post :create, :task_id => @project.to_param, :material_cost => {
         :date => '1/1/2000', :cost => 100
       }
     end
 
-    assert_redirected_to project_task_material_cost_path(@project, @task, assigns(:material_cost))
+    assert_redirected_to task_material_cost_path(@task, assigns(:material_cost))
   end
 
   test "should show material_cost" do
-    get :show, :project_id => @project.to_param, :task_id => @project.to_param, :id => @material_cost.to_param
+    get :show, :task_id => @project.to_param, :id => @material_cost.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :project_id => @project.to_param, :task_id => @project.to_param, :id => @material_cost.to_param
+    get :edit, :task_id => @project.to_param, :id => @material_cost.to_param
     assert_response :success
   end
 
   test "should update material_cost" do
-    put :update, :project_id => @project.to_param, :task_id => @project.to_param, :id => @material_cost.to_param, :material_cost => @material_cost.attributes
-    assert_redirected_to project_task_material_cost_path(@project, @task, assigns(:material_cost))
+    put :update, :task_id => @project.to_param, :id => @material_cost.to_param, :material_cost => @material_cost.attributes
+    assert_redirected_to task_material_cost_path(@task, assigns(:material_cost))
   end
 
   test "should destroy material_cost" do
     assert_difference('MaterialCost.count', -1) do
-      delete :destroy, :project_id => @project.to_param, :task_id => @project.to_param, :id => @material_cost.to_param
+      delete :destroy, :task_id => @project.to_param, :id => @material_cost.to_param
     end
 
-    assert_redirected_to project_task_material_costs_path(@project, @task)
+    assert_redirected_to task_material_costs_path(@task)
   end
 end

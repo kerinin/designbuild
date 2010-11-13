@@ -1,4 +1,4 @@
-= form_for [@project, @task, @material_cost_line] do |f|
+= form_for material_cost_line_path(@material_cost, @material_cost_line) do |f|
   -if @material_cost_line.errors.any?
     #error_explanation
       %h2= "#{pluralize(@material_cost_line.errors.count, "error")} prohibited this material_cost_line from being saved:"

@@ -1,5 +1,5 @@
 class LaborCostLinesController < ApplicationController
-  before_filter :get_project, :get_task, :get_labor_set
+  before_filter :get_labor_set
   
   # GET /labor_cost_lines
   # GET /labor_cost_lines.xml
@@ -43,11 +43,11 @@ class LaborCostLinesController < ApplicationController
   # POST /labor_cost_lines.xml
   def create
     @labor_cost_line = LaborCostLine.new(params[:labor_cost_line])
-    @labor_cost_line.task = @task
+    @labor_cost_line.labor_set = @labor_cost
 
     respond_to do |format|
       if @labor_cost_line.save
-        format.html { redirect_to([@project, @task, @labor_cost_line], :notice => 'Labor cost line was successfully created.') }
+        format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully created.') }
         format.xml  { render :xml => @labor_cost_line, :status => :created, :location => @labor_cost_line }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.update_attributes(params[:labor_cost_line])
-        format.html { redirect_to([@project, @task, @labor_cost_line], :notice => 'Labor cost line was successfully updated.') }
+        format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +79,7 @@ class LaborCostLinesController < ApplicationController
     @labor_cost_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_task_labor_cost_lines_url(@project, @task)) }
+      format.html { redirect_to(labor_cost_lines_url(@labor_cost)) }
       format.xml  { head :ok }
     end
   end

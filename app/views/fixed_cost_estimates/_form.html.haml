@@ -1,4 +1,4 @@
-= form_for [@project, @component, @fixed_cost_estimate] do |f|
+= form_for [@component, @fixed_cost_estimate] do |f|
   -if @fixed_cost_estimate.errors.any?
     #error_explanation
       %h2= "#{pluralize(@fixed_cost_estimate.errors.count, "error")} prohibited this fixed_cost_estimate from being saved:"

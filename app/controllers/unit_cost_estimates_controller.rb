@@ -1,5 +1,5 @@
 class UnitCostEstimatesController < ApplicationController
-  before_filter :get_project, :get_component
+  before_filter :get_component
   
   # GET /unit_cost_estimates
   # GET /unit_cost_estimates.xml
@@ -43,11 +43,11 @@ class UnitCostEstimatesController < ApplicationController
   # POST /unit_cost_estimates.xml
   def create
     @unit_cost_estimate = UnitCostEstimate.new(params[:unit_cost_estimate])
-    @unit_cost_estimate.component = @component
+    @unit_cost_estimate.quantity = @quantity
 
     respond_to do |format|
       if @unit_cost_estimate.save
-        format.html { redirect_to([@project, @component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully created.') }
+        format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully created.') }
         format.xml  { render :xml => @unit_cost_estimate, :status => :created, :location => @unit_cost_estimate }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class UnitCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @unit_cost_estimate.update_attributes(params[:unit_cost_estimate])
-        format.html { redirect_to([@project, @component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully updated.') }
+        format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +79,7 @@ class UnitCostEstimatesController < ApplicationController
     @unit_cost_estimate.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_component_unit_cost_estimates_url(@project, @component)) }
+      format.html { redirect_to(component_unit_cost_estimates_url(@component)) }
       format.xml  { head :ok }
     end
   end

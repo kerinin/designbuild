@@ -8,46 +8,46 @@ class RelativeDeadlinesControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index, :project_id => @project.to_param, :deadline_id => @deadline.to_param
+    get :index, :deadline_id => @deadline.to_param
     assert_response :success
     assert_not_nil assigns(:relative_deadlines)
   end
 
   test "should get new" do
-    get :new, :project_id => @project.to_param, :deadline_id => @deadline.to_param
+    get :new, :deadline_id => @deadline.to_param
     assert_response :success
   end
 
   test "should create relative_deadline" do
     assert_difference('RelativeDeadline.count') do
-      post :create, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :relative_deadline => {
+      post :create, :deadline_id => @deadline.to_param, :relative_deadline => {
         :name => 'blah', :interval => 30
       }
     end
 
-    assert_redirected_to project_deadline_relative_deadline_path(@project, @deadline, assigns(:relative_deadline))
+    assert_redirected_to deadline_relative_deadline_path(@deadline, assigns(:relative_deadline))
   end
 
   test "should show relative_deadline" do
-    get :show, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
+    get :show, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
+    get :edit, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
     assert_response :success
   end
 
   test "should update relative_deadline" do
-    put :update, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param, :relative_deadline => @relative_deadline.attributes
-    assert_redirected_to project_deadline_relative_deadline_path(@project, @deadline, assigns(:relative_deadline))
+    put :update, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param, :relative_deadline => @relative_deadline.attributes
+    assert_redirected_to deadline_relative_deadline_path(@deadline, assigns(:relative_deadline))
   end
 
   test "should destroy relative_deadline" do
     assert_difference('RelativeDeadline.count', -1) do
-      delete :destroy, :project_id => @project.to_param, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
+      delete :destroy, :deadline_id => @deadline.to_param, :id => @relative_deadline.to_param
     end
 
-    assert_redirected_to project_deadline_relative_deadlines_path(@project, @deadline)
+    assert_redirected_to deadline_relative_deadlines_path(@deadline)
   end
 end

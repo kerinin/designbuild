@@ -8,46 +8,46 @@ class ContractCostsControllerTest < ActionController::TestCase
   end
 
   test "should get index" do
-    get :index, :project_id => @project.to_param, :contract_id => @contract.to_param
+    get :index, :contract_id => @contract.to_param
     assert_response :success
     assert_not_nil assigns(:contract_costs)
   end
 
   test "should get new" do
-    get :new, :project_id => @project.to_param, :contract_id => @contract.to_param
+    get :new, :contract_id => @contract.to_param
     assert_response :success
   end
 
   test "should create contract_cost" do
     assert_difference('ContractCost.count') do
-      post :create, :project_id => @project.to_param, :contract_id => @contract.to_param, :contract_cost => {
+      post :create, :contract_id => @contract.to_param, :contract_cost => {
         :date => '1/1/2000', :cost => '100'
       }
     end
 
-    assert_redirected_to project_contract_contract_cost_path(@project, @contract, assigns(:contract_cost))
+    assert_redirected_to contract_cost_path(@contract, assigns(:contract_cost))
   end
 
   test "should show contract_cost" do
-    get :show, :project_id => @project.to_param, :contract_id => @contract.to_param, :id => @contract_cost.to_param
+    get :show, :contract_id => @contract.to_param, :id => @contract_cost.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :project_id => @project.to_param, :contract_id => @contract.to_param, :id => @contract_cost.to_param
+    get :edit, :contract_id => @contract.to_param, :id => @contract_cost.to_param
     assert_response :success
   end
 
   test "should update contract_cost" do
-    put :update, :project_id => @project.to_param, :contract_id => @contract.to_param, :id => @contract_cost.to_param, :contract_cost => @contract_cost.attributes
-    assert_redirected_to project_contract_contract_cost_path(@project, @contract, assigns(:contract_cost))
+    put :update, :contract_id => @contract.to_param, :id => @contract_cost.to_param, :contract_cost => @contract_cost.attributes
+    assert_redirected_to contract_cost_path(@contract, assigns(:contract_cost))
   end
 
   test "should destroy contract_cost" do
     assert_difference('ContractCost.count', -1) do
-      delete :destroy, :project_id => @project.to_param, :contract_id => @contract.to_param, :id => @contract_cost.to_param
+      delete :destroy, :contract_id => @contract.to_param, :id => @contract_cost.to_param
     end
 
-    assert_redirected_to project_contract_contract_costs_path(@project, @contract)
+    assert_redirected_to contract_costs_path(@contract)
   end
 end

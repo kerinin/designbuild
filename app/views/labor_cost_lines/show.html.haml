@@ -4,6 +4,6 @@
   %b Hours:
   = @labor_cost_line.hours
 
-= link_to 'Edit', edit_project_task_labor_cost_line_path(@project, @task, @labor_cost_line)
+= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, @labor_cost_line)
 \|
-= link_to 'Back', project_task_labor_cost_lines_path(@project, @task)
+= link_to 'Back', labor_cost_lines_path(@labor_cost)

@@ -1,11 +1,11 @@
 Designbuild::Application.routes.draw do
 
   resources :projects do
-    resources :laborers
-    resources :components      
-    resources :tasks      
-    resources :contracts
-    resources :deadlines
+    resources :laborers     
+    resources :components   # re-nested  
+    resources :tasks        # re-nested
+    resources :contracts    # re-nested
+    resources :deadlines    # re-nested
   end
 
   resources :components do
@@ -16,15 +16,15 @@ Designbuild::Application.routes.draw do
   end
     
   resources :tasks do
-    resources :labor_costs, :as => :labor
-    resources :material_costs, :as => :material
+    resources :labor_costs        # re-nested
+    resources :material_costs     # re-nested
   end
     
-  resources :labor_costs, :as => :labor do    
+  resources :labor_costs do    
     resources :labor_cost_lines, :as => :lines
   end
   
-  resources :material_costs, :as => :material do
+  resources :material_costs do
     resources :material_cost_lines, :as => :lines
   end
   

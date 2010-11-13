@@ -16,10 +16,10 @@
       %td= quantity.value
       %td= quantity.unit
       %td= quantity.drop
-      %td= link_to 'Show', [@project, @component, quantity]
-      %td= link_to 'Edit', edit_project_component_quantity_path(@project, @component, quantity)
-      %td= link_to 'Destroy', [@project, @component, quantity], :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', [@component, quantity]
+      %td= link_to 'Edit', edit_component_quantity_path(@component, quantity)
+      %td= link_to 'Destroy', [@component, quantity], :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Quantity', new_project_component_quantity_path(@project, @component)
+= link_to 'New Quantity', new_component_quantity_path(@component)

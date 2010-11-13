@@ -1,5 +1,5 @@
 class FixedCostEstimatesController < ApplicationController
-  before_filter :get_project, :get_component
+  before_filter :get_component
   
   # GET /fixed_cost_estimates
   # GET /fixed_cost_estimates.xml
@@ -47,7 +47,7 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.save
-        format.html { redirect_to([@project, @component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
+        format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
         format.xml  { render :xml => @fixed_cost_estimate, :status => :created, :location => @fixed_cost_estimate }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.update_attributes(params[:fixed_cost_estimate])
-        format.html { redirect_to([@project, @component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully updated.') }
+        format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +79,7 @@ class FixedCostEstimatesController < ApplicationController
     @fixed_cost_estimate.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_component_fixed_cost_estimates_url(@project, @component)) }
+      format.html { redirect_to(component_fixed_cost_estimates_url(@component)) }
       format.xml  { head :ok }
     end
   end

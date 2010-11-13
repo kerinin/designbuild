@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', [@project, @task, @material_cost_line]
+= link_to 'Show', material_cost_line_path(@material_cost, @material_cost_line)
 \|
-= link_to 'Back', project_task_material_cost_lines_path(@project, @task)
+= link_to 'Back', material_cost_lines_path(@material_cost)

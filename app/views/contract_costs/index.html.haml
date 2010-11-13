@@ -12,10 +12,10 @@
     %tr
       %td= contract_cost.date
       %td= contract_cost.cost
-      %td= link_to 'Show', [@project, @contract, contract_cost]
-      %td= link_to 'Edit', edit_project_contract_contract_cost_path(@project, @contract, contract_cost)
-      %td= link_to 'Destroy', [@project, @contract, contract_cost], :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', contract_cost_path(@contract, contract_cost)
+      %td= link_to 'Edit', edit_contract_cost_path(@contract, contract_cost)
+      %td= link_to 'Destroy', contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Contract cost', new_project_contract_contract_cost_path(@project, @contract)
+= link_to 'New Contract cost', new_contract_cost_path(@contract)

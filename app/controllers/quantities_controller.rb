@@ -1,5 +1,5 @@
 class QuantitiesController < ApplicationController
-  before_filter :get_project, :get_component
+  before_filter :get_component
   
   # GET /quantities
   # GET /quantities.xml
@@ -47,7 +47,7 @@ class QuantitiesController < ApplicationController
 
     respond_to do |format|
       if @quantity.save
-        format.html { redirect_to([@project, @component, @quantity], :notice => 'Quantity was successfully created.') }
+        format.html { redirect_to([@component, @quantity], :notice => 'Quantity was successfully created.') }
         format.xml  { render :xml => @quantity, :status => :created, :location => @quantity }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class QuantitiesController < ApplicationController
 
     respond_to do |format|
       if @quantity.update_attributes(params[:quantity])
-        format.html { redirect_to([@project, @component, @quantity], :notice => 'Quantity was successfully updated.') }
+        format.html { redirect_to([@component, @quantity], :notice => 'Quantity was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -79,7 +79,7 @@ class QuantitiesController < ApplicationController
     @quantity.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_component_quantities_url(@project, @component)) }
+      format.html { redirect_to(component_quantities_url(@component)) }
       format.xml  { head :ok }
     end
   end

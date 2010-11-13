@@ -1,4 +1,4 @@
-= form_for [@project, @component, @quantity] do |f|
+= form_for [@component, @quantity] do |f|
   -if @quantity.errors.any?
     #error_explanation
       %h2= "#{pluralize(@quantity.errors.count, "error")} prohibited this quantity from being saved:"
