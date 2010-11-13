@@ -10,7 +10,7 @@ class ProjectTest < ActiveSupport::TestCase
       @u1 = Factory :user, :projects => [@obj]
       #@u2 = Factory :user, :projects => [@obj]
       @c1 = Factory :component, :project => @obj
-        @sc1 = Factory :component, :parent => @c1
+        @sc1 = Factory :component, :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :cost => 0.1
           @q1 = Factory :quantity, :component => @sc1, :value => 1
           @dq1 = Factory :derived_quantity, :parent_quantity => @q1, :multiplier => 2 # 2
@@ -101,15 +101,15 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     should "inherit fixed cost estimates" do
-      assert_contains @obj.fixed_cost_estimates, @fc1
-      assert_contains @obj.fixed_cost_estimates, @fc2
+      assert_contains @obj.fixed_cost_estimates.all, @fc1
+      assert_contains @obj.fixed_cost_estimates.all, @fc2
     end
     
     should "inherit unit cost estimates" do
-      assert_contains @obj.unit_cost_estimates, @uc1
-      assert_contains @obj.unit_cost_estimates, @uc2
-      assert_contains @obj.unit_cost_estimates, @uc3
-      assert_contains @obj.unit_cost_estimates, @uc4
+      assert_contains @obj.unit_cost_estimates.all, @uc1
+      assert_contains @obj.unit_cost_estimates.all, @uc2
+      assert_contains @obj.unit_cost_estimates.all, @uc3
+      assert_contains @obj.unit_cost_estimates.all, @uc4
     end
     
     #---------------------CALCULATIONS

@@ -9,15 +9,15 @@ class Project < ActiveRecord::Base
   has_many :laborers
   
   def estimated_fixed_cost
-    self.components.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
+    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
   end
   
   def estimated_unit_cost
-    self.components.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
+    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
   end
   
   def estimated_cost
-    self.components.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)}
+    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)}
   end
   
   def material_cost
@@ -34,5 +34,13 @@ class Project < ActiveRecord::Base
   
   def cost
     add_or_nil(labor_cost, add_or_nil( material_cost, contract_cost) )
+  end
+  
+  def fixed_cost_estimates
+    FixedCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
+  end
+  
+  def unit_cost_estimates
+    UnitCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
   end
 end
