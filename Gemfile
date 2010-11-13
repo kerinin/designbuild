@@ -34,12 +34,12 @@ gem "friendly_id", "~> 3.1"
 gem "acts_as_list"
 gem "ancestry"
 
-group :test do
+group :test, :development do
   gem "shoulda"
   gem "rspec-rails", "2.0.0.beta.12"
   #gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
   gem 'factory_girl_rails'
-  gem 'faker'
+  gem 'forgery'
 end
 
 # Bundle gems for the local environment. Make sure to
