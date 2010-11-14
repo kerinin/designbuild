@@ -1,0 +1,10 @@
+%tr.new_component
+  %td.field
+    -unless @parent_component.nil?
+      = f.hidden_field :parent_id, :value => @parent_component.id
+    %strong= f.label :name
+    = f.text_field :name
+  %td
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
+      

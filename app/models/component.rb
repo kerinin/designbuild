@@ -12,7 +12,7 @@ class Component < ActiveRecord::Base
   
   has_and_belongs_to_many :tags
   
-  validates_presence_of :project
+  validates_presence_of :project, :name
   
   before_validation :check_project
   

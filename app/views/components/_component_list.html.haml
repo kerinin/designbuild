@@ -1,4 +1,4 @@
-%table
+%table#components
   %tr
     %th Name
     %th.currency Est. Cost
@@ -7,7 +7,7 @@
     %th.control
 
   - components.each do |component|
-    %tr
+    %tr{:id => "component_#{component.id}"}
       %td= component.name
       %td.currency= number_to_currency(component.estimated_cost)
       %td.control= link_to 'Show', [@project, component]
@@ -16,7 +16,14 @@
       
   - if components.empty?
     %tr
-      %td{:colspan => 2} (None)
+      %td{:colspan => 5} (None)
+  
+  %tr.control.add_button
+    %td{:colspan => 5}= link_to '(Add Component)', |
+      components.empty? || components.first.is_root? ? |
+        new_project_component_path(@project) : |
+        new_project_component_path(@project, :parent_id => components.first.parent.id), |
+      :remote => true |
       
   %tr.totals
     %td.right

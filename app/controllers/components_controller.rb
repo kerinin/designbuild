@@ -26,9 +26,11 @@ class ComponentsController < ApplicationController
   # GET /components/new
   # GET /components/new.xml
   def new
-    @component = Component.new
+    @parent_component = params.has_key?( :parent_id ) ? Component.find( params[:parent_id] ) : nil
+    @component = Component.new :parent => @parent_component
 
     respond_to do |format|
+      format.js 
       format.html # new.html.erb
       format.xml  { render :xml => @component }
     end
@@ -42,14 +44,20 @@ class ComponentsController < ApplicationController
   # POST /components
   # POST /components.xml
   def create
+    @parent_component = params.has_key?( :parent_id ) ? Component.find( params[:parent_id] ) : nil
     @component = Component.new(params[:component])
     @component.project = @project
+    @component.parent = @parent_component unless @parent_component.nil?
 
     respond_to do |format|
       if @component.save
+        format.js { 
+          @components = @component.is_root? ? @project.components.roots : @component.siblings
+        }
         format.html { redirect_to([@project, @component], :notice => 'Component was successfully created.') }
         format.xml  { render :xml => @component, :status => :created, :location => @component }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @component.errors, :status => :unprocessable_entity }
       end
