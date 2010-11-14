@@ -9,7 +9,7 @@
 
   //Add a table row above the input with error info
   $("tr.error").remove();
-  $("tr.component_form").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("tr.component_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
 
