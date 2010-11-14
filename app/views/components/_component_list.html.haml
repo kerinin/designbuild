@@ -10,9 +10,9 @@
     %tr{:id => "component_#{component.id}"}
       %td= component.name
       %td.currency= number_to_currency(component.estimated_cost)
-      %td.control= link_to 'Show', [@project, component]
-      %td.control= link_to 'Edit', edit_project_component_path(@project, component)
-      %td.control= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
+      %td.control.show= link_to 'Show', [@project, component]
+      %td.control.edit= link_to 'Edit', edit_project_component_path(@project, component), :remote => true
+      %td.control.destroy= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
       
   - if components.empty?
     %tr

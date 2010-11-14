@@ -71,9 +71,13 @@ class ComponentsController < ApplicationController
 
     respond_to do |format|
       if @component.update_attributes(params[:component])
+        format.js { 
+          @components = @component.is_root? ? @project.components.roots : @component.siblings
+        }
         format.html { redirect_to([@project, @component], :notice => 'Component was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @component.errors, :status => :unprocessable_entity }
       end

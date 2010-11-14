@@ -14,12 +14,12 @@
   <% end %>
 <% end %>
 
+
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
-$("tr.add_button").closest("table").wrap(form).append(contents);
-$("tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("tr#component_<%= @component.id %>").closest("table").wrap(form).append(contents);
+$("tr#component_<%= @component.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("tr.component_form > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 $("tr.add_button").hide();
-$("td.control.edit > a").contents().unwrap();
 $("input:text:visible:first").focus();

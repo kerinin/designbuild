@@ -24,12 +24,9 @@
   $("#flash_notice").show(300);
 
   //Replace the html of the div post_lists with the updated new one
-  $('form.new_component').html( "<%= escape_javascript( yield :table ) %>");
+  $('form.edit_component').html( "<%= escape_javascript( yield :table ) %>");
 
   //Remove the form
   $('table#components').unwrap();
-  
-  //Load a new entry field
-  $('tr.add_button > td > a').click();
   
 <% end %>
