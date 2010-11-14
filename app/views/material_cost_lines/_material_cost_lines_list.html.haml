@@ -17,3 +17,10 @@
   - if material_cost_lines.empty?
     %tr
       %td{:colspan => 10} (None)
+      
+  %tr.totals
+    %td.right
+      %strong Total Cost
+    %td.currency
+      %strong= number_to_currency( material_cost.cost )
+    %td{:colspan => 5}

@@ -5,9 +5,9 @@
 =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] }
 
 %p
-	$
-	= @task.estimated_cost
-	(estimated)
+  $
+  = @task.estimated_cost
+  (estimated)
 	
 = link_to 'Edit', edit_project_task_path(@project, @task)
 \|
@@ -15,13 +15,28 @@
 
 %h2 Estimated Costs
 %h3 Unit Costs
-=#render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @task.unit_cost_estimates}
+=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:parent => @task, :unit_cost_estimates => @task.unit_cost_estimates, :limit => 5}
 %h3 Fixed Costs
-=#render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @task.fixed_cost_estimates}
+=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @task, :fixed_cost_estimates => @task.fixed_cost_estimates, :limit => 5}
 
 %h2 Actual Costs
-%h2 Labor
+%h3 Labor
 =render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs}
-%h2 Material
+%h3 Material
 =render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.material_costs}
+
+%h2 Totals
+
+%table
+  %tr
+    %th
+    %th.currency Est. Cost
+    %th.currency Cost
+    %th.control
+    %th.control
+    %th.control
+  %tr
+    %td Material Costs
+    %td.currency= number_to_currency(@task.estimated_cost)
+    %td.currency= number_to_currency(@task.cost)
 

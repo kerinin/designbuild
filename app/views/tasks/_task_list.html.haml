@@ -25,12 +25,12 @@
   %tr.totals
     %td
       %strong Total
-    %td
+    %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost })
-    %td
+    %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
-    %td
-      %strong= tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}))
+    %td.number
+      %strong= tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}), :precision => 1)
     %td{:colspan => 4}
     
 

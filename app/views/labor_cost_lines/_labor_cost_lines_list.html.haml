@@ -25,8 +25,8 @@
       %td{:colspan => 10} (None)
       
   %tr.totals
-    %td.right{:colspan => 2}
+    %td.right{:colspan => 3}
       %strong Total
-    %td
+    %td.currency
       %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}

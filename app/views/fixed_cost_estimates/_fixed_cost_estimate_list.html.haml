@@ -1,29 +1,39 @@
 %table
   %tr
     %th Name
-    %th Task
+    -if parent.class.name == 'Component'
+      %th Task
     %th.currency Cost
     %th.control
     %th.control
     %th.control
 
-  - fixed_cost_estimates.each do |fixed_cost_estimate|
+  - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
     %tr
       %td= fixed_cost_estimate.name
-      %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
+      -if parent.class.name == 'Component'
+        %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
       %td.currency= number_to_currency(fixed_cost_estimate.cost)
-      %td.control= link_to 'Show', [@component, fixed_cost_estimate]
-      %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(@component, fixed_cost_estimate)
-      %td.control= link_to 'Destroy', [@component, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+      - case parent.class.name
+      - when 'Component'
+        %td.control= link_to 'Show', [parent, fixed_cost_estimate]
+        %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate)
+        %td.control= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+      - when 'Task'
+        %td.control{:colspan => 3}= link_to 'Show Component', fixed_cost_estimate.component
+        
+  - if fixed_cost_estimates.count > limit
+    %tr
+      %td{:colspan => 10}= link_to "(#{fixed_cost_estimates.count - limit} more not shown - See All)", '/'
 
   - if fixed_cost_estimates.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.totals
-    %td.right{:colspan => 2}
+    %td.right{:colspan => parent.class.name == 'Component' ? 2 : 1}
       %strong Subtotal
-    %td
+    %td.currency
       %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}
 

@@ -1,6 +1,6 @@
 %h1 Listing unit_cost_estimates
 
-=render :partial => 'unit_cost_estimate_list', :locals => {:unit_cost_estimates => @unit_cost_estimates}
+=render :partial => 'unit_cost_estimate_list', :locals => {:parent => @component, :unit_cost_estimates => @unit_cost_estimates, :limit => 50}
 
 %br
 

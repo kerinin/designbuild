@@ -21,6 +21,6 @@
   %tr.totals
     %td.right
       %strong Total
-    %td
+    %td.currency
       %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}

@@ -29,12 +29,12 @@
   %tr.totals
     %td
       %strong Total
-    %td
+    %td.currency
       %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid})
-    %td
+    %td.currency
       %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})
-    %td
-      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})))
+    %td.number
+      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})), :precision => 1)
     %td{:colspan => 4}
 
 %br

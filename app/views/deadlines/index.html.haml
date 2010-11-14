@@ -30,9 +30,9 @@
           )
           = relative_deadline.name
         %td= deadline.date
-        %td= link_to 'Show', [@project, deadline]
-        %td= link_to 'Edit', edit_project_deadline_path(@project, deadline)
-        %td= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    
+        %td.control= link_to 'Show', [@project, deadline]
+        %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline)
+        %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    
       
   - if @deadlines.empty?
     %tr

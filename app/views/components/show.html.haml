@@ -4,10 +4,6 @@
 
 =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] + @component.ancestors}
 
-%p
-	= number_to_currency(@component.estimated_cost)
-	(estimated)
-
 = link_to 'Edit', edit_project_component_path(@project, @component)
 \|
 = link_to 'Back', project_components_path(@project)
@@ -19,11 +15,25 @@
 
 %h2 Estimated Costs
 %h3 Unit Costs
-=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates}
+=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:parent => @component, :unit_cost_estimates => @component.unit_cost_estimates, :limit => 50}
 %h3 Fixed Costs
-=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates}
+=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @component, :fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50}
 
 %h2 Sub-Components
 =render :partial => 'component_list', :locals => {:components => @component.children}
 
+%h2 Totals
 
+%table
+  %tr
+    %th
+    %th.currency Est. Cost
+    %th.control
+    %th.control
+    %th.control
+  %tr
+    %td Component Subtotal
+    %td.currency= number_to_currency(@component.estimated_cost)
+    
+    
+        

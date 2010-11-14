@@ -9,7 +9,7 @@
 
 =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project, @task] }
 
-=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items}
+=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost}
 
 = link_to 'Edit', edit_task_material_cost_path(@task, @material_cost)
 \|

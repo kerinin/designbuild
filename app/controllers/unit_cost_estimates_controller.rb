@@ -4,7 +4,7 @@ class UnitCostEstimatesController < ApplicationController
   # GET /unit_cost_estimates
   # GET /unit_cost_estimates.xml
   def index
-    @unit_cost_estimates = UnitCostEstimate.all
+    @unit_cost_estimates = UnitCostEstimate.scoped
 
     respond_to do |format|
       format.html # index.html.erb

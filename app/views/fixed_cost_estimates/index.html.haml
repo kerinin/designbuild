@@ -1,6 +1,6 @@
 %h1 Listing fixed_cost_estimates
 
-=render :partial => 'fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @fixed_cost_estimates}
+=render :partial => 'fixed_cost_estimate_list', :locals => {:parent => @component, :fixed_cost_estimates => @fixed_cost_estimates, :limit => 50}
 
 %br
 
