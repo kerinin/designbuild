@@ -4,9 +4,9 @@
   %tr
     %th Name
     %th Interval
-    %th
-    %th
-    %th
+    %th.control
+    %th.control
+    %th.control
 
   - @relative_deadlines.each do |relative_deadline|
     %tr
@@ -15,6 +15,10 @@
       %td= link_to 'Show', [@deadline, relative_deadline]
       %td= link_to 'Edit', edit_deadline_relative_deadline_path(@deadline, relative_deadline)
       %td= link_to 'Destroy', [@deadline, relative_deadline], :confirm => 'Are you sure?', :method => :delete
+      
+  - if @relative_deadlines.empty?
+    %tr
+      %td{:colspan => 10} (None)
 
 %br
 

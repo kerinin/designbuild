@@ -1,4 +1,4 @@
-%h1= @contract.contractor
+%h1= @contract.name
 
 =render :partial => 'shared/project_nav'
 
@@ -8,7 +8,12 @@
   %b Bid:
   = @contract.bid
 
+%h3 Costs
 =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
+
+%h3 Bids
+=render :partial => 'bids/bids_list', :locals => {:bids => @contract.bids}
+
 = link_to 'Edit', edit_project_contract_path(@project, @contract)
 \|
 = link_to 'Back', project_contracts_path(@project)

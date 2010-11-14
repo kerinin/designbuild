@@ -2,6 +2,10 @@
   Labor: 
   = @labor_cost.date
 
+=render :partial => 'shared/project_nav'
+
+=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project, @task] }
+
 =render :partial => 'labor_cost_lines/labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost.line_items}
 
 = link_to 'Edit', edit_task_labor_cost_path(@task, @labor_cost)

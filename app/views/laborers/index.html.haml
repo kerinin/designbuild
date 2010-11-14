@@ -3,10 +3,10 @@
 %table
   %tr
     %th Name
-    %th Bill rate
-    %th
-    %th
-    %th
+    %th.currency Bill rate
+    %th.control
+    %th.control
+    %th.conrol
 
   - @laborers.each do |laborer|
     %tr
@@ -15,6 +15,10 @@
       %td= link_to 'Show', [@project, laborer]
       %td= link_to 'Edit', edit_project_laborer_path(@project, laborer)
       %td= link_to 'Destroy', [@project, laborer], :confirm => 'Are you sure?', :method => :delete
+      
+  - if @laborers.empty?
+    %tr
+      %td{:colspan => 10} (None)
 
 %br
 

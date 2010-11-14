@@ -1,15 +1,19 @@
 %table
   %tr
     %th Name
-    %th Quantity
-    %th
-    %th
-    %th
+    %th.number Quantity
+    %th.control
+    %th.control
+    %th.control
 
   - material_cost_lines.each do |material_cost_line|
     %tr
       %td= material_cost_line.name
-      %td= material_cost_line.quantity
+      %td= material_cost_line.quantity.to_i
       %td= link_to 'Show', material_cost_line_path(@material_cost, material_cost_line)
       %td= link_to 'Edit', edit_material_cost_line_path(@material_cost, material_cost_line)
       %td= link_to 'Destroy', material_cost_line_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
+
+  - if material_cost_lines.empty?
+    %tr
+      %td{:colspan => 10} (None)

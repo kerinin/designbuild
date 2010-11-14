@@ -1,19 +1,32 @@
 %table
   %tr
     %th Employee
-    %th Hours
-    %th Bill Rate
-    %th Cost
-    %th
-    %th
-    %th
+    %th.number Hours
+    %th.currency Bill Rate
+    %th.currency Cost
+    %th.control
+    %th.control
+    %th.control
 
   - labor_cost_lines.each do |labor_cost_line|
     %tr
       %td= labor_cost_line.laborer.name
       %td= labor_cost_line.hours
-      %td= labor_cost_line.laborer.bill_rate
-      %td= labor_cost_line.cost
+      %td
+        = number_to_currency(labor_cost_line.laborer.bill_rate)
+        \/hr
+      %td= number_to_currency(labor_cost_line.cost)
       %td= link_to 'Show', labor_cost_line_path(@labor_cost, labor_cost_line)
       %td= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, labor_cost_line)
       %td= link_to 'Destroy', labor_cost_line_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
+
+  - if labor_cost_lines.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.totals
+    %td.right{:colspan => 2}
+      %strong Total
+    %td
+      %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+    %td{:colspan => 4}

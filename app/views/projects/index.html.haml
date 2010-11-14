@@ -3,20 +3,24 @@
 %table
   %tr
     %th Name
-    %th Cost Estimate
-    %th Cost-to-Date
-    %th
-    %th
-    %th
+    %th.currency Cost Estimate
+    %th.currency Cost-to-Date
+    %th.control
+    %th.control
+    %th.control
 
   - @projects.each do |project|
     %tr
       %td= project.name
-      %td.currency= number_to_currency(project.estimated_cost)
-      %td.currency= number_to_currency(project.cost)
-      %td.control= link_to 'Show', project_components_path(project)
-      %td.control= link_to 'Edit', edit_project_path(project)
-      %td.control= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
+      %td= number_to_currency(project.estimated_cost)
+      %td= number_to_currency(project.cost)
+      %td= link_to 'Show', project_components_path(project)
+      %td= link_to 'Edit', edit_project_path(project)
+      %td= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
+      
+  - if @projects.empty?
+    %tr
+      %td{:colspan => 10} (None)
 
 %br
 

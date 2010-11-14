@@ -3,10 +3,10 @@
 %table
   %tr
     %th Name
-    %th Multiplier
-    %th
-    %th
-    %th
+    %th.number Multiplier
+    %th.control
+    %th.control
+    %th.control
 
   - @derived_quantities.each do |derived_quantity|
     %tr
@@ -16,6 +16,9 @@
       %td= link_to 'Edit', edit_component_derived_quantity_path(@component, derived_quantity)
       %td= link_to 'Destroy', [@component, derived_quantity], :confirm => 'Are you sure?', :method => :delete
 
+  - if @derived_quantities.empty?
+    %tr
+      %td{:colspan => 10} (None)
 %br
 
 = link_to 'New Derived quantity', new_component_derived_quantity_path(@component)

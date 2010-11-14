@@ -2,7 +2,7 @@
 
 Factory.define :derived_quantity do |f|
   f.name {Forgery::LoremIpsum.sentence :random => true}
-  f.multiplier 1.5
+  f.multiplier {rand(100).to_f/20}
   
   f.parent_quantity {|p| p.association(:quantity)}
 end

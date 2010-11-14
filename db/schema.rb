@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(:version => 20101113192800) do
 
   create_table "bids", :force => true do |t|
+    t.string   "contractor"
     t.date     "date"
     t.float    "cost"
     t.integer  "contract_id"
@@ -44,7 +45,7 @@ ActiveRecord::Schema.define(:version => 20101113192800) do
   end
 
   create_table "contracts", :force => true do |t|
-    t.string   "contractor"
+    t.string   "name"
     t.float    "bid"
     t.integer  "project_id"
     t.datetime "created_at"

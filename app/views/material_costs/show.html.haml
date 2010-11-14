@@ -5,6 +5,10 @@
   =@material_cost.cost
   )
 
+=render :partial => 'shared/project_nav'
+
+=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project, @task] }
+
 =render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items}
 
 = link_to 'Edit', edit_task_material_cost_path(@task, @material_cost)

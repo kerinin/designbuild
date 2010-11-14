@@ -1,10 +1,10 @@
 %table
   %tr
     %th Date
-    %th Cost
-    %th
-    %th
-    %th
+    %th.currency Cost
+    %th.control
+    %th.control
+    %th.control
 
   - contract_costs.each do |contract_cost|
     %tr
@@ -13,3 +13,14 @@
       %td= link_to 'Show', contract_cost_path(@contract, contract_cost)
       %td= link_to 'Edit', edit_contract_cost_path(@contract, contract_cost)
       %td= link_to 'Destroy', contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
+
+  - if contract_costs.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.totals
+    %td.right
+      %strong Total
+    %td
+      %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+    %td{:colspan => 4}

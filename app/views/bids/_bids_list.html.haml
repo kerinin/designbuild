@@ -1,0 +1,21 @@
+%table
+  %tr
+    %th Contractor
+    %th Date
+    %th.currency Cost
+    %th.control
+    %th.control
+    %th.control
+
+  - bids.each do |bid|
+    %tr
+      %td= bid.contractor
+      %td= bid.date
+      %td= bid.cost
+      %td= link_to 'Show', [@contract, bid]
+      %td= link_to 'Edit', edit_contract_bid_path(@contract, bid)
+      %td= link_to 'Destroy', [@contract, bid], :confirm => 'Are you sure?', :method => :delete
+      
+  - if bids.empty?
+    %tr
+      %td{:colspan => 10} (None)

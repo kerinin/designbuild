@@ -1,30 +1,36 @@
 %table
   %tr
     %th Name
-    %th Est. Cost
-    %th Cost-to-Date
-    %th % of Est.
-    %th
-    %th
-    %th
+    %th.currency Est. Cost
+    %th.currency Cost-to-Date
+    %th.number % of Est.
+    %th.control
+    %th.control
+    %th.control
 
   - tasks.each do |task|
     %tr
       %td= task.name
-      %td.currency= number_to_currency(task.estimated_cost)
-      %td.currency= number_to_currency(task.cost)
-      %td.number= number_to_percentage(100 * task.cost / task.estimated_cost, :precision => 1)
+      %td= number_to_currency(task.estimated_cost)
+      %td= number_to_currency(task.cost)
+      %td= number_to_percentage(100 * task.cost / task.estimated_cost, :precision => 1)
       %td= link_to 'Show', [@project, task]
       %td= link_to 'Edit', edit_project_task_path(@project, task)
       %td= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
       
+  - if tasks.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
   %tr.totals
     %td
       %strong Total
-    %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| memo + obj.estimated_cost })
-    %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| memo + obj.cost })
-    %td.number
-      %strong= number_to_percentage(100 * (tasks.inject(0) {|memo,obj| memo + obj.estimated_cost}) / (tasks.inject(0) {|memo,obj| memo + obj.cost}))
+    %td
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost })
+    %td
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+    %td
+      %strong= tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}))
     %td{:colspan => 4}
+    
+

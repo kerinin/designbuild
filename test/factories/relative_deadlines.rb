@@ -2,7 +2,7 @@
 
 Factory.define :relative_deadline do |f|
   f.name {Forgery::LoremIpsum.sentence}
-  f.interval 10
+  f.interval {rand(100) - 50}
   
   f.parent_deadline {|p| p.association(:deadline)}
 end

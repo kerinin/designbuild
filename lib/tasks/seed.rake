@@ -33,19 +33,23 @@ namespace :db do
           Factory :unit_cost_estimate, :quantity => dq2
         }
         
-        q1 = Factory :quantity, :component => c
-        q2 = Factory :quantity, :component => c
+        quantities = []
+        rand(5).times {
+          quantities << Factory( :quantity, :component => c )     
+        }
         
-        dq1 = Factory :derived_quantity, :parent_quantity => q1
-        dq2 = Factory :derived_quantity, :parent_quantity => q2
+        quantities.each { |q|
+          rand(5).times {
+            dq = Factory :derived_quantity, :parent_quantity => q
+            Factory :unit_cost_estimate, :quantity => dq
+          }
+          
+          rand(5).times {
+            Factory :unit_cost_estimate, :quantity => q
+          }
+        }
         
         rand(5).times { Factory :fixed_cost_estimate, :component => c }
-        rand(5).times { Factory :fixed_cost_estimate, :component => c }
-        
-        Factory :unit_cost_estimate, :quantity => q1
-        Factory :unit_cost_estimate, :quantity => q2
-        Factory :unit_cost_estimate, :quantity => dq1
-        Factory :unit_cost_estimate, :quantity => dq2
       }
       
       # Tasks
@@ -92,10 +96,11 @@ namespace :db do
         }
       }
       
-      (rand(10)+1).times {
+      # Deadlines
+      (rand(4)+1).times {
         deadline = Factory :deadline, :project => project
         
-        (rand(10)+1).times {
+        (rand(4)+1).times {
           Factory :relative_deadline, :parent_deadline => deadline
         }
       }

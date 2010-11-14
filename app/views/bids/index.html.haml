@@ -1,20 +1,6 @@
 %h1 Listing bids
 
-%table
-  %tr
-    %th Date
-    %th Cost
-    %th
-    %th
-    %th
-
-  - @bids.each do |bid|
-    %tr
-      %td= bid.date
-      %td= bid.cost
-      %td= link_to 'Show', [@contract, bid]
-      %td= link_to 'Edit', edit_contract_bid_path(@contract, bid)
-      %td= link_to 'Destroy', [@contract, bid], :confirm => 'Are you sure?', :method => :delete
+render :partial => 'bids_list', :locals => {:bids => @bids}
 
 %br
 

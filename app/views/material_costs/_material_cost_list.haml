@@ -1,10 +1,10 @@
 %table
   %tr
     %th Date
-    %th Cost
-    %th
-    %th
-    %th
+    %th.currency Cost
+    %th.control
+    %th.control
+    %th.control
 
   - material_costs.each do |material_cost|
     %tr
@@ -13,3 +13,14 @@
       %td= link_to 'Show', [@task, material_cost]
       %td= link_to 'Edit', edit_task_material_cost_path(@project, @task, material_cost)
       %td= link_to 'Destroy', [@task, material_cost], :confirm => 'Are you sure?', :method => :delete
+
+  - if material_costs.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.totals
+    %td.right
+      %strong Subtotal
+    %td
+      %strong= number_to_currency( material_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+    %td{:colspan => 4}

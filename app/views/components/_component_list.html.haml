@@ -1,22 +1,27 @@
 %table
   %tr
     %th Name
-    %th Est. Cost
-    %th
-    %th
-    %th
+    %th.currency Est. Cost
+    %th.control
+    %th.control
+    %th.control
 
   - components.each do |component|
     %tr
       %td= component.name
-      %td.currency= number_to_currency(component.estimated_cost)
-      %td.control= link_to 'Show', [@project, component]
-      %td.control= link_to 'Edit', edit_project_component_path(@project, component)
-      %td.control= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
+      %td= number_to_currency(component.estimated_cost)
+      %td= link_to 'Show', [@project, component]
+      %td= link_to 'Edit', edit_project_component_path(@project, component)
+      %td= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
+      
+  - if components.empty?
+    %tr
+      %td{:colspan => 6} (None)
       
   %tr.totals
     %td.right
       %strong Subtotal
-    %td.currency
-      %strong= number_to_currency( components.inject(0) {|memo,obj| memo + obj.estimated_cost })
+    %td
+      %strong= number_to_currency( components.inject(0) {|memo,obj| add_or_nil( memo, obj.estimated_cost ) })
     %td{:colspan => 4}
+    

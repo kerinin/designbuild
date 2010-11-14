@@ -7,6 +7,8 @@ class DeadlineTest < ActiveSupport::TestCase
       
       @t1 = Factory :task, :deadline => @obj
       @t2 = Factory :task, :deadline => @obj
+      @rd1 = Factory :relative_deadline, :parent_deadline => @obj
+      @rd2 = Factory :relative_deadline, :parent_deadline => @obj
     end
 
     teardown do
@@ -31,6 +33,11 @@ class DeadlineTest < ActiveSupport::TestCase
     should "allow multiple tasks" do
       assert_contains @obj.tasks, @t1
       assert_contains @obj.tasks, @t2
+    end
+    
+    should "allow multiple relative deadlines" do
+      assert_contains @obj.relative_deadlines, @rd1
+      assert_contains @obj.relative_deadlines, @rd2
     end
   end
 end

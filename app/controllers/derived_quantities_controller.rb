@@ -26,7 +26,7 @@ class DerivedQuantitiesController < ApplicationController
   # GET /derived_quantities/new
   # GET /derived_quantities/new.xml
   def new
-    @derived_quantity = DerivedQuantity.new
+    @derived_quantity = DerivedQuantity.new :parent_quantity_id => params[:parent_quantity_id]
 
     respond_to do |format|
       format.html # new.html.erb
