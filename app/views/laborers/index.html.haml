@@ -11,10 +11,10 @@
   - @laborers.each do |laborer|
     %tr
       %td= laborer.name
-      %td= laborer.bill_rate
-      %td= link_to 'Show', [@project, laborer]
-      %td= link_to 'Edit', edit_project_laborer_path(@project, laborer)
-      %td= link_to 'Destroy', [@project, laborer], :confirm => 'Are you sure?', :method => :delete
+      %td.currency= laborer.bill_rate
+      %td.control= link_to 'Show', [@project, laborer]
+      %td.control= link_to 'Edit', edit_project_laborer_path(@project, laborer)
+      %td.control= link_to 'Destroy', [@project, laborer], :confirm => 'Are you sure?', :method => :delete
       
   - if @laborers.empty?
     %tr

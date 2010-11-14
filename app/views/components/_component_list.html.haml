@@ -9,19 +9,19 @@
   - components.each do |component|
     %tr
       %td= component.name
-      %td= number_to_currency(component.estimated_cost)
-      %td= link_to 'Show', [@project, component]
-      %td= link_to 'Edit', edit_project_component_path(@project, component)
-      %td= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
+      %td.currency= number_to_currency(component.estimated_cost)
+      %td.control= link_to 'Show', [@project, component]
+      %td.control= link_to 'Edit', edit_project_component_path(@project, component)
+      %td.control= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
       
   - if components.empty?
     %tr
-      %td{:colspan => 6} (None)
+      %td{:colspan => 2} (None)
       
   %tr.totals
     %td.right
       %strong Subtotal
-    %td
+    %td.currency
       %strong= number_to_currency( components.inject(0) {|memo,obj| add_or_nil( memo, obj.estimated_cost ) })
     %td{:colspan => 4}
     

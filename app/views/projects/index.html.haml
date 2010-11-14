@@ -12,11 +12,11 @@
   - @projects.each do |project|
     %tr
       %td= project.name
-      %td= number_to_currency(project.estimated_cost)
-      %td= number_to_currency(project.cost)
-      %td= link_to 'Show', project_components_path(project)
-      %td= link_to 'Edit', edit_project_path(project)
-      %td= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
+      %td.currency= number_to_currency(project.estimated_cost)
+      %td.currency= number_to_currency(project.cost)
+      %td.control= link_to 'Show', project_components_path(project)
+      %td.control= link_to 'Edit', edit_project_path(project)
+      %td.control= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
       
   - if @projects.empty?
     %tr

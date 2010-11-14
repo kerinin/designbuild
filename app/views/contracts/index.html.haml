@@ -15,12 +15,12 @@
   - @contracts.each do |contract|
     %tr
       %td= contract.name
-      %td= contract.bid
-      %td= contract.cost
-      %td= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
-      %td= link_to 'Show', [@project, contract]
-      %td= link_to 'Edit', edit_project_contract_path(@project, contract)
-      %td= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
+      %td.currency= contract.bid
+      %td.currency= contract.cost
+      %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
+      %td.control= link_to 'Show', [@project, contract]
+      %td.control= link_to 'Edit', edit_project_contract_path(@project, contract)
+      %td.control= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
       
   - if @contracts.empty?
     %tr

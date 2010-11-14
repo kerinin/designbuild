@@ -11,10 +11,10 @@
   - @derived_quantities.each do |derived_quantity|
     %tr
       %td= derived_quantity.name
-      %td= derived_quantity.multiplier
-      %td= link_to 'Show', [@component, derived_quantity]
-      %td= link_to 'Edit', edit_component_derived_quantity_path(@component, derived_quantity)
-      %td= link_to 'Destroy', [@component, derived_quantity], :confirm => 'Are you sure?', :method => :delete
+      %td.number= derived_quantity.multiplier
+      %td.control= link_to 'Show', [@component, derived_quantity]
+      %td.control= link_to 'Edit', edit_component_derived_quantity_path(@component, derived_quantity)
+      %td.control= link_to 'Destroy', [@component, derived_quantity], :confirm => 'Are you sure?', :method => :delete
 
   - if @derived_quantities.empty?
     %tr

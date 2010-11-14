@@ -13,12 +13,12 @@
     %tr
       %td= unit_cost_estimate.name
       %td= unit_cost_estimate.task.blank? ? nil : unit_cost_estimate.task.name
-      %td= number_to_currency(unit_cost_estimate.unit_cost)
-      %td= unit_cost_estimate.tax
-      %td= number_to_currency(unit_cost_estimate.cost, :unit => "$")
-      %td= link_to 'Show', [@component, unit_cost_estimate]
-      %td= link_to 'Edit', edit_component_unit_cost_estimate_path(@component, unit_cost_estimate)
-      %td= link_to 'Destroy', [@component, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+      %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
+      %td.number= unit_cost_estimate.tax
+      %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
+      %td.control= link_to 'Show', [@component, unit_cost_estimate]
+      %td.control= link_to 'Edit', edit_component_unit_cost_estimate_path(@component, unit_cost_estimate)
+      %td.control= link_to 'Destroy', [@component, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
 
   - if unit_cost_estimates.empty?
     %tr
