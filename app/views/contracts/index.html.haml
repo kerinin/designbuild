@@ -17,7 +17,7 @@
       %td= contract.name
       %td= contract.bid
       %td= contract.cost
-      %td= number_to_percentage(100 * contract.cost / contract.bid, :precision => 1)
+      %td= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
       %td= link_to 'Show', [@project, contract]
       %td= link_to 'Edit', edit_project_contract_path(@project, contract)
       %td= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
@@ -30,11 +30,11 @@
     %td
       %strong Total
     %td
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| memo + obj.bid})
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid})
     %td
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| memo + obj.cost})
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})
     %td
-      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost} == 0 ? nil : number_to_percentage( 100 * (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost}))
+      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})))
     %td{:colspan => 4}
 
 %br

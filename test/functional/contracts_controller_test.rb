@@ -20,7 +20,7 @@ class ContractsControllerTest < ActionController::TestCase
   test "should create contract" do
     assert_difference('Contract.count') do
       post :create, :project_id => @project.to_param, :contract => {
-        :contractor => 'bob', :bid => 100
+        :name => 'bob', :bid => 100
       }
     end
 
