@@ -1,18 +1,6 @@
 %h1 Listing labor_costs
 
-%table
-  %tr
-    %th Date
-    %th
-    %th
-    %th
-
-  - @labor_costs.each do |labor_cost|
-    %tr
-      %td= labor_cost.date
-      %td= link_to 'Show', [@task, labor_cost]
-      %td= link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
-      %td= link_to 'Destroy', [@task, labor_cost], :confirm => 'Are you sure?', :method => :delete
+render :partial => 'labor_cost_list', :locals => {:labor_costs => @labor_costs}
 
 %br
 

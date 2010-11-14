@@ -1,21 +1,6 @@
 %h1 Listing material_cost_lines
 
-%table
-  %tr
-    %th Name
-    %th Quantity
-    %th
-    %th
-    %th
-
-  - @material_cost_lines.each do |material_cost_line|
-    %tr
-      %td= material_cost_line.name
-      %td= material_cost_line.quantity
-      %td= link_to 'Show', material_cost_line_path(@material_cost, material_cost_line)
-      %td= link_to 'Edit', edit_material_cost_line_path(@material_cost, material_cost_line)
-      %td= link_to 'Destroy', material_cost_line_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
-
+render :partial => 'material_cost_lines_list', :locals => {:material_cost_lines => @material_cost_lines}
 %br
 
 = link_to 'New Material cost line', new_material_cost_line_path(@material_cost)

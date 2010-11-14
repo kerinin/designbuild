@@ -53,16 +53,32 @@ namespace :db do
         Factory :task, :project => project
       }
       
-      # Assign costs to tasks
+      # Assign cost estimates to tasks
       rand(UnitCostEstimate.count).times {
         cost = UnitCostEstimate.unassigned.first
-        cost.task = Task.find rand(Task.count)+1
-        cost.save!
+        cost.task = Task.find rand(Task.count)+1 unless cost.nil?
+        cost.save! unless cost.nil?
       }
       rand(FixedCostEstimate.count).times {
         cost = FixedCostEstimate.unassigned.first
-        cost.task = Task.find rand(Task.count)+1
-        cost.save!
+        cost.task = Task.find rand(Task.count)+1 unless cost.nil?
+        cost.save! unless cost.nil?
+      }
+      
+      # Assign costs to tasks
+      Task.all.each {|t|
+        rand(10).times {
+          l = Factory :labor_cost, :task => t
+          (rand(5)+1).times {
+            Factory :labor_cost_line, :labor_set => l
+          }
+        }
+        rand(10).times {
+          m = Factory :material_cost, :task => t
+          (rand(5)+1).times {
+            Factory :material_cost_line, :material_set => m
+          }
+        }
       }
       
       (rand(10)+1).times {

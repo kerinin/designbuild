@@ -1,0 +1,26 @@
+@import "compass/utilities/tables/alternating-rows-and-columns"
+
+body
+  table
+    $table-color : white
+    $table-header-color : #ccc
+    $table-alternating-color : #eee
+    tr:nth-child(odd)
+      background-color : $table-alternating-color
+    tr:nth-child(1)
+      background-color : $table-header-color
+    tr.totals
+      background-color : $table-header-color
+    td.currency
+      text-align : right
+      width : 4em
+    td.number
+      text-align : right
+      width : 4em
+    td.control
+      width : 3em
+      text-align : center
+    td.right
+      text-align : right
+    th
+      text-align : center

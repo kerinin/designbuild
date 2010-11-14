@@ -1,19 +1,6 @@
 %h1 Listing labor_cost_lines
 
-%table
-  %tr
-    %th Hours
-    %th
-    %th
-    %th
-
-  - @labor_cost_lines.each do |labor_cost_line|
-    %tr
-      %td= labor_cost_line.hours
-      %td= link_to 'Show', labor_cost_line_path(@labor_cost, labor_cost_line)
-      %td= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, labor_cost_line)
-      %td= link_to 'Destroy', labor_cost_line_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
-
+=render :partial => 'labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost_lines}
 %br
 
 = link_to 'New Labor cost line', new_labor_cost_line_path(@labor_cost)

@@ -2,7 +2,7 @@
 
 Factory.define :laborer do |f|
   f.name {Forgery::Name.full_name}
-  f.bill_rate 1.5
+  f.bill_rate {rand(10)+10}
   
   f.project {|p| p.association(:project)}
 end

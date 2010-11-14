@@ -1,22 +1,26 @@
-%p#notice= notice
+%h1= @component.name
+
+=render :partial => 'shared/project_nav'
 
 =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] + @component.ancestors}
 
-%h1= @component.name
 %p
-	$
-	= @component.estimated_cost
+	= number_to_currency(@component.estimated_cost)
 	(estimated)
 
 = link_to 'Edit', edit_project_component_path(@project, @component)
 \|
 = link_to 'Back', project_components_path(@project)
 
+%hr
+
 %h2 Quantities
 =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities, :component => @component}
 
 %h2 Estimated Costs
+%h3 Unit Costs
 =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates}
+%h3 Fixed Costs
 =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates}
 
 %h2 Sub-Components

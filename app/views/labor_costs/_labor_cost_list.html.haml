@@ -1,0 +1,15 @@
+%table
+  %tr
+    %th Date
+    %th Cost
+    %th
+    %th
+    %th
+
+  - labor_costs.each do |labor_cost|
+    %tr
+      %td= labor_cost.date
+      %td= labor_cost.cost
+      %td= link_to 'Show', [@task, labor_cost]
+      %td= link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
+      %td= link_to 'Destroy', [@task, labor_cost], :confirm => 'Are you sure?', :method => :delete

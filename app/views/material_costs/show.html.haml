@@ -1,8 +1,11 @@
-%p#notice= notice
-
-%p
-  %b Date:
+%h2
+  Materials:
   = @material_cost.date
+  ($
+  =@material_cost.cost
+  )
+
+=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items}
 
 = link_to 'Edit', edit_task_material_cost_path(@task, @material_cost)
 \|

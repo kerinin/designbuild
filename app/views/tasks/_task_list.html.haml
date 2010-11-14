@@ -3,6 +3,7 @@
     %th Name
     %th Est. Cost
     %th Cost-to-Date
+    %th % of Est.
     %th
     %th
     %th
@@ -10,8 +11,20 @@
   - tasks.each do |task|
     %tr
       %td= task.name
-      %td= task.estimated_cost
-      %td= task.cost
+      %td.currency= number_to_currency(task.estimated_cost)
+      %td.currency= number_to_currency(task.cost)
+      %td.number= number_to_percentage(100 * task.cost / task.estimated_cost, :precision => 1)
       %td= link_to 'Show', [@project, task]
       %td= link_to 'Edit', edit_project_task_path(@project, task)
       %td= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
+      
+  %tr.totals
+    %td
+      %strong Total
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| memo + obj.estimated_cost })
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| memo + obj.cost })
+    %td.number
+      %strong= number_to_percentage(100 * (tasks.inject(0) {|memo,obj| memo + obj.estimated_cost}) / (tasks.inject(0) {|memo,obj| memo + obj.cost}))
+    %td{:colspan => 4}

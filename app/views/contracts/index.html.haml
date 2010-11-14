@@ -1,9 +1,13 @@
 %h1 Listing contracts
 
+=render :partial => 'shared/project_nav'
+
 %table
   %tr
     %th Contractor
     %th Bid
+    %th Cost-to-Date
+    %th % Total
     %th
     %th
     %th
@@ -11,10 +15,23 @@
   - @contracts.each do |contract|
     %tr
       %td= contract.contractor
-      %td= contract.bid
+      %td.currency= contract.bid
+      %td.currency= contract.cost
+      %td.number= number_to_percentage(100 * contract.cost / contract.bid, :precision => 1)
       %td= link_to 'Show', [@project, contract]
       %td= link_to 'Edit', edit_project_contract_path(@project, contract)
       %td= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
+      
+  %tr.totals
+    %td
+      %strong Total
+    %td.currency
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| memo + obj.bid})
+    %td.currency
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| memo + obj.cost})
+    %td.number
+      %strong= number_to_percentage( 100 * (@contracts.inject(0) {|memo,obj| memo + obj.bid}) / (@contracts.inject(0) {|memo,obj| memo + obj.cost}))
+    %td{:colspan => 4}
 
 %br
 

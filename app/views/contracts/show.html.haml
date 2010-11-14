@@ -1,12 +1,14 @@
-%p#notice= notice
+%h1= @contract.contractor
 
-%p
-  %b Contractor:
-  = @contract.contractor
+=render :partial => 'shared/project_nav'
+
+=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] }
+
 %p
   %b Bid:
   = @contract.bid
 
+=render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
 = link_to 'Edit', edit_project_contract_path(@project, @contract)
 \|
 = link_to 'Back', project_contracts_path(@project)

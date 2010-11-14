@@ -1,0 +1,19 @@
+%table
+  %tr
+    %th Employee
+    %th Hours
+    %th Bill Rate
+    %th Cost
+    %th
+    %th
+    %th
+
+  - labor_cost_lines.each do |labor_cost_line|
+    %tr
+      %td= labor_cost_line.laborer.name
+      %td= labor_cost_line.hours
+      %td= labor_cost_line.laborer.bill_rate
+      %td= labor_cost_line.cost
+      %td= link_to 'Show', labor_cost_line_path(@labor_cost, labor_cost_line)
+      %td= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, labor_cost_line)
+      %td= link_to 'Destroy', labor_cost_line_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete

@@ -2,7 +2,7 @@
 
 Factory.define :material_cost_line do |f|
   f.name {Forgery::LoremIpsum.sentence :random => true}
-  f.quantity 1.5
+  f.quantity rand(1000)
   
   f.material_set {|p| p.association(:material_cost)}
 end

@@ -1,0 +1,15 @@
+%table
+  %tr
+    %th Date
+    %th Cost
+    %th
+    %th
+    %th
+
+  - material_costs.each do |material_cost|
+    %tr
+      %td= material_cost.date
+      %td= material_cost.cost
+      %td= link_to 'Show', [@task, material_cost]
+      %td= link_to 'Edit', edit_task_material_cost_path(@project, @task, material_cost)
+      %td= link_to 'Destroy', [@task, material_cost], :confirm => 'Are you sure?', :method => :delete

@@ -2,7 +2,7 @@
 
 Factory.define :bid do |f|
   f.date {Forgery::Date.date}
-  f.cost 1.5
+  f.cost {Forgery::Monetary.money :min => 1000, :max => 10000}
   
   f.contract {|p| p.association(:contract)}
 end
