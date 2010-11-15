@@ -33,12 +33,12 @@ gem "friendly_id", "~> 3.1"
 # gem "memcached"
 gem "acts_as_list"
 gem "ancestry"
+gem "shoulda"
+gem "rspec-rails", "2.0.0.beta.12"
+#gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
+gem 'factory_girl_rails'
 
 group :test, :development do
-  gem "shoulda"
-  gem "rspec-rails", "2.0.0.beta.12"
-  #gem 'factory_girl', :git => 'git://github.com/danielb2/factory_girl'
-  gem 'factory_girl_rails'
   gem 'forgery'
   gem 'capybara'
   gem 'database_cleaner'
@@ -46,7 +46,6 @@ group :test, :development do
   gem 'cucumber'
   gem 'spork'
   gem 'launchy'
-  gem 'ar_fixtures'
 end
 
 

@@ -31,8 +31,6 @@ GEM
     acts_as_list (0.1.2)
     ancestry (1.2.3)
       activerecord (>= 2.2.2)
-    ar_fixtures (0.0.4)
-      hoe (>= 1.2.1)
     arel (1.0.1)
       activesupport (~> 3.0.0)
     aws-s3 (0.6.2)
@@ -91,9 +89,6 @@ GEM
       activesupport (~> 3.0)
       haml (~> 3.0)
       railties (~> 3.0)
-    hoe (2.6.2)
-      rake (>= 0.8.7)
-      rubyforge (>= 2.0.4)
     i18n (0.4.2)
     jquery-rails (0.2.5)
       rails (~> 3.0)
@@ -145,8 +140,6 @@ GEM
     rspec-rails (2.0.0.beta.12)
       rspec (= 2.0.0.beta.12)
       webrat (>= 0.7.0)
-    rubyforge (2.0.4)
-      json_pure (>= 1.1.7)
     rubyzip (0.9.4)
     selenium-webdriver (0.1.0)
       childprocess (= 0.1.4)
@@ -177,7 +170,6 @@ PLATFORMS
 DEPENDENCIES
   acts_as_list
   ancestry
-  ar_fixtures
   aws-s3
   capybara
   compass (>= 0.10.6)
