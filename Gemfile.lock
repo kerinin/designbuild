@@ -175,6 +175,7 @@ DEPENDENCIES
   compass (>= 0.10.6)
   cucumber
   cucumber-rails
+  culerity
   database_cleaner
   devise
   factory_girl_rails

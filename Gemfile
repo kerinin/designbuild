@@ -40,6 +40,8 @@ group :test, :development do
   gem 'factory_girl_rails'
   gem 'forgery'
   gem 'capybara'
+  gem 'culerity'
+  #gem 'capybara-envjs', :require => 'capybara/envjs'
   gem 'database_cleaner'
   gem 'cucumber-rails'
   gem 'cucumber'

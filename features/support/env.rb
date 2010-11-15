@@ -22,6 +22,7 @@ Spork.prefork do
   require 'capybara/rails'
   require 'capybara/cucumber'
   require 'capybara/session'
+  #require 'capybara/envjs'
   #require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
   # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
   # order to ease the transition to Capybara we set the default here. If you'd
@@ -33,7 +34,8 @@ Spork.prefork do
   #Capybara.default_selector = :xpath #default selector , you can change to :css
   #Capybara.default_wait_time = 2 #When we testing AJAX, we can set a default wait time
   #Capybara.ignore_hidden_elements = false #Ignore hidden elements when testing, make helpful when you hide or show elements using javascript
-  #Capybara.javascript_driver = :culerity #default driver when you using @javascript tag
+  Capybara.javascript_driver = :culerity #default driver when you using @javascript tag
+  #Capybara.javascript_driver = :envjs
   Cucumber::Rails::World.use_transactional_fixtures = false
   DatabaseCleaner.strategy = :truncation
 end
