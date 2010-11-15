@@ -20,7 +20,7 @@ class ContractTest < ActiveSupport::TestCase
     end
     
     should "have values" do
-      assert_not_nil @obj.contractor
+      assert_not_nil @obj.name
       assert_not_nil @obj.bid
     end
     
