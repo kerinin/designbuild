@@ -6,8 +6,10 @@ project_path = Compass::AppIntegration::Rails.root
 http_path = "/"
 #css_dir = "public/stylesheets/compiled"
 # For Heroku...
-css_dir = "tmp/stylesheets"
+css_dir = "tmp/stylesheets/compiled"
 sass_dir = "app/stylesheets"
 environment = Compass::AppIntegration::Rails.env
 # To enable relative paths to assets via compass helper functions. Uncomment:
 relative_assets = true
+
+#Sass::Plugin.options[:template_location] << 'app/stylesheets'

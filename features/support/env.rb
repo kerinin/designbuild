@@ -11,6 +11,9 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= "test"
   require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
   
+  require 'rake'
+  load File.join( RAILS_ROOT, 'vendor', 'plugins', 'yaml_db', 'tasks', 'yaml_db_tasks.rake')
+  
   require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
   require 'cucumber/rails/world'
   require 'cucumber/rails/active_record'
@@ -71,8 +74,5 @@ Spork.each_run do
     end
   end
   
-  Fixtures.reset_cache
-  fixtures_folder = File.join(RAILS_ROOT, 'test', 'fixtures')
-  fixtures = Dir[File.join(fixtures_folder, '*.yml')].map {|f| File.basename(f, '.yml') }
-  Fixtures.create_fixtures(fixtures_folder, fixtures)
+  Rake::Task['db:data:load'].invoke
 end
