@@ -46,6 +46,7 @@ group :test, :development do
   gem 'cucumber'
   gem 'spork'
   gem 'launchy'
+  gem 'ar_fixtures'
 end
 
 
