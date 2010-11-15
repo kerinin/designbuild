@@ -3,9 +3,9 @@ Given /^the following components:$/ do |components|
   Component.create!(components.hashes)
 end
 
-When /^I delete the (\d+)(?:st|nd|rd|th) component$/ do |pos|
+When /^I click "(\w*)" on the (\d+)(?:st|nd|rd|th) component$/ do |action,pos|
   within("table tr.component:nth-child(#{pos.to_i+1})") do
-    click_link "Destroy"
+    click_link action
   end
 end
 
