@@ -7,7 +7,7 @@
     %th.control
 
   - components.each do |component|
-    %tr{:id => "component_#{component.id}"}
+    %tr.component{:id => "component_#{component.id}"}
       %td= component.name
       %td.currency= number_to_currency(component.estimated_cost)
       %td.control.show= link_to 'Show', [@project, component]

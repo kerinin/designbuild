@@ -11,8 +11,7 @@ Spork.prefork do
   ENV["RAILS_ENV"] ||= "test"
   require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
   
-  require 'rake'
-  load File.join( RAILS_ROOT, 'vendor', 'plugins', 'yaml_db', 'lib', 'tasks', 'yaml_db_tasks.rake')
+  require 'yaml_db'
 
   require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
   require 'cucumber/rails/world'
@@ -23,7 +22,7 @@ Spork.prefork do
   require 'capybara/rails'
   require 'capybara/cucumber'
   require 'capybara/session'
-  require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
+  #require 'cucumber/rails/capybara_javascript_emulation' # Lets you click links with onclick javascript handlers without using @culerity or @javascript
   # Capybara defaults to XPath selectors rather than Webrat's default of CSS3. In
   # order to ease the transition to Capybara we set the default here. If you'd
   # prefer to use XPath just remove this line and adjust any selectors in your
@@ -74,5 +73,8 @@ Spork.each_run do
     end
   end
   
-  Rake::Task['db:data:load'].invoke
+  format_class = "YamlDb::Helper"
+  helper = format_class.constantize
+  file = File.expand_path( Rails.root + 'db/data.yml')
+  SerializationHelper::Base.new(helper).load(file)
 end

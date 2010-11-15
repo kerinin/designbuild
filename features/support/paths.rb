@@ -10,8 +10,17 @@ module NavigationHelpers
 
     when /the home\s?page/
       '/'
+    when /the new bid page/
+      new_bid_path
+
+    when /the components page of project (\d+)/
+      project_components_path($1.to_i)
+      
+    when /the components page/
+      project_components_path(Project.first)
+
     when /the new component page/
-      new_component_path
+      new_project_component_path(Project.first)
 
 
     # Add more mappings here.
