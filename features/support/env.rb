@@ -12,8 +12,8 @@ Spork.prefork do
   require File.expand_path(File.dirname(__FILE__) + '/../../config/environment')
   
   require 'rake'
-  load File.join( RAILS_ROOT, 'vendor', 'plugins', 'yaml_db', 'tasks', 'yaml_db_tasks.rake')
-  
+  load File.join( RAILS_ROOT, 'vendor', 'plugins', 'yaml_db', 'lib', 'tasks', 'yaml_db_tasks.rake')
+
   require 'cucumber/formatter/unicode' # Remove this line if you don't want Cucumber Unicode support
   require 'cucumber/rails/world'
   require 'cucumber/rails/active_record'
