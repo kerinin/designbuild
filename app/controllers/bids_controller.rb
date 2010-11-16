@@ -4,7 +4,7 @@ class BidsController < ApplicationController
   # GET /bids
   # GET /bids.xml
   def index
-    @bids = Bid.all
+    @bids = @contract.bids
 
     respond_to do |format|
       format.html # index.html.erb

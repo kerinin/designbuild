@@ -5,9 +5,9 @@ class Component < ActiveRecord::Base
   
   belongs_to :project
   
-  has_many :quantities
-  has_many :fixed_cost_estimates
-  has_many :unit_cost_estimates
+  has_many :quantities, :order => :name
+  has_many :fixed_cost_estimates, :order => :name
+  has_many :unit_cost_estimates, :order => :name
   
   has_and_belongs_to_many :tags
   

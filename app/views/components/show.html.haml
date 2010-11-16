@@ -7,7 +7,7 @@
 %hr
 
 %h2 Sub-Components
-=render :partial => 'component_list', :locals => {:components => @component.children}
+=render :partial => 'component_list', :locals => {:components => @component.children.order(:name)}
 
 %hr
 

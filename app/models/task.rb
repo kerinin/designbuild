@@ -5,10 +5,10 @@ class Task < ActiveRecord::Base
   belongs_to :deadline, :polymorphic => true
   belongs_to :project
   
-  has_many :unit_cost_estimates
-  has_many :fixed_cost_estimates
-  has_many :labor_costs
-  has_many :material_costs
+  has_many :unit_cost_estimates, :order => :name
+  has_many :fixed_cost_estimates, :order => :name
+  has_many :labor_costs, :order => 'date DESC'
+  has_many :material_costs, :order => 'date DESC'
   
   validates_presence_of :project
 

@@ -4,7 +4,7 @@ class DeadlinesController < ApplicationController
   # GET /deadlines
   # GET /deadlines.xml
   def index
-    @deadlines = Deadline.all
+    @deadlines = @project.deadlines
 
     respond_to do |format|
       format.html # index.html.erb
