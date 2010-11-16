@@ -1,18 +1,24 @@
 %table
-  %tr
-    %th Date
-    %th Supplier
-    %th.currency Cost
-    %th.control
-    %th.control
-    %th.control
+  -unless context == :project
+    %tr
+      %th Date
+      %th Supplier
+      %th.currency Cost
+      %th.control
+      %th.control
+      %th.control
+  -else
+    %tr
+      %th{:colspan => 10}
+        Task:
+        =task.name
 
   - material_costs.each do |material_cost|
     %tr
       %td= material_cost.date.to_s :long
       %td= material_cost.supplier.name
       %td.currency= number_to_currency material_cost.cost
-      %td.control= link_to 'Show', [@task, material_cost]
+      %td.control= link_to 'Show', [task, material_cost]
       - if context == :po
         %td.control= link_to 'Log Cost', edit_task_material_cost_path(@project, task, material_cost)
       - else
@@ -26,10 +32,11 @@
   - if context == :po
     %tr.control.add_button
       %td{:colspan => 10} (Add Purchase Order)
-      
-  %tr.totals
-    %td.right
-      %strong Subtotal
-    %td.currency
-      %strong= number_to_currency( material_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
-    %td{:colspan => 4}
+  
+  - if context == :task
+    %tr.totals
+      %td.right
+        %strong Subtotal
+      %td.currency
+        %strong= number_to_currency( material_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %td{:colspan => 4}

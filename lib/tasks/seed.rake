@@ -8,6 +8,11 @@ namespace :db do
     (rand(5)+5).times { 
       project = Factory :project 
       
+      suppliers = []
+      4.times {
+        suppliers << Factory( :supplier, :project => project )
+      }
+      
       (rand(10)+1).times { Factory :laborer, :project => project }
       
       # Components
@@ -69,7 +74,7 @@ namespace :db do
             }
           }
           (rand(5)+5).times {
-            m = (rand(3) == 1) ? Factory( :material_cost, :task => t, :cost => nil ) : Factory( :material_cost, :task => t )
+            m = (rand(3) == 1) ? Factory( :material_cost, :task => t, :cost => nil, :supplier => suppliers.random ) : Factory( :material_cost, :task => t, :supplier => suppliers.random )
             (rand(5)+1).times {
               Factory :material_cost_line, :material_set => m
             }
