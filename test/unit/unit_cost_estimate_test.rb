@@ -8,10 +8,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       @c2 = Factory :component, :project => @proj
       @t1 = Factory :task, :project => @proj
       @q = Factory :quantity, :value => 10, :component => @c1
-      @dq = Factory :derived_quantity, :parent_quantity => @q, :multiplier => 2
       
       @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5
-      @obj2 = Factory :unit_cost_estimate, :task => @t1, :quantity => @dq, :unit_cost => 5
     end
 
     teardown do
@@ -65,7 +63,6 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     
     should "generate cost" do
       assert_equal 50, @obj.cost
-      assert_equal 100, @obj2.cost
     end
   end
 end

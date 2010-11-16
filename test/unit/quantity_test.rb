@@ -5,15 +5,12 @@ class QuantityTest < ActiveSupport::TestCase
     setup do
       @obj = Factory :quantity
       
-      @dq1 = Factory :derived_quantity, :parent_quantity => @obj
-      @dq2 = Factory :derived_quantity, :parent_quantity => @obj
       @uc1 = Factory :unit_cost_estimate, :quantity => @obj
       @uc2 = Factory :unit_cost_estimate, :quantity => @obj
     end
 
     teardown do
       Quantity.delete_all
-      DerivedQuantity.delete_all
       Component.delete_all
       UnitCostEstimate.delete_all
     end
@@ -33,11 +30,6 @@ class QuantityTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :quantity, :component => nil
       end
-    end
-    
-    should "allow multiple derived quantities" do
-      assert_contains @obj.derived_quantities, @dq1
-      assert_contains @obj.derived_quantities, @dq2
     end
     
     should "allow multiple unit costs" do

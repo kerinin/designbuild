@@ -14,22 +14,17 @@ class ComponentTest < ActiveSupport::TestCase
       @subsub = Factory :component, :parent => @sub1
       @q1 = Factory :quantity, :component => @obj, :value => 1
       @q2 = Factory :quantity, :component => @obj, :value => 2
-      @dq1 = Factory :derived_quantity, :parent_quantity => @q1, :multiplier => 1
-      @dq2 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 2
-      @dq3 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 1
       @fc1 = Factory :fixed_cost_estimate, :component => @obj, :cost => 1
       @fc2 = Factory :fixed_cost_estimate, :component => @obj, :cost => 10
       @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :cost => 100000
       @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100 # x1
       @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000 # x2
-      @uc3 = Factory :unit_cost_estimate, :quantity => @dq2, :unit_cost => 10000 # x4
     end
 
     teardown do
       Component.delete_all
       Tag.delete_all
       Quantity.delete_all
-      DerivedQuantity.delete_all
       FixedCostEstimate.delete_all
       UnitCostEstimate.delete_all
     end
@@ -79,20 +74,11 @@ class ComponentTest < ActiveSupport::TestCase
     should "have multiple fixed costs" do
       assert_contains @obj.fixed_cost_estimates, @fc1
       assert_contains @obj.fixed_cost_estimates, @fc2
-    end
-    
-    should "aggregate all quantities" do
-      assert_contains @obj.all_quantities, @q1
-      assert_contains @obj.all_quantities, @q2
-      assert_contains @obj.all_quantities, @dq1
-      assert_contains @obj.all_quantities, @dq2
-      assert_contains @obj.all_quantities, @dq3
-    end      
+    end    
     
     should "have multiple unit costs" do
       assert_contains @obj.unit_cost_estimates, @uc1
       assert_contains @obj.unit_cost_estimates, @uc2
-      assert_contains @obj.unit_cost_estimates, @uc3
     end
     
     should "aggregate all costs" do
@@ -100,7 +86,6 @@ class ComponentTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @fc2
       assert_contains @obj.cost_estimates, @uc1
       assert_contains @obj.cost_estimates, @uc2
-      assert_contains @obj.cost_estimates, @uc3
     end
     
     should "return ancestors" do
@@ -119,11 +104,11 @@ class ComponentTest < ActiveSupport::TestCase
     #--------------------------CALCULATIONS
     
     should "aggregate estimated component costs" do
-      assert_equal 42111, @obj.estimated_component_cost
+      assert_equal 2111, @obj.estimated_component_cost
     end
 
     should "aggregate estimated costs" do
-      assert_equal 142111, @obj.estimated_cost
+      assert_equal 102111, @obj.estimated_cost
     end
         
     should "return estimated cost nil if no estimates" do

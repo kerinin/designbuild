@@ -16,10 +16,6 @@ class Component < ActiveRecord::Base
   
   before_validation :check_project
   
-  def all_quantities
-    self.quantities.all + self.derived_quantities.all
-  end
-  
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end

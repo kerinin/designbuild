@@ -13,16 +13,12 @@ class ProjectTest < ActiveSupport::TestCase
         @sc1 = Factory :component, :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :cost => 0.1
           @q1 = Factory :quantity, :component => @sc1, :value => 1
-          @dq1 = Factory :derived_quantity, :parent_quantity => @q1, :multiplier => 2 # 2
           @uc1 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @q1, :unit_cost => 0.03 #.03
-          @uc2 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @dq1, :unit_cost => 0.003 #.006
         
       @c2 = Factory :component, :project => @obj
         @fc2 = Factory :fixed_cost_estimate, :component => @c2, :cost => 1
         @q2 = Factory :quantity, :component => @c2, :value => 1
-        @dq2 = Factory :derived_quantity, :parent_quantity => @q2, :multiplier => 2 # 2
         @uc3 = Factory :unit_cost_estimate, :component => @c2, :quantity => @q2, :unit_cost => 30 #30
-        @uc4 = Factory :unit_cost_estimate, :component => @c2, :quantity => @dq2, :unit_cost => 300 #600
 
       @t1 = Factory :task, :project => @obj
         @mc1 = Factory :material_cost, :task => @t1, :cost => 1
@@ -51,6 +47,7 @@ class ProjectTest < ActiveSupport::TestCase
       Task.delete_all
       Contract.delete_all
       Deadline.delete_all
+      Quantity.delete_all
     end
     
     should "be valid" do
@@ -107,9 +104,7 @@ class ProjectTest < ActiveSupport::TestCase
     
     should "inherit unit cost estimates" do
       assert_contains @obj.unit_cost_estimates.all, @uc1
-      assert_contains @obj.unit_cost_estimates.all, @uc2
       assert_contains @obj.unit_cost_estimates.all, @uc3
-      assert_contains @obj.unit_cost_estimates.all, @uc4
     end
     
     #---------------------CALCULATIONS
@@ -119,11 +114,11 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     should "aggregate estimated unit costs" do
-      assert_equal 630.036, @obj.estimated_unit_cost
+      assert_equal 30.03, @obj.estimated_unit_cost
     end
     
     should "aggregate estimated costs" do
-      assert_equal 631.136, @obj.estimated_cost
+      assert_equal 31.13, @obj.estimated_cost
     end
     
     should "aggregate material costs" do

@@ -21,16 +21,11 @@ namespace :db do
           q1 = Factory :quantity, :component => c2
           q2 = Factory :quantity, :component => c3
           
-          dq1 = Factory :derived_quantity, :parent_quantity => q1
-          dq2 = Factory :derived_quantity, :parent_quantity => q2
-          
           rand(5).times { Factory :fixed_cost_estimate, :component => c2 }
           rand(5).times { Factory :fixed_cost_estimate, :component => c3 }
    
           Factory :unit_cost_estimate, :quantity => q1
           Factory :unit_cost_estimate, :quantity => q2
-          Factory :unit_cost_estimate, :quantity => dq1
-          Factory :unit_cost_estimate, :quantity => dq2
         }
         
         quantities = []
@@ -40,7 +35,6 @@ namespace :db do
         
         quantities.each { |q|
           rand(5).times {
-            dq = Factory :derived_quantity, :parent_quantity => q
             Factory :unit_cost_estimate, :quantity => dq
           }
           
