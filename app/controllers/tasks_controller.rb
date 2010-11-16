@@ -29,6 +29,7 @@ class TasksController < ApplicationController
     @task = Task.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @task }
     end
@@ -47,9 +48,13 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.save
+        format.js { 
+          @tasks = @project.tasks
+        }
         format.html { redirect_to([@project, @task], :notice => 'Task was successfully created.') }
         format.xml  { render :xml => @task, :status => :created, :location => @task }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @task.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class TasksController < ApplicationController
 
     respond_to do |format|
       if @task.update_attributes(params[:task])
+        format.js { 
+          @tasks = @project.tasks
+        }
         format.html { redirect_to([@project, @task], :notice => 'Task was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @task.errors, :status => :unprocessable_entity }
       end

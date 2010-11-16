@@ -1,4 +1,4 @@
-%table
+%table.tasks
   %tr
     %th Name
     %th.currency Est. Cost
@@ -9,18 +9,21 @@
     %th.control
 
   - tasks.each do |task|
-    %tr
+    %tr{:id => "task_#{task.id}"}
       %td= task.name
       %td.currency= number_to_currency(task.estimated_cost)
       %td.currency= number_to_currency(task.cost)
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 1)
       %td.control= link_to 'Show', [@project, task]
-      %td.control= link_to 'Rename', edit_project_task_path(@project, task)
+      %td.control= link_to 'Rename', edit_project_task_path(@project, task), :remote => true
       %td.control= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
       
   - if tasks.empty?
     %tr
       %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Task)', new_project_task_path(@project), :remote => true |
       
   %tr.totals
     %td

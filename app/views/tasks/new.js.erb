@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@project, @task], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', project_tasks_path( @project ) %>
+<% end %>
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("tr.add_button").closest("table").wrap(form).append(contents);
+$("tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("tr.task_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("tr.add_button").hide();
+$("td.control.edit > a").contents().unwrap();
+$("input:text:visible:first").focus();

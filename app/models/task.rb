@@ -10,7 +10,7 @@ class Task < ActiveRecord::Base
   has_many :labor_costs, :order => 'date DESC'
   has_many :material_costs, :order => 'date DESC'
   
-  validates_presence_of :project
+  validates_presence_of :name, :project
 
   def cost_estimates
     self.unit_cost_estimates + self.fixed_cost_estimates
