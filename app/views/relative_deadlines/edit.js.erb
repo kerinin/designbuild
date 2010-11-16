@@ -1,5 +1,5 @@
 <% content_for :wrapping_form do %>
-	<%= form_for [@project, @deadline], :remote => true do |f|  %>
+	<%= form_for [@deadline, @relative_deadline], :remote => true do |f|  %>
 		<% content_for :tr do %>
 			<%= render :partial => 'form_tr', :locals => {:f => f} %>
 		<% end %>
@@ -7,16 +7,15 @@
 <% end %>
 
 <% content_for :cancel_link do %>
-  <%= link_to 'Cancel', project_deadlines_path( @project ) %>
+  <%= link_to 'Cancel', deadline_relative_deadlines_path(@deadline) %>
 <% end %>
+
 
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
 $("table.deadlines").wrap(form).append(contents);
-$("tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
-$("tr.deadline_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("tr#relative_deadline_<%= @relative_deadline.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("tr.relative_deadline_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 $("tr.add_button").hide();
-$("td.control.edit > a").contents().unwrap();
-$("a.add_relative").contents().unwrap();
 $("input:text:visible:first").focus();

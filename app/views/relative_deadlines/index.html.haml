@@ -1,24 +1,7 @@
 %h1 Listing relative_deadlines
 
-%table
-  %tr
-    %th Name
-    %th Interval
-    %th.control
-    %th.control
-    %th.control
-
-  - @relative_deadlines.each do |relative_deadline|
-    %tr
-      %td= relative_deadline.name
-      %td= relative_deadline.interval
-      %td.control= link_to 'Show', [@deadline, relative_deadline]
-      %td.control= link_to 'Edit', edit_deadline_relative_deadline_path(@deadline, relative_deadline)
-      %td.control= link_to 'Destroy', [@deadline, relative_deadline], :confirm => 'Are you sure?', :method => :delete
-      
-  - if @relative_deadlines.empty?
-    %tr
-      %td{:colspan => 10} (None)
+%table.relative_deadlines
+  =render :partial => 'relative_deadline_list', :locals => {:deadline => @deadline, :relative_deadlines => @relative_deadlines}
 
 %br
 
