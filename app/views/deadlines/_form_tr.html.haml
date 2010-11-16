@@ -1,0 +1,11 @@
+%tr.deadline_fields
+  %td.field{:colspan => 2}
+    %strong= f.label :name
+    = f.text_field :name
+  %td
+  %td.field
+    %strong= f.label :date
+    = f.date_select :date
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
+      

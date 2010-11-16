@@ -29,6 +29,7 @@ class DeadlinesController < ApplicationController
     @deadline = Deadline.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @deadline }
     end
@@ -47,9 +48,13 @@ class DeadlinesController < ApplicationController
 
     respond_to do |format|
       if @deadline.save
+        format.js { 
+          @deadlines = @project.deadlines
+        }
         format.html { redirect_to([@project, @deadline], :notice => 'Deadline was successfully created.') }
         format.xml  { render :xml => @deadline, :status => :created, :location => @deadline }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @deadline.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class DeadlinesController < ApplicationController
 
     respond_to do |format|
       if @deadline.update_attributes(params[:deadline])
+        format.js { 
+          @deadlines = @project.deadlines
+        }
         format.html { redirect_to([@project, @deadline], :notice => 'Deadline was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @deadline.errors, :status => :unprocessable_entity }
       end

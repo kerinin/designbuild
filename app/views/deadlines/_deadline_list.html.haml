@@ -1,0 +1,41 @@
+%table.deadlines
+  %tr
+    %th Name
+    %th
+    %th Date
+    %th.control
+    %th.control
+    %th.control
+
+  - deadlines.each do |deadline|
+    %tr{:id => "deadline_#{deadline.id}"}
+      %td{:colspan => 2}
+        = deadline.name
+        = link_to "(Add Relative Deadline)", new_deadline_relative_deadline_path(deadline), :remote => true
+      %td= deadline.date.to_s :long
+      %td.control
+      %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline), :remote => true
+      %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
+      
+    - deadline.relative_deadlines.each do |relative_deadline|
+      %tr{:id => "deadline_#{deadline.id}"}
+        %td
+        %td
+          &uarr;
+          ( 
+          =(relative_deadline.interval < 0 ? '' : '+')+relative_deadline.interval.to_s
+          days
+          )
+          = relative_deadline.name
+        %td= deadline.date.to_s :long
+        %td.control
+        %td.control= link_to 'Edit', edit_deadline_relative_deadline_path(deadline, relative_deadline), :remote => true
+        %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    
+      
+  - if deadlines.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Deadline)', new_project_deadline_path(@project), :remote => true
+      

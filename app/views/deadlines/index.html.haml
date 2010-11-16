@@ -4,38 +4,5 @@
 
 %hr
 
-%table
-  %tr
-    %th Name
-    %th
-    %th Date
-    %th.control
-    %th.control
-    %th.control
-
-  - @deadlines.each do |deadline|
-    %tr
-      %td{:colspan => 2}= deadline.name
-      %td= deadline.date.to_s :long
-      %td.control
-      %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline)
-      %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
+=render :partial => 'deadline_list', :locals => {:deadlines => @deadlines}
       
-    - deadline.relative_deadlines.each do |relative_deadline|
-      %tr
-        %td
-        %td
-          &uarr;
-          ( 
-          =(relative_deadline.interval < 0 ? '' : '+')+relative_deadline.interval.to_s
-          days
-          )
-          = relative_deadline.name
-        %td= deadline.date.to_s :long
-        %td.control
-        %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline)
-        %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    
-      
-  - if @deadlines.empty?
-    %tr
-      %td{:colspan => 10} (None)

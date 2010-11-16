@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@project, @deadline], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', project_deadlines_path(@project) %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.deadlines").wrap(form).append(contents);
+$("tr#deadline_<%= @deadline.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("tr.deadline_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("tr.add_button").hide();
+$("input:text:visible:first").focus();
