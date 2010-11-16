@@ -5,7 +5,7 @@ namespace :db do
     Factory :user, :email => 'test@example.com', :password => 'password'
     (rand(10)+1).times { Factory :user }
     
-    (rand(10)+1).times { 
+    (rand(5)+5).times { 
       project = Factory :project 
       
       (rand(10)+1).times { Factory :laborer, :project => project }
@@ -59,41 +59,43 @@ namespace :db do
         cost.save! unless cost.nil?
       }
       
-      # Assign costs to tasks
-      Task.all.each {|t|
-        rand(10).times {
-          l = Factory :labor_cost, :task => t
-          (rand(5)+1).times {
-            Factory :labor_cost_line, :labor_set => l
+      if rand(2) == 1
+        # Assign costs to tasks
+        project.tasks.each {|t|
+          rand(10).times {
+            l = Factory :labor_cost, :task => t
+            (rand(5)+1).times {
+              Factory :labor_cost_line, :labor_set => l, :laborer => Laborer.all[rand(Laborer.count)]
+            }
+          }
+          rand(10).times {
+            m = Factory :material_cost, :task => t
+            (rand(5)+1).times {
+              Factory :material_cost_line, :material_set => m
+            }
           }
         }
-        rand(10).times {
-          m = Factory :material_cost, :task => t
-          (rand(5)+1).times {
-            Factory :material_cost_line, :material_set => m
+      
+        (rand(10)+1).times {
+          contract = Factory :contract, :project => project
+        
+          (rand(10)+1).times {
+            Factory :bid, :contract => contract
+          }
+          (rand(10)+1).times {
+            Factory :contract_cost, :contract => contract
           }
         }
-      }
       
-      (rand(10)+1).times {
-        contract = Factory :contract, :project => project
-        
-        (rand(10)+1).times {
-          Factory :bid, :contract => contract
-        }
-        (rand(10)+1).times {
-          Factory :contract_cost, :contract => contract
-        }
-      }
-      
-      # Deadlines
-      (rand(4)+1).times {
-        deadline = Factory :deadline, :project => project
-        
+        # Deadlines
         (rand(4)+1).times {
-          Factory :relative_deadline, :parent_deadline => deadline
+          deadline = Factory :deadline, :project => project
+        
+          (rand(4)).times {
+            Factory :relative_deadline, :parent_deadline => deadline
+          }
         }
-      }
+      end
     }
     
 

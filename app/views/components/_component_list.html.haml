@@ -11,7 +11,7 @@
       %td= component.name
       %td.currency= number_to_currency(component.estimated_cost)
       %td.control.show= link_to 'Show', [@project, component]
-      %td.control.edit= link_to 'Edit', edit_project_component_path(@project, component), :remote => true
+      %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
       
   - if components.empty?

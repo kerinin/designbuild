@@ -10,6 +10,11 @@
 
 %hr
 
+%h2 Sub-Components
+=render :partial => 'component_list', :locals => {:components => @component.children}
+
+%hr
+
 %h2 Quantities
 =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities, :component => @component}
 
@@ -19,8 +24,7 @@
 %h3 Fixed Costs
 =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @component, :fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50}
 
-%h2 Sub-Components
-=render :partial => 'component_list', :locals => {:components => @component.children}
+%hr
 
 %h2 Totals
 
@@ -32,8 +36,19 @@
     %th.control
     %th.control
   %tr
-    %td Component Subtotal
-    %td.currency= number_to_currency(@component.estimated_cost)
+    %td Estimated Unit Costs
+    %td.currency= number_to_currency(@component.estimated_component_unit_cost)
+  %tr
+    %td Estimated Fixed Costs
+    %td.currency= number_to_currency(@component.estimated_component_fixed_cost)
+  %tr
+    %td Sub-Component Costs
+    %td.currency= number_to_currency(@component.estimated_cost - @component.estimated_component_cost)
+  %tr.totals
+    %td.right
+      %strong Component Subtotal
+    %td.currency
+      %strong= number_to_currency(@component.estimated_cost)
     
     
         
