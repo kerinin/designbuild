@@ -1,8 +1,10 @@
 =render :partial => 'shared/project_nav'
 
-%h1= @component.name
+%h1
+  =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
+  = @component.name
 
-=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
+
 
 %hr
 
