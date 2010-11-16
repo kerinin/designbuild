@@ -1,6 +1,6 @@
 class UnitCostEstimate < ActiveRecord::Base
   belongs_to :component
-  belongs_to :quantity, :polymorphic => true
+  belongs_to :quantity
   belongs_to :task
 
   validates_presence_of :quantity, :unit_cost

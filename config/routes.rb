@@ -10,7 +10,6 @@ Designbuild::Application.routes.draw do
 
   resources :components do
     resources :quantities
-    resources :derived_quantities
     resources :fixed_cost_estimates
     resources :unit_cost_estimates
   end

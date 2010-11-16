@@ -33,11 +33,7 @@ namespace :db do
           quantities << Factory( :quantity, :component => c )     
         }
         
-        quantities.each { |q|
-          rand(5).times {
-            Factory :unit_cost_estimate, :quantity => dq
-          }
-          
+        quantities.each { |q| 
           rand(5).times {
             Factory :unit_cost_estimate, :quantity => q
           }

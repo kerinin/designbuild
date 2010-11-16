@@ -6,7 +6,6 @@ class Component < ActiveRecord::Base
   belongs_to :project
   
   has_many :quantities
-  has_many :derived_quantities
   has_many :fixed_cost_estimates
   has_many :unit_cost_estimates
   

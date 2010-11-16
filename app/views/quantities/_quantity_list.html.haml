@@ -8,7 +8,6 @@
     %th.control
     %th.control
     %th.control
-    %th.control
 
   - quantities.each do |quantity|
     %tr
@@ -16,7 +15,6 @@
       %td.number= quantity.value
       %td= quantity.unit
       %td.number= number_to_percentage(quantity.drop, :precision => 1 )
-      %td.control= link_to 'New Derived', new_component_derived_quantity_path(quantity, :parent_quantity_id => quantity.id)
       %td.control= link_to 'Show', [component, quantity]
       %td.control= link_to 'Edit', edit_component_quantity_path(component, quantity)
       %td.control= link_to 'Destroy', [component, quantity], :confirm => 'Are you sure?', :method => :delete
