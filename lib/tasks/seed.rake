@@ -62,14 +62,14 @@ namespace :db do
       if rand(2) == 1
         # Assign costs to tasks
         project.tasks.each {|t|
-          rand(10).times {
+          (rand(5)+5).times {
             l = Factory :labor_cost, :task => t
             (rand(5)+1).times {
               Factory :labor_cost_line, :labor_set => l, :laborer => Laborer.all[rand(Laborer.count)]
             }
           }
-          rand(10).times {
-            m = Factory :material_cost, :task => t
+          (rand(5)+5).times {
+            m = (rand(3) == 1) ? Factory( :material_cost, :task => t, :cost => nil ) : Factory( :material_cost, :task => t )
             (rand(5)+1).times {
               Factory :material_cost_line, :material_set => m
             }

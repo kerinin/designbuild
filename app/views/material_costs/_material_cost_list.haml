@@ -8,15 +8,22 @@
 
   - material_costs.each do |material_cost|
     %tr
-      %td= material_cost.date
+      %td= material_cost.date.to_s :long
       %td.currency= number_to_currency material_cost.cost
       %td.control= link_to 'Show', [@task, material_cost]
-      %td.control= link_to 'Edit', edit_task_material_cost_path(@project, @task, material_cost)
+      - if context == :po
+        %td.control= link_to 'Log Cost', edit_task_material_cost_path(@project, @task, material_cost)
+      - else
+        %td.control= link_to 'Edit Cost', edit_task_material_cost_path(@project, @task, material_cost)
       %td.control= link_to 'Destroy', [@task, material_cost], :confirm => 'Are you sure?', :method => :delete
 
   - if material_costs.empty?
     %tr
       %td{:colspan => 10} (None)
+      
+  - if context == :po
+    %tr.control.add_button
+      %td{:colspan => 10} (Add Purchase Order)
       
   %tr.totals
     %td.right

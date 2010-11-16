@@ -8,7 +8,7 @@
 
   - labor_costs.each do |labor_cost|
     %tr
-      %td= labor_cost.date
+      %td= labor_cost.date.to_s :long
       %td.currency= number_to_currency(labor_cost.cost)
       %td.control= link_to 'Show', [@task, labor_cost]
       %td.control= link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
@@ -18,6 +18,9 @@
     %tr
       %td{:colspan => 10} (None)
       
+  %tr.control.add_button
+    %td{:colspan => 10} (Log Hours)
+    
   %tr.totals
     %td.right
       %strong Subtotal

@@ -43,4 +43,12 @@ class Task < ActiveRecord::Base
   def cost
     add_or_nil(labor_cost, material_cost)
   end
+  
+  def purchase_orders
+    self.material_costs.where( :material_costs => {:cost => nil} )
+  end
+  
+  def completed_purchases
+    self.material_costs.where( "material_costs.cost IS NOT NULL" )
+  end
 end

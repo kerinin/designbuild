@@ -1,6 +1,7 @@
 =render :partial => 'shared/project_nav'
 
 %h1
+  Design Component: 
   =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
   = @component.name
 

@@ -1,14 +1,23 @@
 =render :partial => 'shared/project_nav'
 
-%h1= @task.name
+%h1
+  Construction Task:
+  = @task.name
 
 %hr
 
+-unless @task.purchase_orders.empty?
+  %h2 Purchase Orders
+  
+  =render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.purchase_orders, :context => :po}
+  
+  %hr
+  
 %h2 Costs to Date
 %h3 Labor
 =render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs}
 %h3 Material
-=render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.material_costs}
+=render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.completed_purchases, :context => :cost}
 
 %hr
 

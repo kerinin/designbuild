@@ -17,6 +17,8 @@ class TaskTest < ActiveSupport::TestCase
       @lc2 = Factory :labor_cost, :task => @obj
       @mc1 = Factory :material_cost, :task => @obj, :cost => 2
       @mc2 = Factory :material_cost, :task => @obj, :cost => 20
+      @mc3 = Factory :material_cost, :task => @obj, :cost => nil
+      @mc4 = Factory :material_cost, :task => @obj, :cost => nil
       
       @laborer = Factory :laborer, :bill_rate => 1
       Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 200
@@ -90,6 +92,20 @@ class TaskTest < ActiveSupport::TestCase
       assert_contains @obj.material_costs, @mc1
       assert_contains @obj.material_costs, @mc2
     end
+    
+    should "aggregate purchase orders" do
+      assert_contains @obj.purchase_orders.all, @mc3
+      assert_contains @obj.purchase_orders.all, @mc4
+      assert_does_not_contain @obj.purchase_orders.all, @mc1
+      assert_does_not_contain @obj.purchase_orders.all, @mc2
+    end
+    
+    should "aggregate completed purchases" do
+      assert_contains @obj.completed_purchases.all, @mc1
+      assert_contains @obj.completed_purchases.all, @mc2
+      assert_does_not_contain @obj.completed_purchases.all, @mc3
+      assert_does_not_contain @obj.completed_purchases.all, @mc4
+    end  
     
     should "aggregate estimates" do
       assert_contains @obj.cost_estimates, @fce1
