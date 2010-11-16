@@ -16,7 +16,7 @@
       %td= project.name
       %td.currency= number_to_currency(project.estimated_cost)
       %td.currency= number_to_currency(project.cost)
-      %td.control= link_to 'Show', project_components_path(project)
+      %td.control= link_to 'Show', project
       %td.control= link_to 'Rename', edit_project_path(project)
       %td.control= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
       

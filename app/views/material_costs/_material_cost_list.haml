@@ -1,6 +1,7 @@
 %table
   %tr
     %th Date
+    %th Supplier
     %th.currency Cost
     %th.control
     %th.control
@@ -9,6 +10,7 @@
   - material_costs.each do |material_cost|
     %tr
       %td= material_cost.date.to_s :long
+      %td= material_cost.supplier.name
       %td.currency= number_to_currency material_cost.cost
       %td.control= link_to 'Show', [@task, material_cost]
       - if context == :po
