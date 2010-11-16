@@ -26,7 +26,6 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
       assert_not_nil @obj.unit_cost
-      assert_not_nil @obj.tax
     end
 
     should "require a quantity" do

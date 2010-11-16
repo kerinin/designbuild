@@ -156,7 +156,6 @@ ActiveRecord::Schema.define(:version => 20101113192800) do
   create_table "unit_cost_estimates", :force => true do |t|
     t.string   "name"
     t.float    "unit_cost"
-    t.float    "tax"
     t.integer  "component_id"
     t.integer  "quantity_id"
     t.integer  "task_id"

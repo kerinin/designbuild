@@ -5,7 +5,6 @@
       %th Task
     %th.currency Unit cost
     %th.number Quantity
-    %th.number Tax
     %th.currency Cost
     %th.control
     %th.control
@@ -18,7 +17,6 @@
         %td= unit_cost_estimate.task.blank? ? nil : unit_cost_estimate.task.name
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.number= unit_cost_estimate.quantity.value.to_i
-      %td.number= unit_cost_estimate.tax
       %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
       - case parent.class.name
       - when 'Component'

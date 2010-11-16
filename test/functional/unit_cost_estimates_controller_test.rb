@@ -22,7 +22,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
   test "should create unit_cost_estimate" do
     assert_difference('UnitCostEstimate.count') do
       post :create, :component_id => @component, :unit_cost_estimate => {
-        :quantity_id => @quantity, :quantity_type => 'Quantity', :name => 'blah', :unit_cost => 20, :tax => 0.0825
+        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20
       }
     end
     

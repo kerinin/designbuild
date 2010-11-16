@@ -39,7 +39,7 @@
     %td.currency= number_to_currency(@component.estimated_component_fixed_cost)
   %tr
     %td Sub-Component Costs
-    %td.currency= number_to_currency(@component.estimated_cost - @component.estimated_component_cost)
+    %td.currency= number_to_currency(@component.estimated_subcomponent_cost)
   %tr.totals
     %td.right
       %strong Component Subtotal

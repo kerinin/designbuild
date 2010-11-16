@@ -22,25 +22,37 @@ class Component < ActiveRecord::Base
   def estimated_component_fixed_cost
     self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
-  
+
+  def estimated_subcomponent_fixed_cost
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
+  end
+    
   def estimated_fixed_cost
-    add_or_nil( self.estimated_component_fixed_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)} )
+    add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
   end
   
   def estimated_component_unit_cost
     self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
-  
+
+  def estimated_subcomponent_unit_cost
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
+  end
+    
   def estimated_unit_cost
-    add_or_nil( self.estimated_component_unit_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)} )
+    add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
   end
   
   def estimated_component_cost
     add_or_nil( estimated_component_fixed_cost, estimated_component_unit_cost )
   end
-  
+
+  def estimated_subcomponent_cost
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)}
+  end
+    
   def estimated_cost
-    add_or_nil( self.estimated_component_cost, self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)} )
+    add_or_nil( self.estimated_component_cost, self.estimated_subcomponent_cost )
   end
   
   private

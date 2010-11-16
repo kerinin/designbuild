@@ -107,6 +107,10 @@ class ComponentTest < ActiveSupport::TestCase
       assert_equal 2111, @obj.estimated_component_cost
     end
 
+    should "aggregate estimated subcomponent costs" do
+      assert_equal 100000, @obj.estimated_subcomponent_cost
+    end
+    
     should "aggregate estimated costs" do
       assert_equal 102111, @obj.estimated_cost
     end

@@ -3,7 +3,6 @@ class CreateUnitCostEstimates < ActiveRecord::Migration
     create_table :unit_cost_estimates do |t|
       t.string :name
       t.float :unit_cost
-      t.float :tax
       
       t.belongs_to :component
       t.belongs_to :quantity
