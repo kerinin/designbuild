@@ -1,7 +1,9 @@
 class Supplier < ActiveRecord::Base
+  belongs_to :project
+  
   has_many :material_costs
   
-  validates_presence_of :name
+  validates_presence_of :name, :project
   
   def purchase_orders
     self.material_costs.where( :material_costs => {:cost => nil} )

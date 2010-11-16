@@ -6,6 +6,9 @@ class ProjectTest < ActiveSupport::TestCase
       @obj = Factory :project
       @lab = Factory :laborer, :bill_rate => 1, :project => @obj
       @lab2 = Factory :laborer, :project => @obj
+      @s1 = Factory :supplier, :project => @obj
+      @s2 = Factory :supplier, :project => @obj
+      @s3 = Factory :supplier
       
       @u1 = Factory :user, :projects => [@obj]
       #@u2 = Factory :user, :projects => [@obj]
@@ -21,11 +24,11 @@ class ProjectTest < ActiveSupport::TestCase
         @uc3 = Factory :unit_cost_estimate, :component => @c2, :quantity => @q2, :unit_cost => 30 #30
 
       @t1 = Factory :task, :project => @obj
-        @mc1 = Factory :material_cost, :task => @t1, :cost => 1
+        @mc1 = Factory :material_cost, :task => @t1, :cost => 1, :supplier => @s1
         @lc1 = Factory :labor_cost, :task => @t1
           @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @lab, :hours => 10
       @t2 = Factory :task, :project => @obj
-        @mc2 = Factory :material_cost, :task => @t2, :cost => 100
+        @mc2 = Factory :material_cost, :task => @t2, :cost => 100, :supplier => @s2
         @lc2 = Factory :labor_cost, :task => @t2
           @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @lab, :hours => 1000
           
@@ -105,6 +108,12 @@ class ProjectTest < ActiveSupport::TestCase
     should "inherit unit cost estimates" do
       assert_contains @obj.unit_cost_estimates.all, @uc1
       assert_contains @obj.unit_cost_estimates.all, @uc3
+    end
+    
+    should "allow multiple suppliers" do
+      assert_contains @obj.suppliers, @s1
+      assert_contains @obj.suppliers, @s2
+      assert_does_not_contain @obj.suppliers, @s3
     end
     
     #---------------------CALCULATIONS

@@ -1,8 +1,7 @@
 Designbuild::Application.routes.draw do
 
-  resources :suppliers
-
   resources :projects do
+    resources :suppliers
     resources :laborers     
     resources :components   # re-nested  
     resources :tasks        # re-nested

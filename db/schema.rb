@@ -140,6 +140,7 @@ ActiveRecord::Schema.define(:version => 20101116183304) do
 
   create_table "suppliers", :force => true do |t|
     t.string   "name"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

@@ -1,12 +1,14 @@
 class Project < ActiveRecord::Base
   include AddOrNil
   
-  has_and_belongs_to_many :users
   has_many :components, :order => :name
   has_many :tasks, :order => :name
   has_many :contracts, :order => :name
   has_many :deadlines, :order => :date
   has_many :laborers, :order => :name
+  has_many :suppliers
+  
+  has_and_belongs_to_many :users
   
   def estimated_fixed_cost
     self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}

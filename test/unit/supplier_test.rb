@@ -23,6 +23,12 @@ class SupplierTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
+    should "require a project" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :supplier, :project => nil
+      end
+    end
+    
     should "allow multiple material costs" do
       assert_contains @obj.material_costs, @mc1
       assert_contains @obj.material_costs, @mc2
