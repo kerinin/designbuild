@@ -4,37 +4,4 @@
 
 %hr
 
-%table
-  %tr
-    %th Contract Name
-    %th.currency Bid
-    %th.currency Cost-to-Date
-    %th.number % Total
-    %th.control
-    %th.control
-    %th.control
-
-  - @contracts.each do |contract|
-    %tr
-      %td= contract.name
-      %td.currency= number_to_currency contract.bid
-      %td.currency= number_to_currency contract.cost
-      %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
-      %td.control= link_to 'Show', [@project, contract]
-      %td.control= link_to 'Edit', edit_project_contract_path(@project, contract)
-      %td.control= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
-      
-  - if @contracts.empty?
-    %tr
-      %td{:colspan => 10} (None)
-      
-  %tr.totals
-    %td
-      %strong Total
-    %td.currency
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid})
-    %td.currency
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})
-    %td.number
-      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.bid}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})), :precision => 1)
-    %td{:colspan => 4}
+=render :partial => 'contract_list', :locals => {:contracts => @contracts}

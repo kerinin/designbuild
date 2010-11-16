@@ -29,6 +29,7 @@ class ContractsController < ApplicationController
     @contract = Contract.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @contract }
     end
@@ -47,9 +48,13 @@ class ContractsController < ApplicationController
 
     respond_to do |format|
       if @contract.save
+        format.js {
+          @contracts = @project.contracts
+        }
         format.html { redirect_to([@project, @contract], :notice => 'Contract was successfully created.') }
         format.xml  { render :xml => @contract, :status => :created, :location => @contract }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @contract.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class ContractsController < ApplicationController
 
     respond_to do |format|
       if @contract.update_attributes(params[:contract])
+        format.js {
+          @contracts = @project.contracts
+        }
         format.html { redirect_to([@project, @contract], :notice => 'Contract was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @contract.errors, :status => :unprocessable_entity }
       end

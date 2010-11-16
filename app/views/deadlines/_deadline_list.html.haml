@@ -14,8 +14,8 @@
         = link_to "(Add Relative Deadline)", new_deadline_relative_deadline_path(deadline), :remote => true, :class => 'add_relative', :id => "add_relative_to_#{deadline.id}"
       %td= deadline.date.to_s :long
       %td.control
-      %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline), :remote => true
-      %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
+      %td.control.edit= link_to 'Edit', edit_project_deadline_path(@project, deadline), :remote => true
+      %td.control.destroy= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
       
     =render :partial => "relative_deadlines/relative_deadline_list", :locals => {:deadline => deadline, :relative_deadlines => deadline.relative_deadlines}
 

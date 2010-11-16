@@ -1,0 +1,12 @@
+%tr.contract_fields
+  %td.field
+    -unless @parent_contract.nil?
+      = f.hidden_field :parent_id, :value => @parent_contract.id
+    %strong= f.label :name
+    = f.text_field :name
+  %td
+  %td
+  %td
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
+      
