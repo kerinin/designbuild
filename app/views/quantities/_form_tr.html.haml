@@ -1,0 +1,18 @@
+%tr.quantity_fields
+  %td.field
+    -unless @parent_component.nil?
+      = f.hidden_field :parent_id, :value => @parent_component.id
+    %strong= f.label :name
+    = f.text_field :name
+  %td
+    %strong= f.label :value
+    = f.text_field :value
+  %td
+    %strong= f.label :unit
+    = f.text_field :unit
+  %td
+    %strong= f.label :drop
+    = f.text_field :drop
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
+

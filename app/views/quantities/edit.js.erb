@@ -1,0 +1,26 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@component, @quantity], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', [@project, @component] %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.quantities tr#quantity_<%= @quantity.id %>").closest("table").wrap(form).append(contents);
+$("table.quantities tr#quantity_<%= @quantity.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.quantities tr.quantity_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+
+$("form").bind("ajax:success", function(data, status, xhr) {
+   location.reload();
+});
+
+$("table.quantities tr.add_button").hide();
+$("table.quantities input:text:visible:first").focus();

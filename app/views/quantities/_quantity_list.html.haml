@@ -1,4 +1,4 @@
-%table
+%table.quantities
   %tr
     %th Name
     %th.number Value
@@ -9,16 +9,18 @@
     %th.control
 
   - quantities.each do |quantity|
-    %tr
+    %tr{:id => "quantity_#{quantity.id}"}
       %td= quantity.name
       %td.number= quantity.value
       %td= quantity.unit
       %td.number= number_to_percentage(quantity.drop, :precision => 1 )
       %td.control
-      %td.control= link_to 'Edit', edit_component_quantity_path(component, quantity)
-      %td.control= link_to 'Destroy', [component, quantity], :confirm => 'Are you sure?', :method => :delete
+      %td.control= link_to 'Edit', edit_component_quantity_path(@component, quantity), :remote => true
+      %td.control= link_to 'Destroy', [@component, quantity], :confirm => 'Are you sure?', :method => :delete
 
   - if quantities.empty?
     %tr
       %td{:colspan => 10} (None)
       
+  %tr.control.add_button
+    %td{:colspan => 5}= link_to '(Add Quantity)', new_component_quantity_path(@component), :remote => true |

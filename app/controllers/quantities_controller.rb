@@ -26,9 +26,10 @@ class QuantitiesController < ApplicationController
   # GET /quantities/new
   # GET /quantities/new.xml
   def new
-    @quantity = Quantity.new
+    @quantity = Quantity.new :component => @component
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @quantity }
     end
@@ -47,9 +48,13 @@ class QuantitiesController < ApplicationController
 
     respond_to do |format|
       if @quantity.save
+        format.js { 
+          @quantities = @component.quantities
+        }
         format.html { redirect_to([@component, @quantity], :notice => 'Quantity was successfully created.') }
         format.xml  { render :xml => @quantity, :status => :created, :location => @quantity }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @quantity.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,11 @@ class QuantitiesController < ApplicationController
 
     respond_to do |format|
       if @quantity.update_attributes(params[:quantity])
-        format.html { redirect_to([@component, @quantity], :notice => 'Quantity was successfully updated.') }
+        format.js { render :nothing => true }
+        format.html { redirect_to([@project,@component], :notice => 'Quantity was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @quantity.errors, :status => :unprocessable_entity }
       end
