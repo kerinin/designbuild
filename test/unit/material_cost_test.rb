@@ -28,6 +28,12 @@ class MaterialCostTest < ActiveSupport::TestCase
       end
     end
     
+    should "require a supplier" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :material_cost, :supplier => nil
+      end
+    end
+    
     should "allow multiple line items" do
       assert_contains @obj.line_items, @li1
       assert_contains @obj.line_items, @li2

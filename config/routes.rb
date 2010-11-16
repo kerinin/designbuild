@@ -1,5 +1,7 @@
 Designbuild::Application.routes.draw do
 
+  resources :suppliers
+
   resources :projects do
     resources :laborers     
     resources :components   # re-nested  

@@ -5,6 +5,7 @@ class CreateMaterialCosts < ActiveRecord::Migration
       t.float :cost
       
       t.belongs_to :task
+      t.belongs_to :supplier
       
       t.timestamps
     end
