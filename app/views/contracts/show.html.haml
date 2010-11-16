@@ -1,19 +1,17 @@
-%h1= @contract.name
-
 =render :partial => 'shared/project_nav'
 
-=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] }
+%h1= @contract.name
 
-%p
-  %b Bid:
-  = @contract.bid
+%hr
 
-%h3 Costs
+%h2
+  Bid:
+  = number_to_currency @contract.bid
+
+%h3 Invoices to Date
 =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
 
-%h3 Bids
-=render :partial => 'bids/bids_list', :locals => {:bids => @contract.bids}
+%hr
 
-= link_to 'Edit', edit_project_contract_path(@project, @contract)
-\|
-= link_to 'Back', project_contracts_path(@project)
+%h3 Other Bids
+=render :partial => 'bids/bids_list', :locals => {:bids => @contract.bids}

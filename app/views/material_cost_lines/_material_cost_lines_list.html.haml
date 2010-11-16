@@ -10,7 +10,7 @@
     %tr
       %td= material_cost_line.name
       %td.number= material_cost_line.quantity.to_i
-      %td.control= link_to 'Show', material_cost_line_path(@material_cost, material_cost_line)
+      %td.control
       %td.control= link_to 'Edit', edit_material_cost_line_path(@material_cost, material_cost_line)
       %td.control= link_to 'Destroy', material_cost_line_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
 

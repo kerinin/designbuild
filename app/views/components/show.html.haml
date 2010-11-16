@@ -1,12 +1,8 @@
-%h1= @component.name
-
 =render :partial => 'shared/project_nav'
 
-=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => [@project] + @component.ancestors}
+%h1= @component.name
 
-= link_to 'Edit', edit_project_component_path(@project, @component)
-\|
-= link_to 'Back', project_components_path(@project)
+=render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
 
 %hr
 

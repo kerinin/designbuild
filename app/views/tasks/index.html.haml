@@ -1,9 +1,7 @@
-%h1 Listing tasks
-
 =render :partial => 'shared/project_nav'
 
+%h1 Construction Tasks
+
+%hr
+
 =render :partial => 'task_list', :locals => {:tasks => @tasks}
-
-%br
-
-= link_to 'New Task', new_project_task_path(@project)

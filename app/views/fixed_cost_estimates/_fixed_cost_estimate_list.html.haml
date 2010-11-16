@@ -16,7 +16,7 @@
       %td.currency= number_to_currency(fixed_cost_estimate.cost)
       - case parent.class.name
       - when 'Component'
-        %td.control= link_to 'Show', [parent, fixed_cost_estimate]
+        %td.control
         %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate)
         %td.control= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'

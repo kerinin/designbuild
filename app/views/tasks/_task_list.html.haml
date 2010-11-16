@@ -15,7 +15,7 @@
       %td.currency= number_to_currency(task.cost)
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 1)
       %td.control= link_to 'Show', [@project, task]
-      %td.control= link_to 'Edit', edit_project_task_path(@project, task)
+      %td.control= link_to 'Rename', edit_project_task_path(@project, task)
       %td.control= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
       
   - if tasks.empty?

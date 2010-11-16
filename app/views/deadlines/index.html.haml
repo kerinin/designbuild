@@ -1,6 +1,8 @@
-%h1 Listing deadlines
-
 =render :partial => 'shared/project_nav'
+
+%h1 Construction Deadlines
+
+%hr
 
 %table
   %tr
@@ -14,8 +16,8 @@
   - @deadlines.each do |deadline|
     %tr
       %td{:colspan => 2}= deadline.name
-      %td= deadline.date
-      %td.control= link_to 'Show', [@project, deadline]
+      %td= deadline.date.to_s :long
+      %td.control
       %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline)
       %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
       
@@ -29,15 +31,11 @@
           days
           )
           = relative_deadline.name
-        %td= deadline.date
-        %td.control= link_to 'Show', [@project, deadline]
+        %td= deadline.date.to_s :long
+        %td.control
         %td.control= link_to 'Edit', edit_project_deadline_path(@project, deadline)
         %td.control= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    
       
   - if @deadlines.empty?
     %tr
       %td{:colspan => 10} (None)
-
-%br
-
-= link_to 'New Deadline', new_project_deadline_path(@project)

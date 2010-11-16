@@ -10,9 +10,9 @@
   - bids.each do |bid|
     %tr
       %td= bid.contractor
-      %td= bid.date
-      %td.currency= bid.cost
-      %td.control= link_to 'Show', [@contract, bid]
+      %td= bid.date.to_s :long
+      %td.currency= number_to_currency bid.cost
+      %td.control
       %td.control= link_to 'Edit', edit_contract_bid_path(@contract, bid)
       %td.control= link_to 'Destroy', [@contract, bid], :confirm => 'Are you sure?', :method => :delete
       
