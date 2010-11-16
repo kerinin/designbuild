@@ -1,4 +1,4 @@
-%table
+%table.fixed_costs
   %tr
     %th Name
     -if parent.class.name == 'Component'
@@ -9,7 +9,7 @@
     %th.control
 
   - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
-    %tr
+    %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
       %td= fixed_cost_estimate.name
       -if parent.class.name == 'Component'
         %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
@@ -17,18 +17,23 @@
       - case parent.class.name
       - when 'Component'
         %td.control
-        %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate)
+        %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate), :remote => true
         %td.control= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'
-        %td.control{:colspan => 3}= link_to 'Show Component', fixed_cost_estimate.component
+        %td.control{:colspan => 3}
+          from 
+          = link_to fixed_cost_estimate.component.name, [@project, fixed_cost_estimate.component]
         
   - if fixed_cost_estimates.count > limit
     %tr
-      %td{:colspan => 10}= link_to "(#{fixed_cost_estimates.count - limit} more not shown - See All)", '/'
+      %td{:colspan => 10}= "(#{fixed_cost_estimates.count - limit} more not shown)"
 
   - if fixed_cost_estimates.empty?
     %tr
       %td{:colspan => 10} (None)
+  -if context == :component 
+    %tr.control.add_button
+      %td{:colspan => 10}= link_to '(Add Fixed Cost)', new_component_fixed_cost_estimate_path(@component), :remote => true
       
   %tr.totals
     %td.right{:colspan => parent.class.name == 'Component' ? 2 : 1}

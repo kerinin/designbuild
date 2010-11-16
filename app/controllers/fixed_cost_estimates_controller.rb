@@ -29,6 +29,7 @@ class FixedCostEstimatesController < ApplicationController
     @fixed_cost_estimate = FixedCostEstimate.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @fixed_cost_estimate }
     end
@@ -47,6 +48,7 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.save
+        format.js
         format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
         format.xml  { render :xml => @fixed_cost_estimate, :status => :created, :location => @fixed_cost_estimate }
       else
@@ -63,9 +65,11 @@ class FixedCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @fixed_cost_estimate.update_attributes(params[:fixed_cost_estimate])
+        format.js { render :nothing => true }
         format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @fixed_cost_estimate.errors, :status => :unprocessable_entity }
       end

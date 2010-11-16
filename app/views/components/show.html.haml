@@ -18,7 +18,7 @@
 %h3 Unit Costs
 =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:parent => @component, :unit_cost_estimates => @component.unit_cost_estimates, :limit => 50}
 %h3 Fixed Costs
-=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @component, :fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50}
+=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @component, :fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50, :context => :component}
 
 %hr
 

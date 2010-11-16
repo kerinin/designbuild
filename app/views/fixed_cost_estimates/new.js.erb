@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@component, @fixed_cost_estimate], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to( 'Cancel', [@project,@component] ) %>
+<% end %>
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.fixed_costs tr.add_button").closest("table").wrap(form).append(contents);
+$("table.fixed_costs tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("table.fixed_costs tr.fixed_cost_estimate_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("table.fixed_costs tr.add_button").hide();
+$("table.fixed_costs td.control.edit > a").contents().unwrap();
+$("table.fixed_costs input:text:visible:first").focus();

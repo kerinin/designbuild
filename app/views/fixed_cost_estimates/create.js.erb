@@ -1,0 +1,18 @@
+<% if @component.errors.any? %>
+
+  <% content_for :error_tr do %>
+    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@fixed_cost_estimate) %></strong></td></tr>
+  <% end %>
+
+  //Hide the flash notice div
+  $("#flash_notice").hide(300);
+
+  //Add a table row above the input with error info
+  $("table.fixed_costs tr.error").remove();
+  $("table.fixed_costs tr.fixed_cost_estimate_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+
+<% else %>
+
+  location.reload();
+  
+<% end %>

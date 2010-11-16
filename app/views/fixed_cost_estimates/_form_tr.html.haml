@@ -1,0 +1,12 @@
+%tr.fixed_cost_estimate_fields
+  %td.field
+    %strong= f.label :name
+    = f.text_field :name
+  %td.field
+    %strong= f.label :task_id
+    = f.select :task_id, [['---', '']] + @project.tasks.map { |task| [task.name, task.id] }
+  %td.field
+    %strong= f.label :cost
+    = f.text_field :cost
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
