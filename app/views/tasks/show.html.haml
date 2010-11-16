@@ -9,7 +9,7 @@
 -unless @task.purchase_orders.empty?
   %h2 Purchase Orders
   
-  =render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.purchase_orders, :context => :po}
+  =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.purchase_orders, :context => :po}
   
   %hr
   
@@ -17,7 +17,7 @@
 %h3 Labor
 =render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs}
 %h3 Material
-=render :partial => 'material_costs/material_cost_list', :locals => {:material_costs => @task.completed_purchases, :context => :cost}
+=render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.completed_purchases, :context => :cost}
 
 %hr
 

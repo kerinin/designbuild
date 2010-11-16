@@ -14,9 +14,9 @@
       %td.currency= number_to_currency material_cost.cost
       %td.control= link_to 'Show', [@task, material_cost]
       - if context == :po
-        %td.control= link_to 'Log Cost', edit_task_material_cost_path(@project, @task, material_cost)
+        %td.control= link_to 'Log Cost', edit_task_material_cost_path(@project, task, material_cost)
       - else
-        %td.control= link_to 'Edit Cost', edit_task_material_cost_path(@project, @task, material_cost)
+        %td.control= link_to 'Edit Cost', edit_task_material_cost_path(@project, task, material_cost)
       %td.control= link_to 'Destroy', [@task, material_cost], :confirm => 'Are you sure?', :method => :delete
 
   - if material_costs.empty?

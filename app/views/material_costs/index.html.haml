@@ -1,6 +1,6 @@
 %h1 Listing material_costs
 
-render :partial => 'material_cost_list', :locals => {:material_costs => @material_costs}
+render :partial => 'material_cost_list', :locals => {:task => @task, :material_costs => @material_costs}
 %br
 
 = link_to 'New Material cost', new_task_material_cost_path(@task)

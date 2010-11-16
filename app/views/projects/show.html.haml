@@ -1,7 +1,21 @@
-%h1= @project.name
-
 =render :partial => 'shared/project_nav'
 
-= link_to 'Edit', edit_project_path(@project)
-\|
-= link_to 'Back', projects_path
+%h1
+  Project:
+  = @project.name
+
+%hr
+
+%h2 Overview
+
+(???)
+
+%hr
+
+%h2 Purchase Orders
+
+- @project.tasks.each do |task|
+  %h3
+    Task:
+    =link_to task.name, [@project, task]
+  =render :partial => 'material_costs/material_cost_list', :locals => {:task => task, :material_costs => task.purchase_orders, :context => :po}
