@@ -1,4 +1,4 @@
-<% if @component.errors.any? %>
+<% if @quantity.errors.any? %>
 
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@quantity) %></strong></td></tr>

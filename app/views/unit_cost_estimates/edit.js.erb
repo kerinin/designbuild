@@ -1,0 +1,26 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@component, @unit_cost_estimate], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', [@project, @component] %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.unit_costs tr#unit_cost_estimate_<%= @unit_cost_estimate.id %>").closest("table").wrap(form).append(contents);
+$("table.unit_costs tr#unit_cost_estimate_<%= @unit_cost_estimate.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.unit_costs tr.unit_cost_estimate_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+
+$("form").bind("ajax:success", function(data, status, xhr) {
+   location.reload();
+});
+
+$("table.unit_costs tr.add_button").hide();
+$("table.unit_costs input:text:visible:first").focus();

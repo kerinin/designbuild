@@ -1,9 +1,8 @@
-%table
+%table.unit_costs
   %tr
     %th Name
-    -if parent.class.name == 'Component'
-      %th Task
-    %th{:colspan => 3} Quantity
+    %th= "Task" if parent.class.name == 'Component'
+    %th Quantity
     %th.currency Unit cost
     %th.currency Cost
     %th.control
@@ -11,33 +10,40 @@
     %th.control
 
   - unit_cost_estimates.limit(limit).each do |unit_cost_estimate|
-    %tr
+    %tr{:id => "unit_cost_estimate_#{unit_cost_estimate.id}"}
       %td= unit_cost_estimate.name
-      -if parent.class.name == 'Component'
-        %td= unit_cost_estimate.task.blank? ? nil : unit_cost_estimate.task.name
-      %td.number= unit_cost_estimate.quantity.value.to_i
-      %td.unit= unit_cost_estimate.quantity.unit
-      %td= unit_cost_estimate.quantity.name
+      %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )  if context == :component
+      %td
+        = unit_cost_estimate.quantity.value.to_i
+        = unit_cost_estimate.quantity.unit
+        of
+        %i= unit_cost_estimate.quantity.name
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
       - case parent.class.name
       - when 'Component'
         %td.control
-        %td.control= link_to 'Edit', edit_component_unit_cost_estimate_path(parent, unit_cost_estimate)
-        %td.control= link_to 'Destroy', [parent, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+        %td.control.edit= link_to 'Edit', edit_component_unit_cost_estimate_path(parent, unit_cost_estimate), :remote => true
+        %td.control.destroy= link_to 'Destroy', [parent, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'
-        %td.control{:colspan => 3}= link_to 'Show Component', unit_cost_estimate.component
+        %td.control{:colspan => 3}
+          from
+          = link_to unit_cost_estimate.component.name, [@project, unit_cost_estimate.component]
 
   - if unit_cost_estimates.count > limit
     %tr
-      %td{:colspan => 10}= link_to "(#{unit_cost_estimates.count - limit} more not shown - See All)", '/'
+      %td{:colspan => 10}= "(#{unit_cost_estimates.count - limit} more not shown)"
 
   - if unit_cost_estimates.empty?
     %tr
       %td{:colspan => 10} (None)
-      
+
+  -if context == :component 
+    %tr.control.add_button
+      %td{:colspan => 10}= link_to '(Add Unit Cost)', new_component_unit_cost_estimate_path(@component), :remote => true
+            
   %tr.totals
-    %td.right{:colspan => parent.class.name == 'Component' ? 5 : 4}
+    %td.right{:colspan => 6}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })

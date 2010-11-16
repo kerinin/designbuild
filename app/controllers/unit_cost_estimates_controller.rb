@@ -29,6 +29,7 @@ class UnitCostEstimatesController < ApplicationController
     @unit_cost_estimate = UnitCostEstimate.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @unit_cost_estimate }
     end
@@ -47,9 +48,11 @@ class UnitCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @unit_cost_estimate.save
+        format.js
         format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully created.') }
         format.xml  { render :xml => @unit_cost_estimate, :status => :created, :location => @unit_cost_estimate }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @unit_cost_estimate.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +66,11 @@ class UnitCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @unit_cost_estimate.update_attributes(params[:unit_cost_estimate])
+        format.js { render :nothing => true }
         format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @unit_cost_estimate.errors, :status => :unprocessable_entity }
       end
@@ -79,7 +84,7 @@ class UnitCostEstimatesController < ApplicationController
     @unit_cost_estimate.destroy
 
     respond_to do |format|
-      format.html { redirect_to(component_unit_cost_estimates_url(@component)) }
+      format.html { redirect_to [@project, @component] }
       format.xml  { head :ok }
     end
   end

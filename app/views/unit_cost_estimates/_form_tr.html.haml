@@ -1,0 +1,16 @@
+%tr.unit_cost_estimate_fields
+  %td.field
+    %strong= f.label :name
+    = f.text_field :name
+  %td.field
+    %strong= f.label :task_id
+    = f.select :task_id, [['---', '']] + @project.tasks.map { |task| [task.name, task.id] }
+  %td.field
+    %strong= f.label :quantity
+    = f.select :quantity_id, @component.quantities.map {|q| ["#{q.name} (#{q.value} #{q.unit})", q.id]}
+  %td.field
+    %strong= f.label :unit_cost
+    = f.text_field :unit_cost
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'
+

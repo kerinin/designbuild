@@ -3,7 +3,7 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :quantity
   belongs_to :task
 
-  validates_presence_of :quantity, :unit_cost
+  validates_presence_of :name, :quantity, :unit_cost
   
   before_save :set_component
   

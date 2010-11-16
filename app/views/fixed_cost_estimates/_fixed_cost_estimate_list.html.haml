@@ -17,8 +17,8 @@
       - case parent.class.name
       - when 'Component'
         %td.control
-        %td.control= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate), :remote => true
-        %td.control= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+        %td.control.edit= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate), :remote => true
+        %td.control.destroy= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'
         %td.control{:colspan => 3}
           from 
@@ -31,6 +31,7 @@
   - if fixed_cost_estimates.empty?
     %tr
       %td{:colspan => 10} (None)
+      
   -if context == :component 
     %tr.control.add_button
       %td{:colspan => 10}= link_to '(Add Fixed Cost)', new_component_fixed_cost_estimate_path(@component), :remote => true

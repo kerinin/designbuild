@@ -52,6 +52,7 @@ class FixedCostEstimatesController < ApplicationController
         format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
         format.xml  { render :xml => @fixed_cost_estimate, :status => :created, :location => @fixed_cost_estimate }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @fixed_cost_estimate.errors, :status => :unprocessable_entity }
       end
@@ -83,7 +84,7 @@ class FixedCostEstimatesController < ApplicationController
     @fixed_cost_estimate.destroy
 
     respond_to do |format|
-      format.html { redirect_to(component_fixed_cost_estimates_url(@component)) }
+      format.html { redirect_to [@project, @component] }
       format.xml  { head :ok }
     end
   end
