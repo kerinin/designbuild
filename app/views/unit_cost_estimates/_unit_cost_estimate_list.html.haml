@@ -3,8 +3,8 @@
     %th Name
     -if parent.class.name == 'Component'
       %th Task
+    %th{:colspan => 3} Quantity
     %th.currency Unit cost
-    %th.number Quantity
     %th.currency Cost
     %th.control
     %th.control
@@ -15,8 +15,10 @@
       %td= unit_cost_estimate.name
       -if parent.class.name == 'Component'
         %td= unit_cost_estimate.task.blank? ? nil : unit_cost_estimate.task.name
-      %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.number= unit_cost_estimate.quantity.value.to_i
+      %td.unit= unit_cost_estimate.quantity.unit
+      %td= unit_cost_estimate.quantity.name
+      %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
       - case parent.class.name
       - when 'Component'

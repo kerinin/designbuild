@@ -1,7 +1,6 @@
 %table
   %tr
     %th Name
-    %th
     %th.number Value
     %th Unit
     %th.number Drop
@@ -11,7 +10,7 @@
 
   - quantities.each do |quantity|
     %tr
-      %td{:colspan => 2}= quantity.name
+      %td= quantity.name
       %td.number= quantity.value
       %td= quantity.unit
       %td.number= number_to_percentage(quantity.drop, :precision => 1 )
