@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class MaterialCostsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
+    @supplier = Factory :supplier
     @task = Factory :task, :project => @project
     @material_cost = Factory :material_cost, :task => @task
   end
@@ -21,7 +22,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
   test "should create material_cost" do
     assert_difference('MaterialCost.count') do
       post :create, :task_id => @project.to_param, :material_cost => {
-        :date => '1/1/2000', :cost => 100
+        :date => '1/1/2000', :cost => 100, :supplier => @supplier
       }
     end
 

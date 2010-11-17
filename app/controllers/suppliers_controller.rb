@@ -1,4 +1,6 @@
 class SuppliersController < ApplicationController
+  before_filter :get_project
+  
   # GET /suppliers
   # GET /suppliers.xml
   def index
@@ -44,7 +46,7 @@ class SuppliersController < ApplicationController
 
     respond_to do |format|
       if @supplier.save
-        format.html { redirect_to(@supplier, :notice => 'Supplier was successfully created.') }
+        format.html { redirect_to([@project, @supplier], :notice => 'Supplier was successfully created.') }
         format.xml  { render :xml => @supplier, :status => :created, :location => @supplier }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class SuppliersController < ApplicationController
 
     respond_to do |format|
       if @supplier.update_attributes(params[:supplier])
-        format.html { redirect_to(@supplier, :notice => 'Supplier was successfully updated.') }
+        format.html { redirect_to([@project, @supplier], :notice => 'Supplier was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class SuppliersController < ApplicationController
     @supplier.destroy
 
     respond_to do |format|
-      format.html { redirect_to(suppliers_url) }
+      format.html { redirect_to(project_suppliers_url(@project)) }
       format.xml  { head :ok }
     end
   end

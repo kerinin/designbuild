@@ -48,6 +48,6 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
       delete :destroy, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param
     end
 
-    assert_redirected_to component_fixed_cost_estimates_path(@component)
+    assert_redirected_to project_component_path(@project, @component)
   end
 end

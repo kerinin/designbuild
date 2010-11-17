@@ -51,7 +51,7 @@ class LaborCostLinesController < ApplicationController
         format.js {
           @labor_cost_lines = @labor_cost.line_items
         }
-        format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully created.') }
+        format.html { redirect_to(labor_cost_line_item_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully created.') }
         format.xml  { render :xml => @labor_cost_line, :status => :created, :location => @labor_cost_line }
       else
         format.js
@@ -71,7 +71,7 @@ class LaborCostLinesController < ApplicationController
         format.js {
           @labor_costs_lines = @labor_cost.line_items
         }
-        format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
+        format.html { redirect_to(labor_cost_line_item_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js

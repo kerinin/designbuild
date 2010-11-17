@@ -27,7 +27,7 @@ class LaborCostLinesControllerTest < ActionController::TestCase
       }
     end
 
-    assert_redirected_to labor_cost_line_path(@labor_cost, assigns(:labor_cost_line))
+    assert_redirected_to labor_cost_line_item_path(@labor_cost, assigns(:labor_cost_line))
   end
 
   test "should show labor_cost_line" do
@@ -42,7 +42,7 @@ class LaborCostLinesControllerTest < ActionController::TestCase
 
   test "should update labor_cost_line" do
     put :update, :labor_cost_id => @labor_cost.to_param, :id => @labor_cost_line.to_param, :labor_cost_line => @labor_cost_line.attributes
-    assert_redirected_to labor_cost_line_path(@labor_cost, assigns(:labor_cost_line))
+    assert_redirected_to labor_cost_line_item_path(@labor_cost, assigns(:labor_cost_line))
   end
 
   test "should destroy labor_cost_line" do
@@ -50,6 +50,6 @@ class LaborCostLinesControllerTest < ActionController::TestCase
       delete :destroy, :labor_cost_id => @labor_cost.to_param, :id => @labor_cost_line.to_param
     end
 
-    assert_redirected_to labor_cost_lines_path(@labor_cost)
+    assert_redirected_to task_labor_cost_path(@task, @labor_cost)
   end
 end

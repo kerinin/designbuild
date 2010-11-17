@@ -25,7 +25,7 @@ class QuantitiesControllerTest < ActionController::TestCase
       }
     end
 
-    assert_redirected_to component_quantity_path(@component, assigns(:quantity))
+    assert_redirected_to component_quantity_path(@component, assigns[:quantity])
   end
 
   test "should show quantity" do
@@ -40,7 +40,7 @@ class QuantitiesControllerTest < ActionController::TestCase
 
   test "should update quantity" do
     put :update, :component_id => @component.to_param, :id => @quantity.to_param, :quantity => @quantity.attributes
-    assert_redirected_to component_quantity_path(@component, assigns(:quantity))
+    assert_redirected_to project_component_path(@project, @component)
   end
 
   test "should destroy quantity" do

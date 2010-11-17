@@ -1,4 +1,4 @@
-= form_for [@labor_cost, @labor_cost_line], :url => labor_cost_lines_path(@labor_cost) do |f|
+= form_for [@labor_cost, @labor_cost_line], :url => labor_cost_line_items_path(@labor_cost) do |f|
   -if @labor_cost_line.errors.any?
     #error_explanation
       %h2= "#{pluralize(@labor_cost_line.errors.count, "error")} prohibited this labor_cost_line from being saved:"

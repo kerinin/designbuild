@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', @supplier
+= link_to 'Show', [@project, @supplier]
 \|
-= link_to 'Back', suppliers_path
+= link_to 'Back', project_suppliers_path(@project)
