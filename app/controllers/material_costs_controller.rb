@@ -27,6 +27,7 @@ class MaterialCostsController < ApplicationController
   # GET /material_costs/new.xml
   def new
     @material_cost = MaterialCost.new
+    @material_cost.line_items.build
 
     respond_to do |format|
       format.html # new.html.erb

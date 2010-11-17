@@ -9,5 +9,18 @@
   .field
     = f.label :date
     = f.date_select :date
+    
+  - f.fields_for :line_items do |line|
+    = line.label :supplier
+    = line.collection_select :supplier_id, @project.suppliers, :id, :name
+    
+    = line.label :name
+    = line.text_field :name
+
+    = line.label :quantity
+    = line.text_field :quantity
+    
   .actions
     = f.submit 'Save'
+    
+
