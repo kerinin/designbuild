@@ -88,7 +88,7 @@ class LaborCostLinesController < ApplicationController
     @labor_cost_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(labor_cost_lines_url(@labor_cost)) }
+      format.html { redirect_to(task_labor_cost_url(@task, @labor_cost)) }
       format.xml  { head :ok }
     end
   end

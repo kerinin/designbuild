@@ -29,6 +29,7 @@ class MaterialCostLinesController < ApplicationController
     @material_cost_line = MaterialCostLine.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @material_cost_line }
     end
@@ -47,9 +48,13 @@ class MaterialCostLinesController < ApplicationController
 
     respond_to do |format|
       if @material_cost_line.save
+        format.js {
+          @material_cost_lines = @material_cost.line_items
+        }
         format.html { redirect_to(material_cost_line_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully created.') }
         format.xml  { render :xml => @material_cost_line, :status => :created, :location => @material_cost_line }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @material_cost_line.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class MaterialCostLinesController < ApplicationController
 
     respond_to do |format|
       if @material_cost_line.update_attributes(params[:material_cost_line])
+        format.js {
+          @material_costs_lines = @material_cost.line_items
+        }
         format.html { redirect_to(material_cost_line_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @material_cost_line.errors, :status => :unprocessable_entity }
       end
@@ -79,7 +88,7 @@ class MaterialCostLinesController < ApplicationController
     @material_cost_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(material_cost_lines_url(@material_cost)) }
+      format.html { redirect_to(task_material_cost_url(@task, @material_cost)) }
       format.xml  { head :ok }
     end
   end

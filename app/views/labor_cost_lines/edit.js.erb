@@ -1,5 +1,5 @@
 <% content_for :wrapping_form do %>
-	<%= form_for [@labor_cost, @labor_cost_line], :remote => true do |f|  %>
+	<%= form_for [@labor_cost, @labor_cost_line], :url => labor_cost_line_item_path(@labor_cost, @labor_cost_line), :remote => true do |f|  %>
 		<% content_for :tr do %>
 			<%= render :partial => 'form_tr', :locals => {:f => f} %>
 		<% end %>

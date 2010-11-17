@@ -16,6 +16,7 @@ class MaterialCostsController < ApplicationController
   # GET /material_costs/1.xml
   def show
     @material_cost = MaterialCost.find(params[:id])
+    @supplier = @material_cost.supplier
 
     respond_to do |format|
       format.html # show.html.erb
@@ -37,6 +38,7 @@ class MaterialCostsController < ApplicationController
   # GET /material_costs/1/edit
   def edit
     @material_cost = MaterialCost.find(params[:id])
+    @supplier = @material_cost.supplier
   end
 
   # POST /material_costs

@@ -37,5 +37,6 @@ class ApplicationController < ActionController::Base
     @material_cost = MaterialCost.find(params[:material_cost_id])
     @task = @material_cost.task
     @project = @task.project
+    @supplier = @material_cost.supplier
   end
 end

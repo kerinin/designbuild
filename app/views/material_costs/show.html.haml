@@ -1,10 +1,11 @@
 =render :partial => 'shared/project_nav'
 
 %h1
-  = @material_cost.task.name
+  =link_to @material_cost.task.name, [@project, @task]
   Materials:
+  = @supplier.name
   = @material_cost.date.to_s :long
 
 %hr
 
-=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost}
+=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => :po}

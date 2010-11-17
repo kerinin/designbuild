@@ -1,26 +1,30 @@
-%table
+%table.material_cost_lines
   %tr
-    %th Name
+    %th Material Name
     %th.number Quantity
     %th.control
     %th.control
     %th.control
 
   - material_cost_lines.each do |material_cost_line|
-    %tr
+    %tr{:id => "material_cost_line_#{material_cost_line.id}"}
       %td= material_cost_line.name
       %td.number= material_cost_line.quantity.to_i
       %td.control
-      %td.control= link_to 'Edit', edit_material_cost_line_path(@material_cost, material_cost_line)
-      %td.control= link_to 'Destroy', material_cost_line_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
+      %td.control.edit= link_to 'Edit', edit_material_cost_line_item_path(@material_cost, material_cost_line), :remote => true
+      %td.control.destroy= link_to 'Destroy', material_cost_line_item_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
 
   - if material_cost_lines.empty?
     %tr
       %td{:colspan => 10} (None)
       
-  %tr.totals
-    %td.right
-      %strong Total Cost
-    %td.currency
-      %strong= number_to_currency( material_cost.cost )
-    %td{:colspan => 5}
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Material)', new_material_cost_line_item_path(@material_cost), :remote => true
+      
+  - unless context == :po
+    %tr.totals
+      %td.right
+        %strong Total Cost
+      %td.currency
+        %strong= number_to_currency( @material_cost.cost )
+      %td{:colspan => 5}

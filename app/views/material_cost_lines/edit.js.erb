@@ -1,0 +1,26 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@material_cost, @material_cost_line], :url => material_cost_line_item_path(@material_cost, @material_cost_line), :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', [@task, @material_cost] %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.material_cost_lines tr#material_cost_line_<%= @material_cost_line.id %>").closest("table").wrap(form).append(contents);
+$("table.material_cost_lines tr#material_cost_line_<%= @material_cost_line.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.material_cost_lines tr.material_cost_line_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+
+$("form").bind("ajax:success", function(data, status, xhr) {
+   location.reload();
+});
+
+$("table.material_cost_lines tr.add_button").hide();
+$("table.material_cost_lines input:text:visible:first").focus();

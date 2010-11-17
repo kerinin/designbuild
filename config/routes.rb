@@ -21,11 +21,11 @@ Designbuild::Application.routes.draw do
   end
     
   resources :labor_costs do    
-    resources :labor_cost_lines, :as => :lines
+    resources :labor_cost_lines, :as => :line_items
   end
   
   resources :material_costs do
-    resources :material_cost_lines, :as => :lines
+    resources :material_cost_lines, :as => :line_items
   end
   
   resources :contracts do
