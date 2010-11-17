@@ -4,6 +4,8 @@ class LaborCostLine < ActiveRecord::Base
   
   validates_presence_of :labor_set, :laborer, :hours
   
+  validates_numericality_of :hours
+  
   def cost
     self.hours * self.laborer.bill_rate
   end

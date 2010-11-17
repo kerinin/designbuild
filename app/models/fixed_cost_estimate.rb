@@ -4,5 +4,7 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_presence_of :name, :cost, :component
   
+  validates_numericality_of :cost
+  
   scope :unassigned, lambda { where( {:task_id => nil} ) }
 end

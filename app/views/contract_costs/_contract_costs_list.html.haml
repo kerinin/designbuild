@@ -1,4 +1,4 @@
-%table
+%table.contract_costs
   %tr
     %th Date
     %th.currency Cost
@@ -7,17 +7,20 @@
     %th.control
 
   - contract_costs.each do |contract_cost|
-    %tr
+    %tr{:id => "contract_cost_#{contract_cost.id}"}
       %td= contract_cost.date.to_s :long
       %td.currency= number_to_currency contract_cost.cost
       %td.control
-      %td.control= link_to 'Edit', edit_contract_cost_path(@contract, contract_cost)
-      %td.control= link_to 'Destroy', contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
+      %td.control.edit= link_to 'Edit', edit_contract_contract_cost_path(@contract, contract_cost), :remote => true
+      %td.control.destroy= link_to 'Destroy', contract_contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
 
   - if contract_costs.empty?
     %tr
       %td{:colspan => 10} (None)
       
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Contract Invoice)', new_contract_contract_cost_path(@contract), :remote => true
+
   %tr.totals
     %td.right
       %strong Total

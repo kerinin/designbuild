@@ -1,0 +1,22 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@contract, @contract_cost], :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to 'Cancel', [@project, @contract] %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.contract_costs").wrap(form).append(contents);
+$("table.contract_costs tr#contract_cost_<%= @contract_cost.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.contract_costs tr.contract_cost_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+
+$("table.contract_costs tr.add_button").hide();
+$("table.contract_costs input:text:visible:first").focus();

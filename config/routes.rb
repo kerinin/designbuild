@@ -30,7 +30,7 @@ Designbuild::Application.routes.draw do
   
   resources :contracts do
     resources :bids
-    resources :contract_costs, :as => :costs
+    resources :contract_costs
   end
 
   resources :deadlines do

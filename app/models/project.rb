@@ -10,6 +10,8 @@ class Project < ActiveRecord::Base
   
   has_and_belongs_to_many :users
   
+  validates_presence_of :name
+  
   def estimated_fixed_cost
     self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
   end
