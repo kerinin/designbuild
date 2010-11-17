@@ -1,4 +1,4 @@
-%table
+%table.labor_cost_lines
   %tr
     %th Employee
     %th.number Hours
@@ -9,7 +9,7 @@
     %th.control
 
   - labor_cost_lines.each do |labor_cost_line|
-    %tr
+    %tr{:id => "labor_cost_line_#{labor_cost_line.id}"}
       %td= labor_cost_line.laborer.name
       %td.number= labor_cost_line.hours
       %td.currency
@@ -17,12 +17,15 @@
         \/hr
       %td.currency= number_to_currency(labor_cost_line.cost)
       %td.control
-      %td.control= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, labor_cost_line)
-      %td.control= link_to 'Destroy', labor_cost_line_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
+      %td.control.edit= link_to 'Edit', edit_labor_cost_line_path(@labor_cost, labor_cost_line), :remote => true
+      %td.control.destroy= link_to 'Destroy', labor_cost_line_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
 
   - if labor_cost_lines.empty?
     %tr
       %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Employee Hours)', new_labor_cost_line_path(@labor_cost), :remote => true |
       
   %tr.totals
     %td.right{:colspan => 3}

@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for [@labor_cost, @labor_cost_line], :url => labor_cost_lines_path(@labor_cost), :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to( 'Cancel', [@task,@labor_cost] ) %>
+<% end %>
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.labor_cost_lines tr.add_button").closest("table").wrap(form).append(contents);
+$("table.labor_cost_lines tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("table.labor_cost_lines tr.labor_cost_line_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("table.labor_cost_lines tr.add_button").hide();
+$("table.labor_cost_lines td.control.edit > a").contents().unwrap();
+$("table.labor_cost_lines input:text:visible:first").focus();

@@ -6,21 +6,9 @@
         - @material_cost.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :date
-    = f.date_select :date
-    
-  - f.fields_for :line_items do |line|
-    = line.label :supplier
-    = line.collection_select :supplier_id, @project.suppliers, :id, :name
-    
-    = line.label :name
-    = line.text_field :name
+  = f.label :supplier
+  = f.collection_select :supplier_id, @project.suppliers, :id, :name
 
-    = line.label :quantity
-    = line.text_field :quantity
-    
-  .actions
-    = f.submit 'Save'
+  = f.submit 'Save'
     
 

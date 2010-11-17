@@ -1,10 +1,13 @@
 =render :partial => 'shared/project_nav'
 
 %h1
-  =@labor_cost.task.name
+  =link_to @labor_cost.task.name, [@project, @task]
   Labor: 
   = @labor_cost.date.to_s :long
 
 %hr
 
 =render :partial => 'labor_cost_lines/labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost.line_items}
+
+- if notice == 'Labor cost was successfully created.'
+  =javascript_tag "$(document).ready( function() { $('tr.add_button > td > a').click(); } );"

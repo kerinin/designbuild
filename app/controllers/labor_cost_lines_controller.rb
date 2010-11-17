@@ -29,6 +29,7 @@ class LaborCostLinesController < ApplicationController
     @labor_cost_line = LaborCostLine.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @labor_cost_line }
     end
@@ -47,9 +48,13 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.save
+        format.js {
+          @labor_cost_lines = @labor_cost.line_items
+        }
         format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully created.') }
         format.xml  { render :xml => @labor_cost_line, :status => :created, :location => @labor_cost_line }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @labor_cost_line.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.update_attributes(params[:labor_cost_line])
+        format.js {
+          @labor_costs_lines = @labor_cost.line_items
+        }
         format.html { redirect_to(labor_cost_line_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @labor_cost_line.errors, :status => :unprocessable_entity }
       end
