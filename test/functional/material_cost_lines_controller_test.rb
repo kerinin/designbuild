@@ -26,7 +26,7 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
       }
     end
 
-    assert_redirected_to material_cost_line_path(@material_cost, assigns(:material_cost_line))
+    assert_redirected_to material_cost_line_item_path(@material_cost, assigns(:material_cost_line))
   end
 
   test "should show material_cost_line" do
@@ -41,7 +41,7 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
 
   test "should update material_cost_line" do
     put :update, :material_cost_id => @material_cost.to_param, :id => @material_cost_line.to_param, :material_cost_line => @material_cost_line.attributes
-    assert_redirected_to material_cost_line_path(@material_cost, assigns(:material_cost_line))
+    assert_redirected_to material_cost_line_item_path(@material_cost, assigns(:material_cost_line))
   end
 
   test "should destroy material_cost_line" do
@@ -49,6 +49,6 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
       delete :destroy, :material_cost_id => @material_cost.to_param, :id => @material_cost_line.to_param
     end
 
-    assert_redirected_to material_cost_lines_path(@material_cost)
+    assert_redirected_to task_material_cost_path(@task, @material_cost)
   end
 end

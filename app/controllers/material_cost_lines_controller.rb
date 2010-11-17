@@ -51,7 +51,7 @@ class MaterialCostLinesController < ApplicationController
         format.js {
           @material_cost_lines = @material_cost.line_items
         }
-        format.html { redirect_to(material_cost_line_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully created.') }
+        format.html { redirect_to(material_cost_line_item_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully created.') }
         format.xml  { render :xml => @material_cost_line, :status => :created, :location => @material_cost_line }
       else
         format.js
@@ -71,7 +71,7 @@ class MaterialCostLinesController < ApplicationController
         format.js {
           @material_costs_lines = @material_cost.line_items
         }
-        format.html { redirect_to(material_cost_line_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully updated.') }
+        format.html { redirect_to(material_cost_line_item_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js
