@@ -25,7 +25,7 @@ class ContractCostsControllerTest < ActionController::TestCase
       }
     end
 
-    assert_redirected_to contract_cost_path(@contract, assigns(:contract_cost))
+    assert_redirected_to contract_contract_cost_path(@contract, assigns(:contract_cost))
   end
 
   test "should show contract_cost" do
@@ -40,7 +40,7 @@ class ContractCostsControllerTest < ActionController::TestCase
 
   test "should update contract_cost" do
     put :update, :contract_id => @contract.to_param, :id => @contract_cost.to_param, :contract_cost => @contract_cost.attributes
-    assert_redirected_to contract_cost_path(@contract, assigns(:contract_cost))
+    assert_redirected_to contract_contract_cost_path(@contract, assigns(:contract_cost))
   end
 
   test "should destroy contract_cost" do
@@ -48,6 +48,6 @@ class ContractCostsControllerTest < ActionController::TestCase
       delete :destroy, :contract_id => @contract.to_param, :id => @contract_cost.to_param
     end
 
-    assert_redirected_to contract_costs_path(@contract)
+    assert_redirected_to project_contract_path(@project, @contract)
   end
 end

@@ -41,7 +41,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
 
   test "should update material_cost" do
     put :update, :task_id => @project.to_param, :id => @material_cost.to_param, :material_cost => @material_cost.attributes
-    assert_redirected_to task_material_cost_path(@task, assigns(:material_cost))
+    assert_redirected_to project_task_path(@project, @task)
   end
 
   test "should destroy material_cost" do

@@ -51,7 +51,7 @@ class ContractCostsController < ApplicationController
         format.js {
           @contract_costs = @contract.costs
         }
-        format.html { redirect_to(contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully created.') }
+        format.html { redirect_to(contract_contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully created.') }
         format.xml  { render :xml => @contract_cost, :status => :created, :location => @contract_cost }
       else
         format.js
@@ -71,7 +71,7 @@ class ContractCostsController < ApplicationController
         format.js {
           @contract_costs = @contract.costs
         }
-        format.html { redirect_to(contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully updated.') }
+        format.html { redirect_to(contract_contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js

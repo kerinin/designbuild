@@ -21,7 +21,7 @@ class BidsControllerTest < ActionController::TestCase
   test "should create bid" do
     assert_difference('Bid.count') do
       post :create, :contract_id => @contract.to_param, :bid => {
-        :date => '1/1/1999', :cost => 100
+        :date => '1/1/1999', :cost => 100, :contractor => 'billy bob'
       }
     end
 
