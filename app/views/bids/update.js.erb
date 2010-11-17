@@ -1,0 +1,32 @@
+<% if @bid.errors.any? %>
+
+  <% content_for :error_tr do %>
+    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@bid) %></strong></td></tr>
+  <% end %>
+
+  //Hide the flash notice div
+  $("#flash_notice").hide(300);
+
+  //Add a table row above the input with error info
+  $("table.bids tr.error").remove();
+  $("table.bids tr.bid_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+
+<% else %>
+
+  <% content_for :table do %>
+  	<%=render :partial => 'bid_list', :locals => {:bids => @bids} %>
+  <% end %>
+
+  //Update the html of the div flash_notice with the new one
+  $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
+
+  //Show the flash_notice div
+  $("#flash_notice").show(300);
+
+  //Replace the html of the div post_lists with the updated new one
+  $('form.edit_bid').html( "<%= escape_javascript( yield :table ) %>");
+
+  //Remove the form
+  $('table.bids').unwrap();
+  
+<% end %>

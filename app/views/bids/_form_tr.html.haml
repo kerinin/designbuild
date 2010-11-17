@@ -1,0 +1,12 @@
+%tr.bid_fields
+  %td.field
+    %strong= f.label :contractor
+    = f.text_field :contractor
+  %td.field
+    %strong= f.label :date
+    = f.date_select :date
+  %td.field
+    %strong= f.label :cost
+    = f.text_field :cost
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'

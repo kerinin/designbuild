@@ -29,6 +29,7 @@ class BidsController < ApplicationController
     @bid = Bid.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @bid }
     end
@@ -47,9 +48,13 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.save
+        format.js {
+          @bids = @contract.bids
+        }
         format.html { redirect_to( [@contract, @bid], :notice => 'Bid was successfully created.') }
         format.xml  { render :xml => @bid, :status => :created, :location => @bid }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @bid.errors, :status => :unprocessable_entity }
       end
@@ -63,9 +68,13 @@ class BidsController < ApplicationController
 
     respond_to do |format|
       if @bid.update_attributes(params[:bid])
+        format.js {
+          @bids = @contract.bids
+        }
         format.html { redirect_to([@contract, @bid], :notice => 'Bid was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @bid.errors, :status => :unprocessable_entity }
       end
