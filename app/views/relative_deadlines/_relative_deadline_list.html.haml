@@ -8,7 +8,7 @@
       days
       )
       = relative_deadline.name
-    %td= deadline.date.to_s :long
+    %td= relative_deadline.date.to_s :long
     %td.control
     %td.control.edit= link_to 'Edit', edit_deadline_relative_deadline_path(deadline, relative_deadline), :remote => true
     %td.control.destroy= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete    

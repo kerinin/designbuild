@@ -18,9 +18,5 @@ $("table.material_cost_lines tr#material_cost_line_<%= @material_cost_line.id %>
 $("table.material_cost_lines tr#material_cost_line_<%= @material_cost_line.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("table.material_cost_lines tr.material_cost_line_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("form").bind("ajax:success", function(data, status, xhr) {
-   location.reload();
-});
-
 $("table.material_cost_lines tr.add_button").hide();
 $("table.material_cost_lines input:text:visible:first").focus();

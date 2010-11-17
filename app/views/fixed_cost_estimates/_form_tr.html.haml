@@ -4,7 +4,7 @@
     = f.text_field :name
   %td.field
     %strong= f.label :task_id
-    = f.select :task_id, [['---', '']] + @project.tasks.map { |task| [task.name, task.id] }
+    = f.collection_select :task_id, @project.tasks, :id, :name
   %td.field
     %strong= f.label :cost
     = f.text_field :cost

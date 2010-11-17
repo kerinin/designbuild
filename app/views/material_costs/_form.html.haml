@@ -6,9 +6,13 @@
         - @material_cost.errors.full_messages.each do |msg|
           %li= msg
 
-  = f.label :supplier
-  = f.collection_select :supplier_id, @project.suppliers, :id, :name
+  .field
+    = f.label :supplier
+    = f.collection_select :supplier_id, @project.suppliers, :id, :name
 
-  = f.submit 'Save'
+  .field
+    = f.label :cost
+    = f.text_field :cost
+    = f.submit 'Save'
     
 

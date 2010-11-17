@@ -18,9 +18,5 @@ $("table.quantities tr#quantity_<%= @quantity.id %>").closest("table").wrap(form
 $("table.quantities tr#quantity_<%= @quantity.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("table.quantities tr.quantity_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("form").bind("ajax:success", function(data, status, xhr) {
-   location.reload();
-});
-
 $("table.quantities tr.add_button").hide();
 $("table.quantities input:text:visible:first").focus();

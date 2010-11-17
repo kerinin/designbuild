@@ -15,7 +15,7 @@
       %td.currency= number_to_currency contract.cost
       %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
       %td.control.show= link_to 'Show', [@project, contract]
-      %td.control.edit= link_to 'Edit', edit_project_contract_path(@project, contract), :remote => true
+      %td.control.edit= link_to 'Rename', edit_project_contract_path(@project, contract), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
       
   - if @contracts.empty?

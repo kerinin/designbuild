@@ -68,9 +68,7 @@ class MaterialCostLinesController < ApplicationController
 
     respond_to do |format|
       if @material_cost_line.update_attributes(params[:material_cost_line])
-        format.js {
-          @material_costs_lines = @material_cost.line_items
-        }
+        format.js
         format.html { redirect_to(material_cost_line_item_path(@material_cost, @material_cost_line), :notice => 'Material cost line was successfully updated.') }
         format.xml  { head :ok }
       else

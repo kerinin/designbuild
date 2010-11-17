@@ -66,7 +66,7 @@ class MaterialCostsController < ApplicationController
 
     respond_to do |format|
       if @material_cost.update_attributes(params[:material_cost])
-        format.html { redirect_to([@task, @material_cost], :notice => 'Material cost was successfully updated.') }
+        format.html { redirect_to([@project, @task], :notice => 'Material cost was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

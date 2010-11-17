@@ -68,7 +68,7 @@ class QuantitiesController < ApplicationController
 
     respond_to do |format|
       if @quantity.update_attributes(params[:quantity])
-        format.js { render :nothing => true }
+        format.js
         format.html { redirect_to([@project,@component], :notice => 'Quantity was successfully updated.') }
         format.xml  { head :ok }
       else

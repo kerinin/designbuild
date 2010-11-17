@@ -18,9 +18,5 @@ $("table.labor_cost_lines tr#labor_cost_line_<%= @labor_cost_line.id %>").closes
 $("table.labor_cost_lines tr#labor_cost_line_<%= @labor_cost_line.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("table.labor_cost_lines tr.labor_cost_line_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("form").bind("ajax:success", function(data, status, xhr) {
-   location.reload();
-});
-
 $("table.labor_cost_lines tr.add_button").hide();
 $("table.labor_cost_lines input:text:visible:first").focus();

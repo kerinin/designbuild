@@ -27,9 +27,9 @@
   $('form.new_component').html( "<%= escape_javascript( yield :table ) %>");
 
   //Remove the form
-  $('table#components').unwrap();
+  $('table.components').unwrap();
   
   //Load a new entry field
-  $('tr.add_button > td > a').click();
+  $('table.components tr.add_button > td > a').click();
   
 <% end %>

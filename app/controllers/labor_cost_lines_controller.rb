@@ -68,9 +68,7 @@ class LaborCostLinesController < ApplicationController
 
     respond_to do |format|
       if @labor_cost_line.update_attributes(params[:labor_cost_line])
-        format.js {
-          @labor_costs_lines = @labor_cost.line_items
-        }
+        format.js
         format.html { redirect_to(labor_cost_line_item_path(@labor_cost, @labor_cost_line), :notice => 'Labor cost line was successfully updated.') }
         format.xml  { head :ok }
       else

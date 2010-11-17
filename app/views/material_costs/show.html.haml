@@ -8,4 +8,7 @@
 
 %hr
 
-=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => :po}
+=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => params[:context] || :po}
+
+- if notice == 'Material cost was successfully created.'
+  =javascript_tag "$(document).ready( function() { $('table.material_cost_lines tr.add_button > td > a').click(); } );"

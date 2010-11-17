@@ -4,4 +4,8 @@ class RelativeDeadline < ActiveRecord::Base
   has_many :tasks, :as => :deadline
   
   validates_presence_of :name, :interval, :parent_deadline
+  
+  def date
+    Date::today
+  end
 end

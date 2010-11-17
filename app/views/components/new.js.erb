@@ -17,7 +17,7 @@
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
-$("tr.add_button").closest("table").wrap(form).append(contents);
+$("table.components").wrap(form).append(contents);
 $("tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
 $("tr.component_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 $("tr.add_button").hide();

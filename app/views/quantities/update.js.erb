@@ -8,25 +8,11 @@
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.quantity_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("table.quantities tr.error").remove();
+  $("table.quantities tr.quantity_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
 
-  <% content_for :table do %>
-  	<%=render :partial => 'quantity_list', :locals => {:quantities => @quantities} %>
-  <% end %>
-
-  //Update the html of the div flash_notice with the new one
-  $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
-
-  //Show the flash_notice div
-  $("#flash_notice").show(300);
-
-  //Replace the html of the div post_lists with the updated new one
-  $('form.edit_quantity').html( "<%= escape_javascript( yield :table ) %>");
-
-  //Remove the form
-  $('table.quantities').unwrap();
+  location.reload();
   
 <% end %>
