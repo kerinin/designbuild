@@ -6,6 +6,6 @@ class RelativeDeadline < ActiveRecord::Base
   validates_presence_of :name, :interval, :parent_deadline
   
   def date
-    Date::today
+    parent_deadline.date + self.interval
   end
 end
