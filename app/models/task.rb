@@ -7,8 +7,8 @@ class Task < ActiveRecord::Base
   
   has_many :unit_cost_estimates, :order => :name
   has_many :fixed_cost_estimates, :order => :name
-  has_many :labor_costs, :order => 'date DESC'
-  has_many :material_costs, :order => 'date DESC'
+  has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
+  has_many :material_costs, :order => 'date DESC', :dependent => :destroy
   
   validates_presence_of :name, :project
 

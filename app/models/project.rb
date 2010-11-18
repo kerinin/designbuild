@@ -1,12 +1,12 @@
 class Project < ActiveRecord::Base
   include AddOrNil
   
-  has_many :components, :order => :name
-  has_many :tasks, :order => :name
-  has_many :contracts, :order => :name
-  has_many :deadlines, :order => :date
-  has_many :laborers, :order => :name
-  has_many :suppliers
+  has_many :components, :order => :name, :dependent => :destroy
+  has_many :tasks, :order => :name, :dependent => :destroy
+  has_many :contracts, :order => :name, :dependent => :destroy
+  has_many :deadlines, :order => :date, :dependent => :destroy
+  has_many :laborers, :order => :name, :dependent => :destroy
+  has_many :suppliers, :dependent => :destroy
   
   has_and_belongs_to_many :users
   

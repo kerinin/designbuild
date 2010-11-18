@@ -5,8 +5,8 @@ class Contract < ActiveRecord::Base
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   
   has_many :tasks, :order => :name
-  has_many :costs, :class_name => "ContractCost", :order => "date DESC"
-  has_many :bids, :order => :contractor
+  has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
+  has_many :bids, :order => :contractor, :dependent => :destroy
   
   validates_presence_of :name, :project
   

@@ -1,7 +1,7 @@
 class Supplier < ActiveRecord::Base
   belongs_to :project
   
-  has_many :material_costs
+  has_many :material_costs, :dependent => :destroy
   
   validates_presence_of :name, :project
   
