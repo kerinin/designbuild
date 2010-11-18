@@ -1,13 +1,5 @@
 class LaborCostsController < ApplicationController
-  before_filter :get_task, :except => :timeline_events
-  
-  def timeline_events
-    @labor_costs = LaborCost.all
-    
-    respond_to do |format|
-      format.xml
-    end
-  end
+  before_filter :get_task
   
   # GET /labor_costs
   # GET /labor_costs.xml

@@ -26,9 +26,6 @@ Designbuild::Application.routes.draw do
     
   resources :labor_costs do    
     resources :labor_cost_lines, :as => :line_items
-    collection do
-      get :timeline_events
-    end
   end
   
   resources :material_costs do
