@@ -13,8 +13,9 @@ class TaskTest < ActiveSupport::TestCase
       @fce2 = Factory :fixed_cost_estimate, :task => @obj, :cost => 10
       @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100
       @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000
-      @lc1 = Factory :labor_cost, :task => @obj
-      @lc2 = Factory :labor_cost, :task => @obj
+      @lc1 = Factory :labor_cost, :task => @obj, :percent_complete => 10, :date => Date::today
+      @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 20, :date => Date::today + 5
+      @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 30, :date => Date::today - 5
       @mc1 = Factory :material_cost, :task => @obj, :cost => 2
       @mc2 = Factory :material_cost, :task => @obj, :cost => 20
       @mc3 = Factory :material_cost, :task => @obj, :cost => nil
@@ -119,6 +120,10 @@ class TaskTest < ActiveSupport::TestCase
       assert_contains @obj.costs, @lc2
       assert_contains @obj.costs, @mc1
       assert_contains @obj.costs, @mc2
+    end
+    
+    should "inherit percent complete" do
+      assert_equal @obj.percent_complete, 20
     end
     
     #-----------------CALCULATIONS

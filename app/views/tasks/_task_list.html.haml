@@ -4,6 +4,7 @@
     %th.currency Est. Cost
     %th.currency Cost-to-Date
     %th.number % of Est.
+    %th.number % Complete
     %th.control
     %th.control
     %th.control
@@ -14,6 +15,7 @@
       %td.currency= number_to_currency(task.estimated_cost)
       %td.currency= number_to_currency(task.cost)
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 1)
+      %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
       %td.control.show= link_to 'Show', [@project, task]
       %td.control.edit= link_to 'Rename', edit_project_task_path(@project, task), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete

@@ -51,4 +51,8 @@ class Task < ActiveRecord::Base
   def completed_purchases
     self.material_costs.where( "material_costs.cost IS NOT NULL" )
   end
+  
+  def percent_complete
+    self.labor_costs.first.percent_complete
+  end
 end
