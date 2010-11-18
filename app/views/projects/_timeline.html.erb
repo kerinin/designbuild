@@ -1,0 +1,61 @@
+<div id="timeline" style="height: 150px; border: 1px solid #aaa"></div>
+<noscript>
+This page uses Javascript to show you a Timeline. Please enable Javascript in your browser to see the full page. Thank you.
+</noscript>
+
+<% content_for :head do %>
+  <%#= javascript_include_tag 'timeline-api.js?bundle=true' %> 
+  <%= javascript_include_tag 'http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true' %>
+<% end %>
+
+<script>
+  var tl;
+
+  $(document).ready( function () {
+
+    var eventSource = new Timeline.DefaultEventSource(); 
+    var theme = Timeline.ClassicTheme.create();
+    theme.event.label.width = 250;
+    theme.event.bubble.width=320;
+    theme.event.bubble.height=220;
+    var bandInfos = [
+      Timeline.createBandInfo({
+          width: "20%",
+          intervalUnit: Timeline.DateTime.DAY,
+          intervalPixels: 100,
+          eventSource: eventSource,
+          theme:theme
+      }),
+      Timeline.createBandInfo({
+          width: "50%",
+          intervalUnit: Timeline.DateTime.MONTH,
+          intervalPixels: 100,
+          eventSource: eventSource,
+          theme:theme
+      }),
+      Timeline.createBandInfo({
+          width: "30%",
+          intervalUnit: Timeline.DateTime.YEAR,
+          intervalPixels: 200,
+          eventSource: eventSource,
+          theme:theme
+      })
+    ];
+    bandInfos[1].syncWith = 0;
+    bandInfos[2].syncWith = 0;
+    bandInfos[2].highlight = true;
+    tl = Timeline.create(document.getElementById("timeline"), bandInfos);
+    //eventSource.loadJSON(events, '');
+    Timeline.loadXML("<%= timeline_events_labor_costs_url :format => :xml %>", function(xml, url) { eventSource.loadXML(xml, url); });
+  } );
+  
+  var resizeTimerID = null;
+  function onResize() {
+      if (resizeTimerID == null) {
+          resizeTimerID = window.setTimeout(function() {
+              resizeTimerID = null;
+              tl.layout();
+          }, 500);
+      }
+  }
+</script>
