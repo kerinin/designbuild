@@ -1,0 +1,34 @@
+%table
+  %tr
+    %th Name
+    %th.currency Cost Estimate
+    %th.currency Projected Cost
+
+  %tr
+    %td{:colspan => 10}
+      %i Active Tasks
+      
+  - @project.tasks.active.each do |task|
+    %tr
+      %td= task.name
+      %td.currency= number_to_currency task.estimated_cost
+      %td.currency= number_to_currency task.projected_cost
+    
+  %tr
+    %td{:colspan => 10}
+      %i Completed Tasks  
+      
+  - @project.tasks.completed.each do |task|
+    %tr
+      %td= task.name
+      %td.currency= number_to_currency task.estimated_cost
+      %td.currency= number_to_currency task.projected_cost
+      
+  %tr.totals
+    %td.right
+      %strong Project Total
+    %td.currency
+      %strong= number_to_currency( @project.estimated_cost )
+    %td.currency
+      %strong= number_to_currency( @project.projected_cost )
+

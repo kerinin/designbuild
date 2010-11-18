@@ -8,10 +8,10 @@
 
 %h2 Overview
 
-(???)
+%h3=link_to "Print Purchase Orders", '/'
 
-%hr
+%h3 Active Tasks
+= render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
 
-%h2 Purchase Orders
-
-???
+%h3 Actual vs Estimated
+=render :partial => 'project_dashboard'

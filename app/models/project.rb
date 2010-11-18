@@ -47,4 +47,8 @@ class Project < ActiveRecord::Base
   def unit_cost_estimates
     UnitCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
   end
+  
+  def projected_cost
+    add_or_nil( self.contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.projected_cost)} )
+  end
 end

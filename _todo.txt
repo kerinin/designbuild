@@ -5,6 +5,10 @@
 -- graphs
 + active tasks
 - project dashboard
+-- active tasks (with labor + material creation buttons)
+-- projected cost
+-- print purchase orders
+-- schedule
 - versioning (https://github.com/airblade/paper_trail)
 - users and permissions
 + inherited quantities

@@ -13,7 +13,11 @@ class Task < ActiveRecord::Base
   validates_presence_of :name, :project
 
   scope :active, lambda {
-    where(:active => true)
+    joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
+  }
+  
+  scope :completed, lambda {
+    joins(:labor_costs).where( 'labor_costs.percent_complete >= 100').group('tasks.id')
   }
   
   def cost_estimates
