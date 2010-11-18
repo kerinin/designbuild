@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(:version => 20101116183304) do
 
   create_table "labor_costs", :force => true do |t|
     t.date     "date"
+    t.float    "percent_complete"
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"

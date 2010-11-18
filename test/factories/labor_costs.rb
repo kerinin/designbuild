@@ -2,6 +2,7 @@
 
 Factory.define :labor_cost do |f|
   f.date {Forgery::Date.date}
+  f.percent_complete {rand(100).to_f / 100}
   
   f.task {|p| p.association(:task)}
 end
