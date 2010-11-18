@@ -9,6 +9,7 @@ class ContractTest < ActiveSupport::TestCase
       @c2 = Factory :contract_cost, :contract => @obj, :cost => 10
       @b1 = Factory :bid, :contract => @obj
       @b2 = Factory :bid, :contract => @obj
+      @obj.active_bid = @b2
     end
 
     teardown do
@@ -38,6 +39,10 @@ class ContractTest < ActiveSupport::TestCase
     should "allow multiple bids" do
       assert_contains @obj.bids, @b1
       assert_contains @obj.bids, @b2
+    end
+    
+    should "allow an active bid" do
+      assert_equal @obj.active_bid, @b2
     end
     
     #-------------------CALCULATIONS

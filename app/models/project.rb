@@ -20,8 +20,12 @@ class Project < ActiveRecord::Base
     self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
   end
   
+  def estimated_contract_cost
+    self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.bid)}
+  end
+  
   def estimated_cost
-    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)}
+    add_or_nil( self.estimated_contract_cost, self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)} )
   end
   
   def material_cost

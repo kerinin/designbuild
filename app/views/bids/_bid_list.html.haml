@@ -3,6 +3,7 @@
     %th Contractor
     %th Date
     %th.currency Cost
+    %th Active
     %th.control
     %th.control
     %th.control
@@ -12,6 +13,7 @@
       %td= bid.contractor
       %td= bid.date.to_s :long
       %td.currency= number_to_currency bid.cost
+      %td= bid.is_active_bid ? 'Yes' : nil
       %td.control
       %td.control.edit= link_to 'Edit', edit_contract_bid_path(@contract, bid), :remote => true
       %td.control.destroy= link_to 'Destroy', [@contract, bid], :confirm => 'Are you sure?', :method => :delete

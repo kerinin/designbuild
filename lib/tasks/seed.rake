@@ -100,6 +100,16 @@ namespace :db do
             Factory :relative_deadline, :parent_deadline => deadline
           }
         }
+        
+        # Assign tasks to deadlines
+        Task.all.each do |task|
+          task.deadline = case rand(3)
+          when 0
+            Deadline.find(rand(Deadline.count)+1)
+          when 1
+            RelativeDeadline.find(rand(RelativeDeadline.count)+1)
+          end
+        end
       end
     }
     

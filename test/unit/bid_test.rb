@@ -3,7 +3,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BidTest < ActiveSupport::TestCase
   context "A bid" do
     setup do
-      @bid = Factory :bid
+      @contract = Factory :contract
+      @bid = Factory :bid, :contract => @contract
+      @active = Factory :bid, :contract => @contract
+      @contract.active_bid = @active
+      @contract.save!
     end
 
     teardown do
@@ -24,6 +28,17 @@ class BidTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :bid, :contract => nil
       end
+    end
+    
+    should "check if active" do
+      assert_equal @active.is_active_bid, true
+      assert_equal @bid.is_active_bid, false
+    end
+    
+    should "set active" do
+      @bid.is_current = true
+      assert_equal @active.is_active_bid, false
+      assert_equal @bid.is_active_bid, true
     end
   end
 end

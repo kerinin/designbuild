@@ -1,20 +1,20 @@
-<% if @contract.errors.any? %>
+<% if @project.errors.any? %>
 
   <% content_for :error_tr do %>
-    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@contract) %></strong></td></tr>
+    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@project) %></strong></td></tr>
   <% end %>
 
   //Hide the flash notice div
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.contract_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("table.projects tr.error").remove();
+  $("table.projects tr.project_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
 
   <% content_for :table do %>
-  	<%=render :partial => 'contract_list', :locals => {:contracts => @contracts} %>
+  	<%=render :partial => 'project_list', :locals => {:projects => @projects} %>
   <% end %>
 
   //Update the html of the div flash_notice with the new one
@@ -24,12 +24,12 @@
   $("#flash_notice").show(300);
 
   //Replace the html of the div post_lists with the updated new one
-  $('form.new_contract').html( "<%= escape_javascript( yield :table ) %>");
+  $('form.new_project').html( "<%= escape_javascript( yield :table ) %>");
 
   //Remove the form
-  $('table.contracts').unwrap();
+  $('table.projects').unwrap();
   
   //Load a new entry field
-  $('tr.add_button > td > a').click();
+  $('table.projects tr.add_button > td > a').click();
   
 <% end %>

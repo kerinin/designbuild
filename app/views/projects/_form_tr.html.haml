@@ -1,0 +1,7 @@
+%tr.project_fields
+  %td.field
+    %strong= f.label :name
+    = f.text_field :name
+  %td{:colspan => 6}
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'

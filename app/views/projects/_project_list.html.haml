@@ -1,0 +1,32 @@
+%table.projects
+  %tr
+    %th Name
+    %th.currency Cost Estimate
+    %th.currency Cost-to-Date
+    %th 
+    %th
+    %th
+    %th
+    %th.control
+    %th.control
+    %th.control
+
+  - @projects.each do |project|
+    %tr{:id => "project_#{project.id}"}
+      %td= project.name
+      %td.currency= number_to_currency(project.estimated_cost)
+      %td.currency= number_to_currency(project.cost)
+      %td.control= link_to 'Components', project_components_path(project)
+      %td.control= link_to 'Tasks', project_tasks_path(project)
+      %td.control= link_to 'Contracts', project_contracts_path(project)
+      %td.control= link_to 'Deadlines', project_deadlines_path(project)
+      %td.control.show= link_to 'Show', project
+      %td.control.edit= link_to 'Rename', edit_project_path(project), :remote => true
+      %td.control.destroy= link_to 'Destroy', project, :confirm => 'Are you sure?', :method => :delete
+      
+  - if @projects.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Project)', new_project_path, :remote => true

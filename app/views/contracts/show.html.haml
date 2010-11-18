@@ -9,6 +9,8 @@
 %h2
   Bid:
   = number_to_currency @contract.bid
+  =form_for [@project, @contract] do |f|
+    = f.collection_select(:bid_id, @contract.bids, :id, :contractor, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();")
 
 %h3 Invoices to Date
 =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}

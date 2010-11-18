@@ -2,7 +2,6 @@
 
 Factory.define :contract do |f|
   f.name {Forgery::DesignBuild.contract_name}
-  f.bid {Forgery::Monetary.money :min => 1000, :max => 100000}
   
   f.project {|p| p.association(:project)}
 end

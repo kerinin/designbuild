@@ -36,6 +36,7 @@ class ProjectsController < ApplicationController
     @project = Project.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @project }
     end
@@ -53,9 +54,13 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.save
+        format.js {
+          @projects = Project.all
+        }
         format.html { redirect_to(@project, :notice => 'Project was successfully created.') }
         format.xml  { render :xml => @project, :status => :created, :location => @project }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
       end
@@ -69,9 +74,13 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       if @project.update_attributes(params[:project])
+        format.js {
+          @projects = Project.all
+        }
         format.html { redirect_to(@project, :notice => 'Project was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @project.errors, :status => :unprocessable_entity }
       end

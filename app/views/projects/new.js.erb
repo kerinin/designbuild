@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for @project, :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to( 'Cancel', projects_path ) %>
+<% end %>
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.projects").wrap(form).append(contents);
+$("table.projects tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("table.projects tr.project_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("table.projects tr.add_button").hide();
+$("table.projects td.control.edit > a").contents().unwrap();
+$("input:text:visible:first").focus();
