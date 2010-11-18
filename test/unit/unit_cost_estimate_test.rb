@@ -9,7 +9,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       @t1 = Factory :task, :project => @proj
       @q = Factory :quantity, :value => 10, :component => @c1
       
-      @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5
+      @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => nil
+      @with_drop = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => 100
     end
 
     teardown do
@@ -26,6 +27,7 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
       assert_not_nil @obj.unit_cost
+      assert_not_nil @with_drop.drop
     end
 
     should "require a quantity" do
@@ -62,6 +64,7 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     
     should "generate cost" do
       assert_equal 50, @obj.cost
+      assert_equal 100, @with_drop.cost
     end
   end
 end

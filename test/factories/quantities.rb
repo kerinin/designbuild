@@ -4,7 +4,6 @@ Factory.define :quantity do |f|
   f.name {Forgery::DesignBuild.quantity_name}
   f.value {rand(1000)}
   f.unit {Forgery::DesignBuild.unit_name}
-  f.drop {rand(150)/10}
   
   f.component {|p| p.association(:component)}
 end

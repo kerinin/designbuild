@@ -11,7 +11,7 @@ class UnitCostEstimate < ActiveRecord::Base
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def cost
-    self.quantity.value * self.unit_cost
+    self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
   end
   
   private

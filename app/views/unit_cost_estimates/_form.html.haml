@@ -10,7 +10,19 @@
     = f.label :name
     = f.text_field :name
   .field
+    %strong= f.label :quantity
+    = f.hidden_field :component_id, :value => @component.id
+    = f.grouped_collection_select :quantity_id, |
+      @component.ancestors.all + [@component], |
+      :quantities, |
+      :name, |
+      :id, |
+      :optgroup_label |
+  .field
     = f.label :unit_cost
     = f.text_field :unit_cost
+  .field
+    = f.label :drop
+    =f.text_field :drop
   .actions
     = f.submit 'Save'

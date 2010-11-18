@@ -3,6 +3,7 @@
     %th Name
     %th= "Task" if parent.class.name == 'Component'
     %th Quantity
+    %th Drop
     %th.currency Unit cost
     %th.currency Cost
     %th.control
@@ -18,7 +19,7 @@
         = unit_cost_estimate.quantity.unit
         from
         %i= unit_cost_estimate.quantity.name
-
+      %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
       - case parent.class.name
@@ -44,7 +45,7 @@
       %td{:colspan => 10}= link_to '(Add Unit Cost)', new_component_unit_cost_estimate_path(@component), :remote => true
             
   %tr.totals
-    %td.right{:colspan => 6}
+    %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })

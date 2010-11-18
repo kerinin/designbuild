@@ -16,12 +16,12 @@ class ProjectTest < ActiveSupport::TestCase
         @sc1 = Factory :component, :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :cost => 0.1
           @q1 = Factory :quantity, :component => @sc1, :value => 1
-          @uc1 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @q1, :unit_cost => 0.03 #.03
+          @uc1 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0 #.03
         
       @c2 = Factory :component, :project => @obj
         @fc2 = Factory :fixed_cost_estimate, :component => @c2, :cost => 1
         @q2 = Factory :quantity, :component => @c2, :value => 1
-        @uc3 = Factory :unit_cost_estimate, :component => @c2, :quantity => @q2, :unit_cost => 30 #30
+        @uc3 = Factory :unit_cost_estimate, :component => @c2, :quantity => @q2, :unit_cost => 30, :drop => 0 #30
 
       @t1 = Factory :task, :project => @obj
         @mc1 = Factory :material_cost, :task => @t1, :cost => 1, :supplier => @s1

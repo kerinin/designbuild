@@ -17,8 +17,8 @@ class ComponentTest < ActiveSupport::TestCase
       @fc1 = Factory :fixed_cost_estimate, :component => @obj, :cost => 1
       @fc2 = Factory :fixed_cost_estimate, :component => @obj, :cost => 10
       @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :cost => 100000
-      @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100 # x1
-      @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000 # x2
+      @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100, :drop => 0 # x1
+      @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000, :drop => 0 # x2
     end
 
     teardown do

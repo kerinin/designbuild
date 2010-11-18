@@ -11,8 +11,8 @@ class TaskTest < ActiveSupport::TestCase
       @q = Factory :quantity, :value => 1
       @fce1 = Factory :fixed_cost_estimate, :task => @obj, :cost => 1
       @fce2 = Factory :fixed_cost_estimate, :task => @obj, :cost => 10
-      @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100
-      @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000
+      @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100, :drop => 0
+      @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000, :drop => 0
       @lc1 = Factory :labor_cost, :task => @obj, :percent_complete => 10, :date => Date::today
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 20, :date => Date::today + 5
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 30, :date => Date::today - 5

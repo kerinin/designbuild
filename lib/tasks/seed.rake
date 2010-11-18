@@ -81,7 +81,7 @@ namespace :db do
           }
         }
       
-        (rand(10)+1).times {
+        (rand(5)+5).times {
           contract = Factory :contract, :project => project
         
           (rand(10)+1).times {
@@ -93,7 +93,7 @@ namespace :db do
         }
       
         # Deadlines
-        (rand(4)+1).times {
+        (rand(5)+5).times {
           deadline = Factory :deadline, :project => project
         
           (rand(4)).times {

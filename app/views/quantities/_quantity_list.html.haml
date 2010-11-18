@@ -3,7 +3,6 @@
     %th Name
     %th.number Value
     %th Unit
-    %th.number Drop
     %th.control
     %th.control
     %th.control
@@ -13,7 +12,6 @@
       %td= quantity.name
       %td.number= quantity.value
       %td= quantity.unit
-      %td.number= number_to_percentage(quantity.drop, :precision => 1 )
       %td.control
       %td.control.edit= link_to 'Edit', edit_component_quantity_path(@component, quantity), :remote => true
       %td.control.destroy= link_to 'Destroy', [@component, quantity], :confirm => 'Are you sure?', :method => :delete

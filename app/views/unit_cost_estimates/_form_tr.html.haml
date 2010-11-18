@@ -15,7 +15,9 @@
       :name, |
       :id, |
       :optgroup_label |
-      
+  %td.field
+    %strong= f.label :drop
+    = f.text_field :drop
   %td.field{:colspan => 2}
     %strong= f.label :unit_cost
     = f.text_field :unit_cost

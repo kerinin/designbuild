@@ -23,7 +23,6 @@ class QuantityTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
       assert_not_nil @obj.value
       assert_not_nil @obj.unit
-      assert_not_nil @obj.drop
     end
     
     should "require a component" do
