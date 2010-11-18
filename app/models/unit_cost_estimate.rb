@@ -17,6 +17,6 @@ class UnitCostEstimate < ActiveRecord::Base
   private
   
   def set_component
-    self.component = self.quantity.component
+    self.component ||= self.quantity.component
   end
 end

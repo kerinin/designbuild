@@ -16,8 +16,9 @@
       %td
         = unit_cost_estimate.quantity.value.to_i
         = unit_cost_estimate.quantity.unit
-        of
+        from
         %i= unit_cost_estimate.quantity.name
+
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
       - case parent.class.name

@@ -3,7 +3,7 @@
 -- work timeline w/ deadlines
 -- labor reporting for michelle
 -- graphs
-- active tasks
++ active tasks
 - project dashboard
 - versioning (https://github.com/airblade/paper_trail)
 - users and permissions

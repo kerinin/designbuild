@@ -58,6 +58,6 @@ class Component < ActiveRecord::Base
   private
   
   def check_project
-    self.project = self.parent.project if !self.project && !self.parent.nil? && !self.parent.project.nil?
+    self.project ||= self.parent.project if !self.parent.nil? && !self.parent.project.nil?
   end
 end
