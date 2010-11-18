@@ -3,12 +3,12 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContractTest < ActiveSupport::TestCase
   context "A Contract" do
     setup do
-      @obj = Factory :contract, :bid => 100
+      @obj = Factory :contract
       
       @c1 = Factory :contract_cost, :contract => @obj, :cost => 1
       @c2 = Factory :contract_cost, :contract => @obj, :cost => 10
       @b1 = Factory :bid, :contract => @obj
-      @b2 = Factory :bid, :contract => @obj
+      @b2 = Factory :bid, :contract => @obj, :cost => 100
       @obj.active_bid = @b2
     end
 

@@ -36,7 +36,7 @@ class BidTest < ActiveSupport::TestCase
     end
     
     should "set active" do
-      @bid.is_current = true
+      @bid.is_active_bid = true
       assert_equal @active.is_active_bid, false
       assert_equal @bid.is_active_bid, true
     end

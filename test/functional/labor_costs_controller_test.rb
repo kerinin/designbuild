@@ -21,7 +21,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   test "should create labor_cost" do
     assert_difference('LaborCost.count') do
       post :create, :task_id => @task.to_param, :labor_cost => {
-        :date => '1/1/2000'
+        :date => '1/1/2000', :percent_complete => 10
       }
     end
 
