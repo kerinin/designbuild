@@ -1,4 +1,13 @@
 class ProjectsController < ApplicationController
+  
+  def timeline_events
+    @project = Project.find(params[:id])
+    
+    respond_to do |format|
+      format.xml
+    end
+  end
+  
   # GET /projects
   # GET /projects.xml
   def index

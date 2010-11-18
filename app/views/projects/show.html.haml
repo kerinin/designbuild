@@ -8,10 +8,12 @@
 
 %h2 Overview
 
-%h3 Timeline
-=render :partial => 'timeline'
+-unless @project.labor_cost.nil?
+  %h3 Timeline
+  =render :partial => 'timeline'
 
 %h3=link_to "Print Purchase Orders", '/'
+
 -unless @project.tasks.active.nil?
   %h3 Active Tasks
   = render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}

@@ -1,0 +1,14 @@
+- @trackCount = 0
+%data
+  -@project.tasks.each do |task|
+    -task.labor_costs.each do |labor_cost|
+      %event{ |
+        :start => labor_cost.date.strftime('%b %d %Y %H:%M:%S GMT%z'), |
+        :end => (labor_cost.date + 7).strftime('%b %d %Y %H:%M:%S GMT%z'), |
+        :durationEvent => 'true', |
+        :trackNum => @trackCount, |
+        :title => labor_cost.task.name |
+      } |
+        =number_to_currency labor_cost.cost
+        ="#{number_to_percentage(labor_cost.percent_complete, :precision => 0)} complete"
+    - @trackCount += 1

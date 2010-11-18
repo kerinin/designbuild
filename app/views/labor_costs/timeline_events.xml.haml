@@ -2,8 +2,7 @@
   -@labor_costs.each do |labor_cost|
     %event{ |
       :start => labor_cost.date.strftime('%b %d %Y %H:%M:%S GMT%z'), |
-      :end => ( labor_cost.date + 1 ).strftime('%b %d %Y %H:%M:%S GMT%z'), |
-      :caption => labor_cost.task.name, |
+      :end => (labor_cost.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z'), |
       :durationEvent => 'true', |
-      :trackNum => labor_cost.task.id |
+      :title => labor_cost.task.name |
     } |

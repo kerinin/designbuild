@@ -7,6 +7,10 @@ Designbuild::Application.routes.draw do
     resources :tasks        # re-nested
     resources :contracts    # re-nested
     resources :deadlines    # re-nested
+    
+    member do
+      get :timeline_events, :as => :timeline_events_for
+    end
   end
 
   resources :components do

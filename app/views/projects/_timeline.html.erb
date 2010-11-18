@@ -4,12 +4,15 @@ This page uses Javascript to show you a Timeline. Please enable Javascript in yo
 </noscript>
 
 <% content_for :head do %>
-  <%#= javascript_include_tag 'timeline-api.js?bundle=true' %> 
-  <%= javascript_include_tag 'http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true' %>
+  <%= javascript_include_tag 'timeline/simile-ajax-api.js?bundle=true' %>
+  <%= javascript_include_tag 'timeline/timeline-api.js?bundle=true' %> 
+  <%#= javascript_include_tag 'http://static.simile.mit.edu/timeline/api-2.3.0/timeline-api.js?bundle=true' %>
 <% end %>
 
 <script>
   var tl;
+  var Timeline_ajax_url = 'javascripts/simile-ajax-api.js'
+  var Timeline_urlPrefix = 'javascripts/timeline'
 
   $(document).ready( function () {
 
@@ -20,33 +23,26 @@ This page uses Javascript to show you a Timeline. Please enable Javascript in yo
     theme.event.bubble.height=220;
     var bandInfos = [
       Timeline.createBandInfo({
-          width: "20%",
-          intervalUnit: Timeline.DateTime.DAY,
-          intervalPixels: 100,
-          eventSource: eventSource,
-          theme:theme
-      }),
-      Timeline.createBandInfo({
-          width: "50%",
+          width: "70%",
           intervalUnit: Timeline.DateTime.MONTH,
-          intervalPixels: 100,
+          intervalPixels: 400,
           eventSource: eventSource,
           theme:theme
       }),
       Timeline.createBandInfo({
+          overview: true,
           width: "30%",
           intervalUnit: Timeline.DateTime.YEAR,
-          intervalPixels: 200,
+          intervalPixels: 400,
           eventSource: eventSource,
           theme:theme
       })
     ];
     bandInfos[1].syncWith = 0;
-    bandInfos[2].syncWith = 0;
-    bandInfos[2].highlight = true;
+    bandInfos[1].highlight = true;
     tl = Timeline.create(document.getElementById("timeline"), bandInfos);
     //eventSource.loadJSON(events, '');
-    Timeline.loadXML("<%= timeline_events_labor_costs_url :format => :xml %>", function(xml, url) { eventSource.loadXML(xml, url); });
+    Timeline.loadXML("<%= timeline_events_for_project_url @project, :format => :xml %>", function(xml, url) { eventSource.loadXML(xml, url); });
   } );
   
   var resizeTimerID = null;
