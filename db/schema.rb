@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(:version => 20101116183304) do
 
   create_table "tasks", :force => true do |t|
     t.string   "name"
+    t.boolean  "active"
     t.integer  "contract_id"
     t.integer  "deadline_id"
     t.string   "deadline_type"

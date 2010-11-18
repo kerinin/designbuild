@@ -32,12 +32,12 @@ class TaskTest < ActiveSupport::TestCase
       @t_start = Factory :task
       Factory :fixed_cost_estimate, :cost => 100, :task => @t_start
       
-      @t_inprogress = Factory :task
+      @t_inprogress = Factory :task, :active => true
       Factory :fixed_cost_estimate, :cost => 100, :task => @t_inprogress
       @labor_inprogress = Factory :labor_cost, :task => @t_inprogress, :percent_complete => 50
       Factory :labor_cost_line, :labor_set => @labor_inprogress, :laborer => @l, :hours => 50
       
-      @t_over_budget = Factory :task
+      @t_over_budget = Factory :task, :active => false
       Factory :fixed_cost_estimate, :cost => 100, :task => @t_over_budget
       @labor_over_budget = Factory :labor_cost, :task => @t_over_budget, :percent_complete => 50
       Factory :labor_cost_line, :labor_set => @labor_over_budget, :laborer => @l, :hours => 200
@@ -74,6 +74,7 @@ class TaskTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @obj.name
+      assert_not_nil @obj.active
     end
     
     should "require a project" do
@@ -91,6 +92,11 @@ class TaskTest < ActiveSupport::TestCase
       assert_nothing_raised do
         @obj.deadline = Factory :relative_deadline
       end
+    end
+    
+    should "scope active tasks" do
+      assert_contains Task.scoped.active.all, @t_inprogress
+      assert_does_not_contain Task.scoped.active.all, @t_over_budget
     end
     
     #---------------ASSOCIATIONS

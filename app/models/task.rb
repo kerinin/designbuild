@@ -12,6 +12,10 @@ class Task < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
+  scope :active, lambda {
+    where(:active => true)
+  }
+  
   def cost_estimates
     self.unit_cost_estimates + self.fixed_cost_estimates
   end

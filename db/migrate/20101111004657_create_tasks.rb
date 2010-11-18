@@ -2,6 +2,7 @@ class CreateTasks < ActiveRecord::Migration
   def self.up
     create_table :tasks do |t|
       t.string :name
+      t.boolean :active
       
       t.belongs_to :contract
       t.belongs_to :deadline, :polymorphic => true

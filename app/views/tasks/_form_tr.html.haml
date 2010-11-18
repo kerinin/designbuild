@@ -1,12 +1,10 @@
 %tr.task_fields
-  %td.field
-    -unless @parent_task.nil?
-      = f.hidden_field :parent_id, :value => @parent_task.id
+  %td.field{:colspan => 5}
     %strong= f.label :name
     = f.text_field :name
-  %td
-  %td
-  %td
+  %td.field
+    %strong= f.label :active
+    = f.check_box :active
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'
       

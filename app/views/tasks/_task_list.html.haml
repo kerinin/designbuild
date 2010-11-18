@@ -5,6 +5,7 @@
     %th.currency Projected Cost
     %th.number % of Est.
     %th.number % Complete
+    %th.check_box Active
     %th.control
     %th.control
     %th.control
@@ -16,8 +17,9 @@
       %td.currency= number_to_currency(task.projected_cost)
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 1)
       %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
+      %td.check_box= task.active ? 'Yes' : 'No'
       %td.control.show= link_to 'Show', [@project, task]
-      %td.control.edit= link_to 'Rename', edit_project_task_path(@project, task), :remote => true
+      %td.control.edit= link_to 'Edit', edit_project_task_path(@project, task), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
       
   - if tasks.empty?
