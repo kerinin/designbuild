@@ -1,0 +1,16 @@
+- projected costs
+- reporting
+-- work timeline w/ deadlines
+-- labor reporting for michelle
+-- graphs
+- active tasks
+- project dashboard
+- versioning (https://github.com/airblade/paper_trail)
+- users and permissions
+- inherited quantities
+- parametric components
+- usability tweaks
+-- spinners
+-- icons
+-- explanative text
+-- help buttons

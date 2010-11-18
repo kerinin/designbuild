@@ -2,7 +2,7 @@
   %tr
     %th Name
     %th.currency Est. Cost
-    %th.currency Cost-to-Date
+    %th.currency Projected Cost
     %th.number % of Est.
     %th.number % Complete
     %th.control
@@ -13,8 +13,8 @@
     %tr{:id => "task_#{task.id}"}
       %td= task.name
       %td.currency= number_to_currency(task.estimated_cost)
-      %td.currency= number_to_currency(task.cost)
-      %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 1)
+      %td.currency= number_to_currency(task.projected_cost)
+      %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 1)
       %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
       %td.control.show= link_to 'Show', [@project, task]
       %td.control.edit= link_to 'Rename', edit_project_task_path(@project, task), :remote => true

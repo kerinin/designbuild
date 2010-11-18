@@ -26,6 +26,32 @@ class TaskTest < ActiveSupport::TestCase
       Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 2000
       Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
       Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
+      
+      @l = Factory :laborer, :bill_rate => 1
+      
+      @t_start = Factory :task
+      Factory :fixed_cost_estimate, :cost => 100, :task => @t_start
+      
+      @t_inprogress = Factory :task
+      Factory :fixed_cost_estimate, :cost => 100, :task => @t_inprogress
+      @labor_inprogress = Factory :labor_cost, :task => @t_inprogress, :percent_complete => 50
+      Factory :labor_cost_line, :labor_set => @labor_inprogress, :laborer => @l, :hours => 50
+      
+      @t_over_budget = Factory :task
+      Factory :fixed_cost_estimate, :cost => 100, :task => @t_over_budget
+      @labor_over_budget = Factory :labor_cost, :task => @t_over_budget, :percent_complete => 50
+      Factory :labor_cost_line, :labor_set => @labor_over_budget, :laborer => @l, :hours => 200
+      
+      @t_finished_lower = Factory :task
+      Factory :fixed_cost_estimate, :cost => 100, :task => @t_finished_lower
+      @labor_finished_lower = Factory :labor_cost, :task => @t_finished_lower, :percent_complete => 100
+      Factory :labor_cost_line, :labor_set => @labor_finished_lower, :laborer => @l, :hours => 50
+      
+      @t_finished_higher = Factory :task
+      Factory :fixed_cost_estimate, :cost => 100, :task => @t_finished_higher
+      @labor_finished_higher = Factory :labor_cost, :task => @t_finished_higher, :percent_complete => 100
+      Factory :labor_cost_line, :labor_set => @labor_finished_higher, :laborer => @l, :hours => 200
+      
     end
 
     teardown do
@@ -154,6 +180,14 @@ class TaskTest < ActiveSupport::TestCase
       assert_equal nil, @obj2.material_cost
       assert_equal nil, @obj2.labor_cost
       assert_equal nil, @obj2.cost
+    end
+    
+    should "project costs based on percent complete" do
+      assert_equal @t_start.projected_cost, 100
+      assert_equal @t_inprogress.projected_cost, 100
+      assert_equal @t_over_budget.projected_cost, 200
+      assert_equal @t_finished_lower.projected_cost, 50
+      assert_equal @t_finished_higher.projected_cost, 200
     end
   end
 end

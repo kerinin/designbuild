@@ -53,6 +53,20 @@ class Task < ActiveRecord::Base
   end
   
   def percent_complete
+    return 0 if self.labor_costs.empty?
     self.labor_costs.first.percent_complete
+  end
+  
+  def projected_cost
+    return self.cost if self.percent_complete >= 100
+    est = self.estimated_cost
+    act = self.cost
+    return est if act.nil?
+    return act if est.nil?
+    if act > est
+      return act
+    else
+      return est
+    end
   end
 end
