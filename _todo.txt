@@ -7,10 +7,11 @@
 - project dashboard
 - versioning (https://github.com/airblade/paper_trail)
 - users and permissions
-- inherited quantities
++ inherited quantities
 - parametric components
 - usability tweaks
 -- spinners
 -- icons
 -- explanative text
 -- help buttons
+-- table alignment
