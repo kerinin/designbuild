@@ -3,6 +3,7 @@
     %th Contract Name
     %th Contractor
     %th.currency Bid
+    %th.number Markup
     %th.currency Cost-to-Date
     %th.number % Total
     %th.control
@@ -14,6 +15,7 @@
       %td= contract.name
       %td= contract.active_bid.contractor unless contract.active_bid.blank?
       %td.currency= number_to_currency contract.bid
+      %td.number= number_to_percentage contract.total_markup, :precision => 0
       %td.currency= number_to_currency contract.cost
       %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.cost, contract.bid)), :precision => 1)
       %td.control.show= link_to 'Show', [@project, contract]

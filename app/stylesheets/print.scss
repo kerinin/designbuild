@@ -3,3 +3,12 @@
 //Recommended Blueprint configuration with scoping and semantic layout:
 body.bp {
   @include blueprint-print(true); }
+
+@import "partials/reset";
+@import "partials/table";
+@import "partials/nav";
+@import "partials/table_print";
+
+body.bp, body.bp table {
+  font-size : 80%;
+}

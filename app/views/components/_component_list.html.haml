@@ -2,6 +2,7 @@
   %tr
     %th Name
     %th.currency Est. Cost
+    %th.number Markup
     %th.control
     %th.control
     %th.control
@@ -10,6 +11,7 @@
     %tr.component{:id => "component_#{component.id}"}
       %td= component.name
       %td.currency= number_to_currency(component.estimated_cost)
+      %td.number= number_to_percentage component.total_markup, :precision => 0
       %td.control.show= link_to 'Show', [@project, component]
       %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete

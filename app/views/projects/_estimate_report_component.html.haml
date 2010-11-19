@@ -10,7 +10,11 @@
         =form_for( [@project, component], :html => { :id => "costs_#{component.id}" } ) do |f|
           =f.check_box :show_costs_in_estimate, :onchange => "$('form#costs_#{component.id}').submit();"
           =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
-    %td= component.name
+    -if root
+      %td
+        %strong= component.name
+    -else
+      %td.indented= component.name
     %td.currency
       -if root
         %strong= number_to_currency component.estimated_cost
