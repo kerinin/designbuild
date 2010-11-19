@@ -1,23 +1,33 @@
 + projected costs
-- reporting
--- estimates, proposals, invoices
--- work timeline w/ deadlines
--- labor reporting for michelle
--- graphs
 + active tasks
++ inherited quantities
+
+- rework markups
+- parametric components
+- versioning (https://github.com/airblade/paper_trail)
+- equation quantities
+
 - project dashboard
 -- active tasks (with labor + material creation buttons)
 -- projected cost
 -- print purchase orders
 -- schedule
-- versioning (https://github.com/airblade/paper_trail)
-- users and permissions
-+ inherited quantities
-- parametric components
+
+- reporting
+-- estimates, proposals, invoices
+-- work timeline w/ deadlines
+-- labor reporting for michelle
+-- graphs
+
 - usability tweaks
 -- spinners
 -- icons
 -- explanative text
 -- help buttons
 -- table alignment
+
 - bank draws (invoice tracking)
+
+- drag & drop positioning of components, tasks, contracts
+
+- users and permissions
