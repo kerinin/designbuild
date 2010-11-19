@@ -44,7 +44,7 @@ Designbuild::Application.routes.draw do
   resources :deadlines do
     resources :relative_deadlines
   end
-    
+
   resources :tags
 
   devise_for :users
