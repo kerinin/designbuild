@@ -1,0 +1,36 @@
+-unless component.estimated_cost.nil?
+  %tr
+    %td.control
+      -unless component.children.empty?
+        =form_for( [@project, component], :html => { :id => "expand_#{component.id}" } ) do |f|
+          =f.check_box :expand_in_estimate, :onchange => "$('form#expand_#{component.id}').submit();"
+          =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
+    %td.control
+      -unless component.fixed_cost_estimates.empty? && component.unit_cost_estimates.empty?
+        =form_for( [@project, component], :html => { :id => "costs_#{component.id}" } ) do |f|
+          =f.check_box :show_costs_in_estimate, :onchange => "$('form#costs_#{component.id}').submit();"
+          =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
+    %td= component.name
+    %td.currency
+      -if root
+        %strong= number_to_currency component.estimated_cost
+      -else
+        = number_to_currency component.estimated_cost
+  -if component.show_costs_in_estimate
+    -component.unit_cost_estimates.each do |unit_cost|
+      %tr
+        %td.control
+        %td.control
+        %td.indented= unit_cost.name
+        %td.currency= number_to_currency unit_cost.marked_up_cost
+      
+    -component.fixed_cost_estimates.each do |fixed_cost|
+      %tr
+        %td.control
+        %td.control
+        %td.indented= fixed_cost.name
+        %td.currency= number_to_currency fixed_cost.marked_up_cost
+      
+  -if component.expand_in_estimate
+    -component.children.each do |subcomponent|
+      =render :partial => 'estimate_report_component', :locals => {:component => subcomponent, :root => false}

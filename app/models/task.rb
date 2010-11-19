@@ -16,11 +16,11 @@ class Task < ActiveRecord::Base
   after_create :add_default_markups
 
   scope :active, lambda {
-    joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
+    #joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
   }
   
   scope :completed, lambda {
-    joins(:labor_costs).where( 'labor_costs.percent_complete >= 100').group('tasks.id')
+    #joins(:labor_costs).where( 'labor_costs.percent_complete >= 100').group('tasks.id')
   }
   
   def cost_estimates

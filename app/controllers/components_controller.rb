@@ -74,7 +74,13 @@ class ComponentsController < ApplicationController
         format.js { 
           @components = @component.is_root? ? @project.components.roots : @component.siblings
         }
-        format.html { redirect_to([@project, @component], :notice => 'Component was successfully updated.') }
+        format.html { 
+          if params.has_key? :redirect
+            redirect_to(params[:redirect])
+          else
+            redirect_to([@project, @component], :notice => 'Component was successfully updated.') 
+          end
+        }
         format.xml  { head :ok }
       else
         format.js

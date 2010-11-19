@@ -1,0 +1,29 @@
+@import "compass/utilities/tables/alternating-rows-and-columns"
+
+body
+  table
+
+    $table-color : white
+    $table-header-color : #ccc
+    $table-alternating-color : #f5f5f5
+    $table-hover-color : #DFE7F0
+    tr:nth-child(odd)
+      background-color : $table-color
+    tr:nth-child(1), tr:nth-child(1):hover
+      background-color : $table-color
+      
+    th
+      border-left : 0
+      
+    tr:hover
+      background-color : $table-hover-color
+    tr.totals, tr.totals:hover
+      background-color : $table-color
+    tr.control
+      th, td
+        display : none
+    td.control, th.control
+      display : none
+      
+    td.indented
+      padding-left : 50px
