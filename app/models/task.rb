@@ -9,6 +9,7 @@ class Task < ActiveRecord::Base
   has_many :fixed_cost_estimates, :order => :name
   has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
+  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
   
   validates_presence_of :name, :project
 

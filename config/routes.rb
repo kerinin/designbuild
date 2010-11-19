@@ -7,6 +7,7 @@ Designbuild::Application.routes.draw do
     resources :tasks        # re-nested
     resources :contracts    # re-nested
     resources :deadlines    # re-nested
+    resources :markups
     
     member do
       get :timeline_events, :as => :timeline_events_for
@@ -17,11 +18,13 @@ Designbuild::Application.routes.draw do
     resources :quantities
     resources :fixed_cost_estimates
     resources :unit_cost_estimates
+    resources :markups
   end
     
   resources :tasks do
     resources :labor_costs        # re-nested
     resources :material_costs     # re-nested
+    resources :markups
   end
     
   resources :labor_costs do    
@@ -35,6 +38,7 @@ Designbuild::Application.routes.draw do
   resources :contracts do
     resources :bids
     resources :contract_costs
+    resources :markups
   end
 
   resources :deadlines do

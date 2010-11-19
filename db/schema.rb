@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101118232201) do
+ActiveRecord::Schema.define(:version => 20101119002545) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -89,6 +89,15 @@ ActiveRecord::Schema.define(:version => 20101118232201) do
     t.string   "name"
     t.float    "bill_rate"
     t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "markups", :force => true do |t|
+    t.string   "name"
+    t.float    "percent"
+    t.integer  "parent_id"
+    t.string   "parent_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

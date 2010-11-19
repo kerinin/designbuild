@@ -7,6 +7,7 @@ class Contract < ActiveRecord::Base
   has_many :tasks, :order => :name
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
+  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
   
   validates_presence_of :name, :project
   

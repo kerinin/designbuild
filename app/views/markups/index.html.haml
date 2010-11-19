@@ -1,0 +1,19 @@
+%h1 Listing markups
+
+%table
+  %tr
+    %th Name
+    %th Percent
+    %th
+    %th
+    %th
+
+  - @markups.each do |markup|
+    %tr
+      %td= markup.name
+      %td= markup.percent
+      %td= link_to 'Show', [@parent_object, markup]
+      %td=# link_to 'Edit', edit_markup_path(markup)
+      %td= link_to 'Destroy', [@parent_object, markup], :confirm => 'Are you sure?', :method => :delete
+
+%br

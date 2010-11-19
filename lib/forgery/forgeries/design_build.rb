@@ -35,4 +35,8 @@ class Forgery::DesignBuild < Forgery
   def self.supplier_name
     dictionaries[:suppliers].random
   end
+  
+  def self.markup_name
+    dictionaries[:markups].random
+  end
 end

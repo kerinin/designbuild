@@ -8,6 +8,7 @@ class Component < ActiveRecord::Base
   has_many :quantities, :order => :name, :dependent => :destroy
   has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
+  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
   
   has_and_belongs_to_many :tags
   
