@@ -14,6 +14,10 @@ class UnitCostEstimate < ActiveRecord::Base
     self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
   end
   
+  def marked_up_cost
+    (1 + (self.component.total_markup / 100) ) * self.cost
+  end
+  
   private
   
   def set_component

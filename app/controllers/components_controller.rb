@@ -44,7 +44,7 @@ class ComponentsController < ApplicationController
   # POST /components
   # POST /components.xml
   def create
-    @parent_component = params.has_key?( :parent_id ) ? Component.find( params[:parent_id] ) : nil
+    @parent_component = params[:component].has_key?( :parent_id ) ? Component.find( params[:component][:parent_id] ) : nil
     @component = Component.new(params[:component])
     @component.project = @project
     @component.parent = @parent_component unless @parent_component.nil?
@@ -88,10 +88,14 @@ class ComponentsController < ApplicationController
   # DELETE /components/1.xml
   def destroy
     @component = Component.find(params[:id])
+    @parent = @component.parent
     @component.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_components_url(@project)) }
+      format.html { 
+       redirect_to(project_components_url(@project)) if @parent.nil?
+       redirect_to(project_component_url(@project, @parent)) 
+      }
       format.xml  { head :ok }
     end
   end

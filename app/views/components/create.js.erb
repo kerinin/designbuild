@@ -14,7 +14,7 @@
 <% else %>
 
   <% content_for :table do %>
-  	<%=render :partial => 'component_list', :locals => {:components => @components} %>
+  	<%=render :partial => 'component_list', :locals => {:parent => (@component.is_root? ? @project : @component.parent ), :components => @components} %>
   <% end %>
 
   //Update the html of the div flash_notice with the new one

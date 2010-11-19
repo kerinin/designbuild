@@ -18,6 +18,10 @@ class MarkupsController < ApplicationController
     end
   end     
   
+  def destroy
+    destroy! { parent_path( :project_id => parent.class.name != 'Project' ? parent.project.id : nil ) }
+  end
+  
 =begin  
   # GET /markups
   # GET /markups.xml

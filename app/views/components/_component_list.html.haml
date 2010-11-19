@@ -20,9 +20,9 @@
   
   %tr.control.add_button
     %td{:colspan => 5}= link_to '(Add Component)', |
-      components.empty? || components.first.is_root? ? |
+      parent.class.name == 'Project' ? |
         new_project_component_path(@project) : |
-        new_project_component_path(@project, :parent_id => components.first.parent.id), |
+        new_project_component_path(@project, :parent_id => parent.id), |
       :remote => true |
       
   %tr.totals

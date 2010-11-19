@@ -76,6 +76,6 @@ class Component < ActiveRecord::Base
   end
   
   def add_default_markups
-    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!}
+    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!} if self.is_root?
   end
 end

@@ -5,7 +5,7 @@
     %th Quantity
     %th Drop
     %th.currency Unit cost
-    %th.currency Cost
+    %th.currency= "Cost (+#{number_to_percentage @component.total_markup, :precision => 0})"
     %th.control
     %th.control
     %th.control
@@ -21,7 +21,7 @@
         %i= unit_cost_estimate.quantity.name
       %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
-      %td.currency= number_to_currency(unit_cost_estimate.cost, :unit => "$")
+      %td.currency= number_to_currency(unit_cost_estimate.marked_up_cost)
       - case parent.class.name
       - when 'Component'
         %td.control
@@ -48,6 +48,6 @@
     %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.marked_up_cost })
     %td{:colspan => 4}
     
