@@ -8,6 +8,14 @@ class ProjectsController < ApplicationController
     end
   end
   
+  def estimate_report
+    @project = Project.find(params[:id])
+
+    respond_to do |format|
+      format.html # show.html.erb
+    end  
+  end
+  
   # GET /projects
   # GET /projects.xml
   def index

@@ -7,26 +7,29 @@ body
     $table-color : white
     $table-header-color : #ccc
     $table-alternating-color : #f5f5f5
+    $table-hover-color : #DFE7F0
     tr:nth-child(odd)
       background-color : $table-alternating-color
-    tr:nth-child(1)
+    tr:nth-child(1), tr:nth-child(1):hover
       background-color : $table-header-color
       
     th
       border-left : 1px solid white
-    tr.totals
+    tr:hover
+      background-color : $table-hover-color
+    tr.totals, tr.totals:hover
       background-color : $table-header-color
     tr.control
       th, td
         text-align : center
     td.currency, th.currency
       text-align : right
-      width : 5em
+      width : 80px
     td.number, th.number
       text-align : right
-      width : 5em
+      width : 80px
     td.unit, th.number
-      width : 5em
+      width : 80px
     td.control, th.control
       width : 50px
       text-align : center
@@ -36,3 +39,6 @@ body
       text-align : right
     td.left, th.left
       text-align : left
+      
+    td.indented
+      padding-left : 50px

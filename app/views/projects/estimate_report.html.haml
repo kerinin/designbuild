@@ -1,0 +1,35 @@
+%h1
+  = @project.name
+  Cost Estimate
+%h2= Date::today.to_s :long
+
+%table.project_estimate
+  %tr
+    %th Building Component
+    %th.currency Cost
+    
+  -@project.components.roots.each do |component|
+    -unless component.estimated_cost.nil?
+      %tr
+        %td= component.name
+        %td.currency
+          %strong= number_to_currency component.estimated_cost
+      
+    -component.children.each do |subcomponent|
+      -unless subcomponent.estimated_cost.nil?
+        %tr
+          %td.indented= subcomponent.name
+          %td.currency= number_to_currency subcomponent.estimated_cost
+      
+  -@project.contracts.each do |contract|
+    -unless contract.estimated_cost.nil?
+      %tr
+        %td= contract.name
+        %td.currency
+          %strong= number_to_currency contract.estimated_cost
+          
+  %tr.totals
+    %td.right
+      %strong Total
+    %td.currency
+      %strong= number_to_currency @project.estimated_cost

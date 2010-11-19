@@ -11,6 +11,7 @@ Designbuild::Application.routes.draw do
     
     member do
       get :timeline_events, :as => :timeline_events_for
+      get :estimate_report, :as => :estimate_report_for
     end
   end
 
