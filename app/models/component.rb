@@ -55,6 +55,10 @@ class Component < ActiveRecord::Base
     add_or_nil( self.estimated_component_cost, self.estimated_subcomponent_cost )
   end
   
+  def select_label
+    (self.ancestors + [self]).map {|c| c.name}.join(' > ')
+  end
+  
   private
   
   def check_project

@@ -5,7 +5,9 @@
   =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
   = @component.name
 
-
+Parent Component: 
+=form_for [@project, @component] do |f|
+  = f.collection_select(:parent_id, @project.components.roots.map{|c| c.subtree}.flatten, :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
 
 %hr
 
