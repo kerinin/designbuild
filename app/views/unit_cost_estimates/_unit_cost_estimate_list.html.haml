@@ -1,10 +1,10 @@
 %table.unit_costs
   %tr
     %th Name
-    %th= "Task" if parent.class.name == 'Component'
     %th Quantity
     %th Drop
     %th.currency Unit cost
+    %th= "Task" if parent.class.name == 'Component'
     %th.currency= "Cost (+#{number_to_percentage @component.total_markup, :precision => 0})"
     %th.control
     %th.control
@@ -13,7 +13,6 @@
   - unit_cost_estimates.limit(limit).each do |unit_cost_estimate|
     %tr{:id => "unit_cost_estimate_#{unit_cost_estimate.id}"}
       %td= unit_cost_estimate.name
-      %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )  if context == :component
       %td
         = unit_cost_estimate.quantity.value.to_i
         = unit_cost_estimate.quantity.unit
@@ -21,6 +20,7 @@
         %i= unit_cost_estimate.quantity.name
       %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
+      %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )  if context == :component
       %td.currency= number_to_currency(unit_cost_estimate.marked_up_cost)
       - case parent.class.name
       - when 'Component'

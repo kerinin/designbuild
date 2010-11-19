@@ -3,10 +3,10 @@
     %strong= f.label :name
     = f.text_field :name
   %td.field
-    %strong= f.label :task_id
-    = f.collection_select :task_id, @project.tasks, :id, :name
-  %td.field
     %strong= f.label :cost
     = f.text_field :cost
+  %td.field
+    %strong= f.label :task_id
+    = f.collection_select :task_id, @project.tasks, :id, :name
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'

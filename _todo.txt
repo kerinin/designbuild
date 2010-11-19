@@ -1,5 +1,6 @@
 + projected costs
 - reporting
+-- estimates, proposals, invoices
 -- work timeline w/ deadlines
 -- labor reporting for michelle
 -- graphs
@@ -19,3 +20,4 @@
 -- explanative text
 -- help buttons
 -- table alignment
+- bank draws (invoice tracking)

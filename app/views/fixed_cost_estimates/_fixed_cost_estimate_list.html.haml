@@ -1,9 +1,8 @@
 %table.fixed_costs
   %tr
     %th Name
-    -if parent.class.name == 'Component'
-      %th Task
     %th.currency= "Cost (+#{number_to_percentage @component.total_markup, :precision => 0})"
+    %th Task
     %th.control
     %th.control
     %th.control
@@ -11,9 +10,8 @@
   - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
     %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
       %td= fixed_cost_estimate.name
-      -if parent.class.name == 'Component'
-        %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
       %td.currency= number_to_currency(fixed_cost_estimate.marked_up_cost)
+      %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
       - case parent.class.name
       - when 'Component'
         %td.control

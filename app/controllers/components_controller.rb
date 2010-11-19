@@ -99,8 +99,11 @@ class ComponentsController < ApplicationController
 
     respond_to do |format|
       format.html { 
-       redirect_to(project_components_url(@project)) if @parent.nil?
-       redirect_to(project_component_url(@project, @parent)) 
+        if @parent.nil?
+          redirect_to(project_components_url(@project)) 
+        else
+          redirect_to(project_component_url(@project, @parent)) 
+        end
       }
       format.xml  { head :ok }
     end
