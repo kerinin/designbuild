@@ -6,6 +6,10 @@
 
 %hr
 
+%h2 Markups
+
+=render :partial => 'markups/markup_lines', :locals => {:parent_object => @contract, :markups => @contract.markups}
+
 %h2
   Bid:
   = number_to_currency @contract.bid

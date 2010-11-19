@@ -11,6 +11,10 @@ Parent Component:
 
 %hr
 
+%h2 Markups
+
+=render :partial => 'markups/markup_lines', :locals => {:parent_object => @component, :markups => @component.markups}
+
 %h2 Sub-Components
 =render :partial => 'component_list', :locals => {:components => @component.children.order(:name)}
 

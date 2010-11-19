@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
   has_many :deadlines, :order => :date, :dependent => :destroy
   has_many :laborers, :order => :name, :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
-  has_many :default_markups, :class_name => 'Markup', :as => :parent, :order => :name, :dependent => :destroy
+  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
   
   has_and_belongs_to_many :users
   

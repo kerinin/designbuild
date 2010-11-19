@@ -1,0 +1,9 @@
+%tr.markup_fields
+  %td.field
+    %strong= f.label :name
+    = f.text_field :name
+  %td.field
+    %strong= f.label :percent
+    = f.text_field :percent
+  %td.actions.control{:colspan => 3}
+    = f.submit 'Save'

@@ -1,10 +1,28 @@
 class MarkupsController < ApplicationController
-  parent_resources :project, :contract, :component, :task
+  inherit_resources
   
+  #belongs_to :parent, :polymorphic => true
+  polymorphic_belongs_to :project, :contract, :component, :task, :parent
+  
+  respond_to :js #, :only => [:new, :create, :edit, :update]
+  
+  def create
+    create! do |success,failure|
+      success.js { @markups = parent.markups }
+    end
+  end
+
+  def update
+    update! do |success,failure|
+      success.js { @markups = parent.markups }
+    end
+  end     
+  
+=begin  
   # GET /markups
   # GET /markups.xml
   def index
-    @parent_object = parent_object
+    @parent_object = parent
     @markups = Markup.all
 
     respond_to do |format|
@@ -16,7 +34,7 @@ class MarkupsController < ApplicationController
   # GET /markups/1
   # GET /markups/1.xml
   def show
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.find(params[:id])
 
     respond_to do |format|
@@ -28,10 +46,11 @@ class MarkupsController < ApplicationController
   # GET /markups/new
   # GET /markups/new.xml
   def new
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @markup }
     end
@@ -39,21 +58,25 @@ class MarkupsController < ApplicationController
 
   # GET /markups/1/edit
   def edit
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.find(params[:id])
   end
 
   # POST /markups
   # POST /markups.xml
   def create
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.new(params[:markup])
 
     respond_to do |format|
       if @markup.save
-        format.html { redirect_to([parent_object, @markup], :notice => 'Markup was successfully created.') }
+        format.js {
+          @markups = parent.markups
+        }
+        format.html { redirect_to([parent, @markup], :notice => 'Markup was successfully created.') }
         format.xml  { render :xml => @markup, :status => :created, :location => @markup }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @markup.errors, :status => :unprocessable_entity }
       end
@@ -63,14 +86,18 @@ class MarkupsController < ApplicationController
   # PUT /markups/1
   # PUT /markups/1.xml
   def update
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.find(params[:id])
 
     respond_to do |format|
       if @markup.update_attributes(params[:markup])
-        format.html { redirect_to([parent_object, @markup], :notice => 'Markup was successfully updated.') }
+        format.js {
+          @markups = parent.markups
+        }
+        format.html { redirect_to([parent, @markup], :notice => 'Markup was successfully updated.') }
         format.xml  { head :ok }
       else
+        format.js
         format.html { render :action => "edit" }
         format.xml  { render :xml => @markup.errors, :status => :unprocessable_entity }
       end
@@ -80,13 +107,14 @@ class MarkupsController < ApplicationController
   # DELETE /markups/1
   # DELETE /markups/1.xml
   def destroy
-    @parent_object = parent_object
+    @parent_object = parent
     @markup = Markup.find(params[:id])
     @markup.destroy
 
     respond_to do |format|
-      format.html { redirect_to(parent_object) }
+      format.html { redirect_to(parent) }
       format.xml  { head :ok }
     end
   end
+=end
 end

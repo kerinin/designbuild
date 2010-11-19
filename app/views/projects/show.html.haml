@@ -6,6 +6,10 @@
 
 %hr
 
+%h2 Default Markups
+
+=render :partial => 'markups/markup_lines', :locals => {:parent_object => @project, :markups => @project.markups}
+
 %h2 Overview
 
 -unless @project.labor_cost.nil?

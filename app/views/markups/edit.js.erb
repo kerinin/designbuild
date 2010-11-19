@@ -1,0 +1,21 @@
+<% content_for :wrapping_form do %>
+	<%= form_for @markup, :url => resource_path, :remote => true do |f|  %>
+		<% content_for :tr do %>
+			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+		<% end %>
+	<% end %>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to( 'Cancel', parent_path ) %>
+<% end %>
+
+
+form = $("<%= escape_javascript( yield :wrapping_form) %>")
+contents = form.children().detach();
+
+$("table.markups tr#markup_<%= @markup.id %>").closest("table").wrap(form).append(contents);
+$("table.markups tr#markup_<%= @markup.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.markups tr.markup_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("table.markups tr.add_button").hide();
+$("input:text:visible:first").focus();

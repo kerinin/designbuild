@@ -1,0 +1,23 @@
+%table.markups
+  %tr
+    %th Name
+    %th Percent
+    %th
+    %th
+    %th
+
+  - markups.each do |markup|
+    %tr{:id => "markup_#{markup.id}"}
+      %td= markup.name
+      %td.number= number_to_percentage markup.percent, :precision => 1
+      %td.control.show= link_to 'Show', [parent_object, markup]
+      %td.control.edit= link_to 'Edit', edit_polymorphic_path([parent_object, markup]), :remote => true
+      %td.control.destroy= link_to 'Destroy', [parent_object, markup], :confirm => 'Are you sure?', :method => :delete
+
+  - if markups.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}= link_to '(Add Markup)', new_polymorphic_path([parent_object,Markup.new]), :remote => true
+      

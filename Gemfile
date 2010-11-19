@@ -34,6 +34,7 @@ gem "friendly_id", "~> 3.1"
 gem "acts_as_list"
 gem "ancestry"
 gem "abstract"
+gem 'inherited_resources', '1.1.2'
 
 group :test, :development do
   gem "shoulda"
