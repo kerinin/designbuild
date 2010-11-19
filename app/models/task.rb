@@ -13,6 +13,8 @@ class Task < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
+  after_create :add_default_markups
+
   scope :active, lambda {
     joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
   }
@@ -42,11 +44,11 @@ class Task < ActiveRecord::Base
   end
   
   def labor_cost
-    self.labor_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+    multiply_or_nil 1 + ( self.total_markup / 100 ), self.labor_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 
   def material_cost
-    self.material_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+    multiply_or_nil 1 + ( self.total_markup / 100 ), self.material_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end  
   
   def cost
@@ -77,5 +79,15 @@ class Task < ActiveRecord::Base
     else
       return est
     end
+  end
+  
+  def total_markup
+    self.markups.inject(0) {|memo,obj| memo + obj.percent }
+  end
+  
+  private
+  
+  def add_default_markups
+    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!}
   end
 end
