@@ -21,15 +21,19 @@
       %tr
         %td.control
         %td.control
-        %td.indented= unit_cost.name
-        %td.currency= number_to_currency unit_cost.marked_up_cost
+        %td.indented
+          %i= unit_cost.name
+        %td.currency
+          %i= number_to_currency unit_cost.marked_up_cost
       
     -component.fixed_cost_estimates.each do |fixed_cost|
       %tr
         %td.control
         %td.control
-        %td.indented= fixed_cost.name
-        %td.currency= number_to_currency fixed_cost.marked_up_cost
+        %td.indented
+          %i= fixed_cost.name
+        %td.currency
+          %i= number_to_currency fixed_cost.marked_up_cost
       
   -if component.expand_in_estimate
     -component.children.each do |subcomponent|

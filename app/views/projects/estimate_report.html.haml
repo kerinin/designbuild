@@ -18,9 +18,20 @@
       %tr
         %td.control
         %td.control
-        %td= contract.name
+        %td
+          = contract.name
+          %i= "(Fixed Bid from #{contract.active_bid.contractor})"
         %td.currency
           %strong= number_to_currency contract.estimated_cost
+      -contract.bids.each do |alternate|
+        -unless alternate.is_active_bid
+          %tr
+            %td.control
+            %td.control
+            %td.indented
+              %i= "Alternate Bid from #{alternate.contractor}"
+            %td.currency
+              %i= number_to_currency alternate.estimated_cost
           
   %tr.totals
     %td.control

@@ -15,4 +15,8 @@ class Bid < ActiveRecord::Base
       self.contract.active_bid = self
     end
   end
+  
+  def estimated_cost
+    self.cost * ( 1 + ( self.contract.total_markup / 100 ) )
+  end
 end
