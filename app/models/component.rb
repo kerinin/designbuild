@@ -9,8 +9,8 @@ class Component < ActiveRecord::Base
   has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
   
-  has_many :markings, :as => :markupable
-  has_many :markups, :through => :markings
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :after_add => :cascade_add_markup, :before_remove => :cascade_remove_markup
   
   has_and_belongs_to_many :tags
   
@@ -79,9 +79,17 @@ class Component < ActiveRecord::Base
   
   def add_parent_markups
     if self.is_root?
-      self.project.markups.each {|m| self.markups << m }
+      self.project.markups.each {|m| self.markups << m unless self.markups.include? m }
     else
-      self.parent.markups.each {|m| self.markups << m }
+      self.parent.markups.each {|m| self.markups << m unless self.markups.include? m }
     end
+  end
+  
+  def cascade_add_markup(markup)
+    self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
+  end
+  
+  def cascade_remove_markup(markup)
+    self.children.all.each {|c| c.markups.delete( markup ) }
   end
 end

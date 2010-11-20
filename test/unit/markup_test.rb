@@ -20,7 +20,7 @@ class MarkupTest < ActiveSupport::TestCase
       @subcomponent = Factory :component, :parent => @component
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
-      @inherited_contract = Factory :task, :project => @project
+      @inherited_contract = Factory :contract, :project => @project
       
       Factory :fixed_cost_estimate, :component => @component, :cost => 100
       Factory :fixed_cost_estimate, :component => @subcomponent, :cost => 100
@@ -73,29 +73,123 @@ class MarkupTest < ActiveSupport::TestCase
       assert_contains @inherited_task.markups, @obj
     end
     
-    should_eventually "cascade delete from project to task" do
+    should "cascade add from project to task" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+      
+      assert_contains @inherited_task.markups, @new1
+      assert_contains @inherited_task.markups, @new2
+    end
+    
+    should "cascade delete from project to task" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+      
+      assert_contains @inherited_task.markups, @new1
+      assert_contains @inherited_task.markups, @new2
+      
+      @new1.projects.delete( @project )
+      @project.markups.delete( @new2 )
+      
+      # AR not keeping up...
+      assert_does_not_contain Task.find(@inherited_task.id).markups, @new1
+      assert_does_not_contain Task.find(@inherited_task.id).markups, @new2
     end
     
     should "copy from project to component" do
       assert_contains @inherited_component.markups, @obj
     end
 
-    should_eventually "cascade delete from project to component" do
+    should "cascade add from project to component" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+
+      assert_contains @inherited_component.markups, @new1
+      assert_contains @inherited_component.markups, @new2
+    end
+    
+    should "cascade delete from project to component" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+
+      assert_contains @inherited_component.markups, @new1
+      assert_contains @inherited_component.markups, @new2
+      
+      @new1.projects.delete( @project )
+      @project.markups.delete( @new2 )
+      
+      assert_does_not_contain Component.find(@inherited_component.id).markups, @new1
+      assert_does_not_contain Component.find(@inherited_component.id).markups, @new2
     end
         
     should "copy from component to subcomponent" do
       assert_contains @subcomponent.markups, @obj
     end
+    
+    should "cascade add from component to subcomponent" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.components << @component
+      @component.markups << @new2
+      
+      assert_contains @subcomponent.markups, @new1
+      assert_contains @subcomponent.markups, @new2
+    end
 
-    should_eventually "cascade delete from component to subcomponent" do
+    should "cascade delete from component to subcomponent" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.components << @component
+      @component.markups << @new2
+      
+      assert_contains @subcomponent.markups, @new1
+      assert_contains @subcomponent.markups, @new2
+      
+      @new1.components.delete( @component )
+      @component.markups.delete( @new2 )
+      
+      assert_does_not_contain Component.find(@subcomponent.id).markups, @new1
+      assert_does_not_contain Component.find(@subcomponent.id).markups, @new2
     end
         
     should "copy from project to contract" do
       assert_contains @inherited_contract.markups, @obj
     end
     
-    should_eventually "cascade delete from project to contract" do
+    should "cascade add from project to contract" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+      
+      assert_contains @inherited_contract.markups, @new1
+      assert_contains @inherited_contract.markups, @new2
     end
+    
+    should "cascade delete from project to contract" do
+      @new1 = Factory :markup
+      @new2 = Factory :markup
+      @new1.projects << @project
+      @project.markups << @new2
+      
+      assert_contains @inherited_contract.markups, @new1
+      assert_contains @inherited_contract.markups, @new2
+      
+      @new1.projects.delete( @project )
+      @project.markups.delete( @new2 )
+      
+      assert_does_not_contain Contract.find(@inherited_contract.id).markups, @new1
+      assert_does_not_contain Contract.find(@inherited_contract.id).markups, @new2
+    end
+
     # -----------------------CALCULATIONS
     
     should_eventually "apply to parent" do

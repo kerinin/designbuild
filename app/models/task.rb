@@ -90,6 +90,6 @@ class Task < ActiveRecord::Base
   private
   
   def add_project_markups
-    self.project.markups.each {|m| self.markups << m}
+    self.project.markups.each {|m| self.markups << m unless self.markups.include? m }
   end
 end
