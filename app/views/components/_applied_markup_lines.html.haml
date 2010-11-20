@@ -12,7 +12,7 @@
       %td.number= number_to_percentage markup.percent, :precision => 1
       %td.control
       %td.control.edit= link_to 'Edit', edit_component_markup_path(@component, markup), :remote => true
-      %td.control.destroy= link_to 'Remove', remove_component_markup_path(markup), :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to 'Remove', remove_component_markup_path(@component, markup), :confirm => "Are you sure? Removing this markup will remove the markup from this components subcomponents as well"
 
   - if markups.empty?
     %tr

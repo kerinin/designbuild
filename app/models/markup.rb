@@ -10,7 +10,7 @@ class Markup < ActiveRecord::Base
   
   validates_presence_of :name, :percent
   
-  before_save {|r| @new_markings = r.markings.map {|m| ( m.new_record? ) ? m : nil }.compact }
+  before_save {|r| @new_markings = r.markings.map {|m| ( m.new_record? && (m.markupable_type == 'Project' || m.markupable_type == 'Component') ) ? m : nil }.compact }
   after_save {|r| @new_markings.each {|m| r.cascade_add(m.markupable)} }
   
   def cascade_add(obj)
