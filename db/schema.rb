@@ -10,25 +10,25 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101119050651) do
+ActiveRecord::Schema.define(:version => 20101120145926) do
 
   create_table "bids", :force => true do |t|
-    t.string    "contractor"
-    t.date      "date"
-    t.float     "cost"
-    t.integer   "contract_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "contractor"
+    t.date     "date"
+    t.float    "cost"
+    t.integer  "contract_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "components", :force => true do |t|
-    t.string    "name"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "ancestry"
-    t.boolean   "expand_in_estimate"
-    t.boolean   "show_costs_in_estimate"
+    t.string   "name"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "ancestry"
+    t.boolean  "expand_in_estimate"
+    t.boolean  "show_costs_in_estimate"
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -39,101 +39,107 @@ ActiveRecord::Schema.define(:version => 20101119050651) do
   end
 
   create_table "contract_costs", :force => true do |t|
-    t.date      "date"
-    t.float     "cost"
-    t.integer   "contract_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.date     "date"
+    t.float    "cost"
+    t.integer  "contract_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "contracts", :force => true do |t|
-    t.string    "name"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "bid_id"
+    t.string   "name"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "bid_id"
   end
 
   create_table "deadlines", :force => true do |t|
-    t.string    "name"
-    t.date      "date"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.date     "date"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "derived_quantities", :force => true do |t|
-    t.string    "name"
-    t.float     "multiplier"
-    t.integer   "component_id"
-    t.integer   "parent_quantity_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "multiplier"
+    t.integer  "component_id"
+    t.integer  "parent_quantity_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "fixed_cost_estimates", :force => true do |t|
-    t.string    "name"
-    t.float     "cost"
-    t.integer   "component_id"
-    t.integer   "task_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "cost"
+    t.integer  "component_id"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "labor_cost_lines", :force => true do |t|
-    t.float     "hours"
-    t.integer   "labor_set_id"
-    t.integer   "laborer_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.float    "hours"
+    t.integer  "labor_set_id"
+    t.integer  "laborer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "labor_costs", :force => true do |t|
-    t.date      "date"
-    t.float     "percent_complete"
-    t.integer   "task_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.date     "date"
+    t.float    "percent_complete"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "laborers", :force => true do |t|
-    t.string    "name"
-    t.float     "bill_rate"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "bill_rate"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "markings", :force => true do |t|
+    t.integer  "markupable_id"
+    t.string   "markupable_type"
+    t.integer  "markup_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "markups", :force => true do |t|
-    t.string    "name"
-    t.float     "percent"
-    t.integer   "parent_id"
-    t.string    "parent_type"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "percent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "material_cost_lines", :force => true do |t|
-    t.string    "name"
-    t.float     "quantity"
-    t.integer   "material_set_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "quantity"
+    t.integer  "material_set_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "material_costs", :force => true do |t|
-    t.date      "date"
-    t.float     "cost"
-    t.integer   "task_id"
-    t.integer   "supplier_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.date     "date"
+    t.float    "cost"
+    t.integer  "task_id"
+    t.integer  "supplier_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "projects", :force => true do |t|
-    t.string    "name"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
@@ -142,71 +148,71 @@ ActiveRecord::Schema.define(:version => 20101119050651) do
   end
 
   create_table "quantities", :force => true do |t|
-    t.string    "name"
-    t.float     "value"
-    t.string    "unit"
-    t.integer   "component_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "value"
+    t.string   "unit"
+    t.integer  "component_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "relative_deadlines", :force => true do |t|
-    t.string    "name"
-    t.integer   "interval"
-    t.integer   "parent_deadline_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.integer  "interval"
+    t.integer  "parent_deadline_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "suppliers", :force => true do |t|
-    t.string    "name"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tags", :force => true do |t|
-    t.string    "name"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tasks", :force => true do |t|
-    t.string    "name"
-    t.boolean   "active"
-    t.integer   "contract_id"
-    t.integer   "deadline_id"
-    t.string    "deadline_type"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.boolean  "active"
+    t.integer  "contract_id"
+    t.integer  "deadline_id"
+    t.string   "deadline_type"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "unit_cost_estimates", :force => true do |t|
-    t.string    "name"
-    t.float     "unit_cost"
-    t.integer   "component_id"
-    t.integer   "quantity_id"
-    t.integer   "task_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "drop"
+    t.string   "name"
+    t.float    "unit_cost"
+    t.integer  "component_id"
+    t.integer  "quantity_id"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "drop"
   end
 
   create_table "users", :force => true do |t|
-    t.string    "email"
-    t.string    "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string    "password_salt",                       :default => "", :null => false
-    t.string    "reset_password_token"
-    t.string    "remember_token"
-    t.timestamp "remember_created_at"
-    t.integer   "sign_in_count",                       :default => 0
-    t.timestamp "current_sign_in_at"
-    t.timestamp "last_sign_in_at"
-    t.string    "current_sign_in_ip"
-    t.string    "last_sign_in_ip"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "email"
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "reset_password_token"
+    t.string   "remember_token"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                       :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

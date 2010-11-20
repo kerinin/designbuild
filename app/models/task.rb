@@ -9,11 +9,13 @@ class Task < ActiveRecord::Base
   has_many :fixed_cost_estimates, :order => :name
   has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
-  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
+
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
   
   validates_presence_of :name, :project
 
-  after_create :add_default_markups
+  #after_create :add_default_markups
 
   scope :active, lambda {
     #joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')

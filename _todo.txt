@@ -6,9 +6,11 @@
 - parametric components
 - versioning (https://github.com/airblade/paper_trail)
 - equation quantities
+- auto-deactivate at 100%
 
 - project dashboard
 -- active tasks (with labor + material creation buttons)
+-- printable timeline
 -- projected cost
 -- print purchase orders
 -- schedule

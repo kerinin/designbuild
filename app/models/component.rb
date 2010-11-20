@@ -8,14 +8,16 @@ class Component < ActiveRecord::Base
   has_many :quantities, :order => :name, :dependent => :destroy
   has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
-  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
+  
+  has_many :markings, :as => :markupable
+  has_many :markups, :through => :markings
   
   has_and_belongs_to_many :tags
   
   validates_presence_of :project, :name
   
   before_validation :check_project
-  after_save :add_default_markups
+  #after_save :add_default_markups
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all

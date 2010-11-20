@@ -7,11 +7,13 @@ class Contract < ActiveRecord::Base
   has_many :tasks, :order => :name
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
-  has_many :markups, :as => :parent, :order => :name, :dependent => :destroy
+
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
   
   validates_presence_of :name, :project
 
-  after_save :add_default_markups
+  #after_save :add_default_markups
   
   def estimated_cost
     multiply_or_nil 1 + ( self.total_markup / 100 ), self.bid

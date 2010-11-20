@@ -1,5 +1,8 @@
 class Markup < ActiveRecord::Base
-  belongs_to :parent, :polymorphic => true
+  has_many :markings, :dependent => :destroy
   
-  validates_presence_of :parent
+  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project'
+  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task'
+  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component'
+  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract'
 end
