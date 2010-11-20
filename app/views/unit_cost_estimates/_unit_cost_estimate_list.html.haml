@@ -5,7 +5,7 @@
     %th Drop
     %th.currency Unit cost
     %th= "Task" if parent.class.name == 'Component'
-    %th.currency= "Cost (+#{number_to_percentage @component.total_markup, :precision => 0})"
+    %th.currency= "Cost"
     %th.control
     %th.control
     %th.control
@@ -21,7 +21,7 @@
       %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )  if context == :component
-      %td.currency= number_to_currency(unit_cost_estimate.marked_up_cost)
+      %td.currency= number_to_currency(unit_cost_estimate.cost)
       - case parent.class.name
       - when 'Component'
         %td.control

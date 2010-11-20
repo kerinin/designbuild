@@ -110,6 +110,11 @@ namespace :db do
             RelativeDeadline.find(rand(RelativeDeadline.count)+1)
           end
         end
+        
+        # Add markups
+        rand(3).times {
+          Factory :markup, :projects => [project]
+        }
       end
     }
     

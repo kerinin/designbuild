@@ -74,6 +74,17 @@ class MarkupsController < ApplicationController
   # GET /markups/new.xml
   def new
     @markup = Markup.new
+    @markup.markings.build
+    @parent = case
+      when params.has_key?(:project_id)
+        Project.find params[:project_id]
+      when params.has_key?(:task_id)
+        Task.find params[:task_id]
+      when params.has_key?(:component_id)
+        Component.find params[:component_id]
+      when params.has_key?(:contract_id)
+        Contract.find params[:contract_id]
+    end
 
     respond_to do |format|
       format.js
@@ -85,19 +96,29 @@ class MarkupsController < ApplicationController
   # GET /markups/1/edit
   def edit
     @markup = Markup.find(params[:id])
+    @parent = case
+      when params.has_key?(:project_id)
+        Project.find params[:project_id]
+      when params.has_key?(:task_id)
+        Task.find params[:task_id]
+      when params.has_key?(:component_id)
+        Component.find params[:component_id]
+      when params.has_key?(:contract_id)
+        Contract.find params[:contract_id]
+    end
   end
 
   # POST /markups
   # POST /markups.xml
   def create
     @markup = Markup.new(params[:markup])
-
+        
     respond_to do |format|
       if @markup.save
         format.js {
-          @markups = parent.markups
+          @markups = Markup.all
         }
-        format.html { redirect_to(@markup, :notice => 'Markup was successfully created.') }
+        format.html { redirect_to( params[:redirect_to] || @markup, :notice => 'Markup was successfully created.') }
         format.xml  { render :xml => @markup, :status => :created, :location => @markup }
       else
         format.js
@@ -111,13 +132,13 @@ class MarkupsController < ApplicationController
   # PUT /markups/1.xml
   def update
     @markup = Markup.find(params[:id])
-
+    
     respond_to do |format|
       if @markup.update_attributes(params[:markup])
         format.js {
-          @markups = parent.markups
+          @markups = Markup.all
         }
-        format.html { redirect_to(@markup, :notice => 'Markup was successfully updated.') }
+        format.html { redirect_to( params[:redirect_to] || @markup, :notice => 'Markup was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js

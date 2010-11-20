@@ -28,6 +28,26 @@ class MarkupsControllerTest < ActionController::TestCase
     get :new
     assert_response :success
   end
+  
+  test "should get new w/ associated project" do
+    get :new, :project_id => @project.id
+    assert_response :success
+  end
+  
+  test "should get new w/ associated task" do
+    get :new, :task_id => @task.id
+    assert_response :success
+  end
+  
+  test "should get new w/ associated contract" do
+    get :new, :contract_id => @contract.id
+    assert_response :success
+  end
+  
+  test "should get new w/ associated component" do
+    get :new, :component_id => @component.id
+    assert_response :success
+  end
 
   test "should create markup" do
     assert_difference('Markup.count') do
@@ -35,6 +55,50 @@ class MarkupsControllerTest < ActionController::TestCase
     end
 
     assert_redirected_to markup_path(assigns(:markup))
+  end
+  
+  test "should create markup w/ associated project" do
+    assert_difference('Markup.count') do
+      post :create, :markup => {
+        :name => 'Test', 
+        :percent => 20, 
+        :markings_attributes => [ { :markupable_id => @project.id, :markupable_type => 'Project' } ]
+      }
+    end
+    assert_contains assigns(:markup).projects, @project
+  end
+  
+  test "should create markup w/ associated task" do
+    assert_difference('Markup.count') do
+      post :create, :markup => {
+        :name => 'Test', 
+        :percent => 20, 
+        :markings_attributes => [ { :markupable_id => @task.id, :markupable_type => 'Task' } ]
+      }
+    end
+    assert_contains assigns(:markup).tasks, @task
+  end
+  
+  test "should create markup w/ associated component" do
+    assert_difference('Markup.count') do
+      post :create, :markup => {
+        :name => 'Test', 
+        :percent => 20, 
+        :markings_attributes => [ { :markupable_id => @component.id, :markupable_type => 'Component' } ]
+      }
+    end
+    assert_contains assigns(:markup).components, @component
+  end
+  
+  test "should create markup w/ associated contract" do
+    assert_difference('Markup.count') do
+      post :create, :markup => {
+        :name => 'Test', 
+        :percent => 20, 
+        :markings_attributes => [ { :markupable_id => @contract.id, :markupable_type => 'Contract' } ]
+      }
+    end
+    assert_contains assigns(:markup).contracts, @contract
   end
 
   test "should show markup" do

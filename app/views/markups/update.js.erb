@@ -13,20 +13,24 @@
 
 <% else %>
 
-  <% content_for :table do %>
-  	<%=render :partial => 'markup_lines', :locals => {:parent_object => parent, :markups => @markups} %>
+  <% if params.has_key? :redirect_to %>
+    location.reload();
+  <% else %>
+      
+    <% content_for :table do %>
+    	<%=render :partial => 'markup_lines', :locals => {:markups => @markups} %>
+    <% end %>
+
+    //Update the html of the div flash_notice with the new one
+    $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
+
+    //Show the flash_notice div
+    $("#flash_notice").show(300);
+
+    //Replace the html of the div post_lists with the updated new one
+    $('form.edit_markup').html( "<%= escape_javascript( yield :table ) %>");
+
+    //Remove the form
+    $('table.markups').unwrap();
   <% end %>
-
-  //Update the html of the div flash_notice with the new one
-  $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
-
-  //Show the flash_notice div
-  $("#flash_notice").show(300);
-
-  //Replace the html of the div post_lists with the updated new one
-  $('form.edit_markup').html( "<%= escape_javascript( yield :table ) %>");
-
-  //Remove the form
-  $('table.markups').unwrap();
-  
 <% end %>

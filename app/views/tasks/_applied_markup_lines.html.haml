@@ -1,0 +1,25 @@
+%table.markups
+  %tr
+    %th Name
+    %th Percent
+    %th
+    %th
+    %th
+
+  - markups.each do |markup|
+    %tr{:id => "markup_#{markup.id}"}
+      %td= markup.name
+      %td.number= number_to_percentage markup.percent, :precision => 1
+      %td.control
+      %td.control.edit= link_to 'Edit', edit_task_markup_path(@task, markup), :remote => true
+      %td.control.destroy= link_to 'Remove', remove_task_markup_path(markup), :confirm => 'Are you sure?', :method => :delete
+
+  - if markups.empty?
+    %tr
+      %td{:colspan => 10} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 10}
+      = link_to '(Add New Markup)', new_task_markup_path( @task ), :remote => true
+      Add Existing Markup
+      

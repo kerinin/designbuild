@@ -6,6 +6,10 @@ class Markup < ActiveRecord::Base
   has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :after_add => :cascade_add, :before_remove => :cascade_remove
   has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract'
   
+  accepts_nested_attributes_for :markings
+  
+  validates_presence_of :name, :percent
+  
   def cascade_add(obj)
     obj.send :cascade_add_markup, self
   end

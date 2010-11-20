@@ -8,7 +8,7 @@
 
 %h2 Markups
 
-=render :partial => 'markups/markup_lines', :locals => {:parent_object => @task, :markups => @task.markups}
+=render :partial => 'applied_markup_lines', :locals => {:markups => @task.markups}
 
 -unless @task.purchase_orders.empty?
   %h2 Purchase Orders

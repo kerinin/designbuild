@@ -1,13 +1,13 @@
 <% content_for :wrapping_form do %>
-	<%= form_for @markup, :url => resource_path(@parent_object), :remote => true do |f|  %>
+	<%= form_for @markup, :remote => true do |f|  %>
 		<% content_for :tr do %>
-			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+			<%= render :partial => 'form_tr', :locals => {:f => f, :redirect_to => get_redirect} %>
 		<% end %>
 	<% end %>
 <% end %>
 
 <% content_for :cancel_link do %>
-  <%= link_to( 'Cancel', parent_path( :project_id => parent.class.name != 'Project' ? parent.project.id : nil ) ) %>
+  <%= link_to( 'Cancel', get_redirect || markups_path ) %>
 <% end %>
 
 form = $("<%= escape_javascript( yield :wrapping_form) %>")

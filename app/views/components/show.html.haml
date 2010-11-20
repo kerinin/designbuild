@@ -13,7 +13,7 @@ Parent Component:
 
 %h2 Markups
 
-=render :partial => 'markups/markup_lines', :locals => {:parent_object => @component, :markups => @component.markups}
+=render :partial => 'applied_markup_lines', :locals => {:markups => @component.markups}
 
 %h2 Sub-Components
 =render :partial => 'component_list', :locals => {:parent => @component, :components => @component.children.order(:name)}
