@@ -1,32 +1,56 @@
 class MarkupsController < ApplicationController
-  inherit_resources
+
+  def add_to_project
+    @parent = Project.find(params[:project_id])
+    
+    add_and_redirect
+  end
   
-  #belongs_to :parent, :polymorphic => true
-  polymorphic_belongs_to :project, :contract, :component, :task, :parent
+  def remove_from_project
+    @parent = Project.find(params[:project_id])
+    
+    remove_and_redirect
+  end
   
-  respond_to :js #, :only => [:new, :create, :edit, :update]
+  def add_to_component
+    @parent = Component.find(params[:component_id])
+    
+    add_and_redirect
+  end
   
-  def create
-    create! do |success,failure|
-      success.js { @markups = parent.markups }
-    end
+  def remove_from_component
+    @parent = Component.find(params[:component_id])
+    
+    remove_and_redirect
+  end
+  
+  def add_to_task
+    @parent = Task.find(params[:task_id])
+    
+    add_and_redirect
+  end
+  
+  def remove_from_task
+    @parent = Task.find(params[:task_id])
+    
+    remove_and_redirect
+  end
+  
+  def add_to_contract
+    @parent = Contract.find(params[:contract_id])
+    
+    add_and_redirect
+  end
+  
+  def remove_from_contract
+    @parent = Contract.find(params[:contract_id])
+    
+    remove_and_redirect
   end
 
-  def update
-    update! do |success,failure|
-      success.js { @markups = parent.markups }
-    end
-  end     
-  
-  def destroy
-    destroy! { parent_path( :project_id => parent.class.name != 'Project' ? parent.project.id : nil ) }
-  end
-  
-=begin  
   # GET /markups
   # GET /markups.xml
   def index
-    @parent_object = parent
     @markups = Markup.all
 
     respond_to do |format|
@@ -38,7 +62,6 @@ class MarkupsController < ApplicationController
   # GET /markups/1
   # GET /markups/1.xml
   def show
-    @parent_object = parent
     @markup = Markup.find(params[:id])
 
     respond_to do |format|
@@ -50,7 +73,6 @@ class MarkupsController < ApplicationController
   # GET /markups/new
   # GET /markups/new.xml
   def new
-    @parent_object = parent
     @markup = Markup.new
 
     respond_to do |format|
@@ -62,14 +84,12 @@ class MarkupsController < ApplicationController
 
   # GET /markups/1/edit
   def edit
-    @parent_object = parent
     @markup = Markup.find(params[:id])
   end
 
   # POST /markups
   # POST /markups.xml
   def create
-    @parent_object = parent
     @markup = Markup.new(params[:markup])
 
     respond_to do |format|
@@ -77,7 +97,7 @@ class MarkupsController < ApplicationController
         format.js {
           @markups = parent.markups
         }
-        format.html { redirect_to([parent, @markup], :notice => 'Markup was successfully created.') }
+        format.html { redirect_to(@markup, :notice => 'Markup was successfully created.') }
         format.xml  { render :xml => @markup, :status => :created, :location => @markup }
       else
         format.js
@@ -90,7 +110,6 @@ class MarkupsController < ApplicationController
   # PUT /markups/1
   # PUT /markups/1.xml
   def update
-    @parent_object = parent
     @markup = Markup.find(params[:id])
 
     respond_to do |format|
@@ -98,7 +117,7 @@ class MarkupsController < ApplicationController
         format.js {
           @markups = parent.markups
         }
-        format.html { redirect_to([parent, @markup], :notice => 'Markup was successfully updated.') }
+        format.html { redirect_to(@markup, :notice => 'Markup was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js
@@ -111,14 +130,32 @@ class MarkupsController < ApplicationController
   # DELETE /markups/1
   # DELETE /markups/1.xml
   def destroy
-    @parent_object = parent
     @markup = Markup.find(params[:id])
     @markup.destroy
 
     respond_to do |format|
-      format.html { redirect_to(parent) }
+      format.html { redirect_to(markups_url) }
       format.xml  { head :ok }
     end
   end
-=end
+  
+  private
+  
+  def add_and_redirect
+    @markup = Markup.find params[:id]
+    @parent.markups << @markup
+    
+    respond_to do |format|
+      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully added.' }
+    end
+  end
+  
+  def remove_and_redirect
+    @markup = Markup.find params[:id]
+    @parent.markups.delete @markup
+    
+    respond_to do |format|
+      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully removed.' }
+    end
+  end
 end
