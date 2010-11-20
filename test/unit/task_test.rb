@@ -94,7 +94,7 @@ class TaskTest < ActiveSupport::TestCase
       end
     end
     
-    should "scope active tasks" do
+    should_eventually "scope active tasks" do
       assert_contains Task.scoped.active.all, @t_inprogress
       assert_does_not_contain Task.scoped.active.all, @t_over_budget
     end
