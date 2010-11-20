@@ -17,7 +17,7 @@ class Component < ActiveRecord::Base
   validates_presence_of :project, :name
   
   before_validation :check_project
-  #after_save :add_default_markups
+  after_create :add_parent_markups
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
@@ -77,7 +77,11 @@ class Component < ActiveRecord::Base
     self.project ||= self.parent.project if !self.parent.nil? && !self.parent.project.nil?
   end
   
-  def add_default_markups
-    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!} if self.is_root?
+  def add_parent_markups
+    if self.is_root?
+      self.project.markups.each {|m| self.markups << m }
+    else
+      self.parent.markups.each {|m| self.markups << m }
+    end
   end
 end

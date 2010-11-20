@@ -15,7 +15,7 @@ class Task < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
-  #after_create :add_default_markups
+  after_create :add_project_markups
 
   scope :active, lambda {
     #joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
@@ -89,7 +89,7 @@ class Task < ActiveRecord::Base
   
   private
   
-  def add_default_markups
-    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!}
+  def add_project_markups
+    self.project.markups.each {|m| self.markups << m}
   end
 end

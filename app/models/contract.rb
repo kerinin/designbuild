@@ -14,6 +14,7 @@ class Contract < ActiveRecord::Base
   validates_presence_of :name, :project
 
   #after_save :add_default_markups
+  after_create :add_project_markups
   
   def estimated_cost
     multiply_or_nil 1 + ( self.total_markup / 100 ), self.bid
@@ -34,7 +35,7 @@ class Contract < ActiveRecord::Base
   
   private
   
-  def add_default_markups
-    self.project.markups.each {|markup| new_markup = markup.clone; new_markup.parent = self; new_markup.save!}
+  def add_project_markups
+    self.project.markups.each {|m| self.markups << m}
   end
 end

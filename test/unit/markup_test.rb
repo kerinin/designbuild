@@ -5,20 +5,19 @@ class MarkupTest < ActiveSupport::TestCase
     setup do
       @project = Factory :project
       @component = Factory :component
-      @subcomponent = Factory :component, :parent => @component
       @task = Factory :task
       @contract = Factory :contract
       @bid = Factory :bid, :contract => @contract, :cost => 100
       @contract.active_bid = @bid
       @contract.save
  
-       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
-       @obj.projects << @project
-       @obj.components << @component
-       @obj.tasks << @task
-       @obj.contracts << @contract 
+      @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
+      @obj.projects << @project
+      @obj.components << @component
+      @obj.tasks << @task
+      @obj.contracts << @contract 
 
-      
+      @subcomponent = Factory :component, :parent => @component
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
       @inherited_contract = Factory :task, :project => @project
@@ -70,31 +69,29 @@ class MarkupTest < ActiveSupport::TestCase
       assert_contains @contract.markups, @obj
     end
     
-    should_eventually "copy from project to task" do
-      assert_equal @inherited_task.markups.first.name, 'test markup'
-      assert_equal @inherited_task.markups.first.percent, 50
+    should "copy from project to task" do
+      assert_contains @inherited_task.markups, @obj
     end
     
     should_eventually "cascade delete from project to task" do
     end
     
-    should_eventually "copy from project to component" do
-      assert_equal @inherited_component.markups.first.name, 'test markup'
-      assert_equal @inherited_component.markups.first.percent, 50
+    should "copy from project to component" do
+      assert_contains @inherited_component.markups, @obj
     end
 
     should_eventually "cascade delete from project to component" do
     end
         
-    should_eventually "copy from component to subcomponent" do
+    should "copy from component to subcomponent" do
+      assert_contains @subcomponent.markups, @obj
     end
 
     should_eventually "cascade delete from component to subcomponent" do
     end
         
-    should_eventually "copy from project to contract" do
-      assert_equal @inherited_contract.markups.first.name, 'test markup'
-      assert_equal @inherited_contract.markups.first.percent, 50
+    should "copy from project to contract" do
+      assert_contains @inherited_contract.markups, @obj
     end
     
     should_eventually "cascade delete from project to contract" do
