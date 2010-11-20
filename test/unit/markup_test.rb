@@ -73,17 +73,7 @@ class MarkupTest < ActiveSupport::TestCase
       assert_contains @inherited_task.markups, @obj
     end
     
-    should "cascade add from project to task" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.projects << @project
-      @project.markups << @new2
-      
-      assert_contains @inherited_task.markups, @new1
-      assert_contains @inherited_task.markups, @new2
-    end
-    
-    should "cascade delete from project to task" do
+    should "cascade add / delete from project to task" do
       @new1 = Factory :markup
       @new2 = Factory :markup
       @new1.projects << @project
@@ -103,18 +93,8 @@ class MarkupTest < ActiveSupport::TestCase
     should "copy from project to component" do
       assert_contains @inherited_component.markups, @obj
     end
-
-    should "cascade add from project to component" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.projects << @project
-      @project.markups << @new2
-
-      assert_contains @inherited_component.markups, @new1
-      assert_contains @inherited_component.markups, @new2
-    end
     
-    should "cascade delete from project to component" do
+    should "cascade add / delete from project to component" do
       @new1 = Factory :markup
       @new2 = Factory :markup
       @new1.projects << @project
@@ -133,18 +113,11 @@ class MarkupTest < ActiveSupport::TestCase
     should "copy from component to subcomponent" do
       assert_contains @subcomponent.markups, @obj
     end
-    
-    should "cascade add from component to subcomponent" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.components << @component
-      @component.markups << @new2
-      
-      assert_contains @subcomponent.markups, @new1
-      assert_contains @subcomponent.markups, @new2
-    end
 
-    should "cascade delete from component to subcomponent" do
+    should "cascade add / delete from component to subcomponent" do
+      @sub2 = Factory :component, :parent => @subcomponent
+      @sub3 = Factory :component, :parent => @sub2
+    
       @new1 = Factory :markup
       @new2 = Factory :markup
       @new1.components << @component
@@ -153,28 +126,21 @@ class MarkupTest < ActiveSupport::TestCase
       assert_contains @subcomponent.markups, @new1
       assert_contains @subcomponent.markups, @new2
       
+      @sub2.markups.delete(@new2)
+      @sub3.markups << @new2
       @new1.components.delete( @component )
       @component.markups.delete( @new2 )
       
       assert_does_not_contain Component.find(@subcomponent.id).markups, @new1
       assert_does_not_contain Component.find(@subcomponent.id).markups, @new2
+      assert_does_not_contain Component.find(@sub3.id).markups, @new2
     end
         
     should "copy from project to contract" do
       assert_contains @inherited_contract.markups, @obj
     end
     
-    should "cascade add from project to contract" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.projects << @project
-      @project.markups << @new2
-      
-      assert_contains @inherited_contract.markups, @new1
-      assert_contains @inherited_contract.markups, @new2
-    end
-    
-    should "cascade delete from project to contract" do
+    should "cascade add / delete from project to contract" do
       @new1 = Factory :markup
       @new2 = Factory :markup
       @new1.projects << @project
@@ -192,7 +158,7 @@ class MarkupTest < ActiveSupport::TestCase
 
     # -----------------------CALCULATIONS
     
-    should_eventually "apply to parent" do
+    should "apply to markupable" do
       assert_equal @component.estimated_component_cost, 150
       assert_equal @task.cost, 150
       assert_equal @contract.cost, 150

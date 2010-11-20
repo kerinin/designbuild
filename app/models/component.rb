@@ -63,12 +63,8 @@ class Component < ActiveRecord::Base
     (self.ancestors + [self]).map {|c| c.name}.join(' > ')
   end
   
-  def total_component_markup
-    self.markups.inject(0) {|memo,obj| memo + obj.percent }
-  end
-  
   def total_markup
-    self.ancestors.inject(0) {|memo,obj| memo + obj.total_component_markup} + self.total_component_markup
+    self.markups.inject(0) {|memo,obj| memo + obj.percent }
   end
   
   private
