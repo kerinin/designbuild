@@ -76,11 +76,14 @@ class MarkupTest < ActiveSupport::TestCase
     should "cascade add / delete from project to task" do
       @new1 = Factory :markup
       @new2 = Factory :markup
+      @new3 = Factory :markup, :markings_attributes => [{:markupable_type => 'Project', :markupable_id => @project.id}]
       @new1.projects << @project
       @project.markups << @new2
       
       assert_contains @inherited_task.markups, @new1
       assert_contains @inherited_task.markups, @new2
+      assert_contains @new3.projects, @project
+      assert_contains @new3.components, @inherited_component
       
       @new1.projects.delete( @project )
       @project.markups.delete( @new2 )

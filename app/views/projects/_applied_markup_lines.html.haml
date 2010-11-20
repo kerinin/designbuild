@@ -12,7 +12,7 @@
       %td.number= number_to_percentage markup.percent, :precision => 1
       %td.control
       %td.control.edit= link_to 'Edit', edit_project_markup_path(@project, markup), :remote => true
-      %td.control.destroy= link_to 'Remove', remove_project_markup_path(markup), :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to 'Remove', remove_project_markup_path(@project, markup), :confirm => 'Are you sure?', :method => :delete
 
   - if markups.empty?
     %tr
