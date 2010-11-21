@@ -1,4 +1,16 @@
 class ProjectsController < ApplicationController
+
+  def add_markup
+    @project = Project.find(params[:id])
+    
+    respond_to do |format|
+      if @project.markups << Markup.find(params[:markup_id])
+        format.html { redirect_to(@project, :notice => 'Markup was successfully added.') }
+      else
+        format.html { render :action => "new" }
+      end
+    end
+  end
   
   def timeline_events
     @project = Project.find(params[:id])
@@ -31,6 +43,7 @@ class ProjectsController < ApplicationController
   # GET /projects/1.xml
   def show
     @project = Project.find(params[:id])
+    @inactive_markups = Markup.scoped - @project.markups
 
     respond_to do |format|
       format.html # show.html.erb

@@ -1,5 +1,17 @@
 class TasksController < ApplicationController
-  before_filter :get_project
+  before_filter :get_project, :except => :add_markup
+  
+  def add_markup
+    @task = Task.find(params[:id])
+    
+    respond_to do |format|
+      if @task.markups << Markup.find(params[:markup_id])
+        format.html { redirect_to([@task.project, @task], :notice => 'Markup was successfully added.') }
+      else
+        format.html { render :action => "new" }
+      end
+    end
+  end
   
   # GET /tasks
   # GET /tasks.xml
@@ -16,7 +28,8 @@ class TasksController < ApplicationController
   # GET /tasks/1.xml
   def show
     @task = Task.find(params[:id])
-
+    @inactive_markups = Markup.scoped - @task.markups
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @task }

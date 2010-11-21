@@ -21,5 +21,8 @@
   %tr.control.add_button
     %td{:colspan => 10}
       = link_to '(Add New Markup)', new_contract_markup_path( @contract ), :remote => true
-      Add Existing Markup
+      -unless @inactive_markups.empty?
+        or
+        -form_tag add_markup_to_contract_path(@contract), :id => 'add_existing_markup', :method => :post do
+          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "(Add Existing Markup)", :onchange =>"$('form#add_existing_markup').submit();" }
       

@@ -20,4 +20,8 @@ class Markup < ActiveRecord::Base
   def cascade_remove(obj)
     obj.send :cascade_remove_markup, self
   end
+  
+  def select_label
+    "#{self.name} (#{self.percent}%)"
+  end
 end

@@ -1,5 +1,17 @@
 class ComponentsController < ApplicationController
-  before_filter :get_project
+  before_filter :get_project, :except => :add_markup
+  
+  def add_markup
+    @component = Component.find(params[:id])
+    
+    respond_to do |format|
+      if @component.markups << Markup.find(params[:markup_id])
+        format.html { redirect_to([@component.project, @component], :notice => 'Markup was successfully added.') }
+      else
+        format.html { render :action => "new" }
+      end
+    end
+  end
   
   # GET /components
   # GET /components.xml
@@ -16,7 +28,8 @@ class ComponentsController < ApplicationController
   # GET /components/1.xml
   def show
     @component = Component.find(params[:id])
-
+    @inactive_markups = Markup.scoped - @component.markups
+    
     respond_to do |format|
       format.html # show.html.erb
       format.xml  { render :xml => @component }

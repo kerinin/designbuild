@@ -1,5 +1,17 @@
 class ContractsController < ApplicationController
-  before_filter :get_project
+  before_filter :get_project, :except => :add_markup
+  
+  def add_markup
+    @contract = Contract.find(params[:id])
+    
+    respond_to do |format|
+      if @contract.markups << Markup.find(params[:markup_id])
+        format.html { redirect_to([@contract.project, @contract], :notice => 'Markup was successfully added.') }
+      else
+        format.html { render :action => "new" }
+      end
+    end
+  end
   
   # GET /contracts
   # GET /contracts.xml
@@ -16,6 +28,7 @@ class ContractsController < ApplicationController
   # GET /contracts/1.xml
   def show
     @contract = Contract.find(params[:id])
+    @inactive_markups = Markup.scoped - @contract.markups
 
     respond_to do |format|
       format.html # show.html.erb

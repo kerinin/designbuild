@@ -8,6 +8,10 @@ Designbuild::Application.routes.draw do
     resources :contracts    # re-nested
     resources :deadlines    # re-nested
     
+    member do
+      post :add_markup, :as => :add_markup_to
+    end
+    
     resources :markups, :only => [:new, :create, :edit, :update] do
       member do
         get :add, :action => :add_to_project
@@ -26,6 +30,10 @@ Designbuild::Application.routes.draw do
     resources :fixed_cost_estimates
     resources :unit_cost_estimates
     
+    member do
+      post :add_markup, :as => :add_markup_to
+    end
+    
     resources :markups, :only => [:new, :create, :edit, :update] do
       member do
         get :add, :action => :add_to_component
@@ -38,6 +46,10 @@ Designbuild::Application.routes.draw do
     resources :labor_costs        # re-nested
     resources :material_costs     # re-nested
 
+    member do
+      post :add_markup, :as => :add_markup_to
+    end
+    
     resources :markups, :only => [:new, :create, :edit, :update] do
       member do
         get :add, :action => :add_to_task
@@ -58,6 +70,10 @@ Designbuild::Application.routes.draw do
     resources :bids
     resources :contract_costs
 
+    member do
+      post :add_markup, :as => :add_markup_to
+    end
+    
     resources :markups, :only => [:new, :create, :edit, :update] do
       member do
         get :add, :action => :add_to_contract
