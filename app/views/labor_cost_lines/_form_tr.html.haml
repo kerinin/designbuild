@@ -1,7 +1,9 @@
 %tr.labor_cost_line_fields
   %td.field
     %strong= f.label :employee
-    = f.collection_select :laborer_id, @project.laborers.all, :id, :name
+    = f.collection_select :laborer_id, @laborers, :id, :name
+    or
+    =link_to "Add new Employee", new_project_laborer_path( @project )
   %td.field{:colspan => 3}
     %strong= f.label :hours
     = f.text_field :hours

@@ -27,6 +27,7 @@ class LaborCostLinesController < ApplicationController
   # GET /labor_cost_lines/new.xml
   def new
     @labor_cost_line = LaborCostLine.new
+    @laborers = @project.laborers.all - @labor_cost.line_items.all.map{|li| li.laborer}
 
     respond_to do |format|
       format.js

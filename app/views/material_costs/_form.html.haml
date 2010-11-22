@@ -9,6 +9,8 @@
   .field
     = f.label :supplier
     = f.collection_select :supplier_id, @project.suppliers, :id, :name
+    or
+    =link_to "(Add new Supplier)", new_project_supplier_path(@project)
 
   .field
     = f.label :cost
