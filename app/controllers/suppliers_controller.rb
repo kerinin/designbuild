@@ -43,6 +43,7 @@ class SuppliersController < ApplicationController
   # POST /suppliers.xml
   def create
     @supplier = Supplier.new(params[:supplier])
+    @supplier.project = @project
 
     respond_to do |format|
       if @supplier.save

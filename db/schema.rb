@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101120145926) do
+ActiveRecord::Schema.define(:version => 20101122215000) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -105,26 +105,26 @@ ActiveRecord::Schema.define(:version => 20101120145926) do
   end
 
   create_table "markings", :force => true do |t|
-    t.integer  "markupable_id"
-    t.string   "markupable_type"
-    t.integer  "markup_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "markupable_id"
+    t.string    "markupable_type"
+    t.integer   "markup_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "markups", :force => true do |t|
-    t.string   "name"
-    t.float    "percent"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.float     "percent"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "material_cost_lines", :force => true do |t|
-    t.string    "name"
-    t.float     "quantity"
-    t.integer   "material_set_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.string   "quantity"
+    t.integer  "material_set_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "material_costs", :force => true do |t|
