@@ -1,7 +1,13 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
+  before_filter :check_redirect
+  
   private
+  
+  def check_redirect
+    session[:redirect_to] = params[:redirect_to] if params.has_key?(:redirect_to)
+  end
   
   def get_project
     @project = Project.find(params[:project_id])

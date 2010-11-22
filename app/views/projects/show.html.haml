@@ -14,6 +14,18 @@
 
 %h2 Overview
 
+%p
+  Estimated Cost:
+  %strong=@project.estimated_cost
+
+%p
+  Cost to Date:
+  %strong=@project.cost
+
+%p
+  Projected Cost:
+  %strong=@project.projected_cost
+
 -unless @project.labor_cost.nil?
   %h3 Timeline
   =render :partial => 'timeline'

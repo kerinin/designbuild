@@ -2,8 +2,8 @@ namespace :db do
   desc 'Provide a base load of randomly generated (but valid) data for development'
   task :seed => ['fixtures:load'] do
 
-    Factory :user, :email => 'test@example.com', :password => 'password'
-    (rand(10)+1).times { Factory :user }
+    #Factory :user, :email => 'test@example.com', :password => 'password'
+    #(rand(10)+1).times { Factory :user }
     
     (rand(5)+5).times { 
       project = Factory :project 

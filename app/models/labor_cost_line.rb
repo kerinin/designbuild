@@ -7,6 +7,6 @@ class LaborCostLine < ActiveRecord::Base
   validates_numericality_of :hours
   
   def cost
-    self.hours * self.laborer.bill_rate
+    self.hours * self.laborer.bill_rate unless self.laborer.blank?
   end
 end
