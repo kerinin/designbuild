@@ -8,9 +8,9 @@
 
   .field
     = f.label :supplier
-    = f.collection_select :supplier_id, @project.suppliers, :id, :name
+    = f.collection_select :supplier_id, @suppliers, :id, :name
     or
-    =link_to "(Add new Supplier)", new_project_supplier_path(@project)
+    =link_to "(Add new Supplier)", new_supplier_path
 
   .field
     = f.label :cost

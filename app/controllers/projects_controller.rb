@@ -1,5 +1,18 @@
 class ProjectsController < ApplicationController
 
+  def purchase_order_list
+    if params.has_key?(:id)
+      @projects = [Project.find(params[:id])]
+    else
+      @projects = Project.all
+    end
+    @suppliers = Supplier.all
+    
+    respond_to do |format|
+      format.html
+    end
+  end
+  
   def add_markup
     @project = Project.find(params[:id])
     

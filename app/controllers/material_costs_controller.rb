@@ -28,6 +28,7 @@ class MaterialCostsController < ApplicationController
   # GET /material_costs/new.xml
   def new
     @material_cost = MaterialCost.new
+    @suppliers = Supplier.all
 
     respond_to do |format|
       format.html # new.html.erb
@@ -38,6 +39,7 @@ class MaterialCostsController < ApplicationController
   # GET /material_costs/1/edit
   def edit
     @material_cost = MaterialCost.find(params[:id])
+    @suppliers = Supplier.all
     @supplier = @material_cost.supplier
   end
 

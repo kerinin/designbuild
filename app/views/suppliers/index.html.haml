@@ -10,10 +10,10 @@
   - @suppliers.each do |supplier|
     %tr
       %td= supplier.name
-      %td= link_to 'Show', [@project, supplier]
-      %td= link_to 'Edit', edit_project_supplier_path(@project, supplier)
-      %td= link_to 'Destroy', [@project, supplier], :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', @project
+      %td= link_to 'Edit', edit_supplier_path( supplier)
+      %td= link_to 'Destroy', supplier, :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Supplier', new_project_supplier_path(@project)
+= link_to 'New Supplier', new_supplier_path

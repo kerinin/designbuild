@@ -4,14 +4,14 @@ namespace :db do
 
     #Factory :user, :email => 'test@example.com', :password => 'password'
     #(rand(10)+1).times { Factory :user }
-    
+
+    suppliers = []
+    6.times {
+      suppliers << Factory( :supplier )
+    }
+        
     (rand(5)+5).times { 
       project = Factory :project 
-      
-      suppliers = []
-      4.times {
-        suppliers << Factory( :supplier, :project => project )
-      }
       
       (rand(10)+1).times { Factory :laborer, :project => project }
       
@@ -112,9 +112,9 @@ namespace :db do
         end
         
         # Add markups
-        rand(3).times {
-          Factory :markup, :projects => [project]
-        }
+        #rand(3).times {
+        #  Factory :markup, :projects => [project]
+        #}
       end
     }
     

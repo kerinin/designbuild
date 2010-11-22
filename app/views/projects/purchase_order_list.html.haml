@@ -1,0 +1,20 @@
+%h1 Purchase Orders
+
+- @suppliers.each do |supplier|
+  %h2=supplier.name
+  
+  - @projects.each do |project|
+    - project_material_costs = (supplier.material_costs & MaterialCost.scoped.joins(:task).where('tasks.project_id = ?', project.id) )
+    - unless project_material_costs.empty?
+      %h3
+        Project:
+        =project.name
+      
+      - project.tasks.each do |t|
+        - task_material_costs = project_material_costs & MaterialCost.scoped.joins(:task).where('tasks.id = ?', t.id)
+        - unless task_material_costs.empty?
+          %h4 
+            Task:
+            =t.name
+          - task_material_costs.each do |mc|
+            =mc.id

@@ -1,7 +1,8 @@
 Designbuild::Application.routes.draw do
-
+  
+  resources :suppliers
+  
   resources :projects do
-    resources :suppliers
     resources :laborers     
     resources :components   # re-nested  
     resources :tasks        # re-nested
@@ -22,6 +23,11 @@ Designbuild::Application.routes.draw do
     member do
       get :timeline_events, :as => :timeline_events_for
       get :estimate_report, :as => :estimate_report_for
+      get :purchase_order_list, :as => :purchase_order_list_for
+    end
+    
+    collection do
+      get :purchase_order_list
     end
   end
 

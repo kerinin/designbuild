@@ -23,7 +23,7 @@ class SupplierTest < ActiveSupport::TestCase
       assert_not_nil @obj.name
     end
     
-    should "require a project" do
+    should_eventually "require a project" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :supplier, :project => nil
       end

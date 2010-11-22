@@ -27,6 +27,7 @@ class MaterialCostLinesController < ApplicationController
   # GET /material_cost_lines/new.xml
   def new
     @material_cost_line = MaterialCostLine.new
+    @suppliers = Supplier.all
 
     respond_to do |format|
       format.js
