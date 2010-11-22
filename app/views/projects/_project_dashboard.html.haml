@@ -2,6 +2,7 @@
   %tr
     %th Name
     %th.currency Cost Estimate
+    %th.currency Cost-to-Date
     %th.currency Projected Cost
 
   %tr
@@ -12,6 +13,7 @@
     %tr
       %td= task.name
       %td.currency= number_to_currency task.estimated_cost
+      %td.currency= number_to_currency task.cost
       %td.currency= number_to_currency task.projected_cost
     
   %tr
@@ -29,6 +31,8 @@
       %strong Project Total
     %td.currency
       %strong= number_to_currency( @project.estimated_cost )
+    %td.currency
+      %strong= number_to_currency( @project.cost )
     %td.currency
       %strong= number_to_currency( @project.projected_cost )
 

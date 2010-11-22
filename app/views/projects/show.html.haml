@@ -4,6 +4,8 @@
   Project:
   = @project.name
 
+=#Print Purchase Orders
+
 %hr
 
 %h2 Default Markups
@@ -16,11 +18,6 @@
   %h3 Timeline
   =render :partial => 'timeline'
 
-%h3=link_to "Print Purchase Orders", '/'
-
--unless @project.tasks.active.nil?
-  %h3 Active Tasks
+-unless @project.tasks.empty?
+  %h3 Tasks
   = render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
-
-%h3 Actual vs Estimated
-=render :partial => 'project_dashboard'

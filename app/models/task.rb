@@ -18,11 +18,15 @@ class Task < ActiveRecord::Base
   after_create :add_project_markups
 
   scope :active, lambda {
-    #joins(:labor_costs).where(:active => true).where( 'labor_costs.percent_complete < 100').group('tasks.id')
+    where(:active => true)
   }
   
   scope :completed, lambda {
-    #joins(:labor_costs).where( 'labor_costs.percent_complete >= 100').group('tasks.id')
+    joins(:labor_costs) & LaborCost.where( 'percent_complete >= 100' )
+  }
+  
+  scope :future, lambda {
+    where(:active => false).joins('left outer join labor_costs on tasks.id=labor_costs.task_id').where('labor_costs.task_id is null OR labor_costs.percent_complete < 100')
   }
   
   def cost_estimates
