@@ -8,6 +8,8 @@ class UnitCostEstimate < ActiveRecord::Base
   
   before_save :set_component
   
+  acts_as_modification :name, :quantity_id, :unit_cost, :component_id, :task_id
+  
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def cost
