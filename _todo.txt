@@ -1,9 +1,10 @@
 + projected costs
 + active tasks
 + inherited quantities
++ rework markups
 
-- rework markups
 - parametric components
+
 - versioning (https://github.com/airblade/paper_trail)
 - equation quantities
 - auto-deactivate at 100%

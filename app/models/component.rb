@@ -5,11 +5,11 @@ class Component < ActiveRecord::Base
   
   belongs_to :project
   
-  has_many :quantities, :order => :name, :dependent => :destroy
-  has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy
-  has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
+  has_many_modifiable :quantities, :order => :name, :dependent => :destroy
+  has_many_modifiable :fixed_cost_estimates, :order => :name, :dependent => :destroy
+  has_many_modifiable :unit_cost_estimates, :order => :name, :dependent => :destroy
   
-  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many_modifiable :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => :cascade_add_markup, :before_remove => :cascade_remove_markup
   
   has_and_belongs_to_many :tags
@@ -18,6 +18,8 @@ class Component < ActiveRecord::Base
   
   before_validation :check_project
   after_create :add_parent_markups
+  
+  acts_as_modification :project, :name
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
