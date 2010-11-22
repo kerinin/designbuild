@@ -16,15 +16,15 @@
 
 %p
   Estimated Cost:
-  %strong=@project.estimated_cost
+  %strong=number_to_currency @project.estimated_cost
 
 %p
   Cost to Date:
-  %strong=@project.cost
+  %strong=number_to_currency @project.cost
 
 %p
   Projected Cost:
-  %strong=@project.projected_cost
+  %strong=number_to_currency @project.projected_cost
 
 -unless @project.labor_cost.nil?
   %h3 Timeline
