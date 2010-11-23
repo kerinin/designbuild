@@ -1,20 +1,23 @@
 %h1 Purchase Orders
 
 - @suppliers.each do |supplier|
-  %h2=supplier.name
+  %h2
+    Supplier:
+    =supplier.name
   
   - @projects.each do |project|
     - project_material_costs = (supplier.material_costs & MaterialCost.scoped.joins(:task).where('tasks.project_id = ?', project.id) )
     - unless project_material_costs.empty?
-      %h3
-        Project:
-        =project.name
-      
       - project.tasks.each do |t|
         - task_material_costs = project_material_costs & MaterialCost.scoped.joins(:task).where('tasks.id = ?', t.id)
         - unless task_material_costs.empty?
-          %h4 
-            Task:
-            =t.name
-          - task_material_costs.each do |mc|
-            =mc.id
+        
+          %table
+            %tr.title
+              %th{:colspan => 3}= "#{project.name}: #{t.name}"
+            - task_material_costs.each do |mc|
+              -mc.line_items.each do |line_item|
+                %tr
+                  %td.date=mc.date.to_s :long
+                  %td=line_item.name
+                  %td.number=line_item.quantity
