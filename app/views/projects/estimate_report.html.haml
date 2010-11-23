@@ -39,9 +39,9 @@
       -contract.bids.each do |alternate|
         -unless alternate.is_active_bid
           %tr
-            %td.control.indent_1
             %td.control
-            %td.indented
+            %td.control
+            %td.indent_1
               %i= "Alternate Bid from #{alternate.contractor}"
             -if session[:break_out_unit_costs]
               %th.currency
