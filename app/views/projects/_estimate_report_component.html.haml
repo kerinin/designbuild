@@ -19,6 +19,9 @@
       %td
       %td.currency
       
+    -if session[:break_out_markup]
+      %td.currency= number_to_currency component.estimated_cost(false)
+      
     %td.currency
       %strong= number_to_currency component.estimated_cost if indent == 0
       = number_to_currency component.estimated_cost unless indent == 0
@@ -35,6 +38,10 @@
             ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} +#{number_to_percentage unit_cost.drop, :precision => 0} (#{unit_cost.quantity.name})" unless unit_cost.drop.nil?
             ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} (#{unit_cost.quantity.name})" if unit_cost.drop.nil?
           %td="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
+        
+        -if session[:break_out_markup]
+          %td.currency
+            %i= number_to_currency unit_cost.cost
           
         %td.currency
           %i= number_to_currency unit_cost.marked_up_cost
@@ -48,6 +55,9 @@
         -if session[:break_out_unit_costs]
           %td
           %td.currency
+        -if session[:break_out_markup]
+          %td.currency
+            %i= number_to_currency fixed_cost.cost
         %td.currency
           %i= number_to_currency fixed_cost.marked_up_cost
       

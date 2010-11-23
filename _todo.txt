@@ -9,7 +9,7 @@
 -- explanative text
 -- help buttons
 -- table alignment
--- autocomplete supplier selection (and creation)
+++ autocomplete supplier selection (and creation)
 -- pop-up for new employee, new PO, new labor cost
 -- click tr edits/shows
 -- easy way to pair components & tasks, show which components not associated, quickly make new tasks

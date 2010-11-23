@@ -16,12 +16,12 @@ class Contract < ActiveRecord::Base
   #after_save :add_default_markups
   after_create :add_project_markups
   
-  def estimated_cost
-    multiply_or_nil 1 + ( self.total_markup / 100 ), self.bid
+  def estimated_cost(include_markup = true)
+    multiply_or_nil ( include_markup ? (1 + ( self.total_markup / 100 )) : 1), self.bid
   end
   
-  def cost
-    multiply_or_nil 1 + ( self.total_markup / 100 ), self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+  def cost(include_markup = true)
+    multiply_or_nil (include_markup ? (1 + ( self.total_markup / 100 )) : 1), self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
   
   def bid

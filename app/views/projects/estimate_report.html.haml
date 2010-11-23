@@ -8,9 +8,15 @@
 
 %p.control
   -if session[:break_out_unit_costs]
-    =link_to "Show Without Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 0)
+    %button=link_to "Show Without Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 0)
   -else
-    =link_to "Show Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 1)
+    %button=link_to "Show Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 1)
+
+  -if session[:break_out_markup]
+    %button=link_to "Hide Markup", estimate_report_for_project_path(@project, :break_out_markup => 0)
+  -else
+    %button=link_to "Show Markup", estimate_report_for_project_path(@project, :break_out_markup => 1)
+
 
 %table.project_estimate
   %tr
@@ -18,9 +24,11 @@
     %th.control Show Costs
     %th Building Component
     -if session[:break_out_unit_costs]
-      %th Quantity
+      %th Quantity / Source
       %th.currency Unit Cost
-    %th.currency Cost
+    -if session[:break_out_markup]
+      %th Raw Cost
+    %th.currency= session[:break_out_markup] ? 'Cost+Markup' : 'Cost'
     
   -@project.components.roots.each do |component|
     =render :partial => 'estimate_report_component', :locals => {:component => component, :indent => 0}
@@ -32,22 +40,27 @@
         %td.control
         %td
           %strong= contract.name
-          %i= "(Fixed Bid from #{contract.active_bid.contractor})"
         -if session[:break_out_unit_costs]
-          %td
+          %td= "Fixed Bid from #{contract.active_bid.contractor}"
           %td.currency
+        -if session[:break_out_markup]
+          %td.currency= number_to_currency contract.bid
         %td.currency
           %strong= number_to_currency contract.estimated_cost
+          
       -contract.bids.each do |alternate|
         -unless alternate.is_active_bid
           %tr
             %td.control
             %td.control
-            %td.indent_1
-              %i= "Alternate Bid from #{alternate.contractor}"
+            %td
             -if session[:break_out_unit_costs]
-              %td
+              %td.indent_1
+                %i= "Alternate Bid from #{alternate.contractor}"
               %td.currency
+            -if session[:break_out_markup]
+              %td.currency
+                %i= number_to_currency alternate.estimated_cost
             %td.currency
               %i= number_to_currency alternate.estimated_cost
           
@@ -56,5 +69,7 @@
     %td.control
     %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
       %strong Total
+    -if session[:break_out_markup]
+      %td.currency= number_to_currency @project.estimated_cost(false)
     %td.currency
       %strong= number_to_currency @project.estimated_cost

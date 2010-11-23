@@ -15,20 +15,20 @@ class Project < ActiveRecord::Base
   
   validates_presence_of :name
   
-  def estimated_fixed_cost
-    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
+  def estimated_fixed_cost(include_markup = true)
+    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost(include_markup))}
   end
   
-  def estimated_unit_cost
-    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
+  def estimated_unit_cost(include_markup = true)
+    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost(include_markup))}
   end
   
-  def estimated_contract_cost
-    self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.bid)}
+  def estimated_contract_cost(include_markup = true)
+    self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost(include_markup) )}
   end
   
-  def estimated_cost
-    add_or_nil( self.estimated_contract_cost, self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)} )
+  def estimated_cost(include_markup = true)
+    add_or_nil( self.estimated_contract_cost(include_markup), self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost(include_markup))} )
   end
   
   def material_cost

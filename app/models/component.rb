@@ -22,41 +22,41 @@ class Component < ActiveRecord::Base
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end
-  
-  def estimated_component_fixed_cost
-    multiply_or_nil 1 + ( self.total_markup / 100 ), self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+    
+  def estimated_component_fixed_cost(include_markup = true)
+    multiply_or_nil ( include_markup ? (1 + ( self.total_markup / 100 )) : 1), self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 
-  def estimated_subcomponent_fixed_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
+  def estimated_subcomponent_fixed_cost(include_markup)
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost(include_markup))}
   end
     
-  def estimated_fixed_cost
-    add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
+  def estimated_fixed_cost(include_markup = true)
+    add_or_nil( self.estimated_component_fixed_cost(include_markup), self.estimated_subcomponent_fixed_cost(include_markup) )
   end
   
-  def estimated_component_unit_cost
-    multiply_or_nil 1 + (self.total_markup / 100), self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+  def estimated_component_unit_cost(include_markup = true)
+    multiply_or_nil (include_markup ? (1 + (self.total_markup / 100)) : 1 ), self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
   end
 
-  def estimated_subcomponent_unit_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
+  def estimated_subcomponent_unit_cost(include_markup = true)
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost(include_markup))}
   end
     
-  def estimated_unit_cost
-    add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
+  def estimated_unit_cost(include_markup = true)
+    add_or_nil( self.estimated_component_unit_cost(include_markup), self.estimated_subcomponent_unit_cost(include_markup) )
   end
   
-  def estimated_component_cost
-    add_or_nil( estimated_component_fixed_cost, estimated_component_unit_cost )
+  def estimated_component_cost(include_markup = true)
+    add_or_nil( estimated_component_fixed_cost(include_markup), estimated_component_unit_cost(include_markup) )
   end
 
-  def estimated_subcomponent_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)}
+  def estimated_subcomponent_cost(include_markup = true)
+    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost(include_markup))}
   end
     
-  def estimated_cost
-    add_or_nil( self.estimated_component_cost, self.estimated_subcomponent_cost )
+  def estimated_cost(include_markup = true)
+    add_or_nil( self.estimated_component_cost(include_markup), self.estimated_subcomponent_cost(include_markup) )
   end
   
   def select_label
