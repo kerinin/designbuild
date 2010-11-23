@@ -10,15 +10,15 @@
         =form_for( [@project, component], :html => { :id => "costs_#{component.id}" } ) do |f|
           =f.check_box :show_costs_in_estimate, :onchange => "$('form#costs_#{component.id}').submit();"
           =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
-    -if root
+    -if indent == 0
       %td
         %strong= component.name
     -else
-      %td.indented= component.name
+      %td{:class => "indent_#{indent}"}= component.name
     -if session[:break_out_unit_costs]
       %td.currency
     %td.currency
-      -if root
+      -if indent == 0
         %strong= number_to_currency component.estimated_cost
       -else
         = number_to_currency component.estimated_cost
@@ -27,7 +27,7 @@
       %tr
         %td.control
         %td.control
-        %td.indented
+        %td{:class => "indent_#{indent}"}
           %i= "#{unit_cost.quantity.name} (#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit})"
         -if session[:break_out_unit_costs]
           %td.currency="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
@@ -38,7 +38,7 @@
       %tr
         %td.control
         %td.control
-        %td.indented
+        %td{:class => "indent_#{indent}"}
           %i= fixed_cost.name
         -if session[:break_out_unit_costs]
           %td.currency
@@ -47,4 +47,4 @@
       
   -if component.expand_in_estimate
     -component.children.each do |subcomponent|
-      =render :partial => 'estimate_report_component', :locals => {:component => subcomponent, :root => false}
+      =render :partial => 'estimate_report_component', :locals => {:component => subcomponent, :indent => indent + 1}
