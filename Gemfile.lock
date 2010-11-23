@@ -91,6 +91,7 @@ GEM
       bundler (~> 1.0.0)
       railties (= 3.0.1)
     rails3-generators (0.14.0)
+    rails3-jquery-autocomplete (0.5.0)
     railties (3.0.1)
       actionpack (= 3.0.1)
       activesupport (= 3.0.1)
@@ -141,6 +142,7 @@ DEPENDENCIES
   paperclip (>= 2.3.5)
   rails (= 3.0.1)
   rails3-generators
+  rails3-jquery-autocomplete
   rspec-rails (= 2.0.0.beta.12)
   shoulda
   sqlite3-ruby

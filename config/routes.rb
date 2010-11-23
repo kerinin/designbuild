@@ -70,6 +70,7 @@ Designbuild::Application.routes.draw do
   
   resources :material_costs do
     resources :material_cost_lines, :as => :line_items
+    get :autocomplete_supplier_name, :on => :collection
   end
   
   resources :contracts do

@@ -1,5 +1,6 @@
 class MaterialCostsController < ApplicationController
-  before_filter :get_task
+  before_filter :get_task, :except => :autocomplete_supplier_name
+  autocomplete :supplier, :name, :full => true
   
   # GET /material_costs
   # GET /material_costs.xml

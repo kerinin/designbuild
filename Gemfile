@@ -35,6 +35,7 @@ gem "acts_as_list"
 gem "ancestry"
 gem "abstract"
 # gem 'inherited_resources', '1.1.2'
+gem 'rails3-jquery-autocomplete'
 
 group :test, :development do
   gem "shoulda"

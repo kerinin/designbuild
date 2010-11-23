@@ -8,9 +8,11 @@
 
   .field
     = f.label :supplier
-    = f.collection_select :supplier_id, @suppliers, :id, :name
-    or
-    =link_to "(Add new Supplier)", new_supplier_path
+    = f.autocomplete_field :supplier_name, autocomplete_supplier_name_material_costs_path(@material_cost), :id_element => "#supplier_id"
+    = f.hidden_field :supplier_id
+    =# f.collection_select :supplier_id, @suppliers, :id, :name
+    =#or
+    =#link_to "(Add new Supplier)", new_supplier_path
 
   .field
     = f.label :cost
