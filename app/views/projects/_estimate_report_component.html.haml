@@ -27,7 +27,7 @@
       %tr
         %td.control
         %td.control
-        %td{:class => "indent_#{indent}"}
+        %td{:class => "indent_#{indent+1}"}
           %i= "#{unit_cost.quantity.name} (#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit})"
         -if session[:break_out_unit_costs]
           %td.currency="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
@@ -38,7 +38,7 @@
       %tr
         %td.control
         %td.control
-        %td{:class => "indent_#{indent}"}
+        %td{:class => "indent_#{indent+1}"}
           %i= fixed_cost.name
         -if session[:break_out_unit_costs]
           %td.currency
