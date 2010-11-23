@@ -24,7 +24,7 @@
       %td.currency= number_to_currency(unit_cost_estimate.cost)
       - case parent.class.name
       - when 'Component'
-        %td.control
+        %td.control.show= link_to 'Show', [parent, unit_cost_estimate]
         %td.control.edit= link_to 'Edit', edit_component_unit_cost_estimate_path(parent, unit_cost_estimate), :remote => true
         %td.control.destroy= link_to 'Destroy', [parent, unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'

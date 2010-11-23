@@ -18,6 +18,7 @@
     %th.control Show Costs
     %th Building Component
     -if session[:break_out_unit_costs]
+      %th Quantity
       %th.currency Unit Cost
     %th.currency Cost
     
@@ -33,6 +34,7 @@
           %strong= contract.name
           %i= "(Fixed Bid from #{contract.active_bid.contractor})"
         -if session[:break_out_unit_costs]
+          %td
           %td.currency
         %td.currency
           %strong= number_to_currency contract.estimated_cost
@@ -44,6 +46,7 @@
             %td.indent_1
               %i= "Alternate Bid from #{alternate.contractor}"
             -if session[:break_out_unit_costs]
+              %td
               %td.currency
             %td.currency
               %i= number_to_currency alternate.estimated_cost
@@ -51,7 +54,7 @@
   %tr.totals
     %td.control
     %td.control
-    %td.right{:colspan => session[:break_out_unit_costs] ? 2 : 1}
+    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
       %strong Total
     %td.currency
       %strong= number_to_currency @project.estimated_cost

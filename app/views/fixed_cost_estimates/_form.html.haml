@@ -10,6 +10,12 @@
     = f.label :name
     = f.text_field :name
   .field
+    %strong= f.label :component
+    = f.collection_select :component_id, |
+      @component.ancestors.all + [@component] + @component.subtree, |
+      :id, |
+      :name |
+  .field
     = f.label :cost
     = f.text_field :cost
   .actions

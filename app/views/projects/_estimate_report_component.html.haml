@@ -10,31 +10,32 @@
         =form_for( [@project, component], :html => { :id => "costs_#{component.id}" } ) do |f|
           =f.check_box :show_costs_in_estimate, :onchange => "$('form#costs_#{component.id}').submit();"
           =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
-    -if indent == 0
-      %td
-        %strong= component.name
-    -else
-      %td{:class => "indent_#{indent}"}= component.name
+        
+    %td{:class => (indent == 0 ? nil : "indent_#{indent}" )}  
+      %strong= component.name if indent == 0
+      = component.name unless indent == 0
+      
     -if session[:break_out_unit_costs]
+      %td
       %td.currency
+      
     %td.currency
-      -if indent == 0
-        %strong= number_to_currency component.estimated_cost
-      -else
-        = number_to_currency component.estimated_cost
+      %strong= number_to_currency component.estimated_cost if indent == 0
+      = number_to_currency component.estimated_cost unless indent == 0
+      
   -if component.show_costs_in_estimate
     -component.unit_cost_estimates.each do |unit_cost|
       %tr
         %td.control
         %td.control
         %td{:class => "indent_#{indent+1}"}
-          -if session[:break_out_unit_costs]
-            %i= "#{unit_cost.quantity.name} (#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit})" if unit_cost.drop.nil?
-            %i= "#{unit_cost.quantity.name} (#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} +#{number_to_percentage unit_cost.drop, :precision => 0})" unless unit_cost.drop.nil?
-          -else
-            %i= unit_cost.quantity.name
+          %i= unit_cost.name
         -if session[:break_out_unit_costs]
-          %td.currency="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
+          %td
+            ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} +#{number_to_percentage unit_cost.drop, :precision => 0} (#{unit_cost.quantity.name})" unless unit_cost.drop.nil?
+            ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} (#{unit_cost.quantity.name})" if unit_cost.drop.nil?
+          %td="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
+          
         %td.currency
           %i= number_to_currency unit_cost.marked_up_cost
       
@@ -45,6 +46,7 @@
         %td{:class => "indent_#{indent+1}"}
           %i= fixed_cost.name
         -if session[:break_out_unit_costs]
+          %td
           %td.currency
         %td.currency
           %i= number_to_currency fixed_cost.marked_up_cost

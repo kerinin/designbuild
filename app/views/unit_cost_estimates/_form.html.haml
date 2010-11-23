@@ -10,8 +10,13 @@
     = f.label :name
     = f.text_field :name
   .field
+    %strong= f.label :component
+    = f.collection_select :component_id, |
+      @component.ancestors.all + [@component] + @component.subtree, |
+      :id, |
+      :name |
+  .field
     %strong= f.label :quantity
-    = f.hidden_field :component_id, :value => @component.id
     = f.grouped_collection_select :quantity_id, |
       @component.ancestors.all + [@component], |
       :quantities, |

@@ -14,7 +14,7 @@
       %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
       - case parent.class.name
       - when 'Component'
-        %td.control
+        %td.control.show= link_to 'Show', [parent, fixed_cost_estimate]
         %td.control.edit= link_to 'Edit', edit_component_fixed_cost_estimate_path(parent, fixed_cost_estimate), :remote => true
         %td.control.destroy= link_to 'Destroy', [parent, fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when 'Task'
