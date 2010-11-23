@@ -33,7 +33,7 @@
           %strong= contract.name
           %i= "(Fixed Bid from #{contract.active_bid.contractor})"
         -if session[:break_out_unit_costs]
-          %th.currency
+          %td.currency
         %td.currency
           %strong= number_to_currency contract.estimated_cost
       -contract.bids.each do |alternate|
