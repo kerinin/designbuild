@@ -1,6 +1,13 @@
 class ProjectsController < ApplicationController
   autocomplete :task, :name, :full => true
   
+  alias :autocomplete_task_name, :scoped_autocomplete_task_name
+  def autocomplete_task_name do
+    with_scope(Project.tasks) do
+      scoped_autocomplete_task_name
+    end
+  end
+  
   def purchase_order_list
     if params.has_key?(:id)
       @projects = [Project.find(params[:id])]
