@@ -1,8 +1,20 @@
 + projected costs
 + active tasks
 + inherited quantities
++ rework markups
 
-- rework markups
+- usability tweaks
+-- spinners
+-- icons
+-- explanative text
+-- help buttons
+-- table alignment
+-- autocomplete supplier selection (and creation)
+-- pop-up for new employee, new PO, new labor cost
+-- click tr edits/shows
+-- easy way to pair components & tasks, show which components not associated, quickly make new tasks
+-- checkbox to show unit costs on estimate
+
 - parametric components
 - versioning (https://github.com/airblade/paper_trail)
 - equation quantities
@@ -21,13 +33,6 @@
 -- work timeline w/ deadlines
 -- labor reporting for michelle
 -- graphs
-
-- usability tweaks
--- spinners
--- icons
--- explanative text
--- help buttons
--- table alignment
 
 - bank draws (invoice tracking)
 
