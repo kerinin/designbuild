@@ -6,11 +6,19 @@
   Cost Estimate
 %h2= Date::today.to_s :long
 
+%p.control
+  -if session[:break_out_unit_costs]
+    =link_to "Show Without Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 0)
+  -else
+    =link_to "Show Unit Cost Breakout", estimate_report_for_project_path(@project, :break_out_unit_costs => 1)
+
 %table.project_estimate
   %tr
     %th.control Expand
     %th.control Show Costs
     %th Building Component
+    -if session[:break_out_unit_costs]
+      %th.currency Unit Cost
     %th.currency Cost
     
   -@project.components.roots.each do |component|
@@ -24,6 +32,8 @@
         %td
           %strong= contract.name
           %i= "(Fixed Bid from #{contract.active_bid.contractor})"
+        -if session[:break_out_unit_costs]
+          %th.currency
         %td.currency
           %strong= number_to_currency contract.estimated_cost
       -contract.bids.each do |alternate|
@@ -33,13 +43,15 @@
             %td.control
             %td.indented
               %i= "Alternate Bid from #{alternate.contractor}"
+            -if session[:break_out_unit_costs]
+              %th.currency
             %td.currency
               %i= number_to_currency alternate.estimated_cost
           
   %tr.totals
     %td.control
     %td.control
-    %td.right
+    %td.right{:colspan => session[:break_out_unit_costs] ? 2 : 1}
       %strong Total
     %td.currency
       %strong= number_to_currency @project.estimated_cost

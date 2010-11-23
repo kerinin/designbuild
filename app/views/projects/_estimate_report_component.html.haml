@@ -15,6 +15,8 @@
         %strong= component.name
     -else
       %td.indented= component.name
+    -if session[:break_out_unit_costs]
+      %td.currency
     %td.currency
       -if root
         %strong= number_to_currency component.estimated_cost
@@ -26,7 +28,9 @@
         %td.control
         %td.control
         %td.indented
-          %i= unit_cost.name
+          %i= "#{unit_cost.quantity.name} (#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit})"
+        -if session[:break_out_unit_costs]
+          %td.currency="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
         %td.currency
           %i= number_to_currency unit_cost.marked_up_cost
       
@@ -36,6 +40,8 @@
         %td.control
         %td.indented
           %i= fixed_cost.name
+        -if session[:break_out_unit_costs]
+          %td.currency
         %td.currency
           %i= number_to_currency fixed_cost.marked_up_cost
       

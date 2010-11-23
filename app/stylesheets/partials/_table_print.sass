@@ -1,6 +1,9 @@
 @import "compass/utilities/tables/alternating-rows-and-columns"
 
 body
+  .control
+    display : none
+    
   table
 
     $table-color : white
@@ -23,8 +26,6 @@ body
     tr.control
       th, td
         display : none
-    td.control, th.control
-      display : none
       
     td.indented
       padding-left : 50px
