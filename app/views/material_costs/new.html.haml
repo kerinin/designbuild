@@ -1,7 +1,6 @@
 -content_for :head do
   =javascript_include_tag "autocomplete-rails.js"
   =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
-  =stylesheet_link_tag 'jquery.autocomplete.css', :media => 'screen, projection'
 %h1 
   New Purchase Order for
   =link_to @task.name, [@project, @task]
