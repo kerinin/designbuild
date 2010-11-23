@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-
+  autocomplete :task, :name, :full => true
+  
   def purchase_order_list
     if params.has_key?(:id)
       @projects = [Project.find(params[:id])]

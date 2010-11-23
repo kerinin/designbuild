@@ -13,7 +13,7 @@
 -- pop-up for new employee, new PO, new labor cost
 -- click tr edits/shows
 -- easy way to pair components & tasks, show which components not associated, quickly make new tasks
--- checkbox to show unit costs on estimate
+++ checkbox to show unit costs on estimate
 
 - parametric components
 - versioning (https://github.com/airblade/paper_trail)

@@ -10,6 +10,14 @@ class UnitCostEstimate < ActiveRecord::Base
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
+  def task_name=(string)
+    self.task = Task.find_or_create_by_name(string, :project => self.component.project)
+  end
+  
+  def task_name
+    self.task.blank? ? nil : self.task.name
+  end
+  
   def cost
     self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
   end

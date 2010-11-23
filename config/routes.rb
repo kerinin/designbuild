@@ -24,6 +24,7 @@ Designbuild::Application.routes.draw do
       get :timeline_events, :as => :timeline_events_for
       get :estimate_report, :as => :estimate_report_for
       get :purchase_order_list, :as => :purchase_order_list_for
+      get :autocomplete_task_name
     end
     
     collection do

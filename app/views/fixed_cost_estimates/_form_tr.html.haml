@@ -7,9 +7,10 @@
     = f.text_field :cost
   %td.field
     %strong= f.label :task_id
-    -unless @project.tasks.empty?
-      = f.collection_select :task_id, @project.tasks, :id, :name, { :include_blank => "---" }
-      or
-    =link_to "(Add New Task)", new_project_task_path(@project)
+    = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)
+    -#unless @project.tasks.empty?
+      =# f.collection_select :task_id, @project.tasks, :id, :name, { :include_blank => "---" }
+      =#or
+    =#link_to "(Add New Task)", new_project_task_path(@project)
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'

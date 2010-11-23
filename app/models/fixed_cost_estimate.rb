@@ -8,6 +8,14 @@ class FixedCostEstimate < ActiveRecord::Base
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
+  def task_name=(string)
+    self.task = Task.find_or_create_by_name(string)
+  end
+  
+  def task_name
+    self.task.blank? ? nil : self.task.name
+  end
+  
   def marked_up_cost
     (1 + (self.component.total_markup / 100) ) * self.cost
   end

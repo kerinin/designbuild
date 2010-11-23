@@ -11,7 +11,7 @@
     %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
       %td= fixed_cost_estimate.name
       %td.currency= number_to_currency(fixed_cost_estimate.cost)
-      %td= fixed_cost_estimate.task.blank? ? nil : fixed_cost_estimate.task.name
+      %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
       - case parent.class.name
       - when 'Component'
         %td.control.show= link_to 'Show', [parent, fixed_cost_estimate]
