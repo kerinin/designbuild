@@ -3,9 +3,12 @@
 %h1
   Construction Task:
   = @task.name
+  
+.actions
+  =link_to "Log Hours", new_task_material_cost_path( @task)
+  =link_to "New Purchase Order", new_task_material_cost_path( @task)
+  =link_to "Print All Purchase Orders", purchase_order_list_projects_path
 
-=link_to "Log Hours", new_task_material_cost_path( @task)
-=link_to "New Purchase Order", new_task_material_cost_path( @task)
 %hr
 
 %h2 Markups

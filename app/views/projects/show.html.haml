@@ -4,7 +4,11 @@
   Project:
   = @project.name
 
-=#Print Purchase Orders
+.actions
+  View:
+  =link_to "#{@project.name} Purchase Orders", purchase_order_list_for_project_path(@project)
+  =link_to "All Purchase Orders", purchase_order_list_projects_path
+  =link_to "Project Cost Estimate", estimate_report_for_project_path(@project)
 
 %hr
 

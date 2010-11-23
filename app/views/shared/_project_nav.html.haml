@@ -1,8 +1,7 @@
-%ul.main_nav
+%ul.main_nav.actions
   %li= link_to 'All Projects', projects_path
   %li= link_to @project.name, @project
   %li= link_to '>Components', project_components_path(@project)
   %li= link_to '>Tasks', project_tasks_path(@project)
   %li= link_to '>Contracts', project_contracts_path(@project)
   %li= link_to '>Deadlines', project_deadlines_path(@project)
-  %li= link_to '>Reports', estimate_report_for_project_path(@project)
