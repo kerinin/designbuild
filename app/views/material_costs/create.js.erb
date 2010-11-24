@@ -13,6 +13,6 @@
 
 <% else %>
 
-  window.location.replace("<%=task_material_cost_url(@task, @material_cost)%>");
-  
+  window.location.href = "<%=task_material_cost_url(@task, @material_cost)%>";
+
 <% end %>
