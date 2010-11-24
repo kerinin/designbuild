@@ -18,6 +18,18 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     get :new, :component_id => @component
     assert_response :success
   end
+  
+  test "should get xhr new from component" do
+    xhr :get, :new, :component_id => @component
+    assert_response(:success)
+    assert_template(:new)
+  end
+  
+  test "should get xhr new from project" do
+    xhr :get, :new, :component_id => @component, :context => :project
+    assert_response(:success)
+    assert_template(:new)
+  end
 
   test "should create unit_cost_estimate" do
     assert_difference('UnitCostEstimate.count') do
@@ -28,7 +40,17 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     
     assert_redirected_to component_unit_cost_estimate_path(@component, assigns(:unit_cost_estimate))
   end
-
+  
+  test "should create xhr unit cost estimate" do
+    assert_difference('UnitCostEstimate.count') do
+      xhr :post, :create, :component_id => @component, :unit_cost_estimate => {
+        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20, :drop => 10
+      }
+    end
+    assert_response(:success)
+    assert_template(:create)
+  end
+  
   test "should show unit_cost_estimate" do
     get :show, :component_id => @component, :id => @unit_cost_estimate.to_param
     assert_response :success
@@ -38,10 +60,22 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     get :edit, :component_id => @component, :id => @unit_cost_estimate.to_param
     assert_response :success
   end
+  
+  test "should get xhr edit" do
+    xhr :get, :edit, :component_id => @component, :id => @unit_cost_estimate.to_param
+    assert_response :success
+    assert_template :edit
+  end
 
   test "should update unit_cost_estimate" do
     put :update, :component_id => @component, :id => @unit_cost_estimate.to_param, :unit_cost_estimate => @unit_cost_estimate.attributes
     assert_redirected_to component_unit_cost_estimate_path(@component, assigns(:unit_cost_estimate))
+  end
+  
+  test "should update xhr unit cost estimate" do
+    xhr :put, :update, :component_id => @component, :id => @unit_cost_estimate.to_param, :unit_cost_estimate => @unit_cost_estimate.attributes
+    assert_response(:success)
+    assert_template(:update) 
   end
 
   test "should destroy unit_cost_estimate" do

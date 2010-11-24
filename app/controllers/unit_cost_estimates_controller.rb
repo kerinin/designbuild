@@ -66,7 +66,7 @@ class UnitCostEstimatesController < ApplicationController
 
     respond_to do |format|
       if @unit_cost_estimate.update_attributes(params[:unit_cost_estimate])
-        format.js { render :nothing => true }
+        format.js
         format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else

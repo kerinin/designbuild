@@ -25,11 +25,12 @@
       } |
         =number_to_currency labor_cost.cost
         ="#{number_to_percentage(labor_cost.percent_complete, :precision => 0)} complete"
-    %event{ |
-      :start => task.labor_costs.last.date.strftime('%b %d %Y %H:%M:%S GMT%z'), |
-      :earliestEnd => (task.labor_costs.last.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z'), |
-      :end => (task.deadline.blank? ? (task.labor_costs.last.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z') : task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')) |
-    } |
+    -unless task.labor_costs.empty?
+      %event{ |
+        :start => task.labor_costs.last.date.strftime('%b %d %Y %H:%M:%S GMT%z'), |
+        :earliestEnd => (task.labor_costs.last.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z'), |
+        :end => (task.deadline.blank? ? (task.labor_costs.last.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z') : task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')) |
+      } |
     
     -unless task.deadline.blank?
       %event{ :start => task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z'), :title => task.deadline.name, :trackNum => @trackCount}
