@@ -2,26 +2,25 @@
 + active tasks
 + inherited quantities
 + rework markups
++ auto-deactivate at 100%
 
 - usability tweaks
+++ autocomplete supplier selection (and creation)
+++ pop-up for new employee, new PO, new labor cost
+++ easy way to pair components & tasks
+++ show which components not associated, quickly make new tasks
+++ checkbox to show unit costs on estimate
+-- click tr edits/shows
 -- spinners
 -- icons
 -- explanative text
 -- help buttons
 -- table alignment
-++ autocomplete supplier selection (and creation)
--- pop-up for new employee
-++ pop-up for new PO, new labor cost
--- click tr edits/shows
-++ easy way to pair components & tasks
-++ show which components not associated, quickly make new tasks
-++ checkbox to show unit costs on estimate
 
 - refactor deadlines to be either relative or absolute, cache relative deadline value
 - parametric components
 - versioning (https://github.com/airblade/paper_trail)
 - equation quantities
-- auto-deactivate at 100%
 - xhr functional tests
 
 - project dashboard
