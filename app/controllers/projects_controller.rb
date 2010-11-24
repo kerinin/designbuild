@@ -1,11 +1,21 @@
 class ProjectsController < ApplicationController
   autocomplete :task, :name, :full => true
   
-  alias :autocomplete_task_name, :scoped_autocomplete_task_name
-  def autocomplete_task_name do
-    with_scope(Project.tasks) do
-      scoped_autocomplete_task_name
+  def autocomplete_task_name
+    object = :task
+    method = :name
+    options = {:full => true}
+    
+    @project = Project.find(params[:id])
+    term = params[:term]
+
+    if term && !term.empty?
+      items = @project.tasks.where(["LOWER(name) LIKE ?", "%#{term.downcase}%"]).limit(10).order(:name)
+    else
+      items = {}
     end
+
+    render :json => json_for_autocomplete(items, options[:display_value] ||= method)
   end
   
   def purchase_order_list

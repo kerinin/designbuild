@@ -53,16 +53,18 @@ namespace :db do
       }
       
       # Assign cost estimates to tasks
-      rand(UnitCostEstimate.count).times {
-        cost = UnitCostEstimate.unassigned.first
-        cost.task = Task.find rand(Task.count)+1 unless cost.nil?
-        cost.save! unless cost.nil?
-      }
-      rand(FixedCostEstimate.count).times {
-        cost = FixedCostEstimate.unassigned.first
-        cost.task = Task.find rand(Task.count)+1 unless cost.nil?
-        cost.save! unless cost.nil?
-      }
+      project.components.each do |component|
+        rand(component.unit_cost_estimates.count).to_i.times {
+          cost = component.unit_cost_estimates.unassigned.first
+          cost.task = project.tasks[ rand(project.tasks.count) ] unless cost.nil?
+          cost.save! unless cost.nil?
+        }
+        rand(component.fixed_cost_estimates.count).to_i.times {
+          cost = component.fixed_cost_estimates.unassigned.first
+          cost.task = project.tasks[ rand(project.tasks.count) ] unless cost.nil?
+          cost.save! unless cost.nil?
+        }
+      end
       
       if rand(2) == 1
         # Assign costs to tasks
@@ -102,12 +104,10 @@ namespace :db do
         }
         
         # Assign tasks to deadlines
-        Task.all.each do |task|
+        project.tasks.all.each do |task|
           task.deadline = case rand(3)
           when 0
-            Deadline.find(rand(Deadline.count)+1)
-          when 1
-            RelativeDeadline.find(rand(RelativeDeadline.count)+1)
+            project.deadlines[ rand(project.deadlines.count) ]
           end
         end
         
