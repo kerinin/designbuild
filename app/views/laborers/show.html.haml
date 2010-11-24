@@ -19,12 +19,14 @@
 
 %table
   %th Project
+  %th Task
   %th Date
   %th Hours
   
   -@laborer.labor_cost_lines.each do |line|
     %tr
       %td=line.labor_set.task.project.name
+      %td=line.labor_set.task.name
       %td.date=line.labor_set.date.to_s :long
       %td.number=line.hours
   
