@@ -10,3 +10,21 @@
 %p
   %b Bill rate:
   = @laborer.bill_rate
+
+= link_to 'Edit', edit_project_laborer_path(@project, @laborer)
+\|
+= link_to 'Show All', project_laborers_path(@project)
+
+%h2 Logged Hours
+
+%table
+  %th Project
+  %th Date
+  %th Hours
+  
+  -@laborer.labor_cost_lines.each do |line|
+    %tr
+      %td=line.labor_set.task.project.name
+      %td.date=line.labor_set.date.to_s :long
+      %td.number=line.hours
+  

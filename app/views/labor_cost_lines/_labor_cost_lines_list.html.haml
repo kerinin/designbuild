@@ -10,7 +10,7 @@
 
   - labor_cost_lines.each do |labor_cost_line|
     %tr{:id => "labor_cost_line_#{labor_cost_line.id}"}
-      %td= labor_cost_line.laborer.name
+      %td= link_to labor_cost_line.laborer.name, [@project, labor_cost_line.laborer]
       %td.number= labor_cost_line.hours
       %td.currency
         = number_to_currency(labor_cost_line.laborer.bill_rate)

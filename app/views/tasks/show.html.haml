@@ -1,3 +1,8 @@
+-content_for :head do
+  =javascript_include_tag "autocomplete-rails.js"
+  =javascript_include_tag "jquery.dimscreen.js"
+  =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
+  
 =render :partial => 'shared/project_nav'
 
 %h1
@@ -23,7 +28,7 @@
   
 %h2 Costs to Date
 %h3 Labor
-=render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs}
+=render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs, :context => :task}
 %h3 Material
 =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.completed_purchases, :context => :cost}
 

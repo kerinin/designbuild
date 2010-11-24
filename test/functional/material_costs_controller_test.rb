@@ -69,12 +69,22 @@ class MaterialCostsControllerTest < ActionController::TestCase
     get :edit, :task_id => @project.to_param, :id => @material_cost.to_param
     assert_response :success
   end
+  
+  test "should get xhr edit" do
+    xhr :get, :edit, :task_id => @project.to_param, :id => @material_cost.to_param
+    assert_response :success
+  end
 
   test "should update material_cost" do
     put :update, :task_id => @project.to_param, :id => @material_cost.to_param, :material_cost => @material_cost.attributes
     assert_redirected_to project_task_path(@project, @task)
   end
 
+  test "should xhr update material_cost" do
+    xhr :put, :update, :task_id => @project.to_param, :id => @material_cost.to_param, :material_cost => @material_cost.attributes
+    assert_redirected_to project_task_path(@project, @task)
+  end
+  
   test "should destroy material_cost" do
     assert_difference('MaterialCost.count', -1) do
       delete :destroy, :task_id => @project.to_param, :id => @material_cost.to_param

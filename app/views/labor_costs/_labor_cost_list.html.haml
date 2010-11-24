@@ -21,7 +21,7 @@
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}=link_to "(Log Hours)", new_task_labor_cost_path(@task)
+    %td{:colspan => 10}=link_to "(Log Hours)", new_task_labor_cost_path(@task, :context => context), :remote => true
     
   %tr.totals
     %td.right

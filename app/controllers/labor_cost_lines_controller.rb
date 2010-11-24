@@ -39,6 +39,7 @@ class LaborCostLinesController < ApplicationController
   # GET /labor_cost_lines/1/edit
   def edit
     @labor_cost_line = LaborCostLine.find(params[:id])
+    @laborers = @project.laborers
   end
 
   # POST /labor_cost_lines
@@ -46,6 +47,7 @@ class LaborCostLinesController < ApplicationController
   def create
     @labor_cost_line = LaborCostLine.new(params[:labor_cost_line])
     @labor_cost_line.labor_set = @labor_cost
+    @laborers = @project.laborers
 
     respond_to do |format|
       if @labor_cost_line.save
