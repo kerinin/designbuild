@@ -23,12 +23,14 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     xhr :get, :new, :component_id => @component
     assert_response(:success)
     assert_template(:new)
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should get xhr new from project" do
     xhr :get, :new, :component_id => @component, :context => :project
     assert_response(:success)
     assert_template(:new)
+    assert_equal 'text/javascript', response.content_type
   end
 
   test "should create unit_cost_estimate" do
@@ -49,6 +51,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     end
     assert_response(:success)
     assert_template(:create)
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should show unit_cost_estimate" do
@@ -65,6 +68,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     xhr :get, :edit, :component_id => @component, :id => @unit_cost_estimate.to_param
     assert_response :success
     assert_template :edit
+    assert_equal 'text/javascript', response.content_type
   end
 
   test "should update unit_cost_estimate" do
@@ -76,6 +80,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     xhr :put, :update, :component_id => @component, :id => @unit_cost_estimate.to_param, :unit_cost_estimate => @unit_cost_estimate.attributes
     assert_response(:success)
     assert_template(:update) 
+    assert_equal 'text/javascript', response.content_type
   end
 
   test "should destroy unit_cost_estimate" do

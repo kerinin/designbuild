@@ -32,6 +32,7 @@ class MaterialCostsController < ApplicationController
     @suppliers = Supplier.all
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @material_cost }
     end
@@ -49,13 +50,15 @@ class MaterialCostsController < ApplicationController
   def create
     @material_cost = MaterialCost.new(params[:material_cost])
     @material_cost.task = @task    
-    @material_cost.date = Date.today
+    @material_cost.date ||= Date.today
 
     respond_to do |format|
       if @material_cost.save
+        format.js
         format.html { redirect_to([@task, @material_cost], :notice => 'Material cost was successfully created.') }
         format.xml  { render :xml => @material_cost, :status => :created, :location => @material_cost }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @material_cost.errors, :status => :unprocessable_entity }
       end

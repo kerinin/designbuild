@@ -22,12 +22,14 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     xhr :get, :new, :component_id => @component
     assert_response(:success)
     assert_template(:new)
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should get xhr new from project" do
     xhr :get, :new, :component_id => @component, :context => :project
     assert_response(:success)
     assert_template(:new)
+    assert_equal 'text/javascript', response.content_type
   end
 
   test "should create fixed_cost_estimate" do
@@ -48,6 +50,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     end
     assert_response(:success)
     assert_template(:create)
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should show fixed_cost_estimate" do
@@ -64,6 +67,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     xhr :get, :edit, :component_id => @component, :id => @fixed_cost_estimate.to_param
     assert_response :success
     assert_template :edit
+    assert_equal 'text/javascript', response.content_type
   end
 
   test "should update fixed_cost_estimate" do
@@ -75,6 +79,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     xhr :put, :update, :component_id => @component, :id => @fixed_cost_estimate.to_param, :fixed_cost_estimate => @fixed_cost_estimate.attributes
     assert_response(:success)
     assert_template(:update) 
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should destroy fixed_cost_estimate" do

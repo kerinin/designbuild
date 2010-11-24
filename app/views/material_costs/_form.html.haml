@@ -1,4 +1,7 @@
-= form_for [@task, @material_cost] do |f|
+-context ||= :po
+-remote ||= false
+
+= form_for [@task, @material_cost], :remote => remote do |f|
   -if @material_cost.errors.any?
     #error_explanation
       %h2= "#{pluralize(@material_cost.errors.count, "error")} prohibited this material_cost from being saved:"
@@ -14,9 +17,12 @@
     =#or
     =#link_to "(Add new Supplier)", new_supplier_path
 
-  .field
-    = f.label :cost
-    = f.text_field :cost
+  -unless context == :po
+    .field
+      = f.label :cost
+      = f.text_field :cost
+      
+  .field.submit
     = f.submit 'Save'
     
 

@@ -1,0 +1,17 @@
+<% content_for :content do %>
+  <div class="fixed_wrapper">
+    <div class="popup">
+      <h1 class="new_order">New Purchase Order</h1>
+      <%= render :partial => 'form', :locals => {:remote => true, :context => :po} %>
+    </div>'
+  </div>
+<% end %>
+
+<% content_for :cancel_link do %>
+  <%= link_to( 'Cancel', @project ) %>
+<% end %>
+
+$.dimScreen(500, .25, function() {
+  $("body").prepend("<%= escape_javascript( yield :content ) %>");
+  $("form .submit").append("or <%= escape_javascript yield :cancel_link %>")
+});

@@ -11,7 +11,7 @@ class UnitCostEstimate < ActiveRecord::Base
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def task_name=(string)
-    self.task = Task.find_or_create_by_name(string, :project => self.component.project)
+    self.task = Task.find_or_create_by_name(string, :project => self.component.project) unless string == '' || string.nil?
   end
   
   def task_name

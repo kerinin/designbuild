@@ -7,7 +7,7 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   
   def supplier_name=(string)
-    self.supplier = Supplier.find_or_create_by_name(string)
+    self.supplier = Supplier.find_or_create_by_name(string) unless string == '' || string.nil?
   end
   
   def supplier_name
