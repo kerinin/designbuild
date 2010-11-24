@@ -43,8 +43,9 @@ class MaterialCostsControllerTest < ActionController::TestCase
         :date => '1/1/2000', :cost => 100, :supplier => @supplier
       }
     end
-
-    assert_redirected_to task_material_cost_path(@task, assigns(:material_cost))
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
   end
   
   test "should fail to create xhr material_cost" do
@@ -55,7 +56,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
     end
 
     assert_response :success
-    assert_template :new
+    assert_template :create
     assert_equal 'text/javascript', response.content_type
   end
 
