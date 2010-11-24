@@ -4,6 +4,7 @@
     %th.currency Est. Cost
     %th.currency Cost-to-Date
     %th.number % Complete
+    %th.control Deadline
     %th.control
     %th.control
 
@@ -18,6 +19,11 @@
         %td.currency= number_to_currency(task.estimated_cost)
         %td.currency= number_to_currency(task.cost)
         %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
+        %td.control
+          -if task.deadline.blank?
+            =link_to "(Set Deadline)", new_task_deadline_path(task)
+          -else
+            =link_to task.deadline.name, [@project, task.deadline]
         %td.control= link_to "Log Hours", new_task_labor_cost_path(task, :context => :project), :remote => true
         %td.control= link_to "New Purchase Order", new_task_material_cost_path(task), :remote => true
       
@@ -34,7 +40,7 @@
       %strong= number_to_currency( @project.tasks.inject(nil) {|memo,t| add_or_nil(memo, t.cost ) } )
     %td.currency
       %strong= number_to_currency( @project.tasks.inject(nil) {|memo,t| add_or_nil(memo, t.projected_cost ) } )
-    %td{:colspan => 4}
+    %td{:colspan => 5}
 
     
 
