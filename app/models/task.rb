@@ -26,7 +26,6 @@ class Task < ActiveRecord::Base
   }
   
   scope :future, lambda {
-    where(:active => false).joins('left outer join labor_costs on tasks.id=labor_costs.task_id').where('labor_costs.task_id is null OR labor_costs.percent_complete < 100')
   }
   
   def cost_estimates

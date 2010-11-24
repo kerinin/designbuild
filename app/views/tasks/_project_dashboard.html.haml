@@ -18,7 +18,7 @@
         %td.currency= number_to_currency(task.estimated_cost)
         %td.currency= number_to_currency(task.cost)
         %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
-        %td.control= link_to "Log Hours", new_task_labor_cost_path(task)
+        %td.control= link_to "Log Hours", new_task_labor_cost_path(task, :context => :project), :remote => true
         %td.control= link_to "New Purchase Order", new_task_material_cost_path(task), :remote => true
       
     - if tasks.empty?

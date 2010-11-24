@@ -1,4 +1,6 @@
-= form_for [@task, @labor_cost] do |f|
+-remote ||= false
+
+= form_for [@task, @labor_cost], :remote => remote do |f|
   -if @labor_cost.errors.any?
     #error_explanation
       %h2= "#{pluralize(@labor_cost.errors.count, "error")} prohibited this labor_cost from being saved:"

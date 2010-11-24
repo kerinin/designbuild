@@ -29,6 +29,7 @@ class LaborCostsController < ApplicationController
     @labor_cost = LaborCost.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @labor_cost }
     end
@@ -47,9 +48,11 @@ class LaborCostsController < ApplicationController
 
     respond_to do |format|
       if @labor_cost.save
+        format.js
         format.html { redirect_to([@task, @labor_cost], :notice => 'Labor cost was successfully created.') }
         format.xml  { render :xml => @labor_cost, :status => :created, :location => @labor_cost }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @labor_cost.errors, :status => :unprocessable_entity }
       end

@@ -1,0 +1,18 @@
+<% if @labor_cost.errors.any? %>
+
+  <% content_for :error_tr do %>
+    <div class='error'><strong><%= error_messages_for(@labor_cost) %></strong></div>
+  <% end %>
+
+  //Hide the flash notice div
+  $("#flash_notice").hide(300);
+
+  //Add a table row above the input with error info
+  $("div.error").remove();
+  $("h1.new_order").after("<%= escape_javascript( yield :error_tr ) %>");
+
+<% else %>
+
+  window.location.replace("<%=task_labor_cost_url(@task, @labor_cost)%>");
+  
+<% end %>
