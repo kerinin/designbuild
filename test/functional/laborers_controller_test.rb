@@ -17,6 +17,13 @@ class LaborersControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get xhr new" do
+    xhr :get, :new, :project_id => @project.to_param
+    assert_response :success
+    assert_template :new
+    assert_equal 'text/javascript', response.content_type
+  end
+  
   test "should create laborer" do
     assert_difference('Laborer.count') do
       post :create, :project_id => @project.to_param, :laborer => {
@@ -27,6 +34,29 @@ class LaborersControllerTest < ActionController::TestCase
     assert_redirected_to project_laborer_path(@project, assigns(:laborer))
   end
 
+  test "should create xhr laborer" do
+    assert_difference('Laborer.count') do
+      xhr :post, :create, :project_id => @project.to_param, :laborer => {
+        :name => 'bob', :bill_rate => 18
+      }
+    end
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+  end
+  
+  test "should fail to create xhr material_cost" do
+    assert_no_difference('Laborer.count') do
+      xhr :post, :create, :project_id => @project.to_param, :laborer => {
+        :name => 'bob', :bill_rate => nil
+      }
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+  end
+  
   test "should show laborer" do
     get :show, :project_id => @project.to_param, :id => @laborer.to_param
     assert_response :success

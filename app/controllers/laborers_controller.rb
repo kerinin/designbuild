@@ -29,6 +29,7 @@ class LaborersController < ApplicationController
     @laborer = Laborer.new
 
     respond_to do |format|
+      format.js
       format.html # new.html.erb
       format.xml  { render :xml => @laborer }
     end
@@ -47,9 +48,11 @@ class LaborersController < ApplicationController
 
     respond_to do |format|
       if @laborer.save
+        format.js
         format.html { redirect_to([@project, @laborer], :notice => 'Laborer was successfully created.') }
         format.xml  { render :xml => @laborer, :status => :created, :location => @laborer }
       else
+        format.js
         format.html { render :action => "new" }
         format.xml  { render :xml => @laborer.errors, :status => :unprocessable_entity }
       end
