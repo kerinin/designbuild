@@ -16,6 +16,19 @@
 
 =render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups}
 
+-unless @project.unit_cost_estimates.unassigned.count == 0 && @project.fixed_cost_estimates.unassigned == 0
+  %h2 Costs Without a Task
+  
+  -unless @project.unit_cost_estimates.unassigned.count == 0
+    %h3 Unit Costs
+    
+    =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned, :context => :project}
+    
+  -unless @project.fixed_cost_estimates.unassigned.count == 0
+    %h3 Fixed Costs
+    
+    =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned, :context => :project}
+    
 %h2 Overview
 
 %p

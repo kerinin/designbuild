@@ -57,6 +57,6 @@
 
 %h2 Estimated Costs
 %h3 Unit Costs
-=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:parent => @task, :unit_cost_estimates => @task.unit_cost_estimates, :limit => 5, :context => :tag}
+=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:context => :task, :unit_cost_estimates => @task.unit_cost_estimates, :limit => 5}
 %h3 Fixed Costs
-=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:parent => @task, :fixed_cost_estimates => @task.fixed_cost_estimates, :limit => 5, :context => :tag}
+=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:context => :task, :fixed_cost_estimates => @task.fixed_cost_estimates, :limit => 5}
