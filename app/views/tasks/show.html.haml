@@ -14,6 +14,30 @@
   =link_to "New Purchase Order", new_task_material_cost_path( @task)
   =link_to "Print All Purchase Orders", purchase_order_list_projects_path
 
+
+-if @task.deadline.blank?
+  Deadline:
+  -form_for [@task, Deadline.new], :url => task_deadline_path(@task, Deadline.new), :html => {:class => 'inline'} do |f|
+    =f.label :name, :class => 'inline'
+    =f.text_field :name, :class => 'inline'
+    =f.label :date, :class => 'inline'
+    =f.date_select :date, :class => 'inline', :style => "width: 20em;"
+  -unless @project.deadlines.empty?
+    or Use Existing Deadline
+    -form_for [@project, @task], :html => {:class => 'inline'} do |f|
+      =f.collection_select :deadline_id, @project.deadlines, :id, :name, { :include_blank => "-- Select Existing Deadline--" }, :onchange =>"$('#edit_task_#{@task.id}').submit();", :class => 'inline'
+      =f.hidden_field :deadline_type, :value => 'Deadline'
+-else
+  -form_for [@project, @task], :html => {:class => 'inline' } do |f|
+    =f.label :deadline
+    =f.collection_select :deadline_id, @project.deadlines, :id, :name, {:include_blank => "-- New Deadline --"}, :onchange =>"if($('#edit_task_#{@task.id}').val()){ $('#edit_task_#{@task.id}').submit(); } else { window.location.href = '#{new_task_deadline_path(@task)}'; }"
+    =f.hidden_field :deadline_type, :value => 'Deadline'
+    =link_to "Edit Deadline", edit_project_deadline_path(@project, @task.deadline)
+  or
+  -form_for [@project, @task], :html => {:class => 'inline' } do |f|
+    =f.hidden_field :deadline_id, :value => ''
+    =f.submit 'Clear Deadline', :class => 'inline'
+
 %hr
 
 %h2 Markups

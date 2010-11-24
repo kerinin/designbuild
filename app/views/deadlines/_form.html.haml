@@ -13,4 +13,6 @@
     = f.label :date
     = f.date_select :date
   .actions
+    -unless @task.nil?
+      =hidden_field_tag :task_id, @task.id
     = f.submit 'Save'

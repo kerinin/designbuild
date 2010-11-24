@@ -52,6 +52,7 @@ Designbuild::Application.routes.draw do
   resources :tasks do
     resources :labor_costs        # re-nested
     resources :material_costs     # re-nested
+    resource :deadline
 
     member do
       post :add_markup, :as => :add_markup_to

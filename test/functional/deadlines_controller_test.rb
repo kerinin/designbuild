@@ -4,6 +4,7 @@ class DeadlinesControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @deadline = Factory :deadline, :project => @project
+    @task = Factory :task, :project => @project
   end
 
   test "should get index" do
@@ -17,6 +18,11 @@ class DeadlinesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should get new from task" do
+    get :new, :task_id => @task.to_param
+    assert_response :success
+  end
+  
   test "should create deadline" do
     assert_difference('Deadline.count') do
       post :create, :project_id => @project.to_param, :deadline => {
@@ -27,6 +33,17 @@ class DeadlinesControllerTest < ActionController::TestCase
     assert_redirected_to project_deadline_path(@project, assigns(:deadline))
   end
 
+  test "should create deadline from task" do
+    assert_difference('Deadline.count') do
+      post :create, :task_id => @task.to_param, :deadline => {
+        :name => 'blah', :date => '1/1/2000'
+      }
+    end
+
+    assert_contains assigns(:deadline).tasks, @task
+    assert_redirected_to project_deadline_path(@project, assigns(:deadline))
+  end
+  
   test "should show deadline" do
     get :show, :project_id => @project.to_param, :id => @deadline.to_param
     assert_response :success
