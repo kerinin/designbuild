@@ -45,10 +45,14 @@ class LaborersController < ApplicationController
   def create
     @laborer = Laborer.new(params[:laborer])
     @laborer.project = @project
+    
 
     respond_to do |format|
       if @laborer.save
-        format.js
+        format.js { 
+          @redirect = redirect_pop_or( project_laborer_url(@project, @laborer) )
+          render 
+        }
         format.html { redirect_to([@project, @laborer], :notice => 'Laborer was successfully created.') }
         format.xml  { render :xml => @laborer, :status => :created, :location => @laborer }
       else

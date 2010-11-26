@@ -12,7 +12,7 @@ class RefactorDeadlines < ActiveRecord::Migration
       t.belongs_to :parent_deadline
     end
     
-    drop_column :tasks, :deadline_type
+    remove_column :tasks, :deadline_type
     
     Deadline.reset_column_information
     RelativeDeadline.all.each {|rd| Deadline.create(rd.attributes) }

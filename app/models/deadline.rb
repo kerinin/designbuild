@@ -2,7 +2,7 @@ class Deadline < ActiveRecord::Base
   belongs_to :project
   belongs_to :parent_deadline, :class_name => "Deadline"
   
-  has_many :tasks, :as => :deadline
+  has_many :tasks
   has_many :relative_deadlines, :class_name => 'Deadline', :foreign_key => :parent_deadline_id, :dependent => :destroy
   
   validates_presence_of :name, :project

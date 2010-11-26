@@ -64,15 +64,6 @@ ActiveRecord::Schema.define(:version => 20101126160500) do
     t.integer  "parent_deadline_id"
   end
 
-  create_table "derived_quantities", :force => true do |t|
-    t.string   "name"
-    t.float    "multiplier"
-    t.integer  "component_id"
-    t.integer  "parent_quantity_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string   "name"
     t.float    "cost"
@@ -176,7 +167,6 @@ ActiveRecord::Schema.define(:version => 20101126160500) do
     t.boolean  "active"
     t.integer  "contract_id"
     t.integer  "deadline_id"
-    t.string   "deadline_type"
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"

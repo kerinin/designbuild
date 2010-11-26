@@ -77,6 +77,7 @@ class DeadlineTest < ActiveSupport::TestCase
     end
         
     should "allow multiple tasks" do
+      assert_equal @t1.deadline, @obj
       assert_contains @obj.tasks, @t1
       assert_contains @obj.tasks, @t2
     end

@@ -46,7 +46,7 @@ class DeadlinesController < ApplicationController
   # POST /deadlines.xml
   def create
     @deadline = Deadline.new(params[:deadline])
-    @deadline.tasks << @task
+    @deadline.tasks << @task unless @task.nil?
     
     @deadline.project = @project
 
