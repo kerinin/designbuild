@@ -6,6 +6,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
     @supplier = Factory :supplier
     @task = Factory :task, :project => @project
     @material_cost = Factory :material_cost, :task => @task
+    sign_in Factory :user
   end
 
   test "should get index" do

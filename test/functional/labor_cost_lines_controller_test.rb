@@ -7,6 +7,7 @@ class LaborCostLinesControllerTest < ActionController::TestCase
     @task = Factory :task, :project => @project
     @labor_cost = Factory :labor_cost, :task => @task
     @labor_cost_line = Factory :labor_cost_line, :labor_set => @labor_cost
+    sign_in Factory :user
   end
 
   test "should get index" do

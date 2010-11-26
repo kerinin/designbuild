@@ -4,6 +4,7 @@ class TasksControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @task = Factory :task, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do

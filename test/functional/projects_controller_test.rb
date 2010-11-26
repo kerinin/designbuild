@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ProjectsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
+    sign_in Factory :user
   end
 
   test "should get index" do

@@ -4,6 +4,7 @@ class ComponentsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @component = Factory :component, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do

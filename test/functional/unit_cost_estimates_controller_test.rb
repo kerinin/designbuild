@@ -6,6 +6,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
     @component = Factory :component, :project => @project
     @quantity = Factory :quantity, :value => 1
     @unit_cost_estimate = Factory :unit_cost_estimate, :component => @component, :quantity => @quantity
+    sign_in Factory :user
   end
 
   test "should get index" do

@@ -3,6 +3,7 @@ require 'test_helper'
 class SuppliersControllerTest < ActionController::TestCase
   setup do
     @supplier = Factory :supplier
+    sign_in Factory :user
   end
 
   test "should get index" do

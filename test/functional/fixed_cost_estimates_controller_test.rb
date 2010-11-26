@@ -5,6 +5,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     @project = Factory :project
     @component = Factory :component, :project => @project
     @fixed_cost_estimate = Factory :fixed_cost_estimate, :component => @component
+    sign_in Factory :user
   end
 
   test "should get index" do

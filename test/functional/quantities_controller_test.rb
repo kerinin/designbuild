@@ -5,6 +5,7 @@ class QuantitiesControllerTest < ActionController::TestCase
     @project = Factory :project
     @component = Factory :component, :project => @project
     @quantity = Factory :quantity, :component => @component
+    sign_in Factory :user
   end
 
   test "should get index" do

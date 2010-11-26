@@ -5,6 +5,7 @@ class BidsControllerTest < ActionController::TestCase
     @project = Factory :project
     @contract = Factory :contract, :project => @project
     @bid = Factory :bid, :contract => @contract
+    sign_in Factory :user
   end
 
   test "should get index" do

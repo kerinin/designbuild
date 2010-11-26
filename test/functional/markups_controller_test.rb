@@ -8,6 +8,7 @@ class MarkupsControllerTest < ActionController::TestCase
     @contract = Factory :contract, :project => @project
     
     @markup = Factory :markup
+    sign_in Factory :user
   end
   
   teardown do

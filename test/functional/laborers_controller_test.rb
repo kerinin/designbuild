@@ -4,6 +4,7 @@ class LaborersControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @laborer = Factory :laborer, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do

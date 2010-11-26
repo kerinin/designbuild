@@ -5,6 +5,7 @@ class DeadlinesControllerTest < ActionController::TestCase
     @project = Factory :project
     @deadline = Factory :deadline, :project => @project
     @task = Factory :task, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do
