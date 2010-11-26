@@ -1,4 +1,5 @@
 -remote ||= false
+-show_tasks ||= true
 -content_for :head do
   =javascript_tag "$(document).ready( function() { #{render :partial => 'radio_button.js'} } );"
   
@@ -35,6 +36,17 @@
       = f.label :interval
       = f.text_field :interval, {:disabled => @deadline.is_absolute?}
     
+  -if show_tasks
+    %p
+      .field
+        = f.label :tasks
+      .field
+        %ul
+          -@project.tasks.each do |task|
+            %li
+              = check_box_tag "deadline[task_ids][]", task.id, @deadline.tasks.include?(task)
+              = task.name
+      
   .actions
     -unless @task.nil?
       =hidden_field_tag :task_id, @task.id

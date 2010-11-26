@@ -79,7 +79,8 @@ class DeadlinesController < ApplicationController
   # PUT /deadlines/1.xml
   def update
     @deadline = Deadline.find(params[:id])
-
+    params[:deadline][:task_ids] ||= []
+    
     respond_to do |format|
       if @deadline.update_attributes(params[:deadline])
         format.js { 
