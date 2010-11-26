@@ -1,5 +1,6 @@
 class DeadlinesController < ApplicationController
-  before_filter :get_project, :except => [:new, :create]
+  before_filter :get_project, :except => [:new, :create, :edit]
+  before_filter :get_project_from_task, :only => [:new, :create, :edit]
   
   # GET /deadlines
   # GET /deadlines.xml
@@ -26,12 +27,6 @@ class DeadlinesController < ApplicationController
   # GET /deadlines/new
   # GET /deadlines/new.xml
   def new
-    if params.has_key? :project_id
-      get_project
-    else
-      @task = Task.find params[:task_id]
-      @project = @task.project
-    end
     @deadline = Deadline.new
 
     respond_to do |format|
@@ -43,20 +38,15 @@ class DeadlinesController < ApplicationController
 
   # GET /deadlines/1/edit
   def edit
-    @deadline = Deadline.find(params[:id])
+    @deadline = @task.deadline unless @task.nil?
+    @deadline ||= Deadline.find(params[:id])
   end
 
   # POST /deadlines
   # POST /deadlines.xml
   def create
     @deadline = Deadline.new(params[:deadline])
-    if params.has_key? :task_id
-      @task = Task.find params[:task_id]
-      @project = @task.project
-      @deadline.tasks << @task
-    else
-      get_project
-    end
+    @deadline.tasks << @task
     
     @deadline.project = @project
 
@@ -105,6 +95,17 @@ class DeadlinesController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(project_deadlines_url(@project)) }
       format.xml  { head :ok }
+    end
+  end
+  
+  private
+  
+  def get_project_from_task
+    if params.has_key? :task_id
+      @task = Task.find params[:task_id]
+      @project = @task.project
+    else
+      get_project
     end
   end
 end

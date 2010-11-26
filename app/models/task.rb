@@ -2,7 +2,7 @@ class Task < ActiveRecord::Base
   include AddOrNil
   
   belongs_to :contract
-  belongs_to :deadline, :polymorphic => true
+  belongs_to :deadline
   belongs_to :project
   
   has_many :unit_cost_estimates, :order => :name

@@ -1,5 +1,4 @@
 -remote ||= false
--show_tasks ||= true
 -content_for :head do
   =javascript_tag "$(document).ready( function() { #{render :partial => 'radio_button.js'} } );"
   
@@ -36,7 +35,7 @@
       = f.label :interval
       = f.text_field :interval, {:disabled => @deadline.is_absolute?}
     
-  -if show_tasks
+  -unless @context == :task || @context == :tasks
     %p
       .field
         = f.label :tasks
@@ -48,6 +47,6 @@
               = task.name
       
   .actions
-    -unless @task.nil?
+    -if @context == :task || @context == :tasks
       =hidden_field_tag :task_id, @task.id
     .submit= f.submit 'Save'

@@ -29,7 +29,11 @@ class Deadline < ActiveRecord::Base
   def select_label
     "#{self.name} - #{self.date.to_s :long}"
   end
-  
+
+  def select_label_short
+    "#{self.name} - #{self.date.to_s :short}"
+  end
+    
   private
   
   def try_inherit_project

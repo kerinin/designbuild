@@ -16,27 +16,22 @@
 
 
 -if @task.deadline.blank?
-  Deadline:
-  =form_for [@task, Deadline.new], :url => task_deadline_path(@task, Deadline.new), :html => {:class => 'inline'} do |f|
-    =f.label :name, :class => 'inline'
-    =f.text_field :name, :class => 'inline'
-    =f.label :date, :class => 'inline'
-    =f.date_select :date, :class => 'inline', :style => "width: 20em;"
-  -unless @project.deadlines.empty?
-    or Use Existing Deadline
-    =form_for [@project, @task], :html => {:class => 'inline'} do |f|
-      =f.collection_select :deadline_id, @project.deadlines, :id, :name, { :include_blank => "-- Select Existing Deadline--" }, :onchange =>"$('#edit_task_#{@task.id}').submit();", :class => 'inline'
-      =f.hidden_field :deadline_type, :value => 'Deadline'
--else
-  =form_for [@project, @task], :html => {:class => 'inline' } do |f|
-    =f.label :deadline
-    =f.collection_select :deadline_id, @project.deadlines, :id, :name, {:include_blank => "-- New Deadline --"}, :onchange =>"if($('#edit_task_#{@task.id}').val()){ $('#edit_task_#{@task.id}').submit(); } else { window.location.href = '#{new_task_deadline_path(@task)}'; }"
-    =f.hidden_field :deadline_type, :value => 'Deadline'
-    =link_to "Edit Deadline", edit_project_deadline_path(@project, @task.deadline)
+  Set Deadline:
+  = link_to 'New', new_task_deadline_path(@task, :context => 'tasks'), :remote => true
   or
-  =form_for [@project, @task], :html => {:class => 'inline' } do |f|
-    =f.hidden_field :deadline_id, :value => ''
-    =f.submit 'Clear Deadline', :class => 'inline'
+  .inline
+    =form_for [@project,@task] do |f|
+      =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{@task.id}').submit();"
+
+-else
+  Deadline:
+  %strong=link_to @task.deadline.name, edit_task_deadline_path(@task, :context => 'task'), :remote => true
+  = @task.deadline.date.to_s :long
+  = "(#{date_relative_to_now @task.deadline.date})"
+  .inline
+    = form_for [@project, @task] do |f|
+      = f.hidden_field :deadline_id, :value => nil
+      = f.submit 'Remove'
 
 %hr
 

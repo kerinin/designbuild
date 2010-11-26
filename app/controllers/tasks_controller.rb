@@ -84,7 +84,7 @@ class TasksController < ApplicationController
         format.js { 
           @tasks = @project.tasks
         }
-        format.html { redirect_to([@project, @task], :notice => 'Task was successfully updated.') }
+        format.html { redirect_from_session_or([@project, @task], :notice => 'Task was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js

@@ -1,23 +1,19 @@
 module ApplicationHelper
   include AddOrNil
   
-  def redirect_from_session_or(*args)
-    if session.has_key?( :redirect_to )
-      redirect = session[:redirect_to]
-      session[:redirect_to] = nil
-      redirect_to redirect
+  def date_relative_to_now(date)
+    delta = date - Date::today
+    case
+    when delta > 1
+      "#{date - Date::today} days from now"
+    when delta == 1
+      "Tomorrow"
+    when delta == 0
+      "Today"
+    when delta == -1
+      "Yesterday"
     else
-      redirect_to(*args) unless session.has_key?( :redirect)
-    end
-  end
-  
-  def redirect_pop_or(url)
-    if session.has_key?( :redirect_to )
-      redirect = session[:redirect_to]
-      session[:redirect_to] = nil
-      return redirect
-    else
-      return url
+      "(#{date} days ago)"
     end
   end
 end

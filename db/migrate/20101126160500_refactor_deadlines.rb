@@ -12,6 +12,8 @@ class RefactorDeadlines < ActiveRecord::Migration
       t.belongs_to :parent_deadline
     end
     
+    drop_column :tasks, :deadline_type
+    
     Deadline.reset_column_information
     RelativeDeadline.all.each {|rd| Deadline.create(rd.attributes) }
     
@@ -27,6 +29,8 @@ class RefactorDeadlines < ActiveRecord::Migration
 
       t.timestamps
     end
+    
+    add_column :tasks, :deadline_type, :string
     
     RelativeDeadline.reset_column_information
     Deadline.where(:date => nil).each {|d| RelativeDeadline.create(d.attributes) }

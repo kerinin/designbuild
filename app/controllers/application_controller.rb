@@ -1,9 +1,33 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   
-  before_filter :check_redirect
+  before_filter :check_redirect, :set_context
   
   private
+  
+  def redirect_from_session_or(*args)
+    if session.has_key?( :redirect_to )
+      redirect = session[:redirect_to]
+      session[:redirect_to] = nil
+      redirect_to redirect
+    else
+      redirect_to(*args) unless session.has_key?( :redirect)
+    end
+  end
+  
+  def redirect_pop_or(url)
+    if session.has_key?( :redirect_to )
+      redirect = session[:redirect_to]
+      session[:redirect_to] = nil
+      return redirect
+    else
+      return url
+    end
+  end
+  
+  def set_context
+    @context = params.has_key?(:context) ? params[:context].to_sym : nil
+  end
   
   def check_redirect
     session[:redirect_to] = params[:redirect_to] if params.has_key?(:redirect_to)
