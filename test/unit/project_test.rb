@@ -16,7 +16,7 @@ class ProjectTest < ActiveSupport::TestCase
       @c1 = Factory :component, :project => @obj
         @sc1 = Factory :component, :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :cost => 0.1, :task => @task
-          @q1 = Factory :quantity, :component => @sc1, :value => 1, :task => @task
+          @q1 = Factory :quantity, :component => @sc1, :value => 1
           @uc1 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0, :task => @task #.03
         
       @c2 = Factory :component, :project => @obj
@@ -40,8 +40,8 @@ class ProjectTest < ActiveSupport::TestCase
         
       @dl1 = Factory :deadline, :project => @obj
       @dl2 = Factory :deadline, :project => @obj
-      @rdl1 = Factory :relative_deadline, :parent_deadline => @dl1
-      @rdl2 = Factory :relative_deadline, :parent_deadline => @dl2
+      @rdl1 = Factory :deadline, :parent_deadline => @dl1, :interval => 10
+      @rdl2 = Factory :deadline, :parent_deadline => @dl2, :interval => 20
     end
 
     teardown do

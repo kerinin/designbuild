@@ -58,7 +58,6 @@ class TaskTest < ActiveSupport::TestCase
       Task.delete_all
       Component.delete_all
       Deadline.delete_all
-      RelativeDeadline.delete_all
       Contract.delete_all
       FixedCostEstimate.delete_all
       UnitCostEstimate.delete_all
@@ -86,12 +85,6 @@ class TaskTest < ActiveSupport::TestCase
     should "allow a deadline" do
       assert_equal @obj.deadline, @dl1
       assert_contains @dl1.tasks, @obj
-    end
-    
-    should "allow a relative deadline" do
-      assert_nothing_raised do
-        @obj.deadline = Factory :relative_deadline
-      end
     end
     
     should_eventually "scope active tasks" do

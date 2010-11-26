@@ -9,6 +9,7 @@ class Deadline < ActiveRecord::Base
   validates_presence_of :parent_deadline_id, :unless => :date
   validates_presence_of :interval, :if => :parent_deadline_id
   
+  before_validation :try_inherit_project, :unless => :project_id
   before_save :set_date, :if => :parent_deadline_id
   after_save :cascade_set_date
   
@@ -27,6 +28,10 @@ class Deadline < ActiveRecord::Base
   
   private
   
+  def try_inherit_project
+    self.project = self.parent_deadline.project unless self.parent_deadline.blank? || self.parent_deadline.project.blank?
+  end
+      
   def set_date
     self.date = ( self.parent_deadline.date + self.interval )
   end

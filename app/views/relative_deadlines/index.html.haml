@@ -1,8 +1,0 @@
-%h1 Listing relative_deadlines
-
-%table.relative_deadlines
-  =render :partial => 'relative_deadline_list', :locals => {:deadline => @deadline, :relative_deadlines => @relative_deadlines}
-
-%br
-
-= link_to 'New Relative deadline', new_deadline_relative_deadline_path(@deadline)
