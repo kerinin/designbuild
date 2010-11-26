@@ -1,35 +1,20 @@
 <% if @deadline.errors.any? %>
 
-  <% content_for :error_tr do %>
-    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@deadline) %></strong></td></tr>
+  <% content_for :error do %>
+    <div class='error'><strong><%= error_messages_for(@deadline) %></strong></div>
   <% end %>
 
   //Hide the flash notice div
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.deadline_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("div.error").remove();
+  $("h1.new_deadline").after("<%= escape_javascript( yield :error ) %>");
 
 <% else %>
 
-  <% content_for :table do %>
-  	<%=render :partial => 'deadline_list', :locals => {:deadlines => @deadlines} %>
-  <% end %>
-
-  //Update the html of the div flash_notice with the new one
-  $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
-
-  //Show the flash_notice div
-  $("#flash_notice").show(300);
-
-  //Replace the html of the div post_lists with the updated new one
-  $('form.new_deadline').html( "<%= escape_javascript( yield :table ) %>");
-
-  //Remove the form
-  $('table#deadlines').unwrap();
-  
-  //Load a new entry field
-  $('tr.add_button > td > a').click();
+  window.location.reload();
   
 <% end %>
+
+

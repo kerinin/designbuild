@@ -1,7 +1,8 @@
+-remote ||= false
 -content_for :head do
-  =javascript_tag render :partial => 'radio_button.js'
+  =javascript_tag "$(document).ready( function() { #{render :partial => 'radio_button.js'} } );"
   
-= form_for [@project, @deadline] do |f|
+= form_for [@project, @deadline], :remote => remote do |f|
   -if @deadline.errors.any?
     #error_explanation
       %h2= "#{pluralize(@deadline.errors.count, "error")} prohibited this deadline from being saved:"
@@ -15,26 +16,26 @@
 
   %p
     .field
-      = radio_button_tag :deadline_type, :absolute, true
+      = radio_button_tag :deadline_type, :absolute, @deadline.is_absolute?
       %strong= label_tag :deadline_type_absolute, "Absolute Deadline"
       
     .field.absolute_deadline_input
       = f.label :date
-      = f.date_select :date
+      = f.date_select :date, {:disabled => @deadline.is_relative?}
     
   %p
     .field
-      = radio_button_tag :deadline_type, :relative, false
+      = radio_button_tag :deadline_type, :relative, @deadline.is_relative?
       %strong= label_tag :deadline_type_relative, "Relative Deadline"
       
     .field.relative_deadline_input
-      = f.label :parent_deadline, {:disabled => true}
-      = f.collection_select :parent_deadline_id, @project.deadlines, :id, :select_label, {:include_blank => '-- Select Existing Deadline --'}, {:disabled => true}
-
-      = f.label :interval, {:disabled => true}
-      = f.text_field :interval, {:disabled => true}
+      = f.label :parent_deadline
+      = f.collection_select :parent_deadline_id, (@project.deadlines - [@deadline]), :id, :select_label, {:include_blank => '-- Select Existing Deadline --'}, {:disabled => @deadline.is_absolute?}
+    .field.relative_deadline_input
+      = f.label :interval
+      = f.text_field :interval, {:disabled => @deadline.is_absolute?}
     
   .actions
     -unless @task.nil?
       =hidden_field_tag :task_id, @task.id
-    = f.submit 'Save'
+    .submit= f.submit 'Save'

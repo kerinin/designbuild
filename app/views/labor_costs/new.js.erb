@@ -15,3 +15,4 @@ $.dimScreen(500, .25, function() {
   $("body").prepend("<%= escape_javascript( yield :content ) %>");
   $("form .submit").append("or <%= escape_javascript yield :cancel_link %>")
 });
+

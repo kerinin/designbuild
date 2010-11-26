@@ -1,22 +1,18 @@
-<% content_for :wrapping_form do %>
-	<%= form_for [@project, @deadline], :remote => true do |f|  %>
-		<% content_for :tr do %>
-			<%= render :partial => 'form_tr', :locals => {:f => f} %>
-		<% end %>
-	<% end %>
+<% content_for :content do %>
+  <div class="fixed_wrapper">
+    <div class="popup">
+      <h1 class="new_deadline">New Deadline</h1>
+      <%= render :partial => 'form', :locals => {:remote => true} %>
+    </div>
+  </div>
 <% end %>
 
 <% content_for :cancel_link do %>
-  <%= link_to 'Cancel', project_deadlines_path( @project ) %>
+  <%= link_to( 'Cancel', project_deadlines_path(@project) ) %>
 <% end %>
 
-form = $("<%= escape_javascript( yield :wrapping_form) %>")
-contents = form.children().detach();
-
-$("table.deadlines").wrap(form).append(contents);
-$("tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
-$("tr.deadline_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
-$("tr.add_button").hide();
-$("td.control.edit > a").contents().unwrap();
-$("a.add_relative").contents().unwrap();
-$("input:text:visible:first").focus();
+$.dimScreen(500, .25, function() {
+  $("body").prepend("<%= escape_javascript( yield :content ) %>");
+  $("form .submit").append("or <%= escape_javascript yield :cancel_link %>");
+  <%= render :partial => 'radio_button.js' %>
+});
