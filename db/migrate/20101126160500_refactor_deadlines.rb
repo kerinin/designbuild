@@ -13,7 +13,7 @@ class RefactorDeadlines < ActiveRecord::Migration
     end
     
     Deadline.reset_column_information
-    RelativeDeadline.all.each do {|rd| Deadline.create(rd.attributes) }
+    RelativeDeadline.all.each {|rd| Deadline.create(rd.attributes) }
     
     drop_table :relative_deadlines
   end
@@ -29,7 +29,7 @@ class RefactorDeadlines < ActiveRecord::Migration
     end
     
     RelativeDeadline.reset_column_information
-    Deadline.where(:date => nil).each do {|d| RelativeDeadline.create(d.attributes) }
+    Deadline.where(:date => nil).each {|d| RelativeDeadline.create(d.attributes) }
     
     change_table :deadlines do |t|
       t.remove :interval, :parent_deadline_id
