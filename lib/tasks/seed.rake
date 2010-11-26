@@ -99,7 +99,7 @@ namespace :db do
           deadline = Factory :deadline, :project => project
         
           (rand(4)).times {
-            Factory :relative_deadline, :parent_deadline => deadline
+            Factory :deadline, :parent_deadline => deadline, :interval => rand(30)
           }
         }
         
