@@ -37,7 +37,7 @@ class LaborCostsControllerTest < ActionController::TestCase
 
   test "should create xhr material_cost" do
     assert_difference('MaterialCost.count') do
-      xhr :post, :create, :task_id => @project.to_param, :labor_cost => {
+      xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
         :date => '1/1/2000', :percent_complete => 10
       }
     end
@@ -48,7 +48,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   
   test "should fail to create xhr material_cost" do
     assert_no_difference('MaterialCost.count') do
-      xhr :post, :create, :task_id => @project.to_param, :labor_cost => {
+      xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
         :date => '1/1/2000', :percent_complete => nil
       }
     end

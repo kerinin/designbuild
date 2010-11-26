@@ -18,8 +18,6 @@
       %td.control
       %td.control.edit= link_to 'Edit', edit_project_deadline_path(@project, deadline), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
-      
-    =render :partial => "relative_deadlines/relative_deadline_list", :locals => {:deadline => deadline, :relative_deadlines => deadline.relative_deadlines}
 
   - if deadlines.empty?
     %tr

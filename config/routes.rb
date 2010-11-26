@@ -91,10 +91,6 @@ Designbuild::Application.routes.draw do
     end
   end
 
-  resources :deadlines do
-    resources :relative_deadlines
-  end
-
   resources :tags
   
   resources :markups
