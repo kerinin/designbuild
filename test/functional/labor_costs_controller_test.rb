@@ -35,19 +35,20 @@ class LaborCostsControllerTest < ActionController::TestCase
     assert_redirected_to task_labor_cost_path(@task, assigns(:labor_cost))
   end
 
-  test "should create xhr material_cost" do
-    assert_difference('MaterialCost.count') do
+  test "should create xhr labor_cost" do
+    assert_difference('LaborCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
         :date => '1/1/2000', :percent_complete => 10
       }
     end
+    
     assert_response :success
     assert_template :create
     assert_equal 'text/javascript', response.content_type
   end
   
-  test "should fail to create xhr material_cost" do
-    assert_no_difference('MaterialCost.count') do
+  test "should fail to create xhr labor_cost" do
+    assert_no_difference('LaborCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
         :date => '1/1/2000', :percent_complete => nil
       }
