@@ -26,6 +26,10 @@ class Deadline < ActiveRecord::Base
     !self.is_absolute?
   end
   
+  def select_label
+    "#{self.name} - #{self.date.to_s :long}"
+  end
+  
   private
   
   def try_inherit_project
