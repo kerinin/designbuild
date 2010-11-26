@@ -3,6 +3,7 @@
 + inherited quantities
 + rework markups
 + auto-deactivate at 100%
++ refactor deadlines to be either relative or absolute, cache relative deadline value
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
@@ -17,7 +18,8 @@
 -- help buttons
 -- table alignment
 
-- refactor deadlines to be either relative or absolute, cache relative deadline value
+- add actual finish date to deadlines
+- task has_many milestones
 - parametric components
 - versioning (https://github.com/airblade/paper_trail)
 - equation quantities
