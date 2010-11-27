@@ -2,7 +2,7 @@
 
 Factory.define :fixed_cost_estimate do |f|
   f.name {Forgery::DesignBuild.cost_name}
-  f.cost {Forgery::Monetary.money :min => 100, :max => 1000}
+  f.raw_cost {Forgery::Monetary.money :min => 100, :max => 1000}
   
   f.component {|p| p.association(:component)}
 end

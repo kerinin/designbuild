@@ -39,12 +39,12 @@ class LaborCostTest < ActiveSupport::TestCase
     #----------------------CALCULATIONS
     
     should "aggregate costs" do
-      assert_equal 22, @obj.cost
+      assert_equal 22, @obj.raw_cost
     end
     
     should "return cost nil if no line items" do
       @obj2 = Factory :labor_cost
-      assert_equal nil, @obj2.cost
+      assert_equal nil, @obj2.raw_cost
     end
   end
 end

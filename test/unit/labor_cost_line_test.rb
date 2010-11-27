@@ -37,7 +37,7 @@ class LaborCostLineTest < ActiveSupport::TestCase
     #---------------------CALCULATIONS
     
     should "determine cost" do
-      assert_equal 6, @obj.cost
+      assert_equal 6, @obj.raw_cost
     end
   end
 end

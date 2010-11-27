@@ -14,9 +14,9 @@ class ComponentTest < ActiveSupport::TestCase
       @subsub = Factory :component, :parent => @sub1
       @q1 = Factory :quantity, :component => @obj, :value => 1
       @q2 = Factory :quantity, :component => @obj, :value => 2
-      @fc1 = Factory :fixed_cost_estimate, :component => @obj, :cost => 1
-      @fc2 = Factory :fixed_cost_estimate, :component => @obj, :cost => 10
-      @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :cost => 100000
+      @fc1 = Factory :fixed_cost_estimate, :component => @obj, :raw_cost => 1
+      @fc2 = Factory :fixed_cost_estimate, :component => @obj, :raw_cost => 10
+      @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :raw_cost => 100000
       @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100, :drop => 0 # x1
       @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000, :drop => 0 # x2
     end
@@ -104,20 +104,20 @@ class ComponentTest < ActiveSupport::TestCase
     #--------------------------CALCULATIONS
     
     should "aggregate estimated component costs" do
-      assert_equal 2111, @obj.estimated_component_cost
+      assert_equal 2111, @obj.estimated_raw_component_cost
     end
 
     should "aggregate estimated subcomponent costs" do
-      assert_equal 100000, @obj.estimated_subcomponent_cost
+      assert_equal 100000, @obj.estimated_raw_subcomponent_cost
     end
     
     should "aggregate estimated costs" do
-      assert_equal 102111, @obj.estimated_cost
+      assert_equal 102111, @obj.estimated_raw_cost
     end
         
     should "return estimated cost nil if no estimates" do
       @obj2 = Factory :component
-      assert_equal nil, @obj2.estimated_cost
+      assert_equal nil, @obj2.estimated_raw_cost
     end
   end
 end

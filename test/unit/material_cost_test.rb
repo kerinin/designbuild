@@ -28,7 +28,7 @@ class MaterialCostTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @obj.date
-      assert_not_nil @obj.cost
+      assert_not_nil @obj.raw_cost
     end
     
     should "require a task" do

@@ -5,10 +5,10 @@ class ContractTest < ActiveSupport::TestCase
     setup do
       @obj = Factory :contract
       
-      @c1 = Factory :contract_cost, :contract => @obj, :cost => 1
-      @c2 = Factory :contract_cost, :contract => @obj, :cost => 10
+      @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1
+      @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10
       @b1 = Factory :bid, :contract => @obj
-      @b2 = Factory :bid, :contract => @obj, :cost => 100
+      @b2 = Factory :bid, :contract => @obj, :raw_cost => 100
       @obj.active_bid = @b2
     end
 
@@ -22,7 +22,6 @@ class ContractTest < ActiveSupport::TestCase
     
     should "have values" do
       assert_not_nil @obj.name
-      assert_not_nil @obj.bid
     end
     
     should "require a project" do
@@ -48,7 +47,7 @@ class ContractTest < ActiveSupport::TestCase
     #-------------------CALCULATIONS
     
     should "aggregate costs" do
-      assert_equal 11, @obj.cost
+      assert_equal 11, @obj.raw_cost
     end
   end
 end

@@ -9,17 +9,17 @@ class TaskTest < ActiveSupport::TestCase
       @obj = Factory :task, :deadline => @dl1, :contract => @ctr
       
       @q = Factory :quantity, :value => 1
-      @fce1 = Factory :fixed_cost_estimate, :task => @obj, :cost => 1
-      @fce2 = Factory :fixed_cost_estimate, :task => @obj, :cost => 10
+      @fce1 = Factory :fixed_cost_estimate, :task => @obj, :raw_cost => 1
+      @fce2 = Factory :fixed_cost_estimate, :task => @obj, :raw_cost => 10
       @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100, :drop => 0
       @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000, :drop => 0
       @lc1 = Factory :labor_cost, :task => @obj, :percent_complete => 10, :date => Date::today
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 20, :date => Date::today + 5
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 30, :date => Date::today - 5
-      @mc1 = Factory :material_cost, :task => @obj, :cost => 2
-      @mc2 = Factory :material_cost, :task => @obj, :cost => 20
-      @mc3 = Factory :material_cost, :task => @obj, :cost => nil
-      @mc4 = Factory :material_cost, :task => @obj, :cost => nil
+      @mc1 = Factory :material_cost, :task => @obj, :raw_cost => 2
+      @mc2 = Factory :material_cost, :task => @obj, :raw_cost => 20
+      @mc3 = Factory :material_cost, :task => @obj, :raw_cost => nil
+      @mc4 = Factory :material_cost, :task => @obj, :raw_cost => nil
       
       @laborer = Factory :laborer, :bill_rate => 1
       Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 200
@@ -30,25 +30,25 @@ class TaskTest < ActiveSupport::TestCase
       @l = Factory :laborer, :bill_rate => 1
       
       @t_start = Factory :task
-      Factory :fixed_cost_estimate, :cost => 100, :task => @t_start
+      Factory :fixed_cost_estimate, :raw_cost => 100, :task => @t_start
       
       @t_inprogress = Factory :task, :active => true
-      Factory :fixed_cost_estimate, :cost => 100, :task => @t_inprogress
+      Factory :fixed_cost_estimate, :raw_cost => 100, :task => @t_inprogress
       @labor_inprogress = Factory :labor_cost, :task => @t_inprogress, :percent_complete => 50
       Factory :labor_cost_line, :labor_set => @labor_inprogress, :laborer => @l, :hours => 50
       
       @t_over_budget = Factory :task, :active => false
-      Factory :fixed_cost_estimate, :cost => 100, :task => @t_over_budget
+      Factory :fixed_cost_estimate, :raw_cost => 100, :task => @t_over_budget
       @labor_over_budget = Factory :labor_cost, :task => @t_over_budget, :percent_complete => 50
       Factory :labor_cost_line, :labor_set => @labor_over_budget, :laborer => @l, :hours => 200
       
       @t_finished_lower = Factory :task
-      Factory :fixed_cost_estimate, :cost => 100, :task => @t_finished_lower
+      Factory :fixed_cost_estimate, :raw_cost => 100, :task => @t_finished_lower
       @labor_finished_lower = Factory :labor_cost, :task => @t_finished_lower, :percent_complete => 100
       Factory :labor_cost_line, :labor_set => @labor_finished_lower, :laborer => @l, :hours => 50
       
       @t_finished_higher = Factory :task
-      Factory :fixed_cost_estimate, :cost => 100, :task => @t_finished_higher
+      Factory :fixed_cost_estimate, :raw_cost => 100, :task => @t_finished_higher
       @labor_finished_higher = Factory :labor_cost, :task => @t_finished_higher, :percent_complete => 100
       Factory :labor_cost_line, :labor_set => @labor_finished_higher, :laborer => @l, :hours => 200
       
@@ -154,39 +154,39 @@ class TaskTest < ActiveSupport::TestCase
     #-----------------CALCULATIONS
     
     should "aggregate estimated costs" do
-      assert_equal 1111, @obj.estimated_cost
+      assert_equal 1111, @obj.estimated_raw_cost
     end
         
     should "return estimated cost nil if no estimates" do
       @obj2 = Factory :task
-      assert_equal nil, @obj2.estimated_cost
+      assert_equal nil, @obj2.estimated_raw_cost
     end
     
     should "aggregate material costs" do
-      assert_equal 22, @obj.material_cost
+      assert_equal 22, @obj.raw_material_cost
     end
     
     should "aggregate labor costs" do
-      assert_equal 222200, @obj.labor_cost
+      assert_equal 222200, @obj.raw_labor_cost
     end
     
     should "aggregate costs" do
-      assert_equal 222222, @obj.cost
+      assert_equal 222222, @obj.raw_cost
     end
     
     should "return cost nil if no costs" do
       @obj2 = Factory :task
-      assert_equal nil, @obj2.material_cost
-      assert_equal nil, @obj2.labor_cost
-      assert_equal nil, @obj2.cost
+      assert_equal nil, @obj2.raw_material_cost
+      assert_equal nil, @obj2.raw_labor_cost
+      assert_equal nil, @obj2.raw_cost
     end
     
     should "project costs based on percent complete" do
-      assert_equal @t_start.projected_cost, 100
-      assert_equal @t_inprogress.projected_cost, 100
-      assert_equal @t_over_budget.projected_cost, 200
-      assert_equal @t_finished_lower.projected_cost, 50
-      assert_equal @t_finished_higher.projected_cost, 200
+      assert_equal @t_start.raw_projected_cost, 100
+      assert_equal @t_inprogress.raw_projected_cost, 100
+      assert_equal @t_over_budget.raw_projected_cost, 200
+      assert_equal @t_finished_lower.raw_projected_cost, 50
+      assert_equal @t_finished_higher.raw_projected_cost, 200
     end
   end
 end

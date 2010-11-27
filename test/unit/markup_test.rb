@@ -7,7 +7,7 @@ class MarkupTest < ActiveSupport::TestCase
       @component = Factory :component
       @task = Factory :task
       @contract = Factory :contract
-      @bid = Factory :bid, :contract => @contract, :cost => 100
+      @bid = Factory :bid, :contract => @contract, :raw_cost => 100
       @contract.active_bid = @bid
       @contract.save
  
@@ -22,10 +22,10 @@ class MarkupTest < ActiveSupport::TestCase
       @inherited_task = Factory :task, :project => @project
       @inherited_contract = Factory :contract, :project => @project
       
-      Factory :fixed_cost_estimate, :component => @component, :cost => 100
-      Factory :fixed_cost_estimate, :component => @subcomponent, :cost => 100
-      Factory :material_cost, :task => @task, :cost => 100
-      Factory :contract_cost, :contract => @contract, :cost => 100
+      Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
+      Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
+      Factory :material_cost, :task => @task, :raw_cost => 100
+      Factory :contract_cost, :contract => @contract, :raw_cost => 100
     end
 
     teardown do

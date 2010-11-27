@@ -63,8 +63,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     #------------------CALCULATIONS
     
     should "generate cost" do
-      assert_equal 50, @obj.cost
-      assert_equal 100, @with_drop.cost
+      assert_equal 50, @obj.raw_cost
+      assert_equal 100, @with_drop.raw_cost
     end
   end
 end
