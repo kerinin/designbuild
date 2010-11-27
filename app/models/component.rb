@@ -1,6 +1,6 @@
 class Component < ActiveRecord::Base
   include AddOrNil
-  include MarkupValues
+  include MarksUp
   
   has_paper_trail
   has_ancestry
@@ -20,15 +20,17 @@ class Component < ActiveRecord::Base
   
   before_validation :check_project
   after_create :add_parent_markups
-  after_save :cache_values
-  after_create :add_project_markups
+  before_save :cache_values, :if => :id
+  after_create :cache_values
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end
   
   def select_label
-    (self.ancestors + [self]).map {|c| c.name}.join(' > ')
+    (self.ancestors.all + [self]).map {|c| c.name}.join(' > ')
   end
   
   
@@ -39,42 +41,43 @@ class Component < ActiveRecord::Base
   
   # This could also happen on the fixed cost and be requested - fc.cost
   # I like it better here because it doesn't require looking up another object's markup
-  def estimated_component_fixed_cost
-    multiply_or_nil self.estimated_raw_component_fixed_cost, (1+(self.total_markup / 100))
-  end
+  marks_up :estimated_raw_component_fixed_cost
+  #def estimated_component_fixed_cost
+  #  multiply_or_nil self.estimated_raw_component_fixed_cost, (1+(self.total_markup/100))
+  #end
   
   def estimated_raw_component_fixed_cost
-    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   # This is happening remotely because the markup is component-specific
   def estimated_subcomponent_fixed_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
   end
   
   def estimated_raw_subcomponent_fixed_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_fixed_cost)}
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_fixed_cost)}
   end
   
   # Unit Costs
   # estimated_unit_cost
   
   # estimated_raw_unit_cost
-  
-  def estimated_component_unit_cost
-    multiply_or_nil self.estimated_raw_component_unit_cost, (1+(self.total_markup / 100))
-  end
+  marks_up :estimated_raw_component_unit_cost
+  #def estimated_component_unit_cost
+  #  multiply_or_nil self.estimated_raw_component_unit_cost, (1+(self.total_markup / 100))
+  #end
   
   def estimated_raw_component_unit_cost
-    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   def estimated_subcomponent_unit_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
   end
   
   def estimated_raw_subcomponent_unit_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
   end
   
   # Total Cost
@@ -86,15 +89,23 @@ class Component < ActiveRecord::Base
     add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost )
   end
   
-  private
   
   def cache_values
     self.cache_estimated_raw_fixed_cost
     self.cache_estimated_raw_unit_cost
     self.cache_total_markup
-    
-    self.project.cache_values
   end
+    
+  def cascade_cache_values
+    if self.is_root?
+      self.project.save!
+    else
+      self.parent.save!
+    end
+  end
+  
+  
+  protected
   
   def cache_estimated_raw_fixed_cost
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
@@ -107,7 +118,7 @@ class Component < ActiveRecord::Base
   end
 
   def cache_total_markup
-    self.total_markup = self.markups.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
   end
       
       
@@ -117,19 +128,17 @@ class Component < ActiveRecord::Base
   
   def add_parent_markups
     if self.is_root?
-      self.project.markups.each {|m| self.markups << m unless self.markups.include? m }
+      self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
     else
-      self.parent.markups.each {|m| self.markups << m unless self.markups.include? m }
+      self.parent.markups.all.each {|m| self.markups << m unless self.markups.include? m }
     end
   end
   
   def cascade_add_markup(markup)
     self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
-    self.cache_values
   end
   
   def cascade_remove_markup(markup)
     self.children.all.each {|c| c.markups.delete( markup ) }
-    self.cache_values
   end
 end

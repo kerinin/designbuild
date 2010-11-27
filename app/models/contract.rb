@@ -1,5 +1,6 @@
 class Contract < ActiveRecord::Base
   include AddOrNil
+  include MarksUp
   
   has_paper_trail
   
@@ -11,51 +12,57 @@ class Contract < ActiveRecord::Base
   has_many :bids, :order => :contractor, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :markups, :through => :markings
   
   validates_presence_of :name, :project
 
   after_create :add_project_markups
-  after_save :cache_values  
-  after_destroy :cache_values
+  after_create {|c| c.cache_values; c.save}
+  before_update :cache_values
+  after_save :cascade_cache_values  
+  after_destroy :cascade_cache_values
   
-  def cost
-    multiply_or_nil self.raw_cost, (1+(self.total_markup/100))
-  end
+  marks_up :raw_cost
+  #def cost
+  #  multiply_or_nil self.raw_cost, (1+(self.total_markup/100))
+  #end
   
   # raw_cost
   
-  def invoiced
-    multiply_or_nil self.raw_invoiced, (1+(self.total_markup/100))
-  end
+  marks_up :raw_invoiced
+  #def invoiced
+  #  multiply_or_nil self.raw_invoiced, (1+(self.total_markup/100))
+  #end
   
   # raw_invoiced
-  
-  
-  private
   
   def cache_values
     self.cache_raw_cost
     self.cache_raw_invoiced
     self.cache_total_markup
-    
-    self.project.cache_values
   end
+    
+  def cascade_cache_values
+    self.project.save
+  end
+  
+  
+  protected  
   
   def cache_raw_cost
     self.raw_cost = self.active_bid.blank? ? nil : self.active_bid.raw_cost
   end
   
   def cache_raw_invoiced
-    self.raw_invoiced = self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_invoiced = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   def cache_total_markup
-    self.total_markup = self.markups.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
   end
   
   
   def add_project_markups
-    self.project.markups.each {|m| self.markups << m unless self.markups.include? m }
+    self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
   end
 end

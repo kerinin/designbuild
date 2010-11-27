@@ -10,12 +10,12 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101126225501) do
+ActiveRecord::Schema.define(:version => 20101127011436) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
     t.date     "date"
-    t.float    "cost"
+    t.float    "raw_cost"
     t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -29,6 +29,11 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.string   "ancestry"
     t.boolean  "expand_in_estimate"
     t.boolean  "show_costs_in_estimate"
+    t.float    "estimated_fixed_cost"
+    t.float    "estimated_unit_cost"
+    t.float    "estimated_raw_fixed_cost"
+    t.float    "estimated_raw_unit_cost"
+    t.float    "total_markup"
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -40,7 +45,7 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
 
   create_table "contract_costs", :force => true do |t|
     t.date     "date"
-    t.float    "cost"
+    t.float    "raw_cost"
     t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -52,6 +57,9 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bid_id"
+    t.float    "raw_cost"
+    t.float    "raw_invoiced"
+    t.float    "total_markup"
   end
 
   create_table "deadlines", :force => true do |t|
@@ -66,7 +74,7 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
 
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string   "name"
-    t.float    "cost"
+    t.float    "raw_cost"
     t.integer  "component_id"
     t.integer  "task_id"
     t.datetime "created_at"
@@ -87,6 +95,7 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "raw_cost"
   end
 
   create_table "laborers", :force => true do |t|
@@ -122,7 +131,7 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
 
   create_table "material_costs", :force => true do |t|
     t.date     "date"
-    t.float    "cost"
+    t.float    "raw_cost"
     t.integer  "task_id"
     t.integer  "supplier_id"
     t.datetime "created_at"
@@ -133,6 +142,20 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "estimated_fixed_cost"
+    t.float    "estimated_raw_fixed_cost"
+    t.float    "estimated_unit_cost"
+    t.float    "estimated_raw_unit_cost"
+    t.float    "estimated_contract_cost"
+    t.float    "estimated_raw_contract_cost"
+    t.float    "material_cost"
+    t.float    "raw_material_cost"
+    t.float    "labor_cost"
+    t.float    "raw_labor_cost"
+    t.float    "contract_cost"
+    t.float    "raw_contract_cost"
+    t.float    "projected_cost"
+    t.float    "raw_projected_cost"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
@@ -170,6 +193,11 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "estimated_raw_unit_cost"
+    t.float    "estimated_raw_fixed_cost"
+    t.float    "raw_labor_cost"
+    t.float    "raw_material_cost"
+    t.float    "total_markup"
   end
 
   create_table "unit_cost_estimates", :force => true do |t|
@@ -181,6 +209,7 @@ ActiveRecord::Schema.define(:version => 20101126225501) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "drop"
+    t.float    "raw_cost"
   end
 
   create_table "users", :force => true do |t|

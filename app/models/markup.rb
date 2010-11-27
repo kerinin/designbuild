@@ -3,9 +3,9 @@ class Markup < ActiveRecord::Base
   
   has_many :markings, :dependent => :destroy
   
-  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project'
   has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task'
-  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component'
   has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract'
   
   accepts_nested_attributes_for :markings
@@ -14,8 +14,8 @@ class Markup < ActiveRecord::Base
   
   before_save {|r| @new_markings = r.markings.map {|m| ( m.new_record? && (m.markupable_type == 'Project' || m.markupable_type == 'Component') ) ? m : nil }.compact }
   after_save {|r| @new_markings.each {|m| r.cascade_add(m.markupable)} }
-  after_save :cache_values
-  after_destroy :cache_values
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   def cascade_add(obj)
     obj.send :cascade_add_markup, self
@@ -28,12 +28,10 @@ class Markup < ActiveRecord::Base
   def select_label
     "#{self.name} (#{self.percent}%)"
   end
-  
-  private
-  
-  def cache_values
-    self.tasks.all.each {|t| t.cache_values}
-    self.components.all.each {|c| c.cache_values}
-    self.contracts.all.each {|c| c.cache_values}
+
+  def cascade_cache_values
+    self.tasks.all.each {|t| t.save}
+    self.components.all.each {|c| c.save}
+    self.contracts.all.each {|c| c.save}
   end
 end

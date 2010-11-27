@@ -162,7 +162,7 @@ class MarkupTest < ActiveSupport::TestCase
     # -----------------------CALCULATIONS
     
     should "apply to markupable" do
-      assert_equal @component.estimated_component_cost, 150
+      assert_equal @component.estimated_cost, 150
       assert_equal @task.cost, 150
       assert_equal @contract.cost, 150
       assert_equal @contract.estimated_cost, 150

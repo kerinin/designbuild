@@ -8,10 +8,10 @@ class Supplier < ActiveRecord::Base
   validates_presence_of :name #, :project
   
   def purchase_orders
-    self.material_costs.where( :material_costs => {:cost => nil} )
+    self.material_costs.where( :material_costs => {:raw_cost => nil} )
   end
   
   def completed_purchases
-    self.material_costs.where( "material_costs.cost IS NOT NULL" )
+    self.material_costs.where( "material_costs.raw_cost IS NOT NULL" )
   end
 end

@@ -36,7 +36,7 @@ class Deadline < ActiveRecord::Base
     "#{self.name} - #{self.date.to_s :short}"
   end
     
-  private
+  protected
   
   def try_inherit_project
     self.project = self.parent_deadline.project unless self.parent_deadline.blank? || self.parent_deadline.project.blank?

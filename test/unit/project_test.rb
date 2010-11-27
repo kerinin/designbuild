@@ -13,11 +13,11 @@ class ProjectTest < ActiveSupport::TestCase
       
       @u1 = Factory :user, :projects => [@obj]
       #@u2 = Factory :user, :projects => [@obj]
-      @c1 = Factory :component, :project => @obj
-        @sc1 = Factory :component, :parent => @c1, :project => @obj
+      @c1 = Factory :component, :name => 'c1', :project => @obj
+        @sc1 = Factory :component, :name => 'sc1', :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :raw_cost => 0.1, :task => @task
           @q1 = Factory :quantity, :component => @sc1, :value => 1
-          @uc1 = Factory :unit_cost_estimate, :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0, :task => @task #.03
+          @uc1 = Factory :unit_cost_estimate, :name => 'uc1', :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0, :task => @task #.03
         
       @c2 = Factory :component, :project => @obj
         @fc2 = Factory :fixed_cost_estimate, :component => @c2, :raw_cost => 1
@@ -53,7 +53,7 @@ class ProjectTest < ActiveSupport::TestCase
       Deadline.delete_all
       Quantity.delete_all
     end
-    
+ 
     should "be valid" do
       assert @obj.valid?
     end
@@ -116,11 +116,27 @@ class ProjectTest < ActiveSupport::TestCase
     should "aggregate estimated fixed costs" do
       assert_equal 1.1, @obj.estimated_raw_fixed_cost
     end
-    
+ 
     should "aggregate estimated unit costs" do
+      assert_equal 0.03, @uc1.raw_cost
+      assert_equal 0.03, @sc1.estimated_raw_unit_cost
+      
+      assert_equal @sc1.parent, @c1
+      assert_contains @c1.children.all, @sc1
+      #@c1.cache_values
+      #@c1.save
+      #@obj.cache_values
+      
+      #assert_equal nil, @c1.estimated_raw_component_unit_cost
+      #assert_equal 0.03, @c1.estimated_raw_subcomponent_unit_cost
+      
+      assert_equal 0.03, @c1.estimated_raw_unit_cost
+      assert_equal 30, @uc3.raw_cost
+      assert_equal 30, @c2.estimated_raw_unit_cost
+      
       assert_equal 30.03, @obj.estimated_raw_unit_cost
     end
-    
+ 
     should "aggregate estimated costs" do
       assert_equal 31.13, @obj.estimated_raw_cost
     end

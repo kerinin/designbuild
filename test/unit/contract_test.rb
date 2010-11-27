@@ -10,6 +10,7 @@ class ContractTest < ActiveSupport::TestCase
       @b1 = Factory :bid, :contract => @obj
       @b2 = Factory :bid, :contract => @obj, :raw_cost => 100
       @obj.active_bid = @b2
+      @obj.save
     end
 
     teardown do
@@ -45,9 +46,13 @@ class ContractTest < ActiveSupport::TestCase
     end
     
     #-------------------CALCULATIONS
-    
-    should "aggregate costs" do
-      assert_equal 11, @obj.raw_cost
+ 
+    should "return current bid cost" do
+      assert_equal 100, @obj.raw_cost
+    end
+       
+    should "aggregate invoiced costs" do
+      assert_equal 11, @obj.raw_invoiced
     end
   end
 end

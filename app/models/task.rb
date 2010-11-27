@@ -1,5 +1,6 @@
 class Task < ActiveRecord::Base
   include AddOrNil
+  include MarksUp
   
   has_paper_trail
   
@@ -7,20 +8,21 @@ class Task < ActiveRecord::Base
   belongs_to :deadline
   belongs_to :project
   
-  has_many :unit_cost_estimates, :order => :name, :after_add => :cache_values, :after_remove => :cache_values
-  has_many :fixed_cost_estimates, :order => :name, :after_add => :cache_values, :after_remove => :cache_values
-  has_many :labor_costs, :order => 'date DESC', :dependent => :destroy, :after_add => :cache_values, :after_remove => :cache_values
-  has_many :material_costs, :order => 'date DESC', :dependent => :destroy, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :unit_cost_estimates, :order => :name
+  has_many :fixed_cost_estimates, :order => :name
+  has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
+  has_many :material_costs, :order => 'date DESC', :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :markups, :through => :markings
   
   validates_presence_of :name, :project
 
   after_create :add_project_markups
-  
-  after_save :cache_values
-  after_destroy :cache_values
+  after_create {|c| c.cache_values; c.save}
+  before_update :cache_values
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   scope :active, lambda {
     where(:active => true)
@@ -34,32 +36,34 @@ class Task < ActiveRecord::Base
   }
   
   def cost_estimates
-    self.unit_cost_estimates + self.fixed_cost_estimates
+    self.unit_cost_estimates.all + self.fixed_cost_estimates.all
   end
   
   def costs
-    self.labor_costs + self.material_costs
+    self.labor_costs.all + self.material_costs.all
   end
   
   def purchase_orders
-    self.material_costs.where( :material_costs => {:cost => nil} )
+    self.material_costs.where( :material_costs => {:raw_cost => nil} )
   end
   
   def completed_purchases
-    self.material_costs.where( "material_costs.cost IS NOT NULL" )
+    self.material_costs.where( "material_costs.raw_cost IS NOT NULL" )
   end
   
   # -------------------CALCULATIONS
   
-  def estimated_unit_cost
-    multiply_or_nil self.estimated_raw_unit_cost, (1+(self.total_markup/100))
-  end
+  marks_up :estimated_raw_unit_cost
+  #def estimated_unit_cost
+  #  multiply_or_nil self.estimated_raw_unit_cost, (1+(self.total_markup/100))
+  #end
   
   # estimated_raw_unit_cost
   
-  def estimated_fixed_cost
-    multiply_or_nil self.estimated_raw_fixed_cost, (1+(self.total_markup/100))
-  end
+  marks_up :estimated_raw_fixed_cost
+  #def estimated_fixed_cost
+  #  multiply_or_nil self.estimated_raw_fixed_cost, (1+(self.total_markup/100))
+  #end
   
   # estimated_raw_fixed_cost
   
@@ -71,15 +75,17 @@ class Task < ActiveRecord::Base
     add_or_nil(estimated_raw_fixed_cost, estimated_raw_unit_cost)
   end
   
-  def labor_cost
-    multiply_or_nil self.raw_labor_cost, (1+(self.total_markup/100))
-  end
+  marks_up :raw_labor_cost
+  #def labor_cost
+  #  multiply_or_nil self.raw_labor_cost, (1+(self.total_markup/100))
+  #end
   
   # raw_labor_cost
   
-  def material_cost
-    multiply_or_nil self.raw_material_cost, (1+(self.total_markup/100))
-  end
+  marks_up :raw_material_cost
+  #def material_cost
+  #  multiply_or_nil self.raw_material_cost, (1+(self.total_markup/100))
+  #end
   
   # raw_material_cost
   
@@ -91,26 +97,28 @@ class Task < ActiveRecord::Base
     add_or_nil(raw_labor_cost, raw_material_cost)
   end
   
-  def projected_cost
-    multiply_or_nil self.raw_projected_cost, (1+(self.total_markup/100))
-  end
+  marks_up :raw_projected_cost
+  #def projected_cost
+  #  multiply_or_nil self.raw_projected_cost, (1+(self.total_markup/100))
+  #end
   
   def raw_projected_cost
     if self.percent_complete >= 100
       return self.raw_cost
+    end
       
     # This comparison should work for raw and marked-up, since both will be
     # mutliplied by the same markup (per-task)
-    est = self.raw_estimated_cost
+    est = self.estimated_raw_cost
     act = self.raw_cost
     if act.nil?
-      return self.raw_estimated_cost
-    if est.nil?
+      return self.estimated_raw_cost
+    elsif est.nil?
       return self.raw_cost
-    if act > est
+    elsif act > est
       return self.raw_cost
     else
-      return self.raw_estimated_cost
+      return self.estimated_raw_cost
     end
   end
   
@@ -119,40 +127,42 @@ class Task < ActiveRecord::Base
   end
   
   
-  private
-
   def cache_values
     self.cache_estimated_unit_cost
     self.cache_estimated_fixed_cost
     self.cache_labor_cost
     self.cache_material_cost
     self.cache_total_markup
+  end
     
-    self.project.cache_values
+  def cascade_cache_values
+    self.project.save
   end
   
+  protected
+
   def cache_estimated_unit_cost
-    self.estimated_raw_unit_cost = self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.estimated_raw_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   def cache_estimated_fixed_cost
-    self.estimated_raw_fixed_cost = self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo,obj.raw_cost)}
+    self.estimated_raw_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.raw_cost)}
   end
 
   def cache_labor_cost
-    self.raw_labor_cost = self.labor_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_labor_cost = self.labor_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
 
   def cache_material_cost
-    self.raw_material_cost = self.material_costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_material_cost = self.material_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end 
   
   def cache_total_markup
-    self.total_markup = self.markups.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
   end
   
         
   def add_project_markups
-    self.project.markups.each {|m| self.markups << m unless self.markups.include? m }
+    self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
   end
 end

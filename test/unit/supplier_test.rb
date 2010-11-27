@@ -7,8 +7,8 @@ class SupplierTest < ActiveSupport::TestCase
       
       @mc1 = Factory :material_cost, :supplier => @obj
       @mc2 = Factory :material_cost, :supplier => @obj
-      @mc3 = Factory :material_cost, :supplier => @obj, :cost => nil
-      @mc4 = Factory :material_cost, :supplier => @obj, :cost => nil
+      @mc3 = Factory :material_cost, :supplier => @obj, :raw_cost => nil
+      @mc4 = Factory :material_cost, :supplier => @obj, :raw_cost => nil
     end
     
     teardown do

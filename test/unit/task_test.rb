@@ -105,6 +105,7 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     should "allow multiple unit cost estimates" do
+      assert_equal @uce1.task, @obj
       assert_contains @obj.unit_cost_estimates, @uce1
       assert_contains @obj.unit_cost_estimates, @uce2
     end

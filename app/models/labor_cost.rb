@@ -1,34 +1,41 @@
 class LaborCost < ActiveRecord::Base
   include AddOrNil
+  include MarksUp
   
   has_paper_trail
   
   belongs_to :task
   
-  has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy, :after_save => :cache_values, :after_remove => :cache_values
+  has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
   
   validates_presence_of :task, :percent_complete
   validates_numericality_of :percent_complete
   
-  after_save :deactivate_task_if_done, :cache_values
-  after_destroy :cache_values
+  after_create {|c| c.cache_values; c.save}
+  before_update :cache_values
+  after_save :deactivate_task_if_done
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
-  def cost
-    multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
-  end
+  marks_up :raw_cost
+  #def cost
+  #  multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
+  #end
   
   # raw_cost
   
-  private
-  
   def cache_values
     self.cache_raw_cost
-    
-    self.task.cache_values
   end
   
+  def cascade_cache_values
+    self.task.save
+  end
+
+  protected
+    
   def cache_raw_cost
-    self.raw_cost = self.line_items.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   def deactivate_task_if_done

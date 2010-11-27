@@ -9,12 +9,10 @@ class Laborer < ActiveRecord::Base
   
   validates_numericality_of :bill_rate
   
-  after_save :cache_values
-  after_destroy :cache_values
-  
-  private
-  
-  def cache_values
-    self.labor_cost_lines.all.each {|lc| lc.cache_values}
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
+
+  def cascade_cache_values
+    self.labor_cost_lines.all.each {|lc| lc.save}
   end
 end

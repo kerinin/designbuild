@@ -1,4 +1,6 @@
 class FixedCostEstimate < ActiveRecord::Base
+  include MarksUp
+  
   has_paper_trail
   
   belongs_to :component
@@ -8,8 +10,8 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
-  after_save :cache_values
-  after_destroy :cache_values
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
@@ -21,16 +23,15 @@ class FixedCostEstimate < ActiveRecord::Base
     self.task.blank? ? nil : self.task.name
   end
   
-  def cost
-    multiply_or_nil self.raw_cost, (1+(self.component.total_markup/100))
-  end
+  marks_up :raw_cost
+  #def cost
+  #  multiply_or_nil self.raw_cost, (1+(self.component.total_markup/100))
+  #end
   
   # raw_cost
-  
-  private
-  
-  def cache_values
-    self.component.cache_values
-    self.task.cache_values
+
+  def cascade_cache_values
+    self.component.save
+    self.task.save unless self.task.blank?
   end
 end

@@ -1,16 +1,18 @@
 class MaterialCost < ActiveRecord::Base
+  include MarksUp
+  
   has_paper_trail
   
   belongs_to :task
   belongs_to :supplier
   
-  has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
-  after_save :cache_values
-  after_destroy :cache_values
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   def supplier_name=(string)
     self.supplier = Supplier.find_or_create_by_name(string) unless string == '' || string.nil?
@@ -20,16 +22,14 @@ class MaterialCost < ActiveRecord::Base
     self.supplier.blank? ? nil : self.supplier.name
   end
   
-  
-  def cost
-    multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
-  end
+  marks_up :raw_cost
+  #def cost
+  #  multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
+  #end
   
   # raw_cost
-  
-  private
-  
-  def cache_values
-    self.task.cache_values
+
+  def cascade_cache_values
+    self.task.save
   end
 end

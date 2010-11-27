@@ -34,10 +34,10 @@ class AddCachedValues < ActiveRecord::Migration
     add_column :projects, :projected_cost, :float
     add_column :projects, :raw_projected_cost, :float
     
-    add_column :tasks, :raw_estimated_unit_cost, :float
-    add_column :tasks, :raw_estimated_fixed_cost, :float
-    add_column :tasks, :raw_labor_costs, :float
-    add_column :tasks, :raw_material_costs, :float
+    add_column :tasks, :estimated_raw_unit_cost, :float
+    add_column :tasks, :estimated_raw_fixed_cost, :float
+    add_column :tasks, :raw_labor_cost, :float
+    add_column :tasks, :raw_material_cost, :float
     add_column :tasks, :total_markup, :float
     
     add_column :unit_cost_estimates, :raw_cost, :float
@@ -74,10 +74,10 @@ class AddCachedValues < ActiveRecord::Migration
     remove_column :projects, :projected_cost
     remove_column :projects, :raw_projected_cost
     
-    remove_column :tasks, :raw_estimated_unit_cost
-    remove_column :tasks, :raw_estimated_fixed_cost
-    remove_column :tasks, :raw_labor_costs
-    remove_column :tasks, :raw_material_costs
+    remove_column :tasks, :estimated_raw_unit_cost
+    remove_column :tasks, :estimated_raw_fixed_cost
+    remove_column :tasks, :raw_labor_cost
+    remove_column :tasks, :raw_material_cost
     remove_column :tasks, :total_markup
     
     remove_column :unit_cost_estimates, :raw_cost

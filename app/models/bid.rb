@@ -1,4 +1,6 @@
 class Bid < ActiveRecord::Base
+  include MarksUp
+  
   has_paper_trail
 
   belongs_to :contract
@@ -6,8 +8,8 @@ class Bid < ActiveRecord::Base
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost
   
-  after_save :cache_values
-  after_create :add_project_markups
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   attr_accessor :is_active_bid
   
@@ -21,15 +23,11 @@ class Bid < ActiveRecord::Base
     end
   end
   
-  def cost
-    self.raw_cost * ( 1 + ( self.contract.total_markup / 100 ) )
-  end
+  marks_up :raw_cost
   
   # raw cost
   
-  private
-  
-  def cache_values
-    self.contract.cache_values
+  def cascade_cache_values
+    self.contract.save
   end
 end
