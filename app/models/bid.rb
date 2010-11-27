@@ -1,4 +1,6 @@
 class Bid < ActiveRecord::Base
+  has_paper_trail
+
   belongs_to :contract
   
   validates_presence_of :contractor, :date, :cost, :contract

@@ -1,6 +1,8 @@
 class Project < ActiveRecord::Base
   include AddOrNil
   
+  has_paper_trail
+  
   has_many :components, :order => :name, :dependent => :destroy
   has_many :tasks, :order => :name, :dependent => :destroy
   has_many :contracts, :order => :name, :dependent => :destroy

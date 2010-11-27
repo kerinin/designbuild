@@ -4,7 +4,11 @@ Designbuild::Application.routes.draw do
   
   resources :projects do
     resources :laborers     
-    resources :components   # re-nested  
+    resources :components do
+      member do
+        get :changelog
+      end
+    end
     resources :tasks        # re-nested
     resources :contracts    # re-nested
     resources :deadlines    # re-nested
@@ -24,7 +28,6 @@ Designbuild::Application.routes.draw do
       get :timeline_events, :as => :timeline_events_for
       get :estimate_report, :as => :estimate_report_for
       get :purchase_order_list, :as => :purchase_order_list_for
-      get :autocomplete_task_name
     end
     
     collection do
@@ -39,6 +42,7 @@ Designbuild::Application.routes.draw do
     
     member do
       post :add_markup, :as => :add_markup_to
+      get :changelog
     end
     
     resources :markups, :only => [:new, :create, :edit, :update] do

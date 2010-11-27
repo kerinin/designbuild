@@ -1,6 +1,14 @@
 class ComponentsController < ApplicationController
   before_filter :get_project, :except => :add_markup
   
+  def changelog
+    @component = Component.find(params[:id])
+    
+    respond_to do |format|
+      format.html
+    end
+  end
+  
   def add_markup
     @component = Component.find(params[:id])
     

@@ -1,4 +1,6 @@
 class Supplier < ActiveRecord::Base
+  has_paper_trail
+  
   #belongs_to :project
   
   has_many :material_costs, :dependent => :destroy

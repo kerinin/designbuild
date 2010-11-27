@@ -1,6 +1,7 @@
 class Component < ActiveRecord::Base
   include AddOrNil
   
+  has_paper_trail
   has_ancestry
   
   belongs_to :project

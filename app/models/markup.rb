@@ -1,4 +1,6 @@
 class Markup < ActiveRecord::Base
+  has_paper_trail
+  
   has_many :markings, :dependent => :destroy
   
   has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_add => :cascade_add, :before_remove => :cascade_remove

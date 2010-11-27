@@ -1,4 +1,6 @@
 class FixedCostEstimate < ActiveRecord::Base
+  has_paper_trail
+  
   belongs_to :component
   belongs_to :task
   

@@ -1,6 +1,8 @@
 class Task < ActiveRecord::Base
   include AddOrNil
   
+  has_paper_trail
+  
   belongs_to :contract
   belongs_to :deadline
   belongs_to :project

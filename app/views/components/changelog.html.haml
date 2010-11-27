@@ -1,0 +1,10 @@
+%h1
+  Design Component Changelog: 
+  =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
+  = @component.name
+
+%table  
+  -@component.versions.each do |version|
+    %tr=version.index
+    %tr=version.originator
+

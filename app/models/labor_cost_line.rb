@@ -1,4 +1,6 @@
 class LaborCostLine < ActiveRecord::Base
+  has_paper_trail
+  
   belongs_to :labor_set, :class_name => "LaborCost"
   belongs_to :laborer
   

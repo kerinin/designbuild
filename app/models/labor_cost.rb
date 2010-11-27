@@ -1,6 +1,8 @@
 class LaborCost < ActiveRecord::Base
   include AddOrNil
   
+  has_paper_trail
+  
   belongs_to :task
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy

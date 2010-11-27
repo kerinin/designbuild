@@ -1,4 +1,6 @@
 class UnitCostEstimate < ActiveRecord::Base
+  has_paper_trail
+  
   belongs_to :component
   belongs_to :quantity
   belongs_to :task

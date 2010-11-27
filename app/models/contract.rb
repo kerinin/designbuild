@@ -1,6 +1,8 @@
 class Contract < ActiveRecord::Base
   include AddOrNil
   
+  has_paper_trail
+  
   belongs_to :project
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   

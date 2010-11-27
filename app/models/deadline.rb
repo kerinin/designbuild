@@ -1,4 +1,6 @@
 class Deadline < ActiveRecord::Base
+  has_paper_trail
+  
   belongs_to :project
   belongs_to :parent_deadline, :class_name => "Deadline"
   
