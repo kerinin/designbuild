@@ -31,20 +31,21 @@ class Component < ActiveRecord::Base
   
   
   # Fixed Costs
-  def estimated_fixed_cost
-    add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
-  end
+  # estimated_fixed_cost
   
-  def estimated_raw_fixed_cost
-    add_or_nil( self.estimated_raw_component_fixed_cost, self.estimated_raw_subcomponent_fixed_cost )
-  end
+  # estimated_raw_fixed_cost
   
+  # This could also happen on the fixed cost and be requested - fc.cost
+  # I like it better here because it doesn't require looking up another object's markup
   def estimated_component_fixed_cost
     multiply_or_nil self.estimated_raw_component_fixed_cost, (1+(self.total_markup / 100))
   end
   
-  # estimated_raw_component_fixed_cost
+  def estimated_raw_component_fixed_cost
+    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
   
+  # This is happening remotely because the markup is component-specific
   def estimated_subcomponent_fixed_cost
     self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
   end
@@ -54,19 +55,17 @@ class Component < ActiveRecord::Base
   end
   
   # Unit Costs
-  def estimated_unit_cost
-    add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
-  end
+  # estimated_unit_cost
   
-  def estimated_raw_unit_cost
-    add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_subcomponent_unit_cost )
-  end
+  # estimated_raw_unit_cost
   
   def estimated_component_unit_cost
     multiply_or_nil self.estimated_raw_component_unit_cost, (1+(self.total_markup / 100))
   end
   
-  # estimated_raw_component_unit_cost
+  def estimated_raw_component_unit_cost
+    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
   
   def estimated_subcomponent_unit_cost
     self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
@@ -78,35 +77,23 @@ class Component < ActiveRecord::Base
   
   # Total Cost
   def estimated_cost
-    add_or_nil( self.estimated_component_cost, self.estimated_subcomponent_cost )
+    add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost )
   end
   
   def estimated_raw_cost
-    add_or_nil( self.estimated_raw_component_cost, self.estimated_raw_subcomponent_cost )
+    add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost )
   end
-  
-  def estimated_component_cost
-    multiply_or_nil self.estimated_raw_component_cost, (1+(self.total_markup / 100))
-  end
-  
-  # estimated_raw_component_cost
-  
-  def estimated_subcomponent_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_cost)}
-  end
-  
-  def estimated_raw_subcomponent_cost
-    self.children.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_cost)}
-  end  
   
   private
-      
-  def cache_estimated_raw_component_fixed_cost
-    self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    
+  def cache_estimated_raw_fixed_cost
+    self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
+    self.estimated_raw_fixed_cost = add_or_nil( self.estimated_raw_component_fixed_cost, self.estimated_raw_subcomponent_fixed_cost )
   end
 
-  def cache_estimated_raw_component_unit_cost
-    self.estimated_raw_component_unit_cost = self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  def cache_estimated_raw_unit_cost
+    self.estimated_unit_cost = add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
+    self.estimated_raw_unit_cost = add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_subcomponent_unit_cost )
   end
 
   def cache_total_markup

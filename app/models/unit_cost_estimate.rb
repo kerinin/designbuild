@@ -21,7 +21,9 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   
-  # cost
+  def cost
+    multiply_or_nil self.raw_cost, (1 + (self.component.total_markup / 100) )
+  end
   
   # raw_cost
   
@@ -30,7 +32,6 @@ class UnitCostEstimate < ActiveRecord::Base
   
   def cache_cost
     self.raw_cost = self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
-    self.cost = multiply_or_nil self.raw_cost, (1 + (self.component.total_markup / 100) )
   end
   
   def set_component

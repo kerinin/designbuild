@@ -12,15 +12,16 @@ class LaborCost < ActiveRecord::Base
   
   after_save :deactivate_task_if_done
   
-  # cost
+  def cost
+    multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
+  end
   
   # raw_cost
   
   private
   
-  def cache_cost
+  def cache_raw_cost
     self.raw_cost = self.line_items.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-    self.cost = multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
   end
   
   def deactivate_task_if_done

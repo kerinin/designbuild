@@ -18,13 +18,9 @@ class MaterialCost < ActiveRecord::Base
   end
   
   
-  # cost
+  def cost
+    multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
+  end
   
   # raw_cost
-  
-  private
-  
-  def cache_cost
-    self.cost = multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
-  end
 end

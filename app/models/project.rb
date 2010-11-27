@@ -83,9 +83,9 @@ class Project < ActiveRecord::Base
     self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
   end
   
-  def cache_estimated_contract_cost(include_markup = true)
+  def cache_estimated_contract_cost
     self.estimated_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost )}
-    self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost(include_markup) )}
+    self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost )}
   end
 
   def cache_material_cost
