@@ -11,12 +11,13 @@ class Contract < ActiveRecord::Base
   has_many :bids, :order => :contractor, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :after_add => :cache_values, :after_remove => :cache_values
   
   validates_presence_of :name, :project
 
-  #after_save :add_default_markups
   after_create :add_project_markups
+  after_save :cache_values  
+  after_destroy :cache_values
   
   def cost
     multiply_or_nil self.raw_cost, (1+(self.total_markup/100))
@@ -32,6 +33,14 @@ class Contract < ActiveRecord::Base
   
   
   private
+  
+  def cache_values
+    self.cache_raw_cost
+    self.cache_raw_invoiced
+    self.cache_total_markup
+    
+    self.project.cache_values
+  end
   
   def cache_raw_cost
     self.raw_cost = self.active_bid.blank? ? nil : self.active_bid.raw_cost

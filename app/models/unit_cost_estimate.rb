@@ -9,6 +9,8 @@ class UnitCostEstimate < ActiveRecord::Base
   validates_numericality_of :unit_cost
   
   before_save :set_component
+  after_save :cache_values
+  after_destroy :cache_values
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
@@ -29,6 +31,13 @@ class UnitCostEstimate < ActiveRecord::Base
   
   
   private
+  
+  def cache_values
+    self.cache_cost
+    
+    self.component.cache_values
+    self.task.cache_values
+  end
   
   def cache_cost
     self.raw_cost = self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )

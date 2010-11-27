@@ -8,6 +8,9 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
+  after_save :cache_values
+  after_destroy :cache_values
+  
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def task_name=(string)
@@ -24,4 +27,10 @@ class FixedCostEstimate < ActiveRecord::Base
   
   # raw_cost
   
+  private
+  
+  def cache_values
+    self.component.cache_values
+    self.task.cache_values
+  end
 end

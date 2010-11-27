@@ -7,18 +7,21 @@ class Task < ActiveRecord::Base
   belongs_to :deadline
   belongs_to :project
   
-  has_many :unit_cost_estimates, :order => :name
-  has_many :fixed_cost_estimates, :order => :name
-  has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
-  has_many :material_costs, :order => 'date DESC', :dependent => :destroy
+  has_many :unit_cost_estimates, :order => :name, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :fixed_cost_estimates, :order => :name, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :labor_costs, :order => 'date DESC', :dependent => :destroy, :after_add => :cache_values, :after_remove => :cache_values
+  has_many :material_costs, :order => 'date DESC', :dependent => :destroy, :after_add => :cache_values, :after_remove => :cache_values
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :after_add => :cache_values, :after_remove => :cache_values
   
   validates_presence_of :name, :project
 
   after_create :add_project_markups
-
+  
+  after_save :cache_values
+  after_destroy :cache_values
+  
   scope :active, lambda {
     where(:active => true)
   }
@@ -115,8 +118,19 @@ class Task < ActiveRecord::Base
     self.labor_costs.empty? ? 0 : self.labor_costs.first.percent_complete
   end
   
+  
   private
 
+  def cache_values
+    self.cache_estimated_unit_cost
+    self.cache_estimated_fixed_cost
+    self.cache_labor_cost
+    self.cache_material_cost
+    self.cache_total_markup
+    
+    self.project.cache_values
+  end
+  
   def cache_estimated_unit_cost
     self.estimated_raw_unit_cost = self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end

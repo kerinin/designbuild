@@ -6,6 +6,9 @@ class Bid < ActiveRecord::Base
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost
   
+  after_save :cache_values
+  after_create :add_project_markups
+  
   attr_accessor :is_active_bid
   
   def is_active_bid
@@ -23,4 +26,10 @@ class Bid < ActiveRecord::Base
   end
   
   # raw cost
+  
+  private
+  
+  def cache_values
+    self.contract.cache_values
+  end
 end

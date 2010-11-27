@@ -14,6 +14,8 @@ class Markup < ActiveRecord::Base
   
   before_save {|r| @new_markings = r.markings.map {|m| ( m.new_record? && (m.markupable_type == 'Project' || m.markupable_type == 'Component') ) ? m : nil }.compact }
   after_save {|r| @new_markings.each {|m| r.cascade_add(m.markupable)} }
+  after_save :cache_values
+  after_destroy :cache_values
   
   def cascade_add(obj)
     obj.send :cascade_add_markup, self
@@ -25,5 +27,13 @@ class Markup < ActiveRecord::Base
   
   def select_label
     "#{self.name} (#{self.percent}%)"
+  end
+  
+  private
+  
+  def cache_values
+    self.tasks.all.each {|t| t.cache_values}
+    self.components.all.each {|c| c.cache_values}
+    self.contracts.all.each {|c| c.cache_values}
   end
 end

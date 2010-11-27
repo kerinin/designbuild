@@ -20,6 +20,8 @@ class Component < ActiveRecord::Base
   
   before_validation :check_project
   after_create :add_parent_markups
+  after_save :cache_values
+  after_create :add_project_markups
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
@@ -85,7 +87,15 @@ class Component < ActiveRecord::Base
   end
   
   private
+  
+  def cache_values
+    self.cache_estimated_raw_fixed_cost
+    self.cache_estimated_raw_unit_cost
+    self.cache_total_markup
     
+    self.project.cache_values
+  end
+  
   def cache_estimated_raw_fixed_cost
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
     self.estimated_raw_fixed_cost = add_or_nil( self.estimated_raw_component_fixed_cost, self.estimated_raw_subcomponent_fixed_cost )
@@ -115,9 +125,11 @@ class Component < ActiveRecord::Base
   
   def cascade_add_markup(markup)
     self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
+    self.cache_values
   end
   
   def cascade_remove_markup(markup)
     self.children.all.each {|c| c.markups.delete( markup ) }
+    self.cache_values
   end
 end
