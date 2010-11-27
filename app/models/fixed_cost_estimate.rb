@@ -4,9 +4,9 @@ class FixedCostEstimate < ActiveRecord::Base
   belongs_to :component
   belongs_to :task
   
-  validates_presence_of :name, :cost, :component
+  validates_presence_of :name, :raw_cost, :component
   
-  validates_numericality_of :cost
+  validates_numericality_of :raw_cost
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
@@ -18,7 +18,10 @@ class FixedCostEstimate < ActiveRecord::Base
     self.task.blank? ? nil : self.task.name
   end
   
-  def marked_up_cost
-    (1 + (self.component.total_markup / 100) ) * self.cost
+  def cost
+    multiply_or_nil self.raw_cost, (1+(self.component.total_markup/100))
   end
+  
+  # raw_cost
+  
 end

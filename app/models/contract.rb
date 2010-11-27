@@ -18,24 +18,33 @@ class Contract < ActiveRecord::Base
   #after_save :add_default_markups
   after_create :add_project_markups
   
-  def estimated_cost(include_markup = true)
-    multiply_or_nil ( include_markup ? (1 + ( self.total_markup / 100 )) : 1), self.bid
+  def cost
+    multiply_or_nil self.raw_cost, (1+(self.total_markup/100))
   end
   
-  def cost(include_markup = true)
-    multiply_or_nil (include_markup ? (1 + ( self.total_markup / 100 )) : 1), self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+  # raw_cost
+  
+  def invoiced
+    multiply_or_nil self.raw_invoiced, (1+(self.total_markup/100))
   end
   
-  def bid
-    return nil if self.active_bid.blank?
-    self.active_bid.cost
-  end
+  # raw_invoiced
   
-  def total_markup
-    self.markups.inject(0) {|memo,obj| memo + obj.percent }
-  end
   
   private
+  
+  def cache_raw_cost
+    self.raw_cost = self.active_bid.blank? ? nil : self.active_bid.raw_cost
+  end
+  
+  def cache_raw_invoiced
+    self.raw_invoiced = self.costs.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
+  
+  def cache_total_markup
+    self.total_markup = self.markups.inject(0) {|memo,obj| memo + obj.percent }
+  end
+  
   
   def add_project_markups
     self.project.markups.each {|m| self.markups << m unless self.markups.include? m }

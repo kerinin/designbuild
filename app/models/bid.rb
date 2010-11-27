@@ -3,7 +3,7 @@ class Bid < ActiveRecord::Base
 
   belongs_to :contract
   
-  validates_presence_of :contractor, :date, :cost, :contract
+  validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :cost
   
   attr_accessor :is_active_bid
@@ -18,7 +18,7 @@ class Bid < ActiveRecord::Base
     end
   end
   
-  def estimated_cost
-    self.cost * ( 1 + ( self.contract.total_markup / 100 ) )
+  def cost
+    self.raw_cost * ( 1 + ( self.contract.total_markup / 100 ) )
   end
 end

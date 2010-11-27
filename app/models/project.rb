@@ -17,38 +17,6 @@ class Project < ActiveRecord::Base
   
   validates_presence_of :name
   
-  def estimated_fixed_cost(include_markup = true)
-    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost(include_markup))}
-  end
-  
-  def estimated_unit_cost(include_markup = true)
-    self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost(include_markup))}
-  end
-  
-  def estimated_contract_cost(include_markup = true)
-    self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost(include_markup) )}
-  end
-  
-  def estimated_cost(include_markup = true)
-    add_or_nil( self.estimated_contract_cost(include_markup), self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost(include_markup))} )
-  end
-  
-  def material_cost
-    self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.material_cost)}
-  end
-  
-  def labor_cost
-    self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.labor_cost)}
-  end
-  
-  def contract_cost
-    self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost)}
-  end
-  
-  def cost
-    add_or_nil(labor_cost, add_or_nil( material_cost, contract_cost) )
-  end
-  
   def fixed_cost_estimates
     FixedCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
   end
@@ -57,11 +25,89 @@ class Project < ActiveRecord::Base
     UnitCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
   end
   
-  def projected_cost
-    add_or_nil( self.contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.projected_cost)} )
+  
+  # estimated_fixed_cost
+  
+  # estimated_raw_fixed_cost
+  
+  # estimated_unit_cost
+  
+  # estimated_raw_unit_cost
+  
+  # estimated_contract_cost
+  
+  # estimated_raw_contract_cost
+  
+  def estimated_cost
+    add_or_nil( self.estimated_contract_cost, self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)} )
   end
   
+  def estimated_raw_cost
+    add_or_nil( self.estimated_raw_contract_cost, self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost)} )
+  end
+  
+  # labor_cost
+  
+  # raw_labor_cost
+  
+  # material_cost
+  
+  # raw_material_cost
+  
+  # contract_cost
+  
+  # raw_contract_cost
+  
+  def cost
+    add_or_nil(labor_cost, add_or_nil( material_cost, contract_cost) )
+  end
+  
+  def raw_cost
+    add_or_nil(raw_labor_cost, add_or_nil( raw_material_cost, raw_contract_cost) )
+  end
+  
+  # projected_cost
+  
+  # raw_projected_cost
+  
+  
   private
+  
+  def cache_estimated_fixed_cost
+    self.estimated_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
+    self.estimated_raw_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_fixed_cost)}
+  end
+  
+  def cache_estimated_unit_cost
+    self.estimated_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
+    self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
+  end
+  
+  def cache_estimated_contract_cost(include_markup = true)
+    self.estimated_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost )}
+    self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost(include_markup) )}
+  end
+
+  def cache_material_cost
+    self.material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.material_cost)}
+    self.raw_material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_material_cost)}
+  end
+  
+  def cache_labor_cost
+    self.labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.labor_cost)}
+    self.raw_labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_labor_cost)}
+  end
+  
+  def cache_contract_cost
+    self.contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost)}
+    self.raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
+    
+  def cache_projected_cost
+    self.projected_cost = add_or_nil( self.contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.projected_cost)} )
+    self.raw_projected_cost = add_or_nil( self.raw_contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)} )
+  end
+  
   
   def cascade_add_markup(markup)
     # Ancestry doesn't seem to like working with other associations...
