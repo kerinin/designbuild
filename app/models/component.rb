@@ -95,8 +95,8 @@ class Component < ActiveRecord::Base
   def cache_values
     [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.markups].each {|a| a.reload}
     
-    self.cache_estimated_raw_fixed_cost
-    self.cache_estimated_raw_unit_cost
+    self.cache_estimated_fixed_cost
+    self.cache_estimated_unit_cost
     self.cache_total_markup
   end
     
@@ -111,12 +111,12 @@ class Component < ActiveRecord::Base
   
   protected
   
-  def cache_estimated_raw_fixed_cost
+  def cache_estimated_fixed_cost
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
     self.estimated_raw_fixed_cost = add_or_nil( self.estimated_raw_component_fixed_cost, self.estimated_raw_subcomponent_fixed_cost )
   end
 
-  def cache_estimated_raw_unit_cost
+  def cache_estimated_unit_cost
     self.estimated_unit_cost = add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
     self.estimated_raw_unit_cost = add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_subcomponent_unit_cost )
   end

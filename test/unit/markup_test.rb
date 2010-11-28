@@ -4,7 +4,7 @@ class MarkupTest < ActiveSupport::TestCase
   context "A Markup" do
     setup do
       @project = Factory :project
-      @component = Factory :component
+      @component = Factory :component, :name => 'component'
       @task = Factory :task
       @contract = Factory :contract
       @bid = Factory :bid, :contract => @contract, :raw_cost => 100
@@ -17,7 +17,7 @@ class MarkupTest < ActiveSupport::TestCase
       @obj.tasks << @task
       @obj.contracts << @contract 
 
-      @subcomponent = Factory :component, :parent => @component
+      @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
       @inherited_contract = Factory :contract, :project => @project
@@ -36,7 +36,7 @@ class MarkupTest < ActiveSupport::TestCase
       Contract.delete_all
       Marking.delete_all
     end
-    
+ 
     should "be valid" do
       assert @obj.valid?
     end
@@ -80,8 +80,8 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.projects << @project
       @project.markups << @new2
       
-      assert_contains @inherited_task.markups, @new1
-      assert_contains @inherited_task.markups, @new2
+      assert_contains @inherited_task.markups.reload.all, @new1
+      assert_contains @inherited_task.markups.reload.all, @new2
       assert_contains @new3.projects, @project
       assert_contains @new3.components, @inherited_component
       
@@ -103,14 +103,14 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.projects << @project
       @project.markups << @new2
 
-      assert_contains @inherited_component.markups, @new1
-      assert_contains @inherited_component.markups, @new2
+      assert_contains @inherited_component.markups.reload.all, @new1
+      assert_contains @inherited_component.markups.reload.all, @new2
       
       @new1.projects.delete( @project )
       @project.markups.delete( @new2 )
       
-      assert_does_not_contain Component.find(@inherited_component.id).markups, @new1
-      assert_does_not_contain Component.find(@inherited_component.id).markups, @new2
+      assert_does_not_contain @inherited_component.markups.reload.all, @new1
+      assert_does_not_contain @inherited_component.markups.reload.all, @new2
     end
         
     should "copy from component to subcomponent" do
@@ -118,25 +118,25 @@ class MarkupTest < ActiveSupport::TestCase
     end
 
     should "cascade add / delete from component to subcomponent" do
-      @sub2 = Factory :component, :parent => @subcomponent
-      @sub3 = Factory :component, :parent => @sub2
+      @sub2 = Factory :component, :parent => @subcomponent, :name => 'sub2'
+      @sub3 = Factory :component, :parent => @sub2, :name => 'sub3'
     
       @new1 = Factory :markup
       @new2 = Factory :markup
       @new1.components << @component
       @component.markups << @new2
       
-      assert_contains @subcomponent.markups, @new1
-      assert_contains @subcomponent.markups, @new2
+      assert_contains @subcomponent.markups.reload.all, @new1
+      assert_contains @subcomponent.markups.reload.all, @new2
       
       @sub2.markups.delete(@new2)
       @sub3.markups << @new2
       @new1.components.delete( @component )
       @component.markups.delete( @new2 )
       
-      assert_does_not_contain Component.find(@subcomponent.id).markups, @new1
-      assert_does_not_contain Component.find(@subcomponent.id).markups, @new2
-      assert_does_not_contain Component.find(@sub3.id).markups, @new2
+      assert_does_not_contain @subcomponent.markups.reload.all, @new1
+      assert_does_not_contain @subcomponent.markups.reload.all, @new2
+      assert_does_not_contain @sub3.markups.reload.all, @new2
     end
         
     should "copy from project to contract" do
@@ -149,23 +149,23 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.projects << @project
       @project.markups << @new2
       
-      assert_contains @inherited_contract.markups, @new1
-      assert_contains @inherited_contract.markups, @new2
+      assert_contains @inherited_contract.markups.reload.all, @new1
+      assert_contains @inherited_contract.markups.reload.all, @new2
       
       @new1.projects.delete( @project )
       @project.markups.delete( @new2 )
       
-      assert_does_not_contain Contract.find(@inherited_contract.id).markups, @new1
-      assert_does_not_contain Contract.find(@inherited_contract.id).markups, @new2
+      assert_does_not_contain @inherited_contract.markups.reload.all, @new1
+      assert_does_not_contain @inherited_contract.markups.reload.all, @new2
     end
 
     # -----------------------CALCULATIONS
-    
+   
     should "apply to markupable" do
-      assert_equal @component.estimated_cost, 150
-      assert_equal @task.cost, 150
-      assert_equal @contract.cost, 150
-      assert_equal @contract.estimated_cost, 150
+      assert_equal 150, @subcomponent.estimated_cost
+      assert_equal 150, @task.cost
+      assert_equal 150, @contract.cost
+      assert_equal 150, @contract.invoiced
     end
   end
 end
