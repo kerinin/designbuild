@@ -109,6 +109,6 @@ class QuantitiesControllerTest < ActionController::TestCase
       delete :destroy, :component_id => @component.to_param, :id => @quantity.to_param
     end
 
-    assert_redirected_to component_quantities_path(@component)
+    assert_redirected_to project_component_path(@project, @component)
   end
 end

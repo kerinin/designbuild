@@ -109,6 +109,6 @@ class BidsControllerTest < ActionController::TestCase
       delete :destroy, :contract_id => @contract.to_param, :id => @bid.to_param
     end
 
-    assert_redirected_to contract_bids_path(@contract)
+    assert_redirected_to project_contract_path(@project, @contract)
   end
 end

@@ -1,10 +1,17 @@
+-context ||= params.has_key?(:context) ? params[:context].to_sym : :component
+
 %tr.fixed_cost_estimate_fields
-  %td.field
-    %strong= f.label :name
-    = f.text_field :name
-  %td.field
-    %strong= f.label :raw_cost, 'Cost'
-    = f.text_field :raw_cost
+  -unless context == :project
+    %td.field
+      %strong= f.label :name
+      = f.text_field :name
+    %td.field
+      %strong= f.label :raw_cost, 'Cost'
+      = f.text_field :raw_cost
+  -else
+    %td.field
+      %strong= f.label :name
+      = @fixed_cost_estimate.name
   %td.field
     %strong= f.label :task_id
     = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)

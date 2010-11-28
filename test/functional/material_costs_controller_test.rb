@@ -92,6 +92,6 @@ class MaterialCostsControllerTest < ActionController::TestCase
       delete :destroy, :task_id => @task.to_param, :id => @material_cost.to_param
     end
 
-    assert_redirected_to task_material_costs_path(@task)
+    assert_redirected_to project_task_path(@project, @task)
   end
 end

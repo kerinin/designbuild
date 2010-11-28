@@ -109,7 +109,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.save
         format.js {
-          @projects = Project.all
+          @projects = Project.order( :name ).all
         }
         format.html { redirect_to(@project, :notice => 'Project was successfully created.') }
         format.xml  { render :xml => @project, :status => :created, :location => @project }
@@ -129,7 +129,7 @@ class ProjectsController < ApplicationController
     respond_to do |format|
       if @project.update_attributes(params[:project])
         format.js {
-          @projects = Project.all
+          @projects = Project.order( :name ).all
         }
         format.html { redirect_to(@project, :notice => 'Project was successfully updated.') }
         format.xml  { head :ok }

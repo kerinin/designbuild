@@ -82,6 +82,6 @@ class LaborCostsControllerTest < ActionController::TestCase
       delete :destroy, :task_id => @task.to_param, :id => @labor_cost.to_param
     end
 
-    assert_redirected_to task_labor_costs_path(@task)
+    assert_redirected_to project_task_path(@project, @task)
   end
 end

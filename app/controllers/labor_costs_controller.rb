@@ -82,7 +82,7 @@ class LaborCostsController < ApplicationController
     @labor_cost.destroy
 
     respond_to do |format|
-      format.html { redirect_to(task_labor_costs_url(@task)) }
+      format.html { redirect_to(project_task_url(@project, @task)) }
       format.xml  { head :ok }
     end
   end

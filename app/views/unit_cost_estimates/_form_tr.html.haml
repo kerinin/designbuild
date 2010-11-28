@@ -1,23 +1,31 @@
+-context ||= params.has_key?(:context) ? params[:context].to_sym : :component
+
 %tr.unit_cost_estimate_fields
-  %td.field
-    %strong= f.label :name
-    = f.text_field :name
-  %td.field
-    %strong= f.label :quantity
-    =# f.select :quantity_id, @component.quantities.map {|q| ["#{q.name} (#{q.value} #{q.unit})", q.id]}
-    = f.hidden_field :component_id, :value => @component.id
-    = f.grouped_collection_select :quantity_id, |
-      @component.ancestors.all + [@component], |
-      :quantities, |
-      :name, |
-      :id, |
-      :optgroup_label |
-  %td.field
-    %strong= f.label :drop
-    = f.text_field :drop
-  %td.field{:colspan => 2}
-    %strong= f.label :unit_cost
-    = f.text_field :unit_cost
+  -unless context == :project
+    %td.field
+      %strong= f.label :name
+      = f.text_field :name
+    %td.field
+      %strong= f.label :quantity
+      =# f.select :quantity_id, @component.quantities.map {|q| ["#{q.name} (#{q.value} #{q.unit})", q.id]}
+      = f.hidden_field :component_id, :value => @component.id
+      = f.grouped_collection_select :quantity_id, |
+        @component.ancestors.all + [@component], |
+        :quantities, |
+        :name, |
+        :id, |
+        :optgroup_label |
+    %td.field
+      %strong= f.label :drop
+      = f.text_field :drop
+    %td.field{:colspan => 2}
+      %strong= f.label :unit_cost
+      = f.text_field :unit_cost
+  -else
+    %td.field
+      %strong= f.label :name
+      = @unit_cost_estimate.name
+    %td{:colspan => 3}
   %td.field
     %strong= f.label :task_id
     = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)

@@ -86,7 +86,7 @@ class QuantitiesController < ApplicationController
     @quantity.destroy
 
     respond_to do |format|
-      format.html { redirect_to(component_quantities_url(@component)) }
+      format.html { redirect_to(project_component_url(@project, @component)) }
       format.xml  { head :ok }
     end
   end

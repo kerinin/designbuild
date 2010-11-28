@@ -88,7 +88,7 @@ class MaterialCostsController < ApplicationController
     @material_cost.destroy
 
     respond_to do |format|
-      format.html { redirect_to(task_material_costs_url(@task)) }
+      format.html { redirect_to(project_task_url(@project, @task)) }
       format.xml  { head :ok }
     end
   end

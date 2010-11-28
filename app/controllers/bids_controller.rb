@@ -88,7 +88,7 @@ class BidsController < ApplicationController
     @bid.destroy
 
     respond_to do |format|
-      format.html { redirect_to(contract_bids_url(@contract)) }
+      format.html { redirect_to(project_contract_url(@project, @contract)) }
       format.xml  { head :ok }
     end
   end
