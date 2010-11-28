@@ -51,18 +51,18 @@ Parent Component:
     %th.control
   %tr
     %td Estimated Unit Costs
-    %td.currency= number_to_currency(@component.estimated_component_unit_cost)
+    %td.currency= number_to_currency(@component.estimated_raw_component_unit_cost)
   %tr
     %td Estimated Fixed Costs
-    %td.currency= number_to_currency(@component.estimated_component_fixed_cost)
+    %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
   %tr
     %td Sub-Component Costs
-    %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
+    %td.currency= number_to_currency(add_or_nil @component.estimated_raw_subcomponent_fixed_cost, @component.estimated_raw_subcomponent_unit_cost)
   %tr.totals
     %td.right
       %strong Component Subtotal
     %td.currency
-      %strong= number_to_currency(@component.estimated_cost)
+      %strong= number_to_currency(@component.estimated_raw_cost)
     
     
         

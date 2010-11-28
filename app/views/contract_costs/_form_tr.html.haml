@@ -3,7 +3,7 @@
     %strong= f.label :date
     = f.date_select :date
   %td.field
-    %strong= f.label :cost
-    = f.text_field :cost
+    %strong= f.label :raw_cost, 'Cost'
+    = f.text_field :raw_cost
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'

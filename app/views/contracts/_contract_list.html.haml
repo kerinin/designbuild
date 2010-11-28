@@ -14,10 +14,10 @@
     %tr{:id => "contract_#{contract.id}"}
       %td= contract.name
       %td= contract.active_bid.contractor unless contract.active_bid.blank?
-      %td.currency= number_to_currency contract.cost
+      %td.currency= number_to_currency contract.raw_cost
       %td.number= number_to_percentage contract.total_markup, :precision => 0
-      %td.currency= number_to_currency contract.invoiced
-      %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.invoiced, contract.cost)), :precision => 1)
+      %td.currency= number_to_currency contract.raw_invoiced
+      %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
       %td.control.show= link_to 'Show', [@project, contract]
       %td.control.edit= link_to 'Rename', edit_project_contract_path(@project, contract), :remote => true
       %td.control.destroy= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
@@ -33,9 +33,9 @@
     %td
       %strong Total
     %td.currency
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost})
     %td.currency
-      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.invoiced})
+      %strong= number_to_currency( @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.raw_invoiced})
     %td.number
-      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.invoiced} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.invoiced}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.cost})), :precision => 1)
+      %strong= @contracts.inject(0) {|memo,obj| add_or_nil memo, obj.raw_invoiced} == 0 ? nil : number_to_percentage( multiply_or_nil(100, (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.raw_invoiced}) / (@contracts.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost})), :precision => 1)
     %td{:colspan => 4}

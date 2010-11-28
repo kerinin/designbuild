@@ -12,7 +12,7 @@
 
 %h2
   Bid:
-  = number_to_currency @contract.cost
+  = number_to_currency @contract.raw_cost
   =form_for [@project, @contract] do |f|
     = f.collection_select(:bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();")
 

@@ -9,7 +9,7 @@
   - contract_costs.each do |contract_cost|
     %tr{:id => "contract_cost_#{contract_cost.id}"}
       %td= contract_cost.date.to_s :long
-      %td.currency= number_to_currency contract_cost.cost
+      %td.currency= number_to_currency contract_cost.raw_cost
       %td.control
       %td.control.edit= link_to 'Edit', edit_contract_contract_cost_path(@contract, contract_cost), :remote => true
       %td.control.destroy= link_to 'Destroy', contract_contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
@@ -25,5 +25,5 @@
     %td.right
       %strong Total
     %td.currency
-      %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
     %td{:colspan => 4}

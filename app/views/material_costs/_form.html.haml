@@ -19,8 +19,8 @@
 
   -unless context == :po
     .field
-      = f.label :cost
-      = f.text_field :cost
+      = f.label :raw_cost, 'Cost'
+      = f.text_field :raw_cost
       
   .field.submit
     = f.submit 'Save'
