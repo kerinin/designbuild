@@ -1,5 +1,6 @@
 <% if @deadline.errors.any? %>
-
+  //Error
+  
   <% content_for :error do %>
     <div class='error'><strong><%= error_messages_for(@deadline) %></strong></div>
   <% end %>
@@ -12,7 +13,8 @@
   $("h1.edit_deadline").after("<%= escape_javascript( yield :error ) %>");
 
 <% else %>
-
+  //Success
+  
   window.location.reload();
   
 <% end %>

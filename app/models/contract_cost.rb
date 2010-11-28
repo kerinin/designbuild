@@ -12,6 +12,10 @@ class ContractCost < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  def total_markup
+    self.contract.total_markup unless self.contract.blank?
+  end
+  
   marks_up :raw_cost
   #def cost
   #  multiply_or_nil self.raw_cost, (1+(self.contract.total_markup/100))

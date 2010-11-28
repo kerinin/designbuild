@@ -9,9 +9,9 @@
 
 <% content_for :cancel_link do %>
   <% if @context == :tasks %>
-    <%= link_to ('Cancel', project_tasks_path(@project) ) %>
+    <%= link_to('Cancel', project_tasks_path(@project) ) %>
   <% elsif @context == :task %>
-    <%= link_to ('Cancel', project_task_path(@project, @task) ) %>
+    <%= link_to('Cancel', project_task_path(@project, @task) ) %>
   <% else %>
     <%= link_to( 'Cancel', project_deadlines_path(@project) ) %>
   <% end %>

@@ -46,6 +46,7 @@ class LaborCostsControllerTest < ActionController::TestCase
     assert_response :success
     assert_template :create
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
   end
   
   test "should fail to create xhr labor_cost" do
@@ -58,6 +59,7 @@ class LaborCostsControllerTest < ActionController::TestCase
     assert_response :success
     assert_template :create
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
   end
   
   test "should show labor_cost" do

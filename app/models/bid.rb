@@ -23,6 +23,10 @@ class Bid < ActiveRecord::Base
     end
   end
   
+  def select_label
+    "#{self.name} (#{number_to_currency self.cost})"
+  end
+  
   marks_up :raw_cost
   
   # raw cost

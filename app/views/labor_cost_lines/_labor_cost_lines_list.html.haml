@@ -15,7 +15,7 @@
       %td.currency
         = number_to_currency(labor_cost_line.laborer.bill_rate)
         \/hr
-      %td.currency= number_to_currency(labor_cost_line.cost)
+      %td.currency= number_to_currency(labor_cost_line.raw_cost)
       %td.control
       %td.control.edit= link_to 'Edit', edit_labor_cost_line_item_path(@labor_cost, labor_cost_line), :remote => true
       %td.control.destroy= link_to 'Destroy', labor_cost_line_item_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
@@ -31,5 +31,5 @@
     %td.right{:colspan => 3}
       %strong Total
     %td.currency
-      %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
     %td{:colspan => 4}

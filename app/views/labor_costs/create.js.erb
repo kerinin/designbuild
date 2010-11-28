@@ -1,5 +1,6 @@
 <% if @labor_cost.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <div class='error'><strong><%= error_messages_for(@labor_cost) %></strong></div>
   <% end %>
@@ -12,7 +13,8 @@
   $("h1.new_order").after("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   window.location.href = "<%=task_labor_cost_url(@task, @labor_cost)%>";
   
 <% end %>

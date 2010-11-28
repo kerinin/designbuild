@@ -1,5 +1,6 @@
 <% if @unit_cost_estimate.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@unit_cost_estimate) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,8 @@
   $("table.unit_costs tr.unit_cost_estimate_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   location.reload();
   
 <% end %>

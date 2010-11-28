@@ -15,6 +15,7 @@ Designbuild::Application.routes.draw do
     
     member do
       post :add_markup, :as => :add_markup_to
+      get :autocomplete_task_name
     end
     
     resources :markups, :only => [:new, :create, :edit, :update] do

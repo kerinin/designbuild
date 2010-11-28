@@ -13,7 +13,7 @@
   - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
     %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
       %td= fixed_cost_estimate.name
-      %td.currency= number_to_currency(fixed_cost_estimate.cost)
+      %td.currency= number_to_currency(fixed_cost_estimate.raw_cost)
       %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
       - case context
       - when :component, :project
@@ -41,6 +41,6 @@
     %td.right{:colspan => context == :component ? 2 : 1}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.marked_up_cost })
+      %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}
 

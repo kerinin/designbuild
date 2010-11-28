@@ -24,7 +24,7 @@
       %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )  if context == :component
-      %td.currency= number_to_currency(unit_cost_estimate.cost)
+      %td.currency= number_to_currency(unit_cost_estimate.raw_cost)
       - case context
       - when :component, :project
         %td.control.show= link_to 'Show', [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate]
@@ -51,6 +51,6 @@
     %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.marked_up_cost })
+      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}
     

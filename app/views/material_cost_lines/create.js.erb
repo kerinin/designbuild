@@ -1,5 +1,6 @@
 <% if @material_cost_line.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@material_cost_line) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,8 @@
   $("table.material_cost_lines tr.material_cost_line_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   <% content_for :table do %>
   	<%=render :partial => 'material_cost_lines_list', :locals => {:material_cost_lines => @material_cost_lines, :context => :po} %>
   <% end %>

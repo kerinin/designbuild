@@ -29,7 +29,14 @@ class MarkupsControllerTest < ActionController::TestCase
     get :new
     assert_response :success
   end
-  
+
+  test "should xhr get new" do
+    xhr :get, :new
+    assert_response :success
+    assert_template :new
+    assert_equal 'text/javascript', response.content_type
+  end
+    
   test "should get new w/ associated project" do
     get :new, :project_id => @project.id
     assert_response :success
@@ -102,6 +109,31 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_contains assigns(:markup).contracts, @contract
   end
 
+  test "should xhr create markup" do
+    assert_difference('Markup.count') do
+      xhr :post, :create, :markup => @markup.attributes
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
+  end
+  
+  test "should fail to create xhr markup" do
+    assert_no_difference('Markup.count') do
+      xhr :post, :create, :markup => {
+        :name => 'Test', 
+        :percent => nil
+      }
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+  
   test "should show markup" do
     get :show, :id => @markup.to_param
     assert_response :success
@@ -112,11 +144,39 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_response :success
   end
 
+  test "should xhr get edit" do
+    xhr :get, :edit, :id => @markup.to_param
+    assert_response :success
+    assert_template :edit
+    assert_equal 'text/javascript', response.content_type
+  end
+  
   test "should update markup" do
     put :update, :id => @markup.to_param, :markup => @markup.attributes
     assert_redirected_to markup_path(assigns(:markup))
   end
 
+  test "should xhr update markup" do
+    xhr :put, :update, :id => @markup.to_param, :markup => @markup.attributes
+    
+    assert_response :success
+    assert_template :update
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
+  end
+
+  test "should fail to xhr update markup" do
+    xhr :put, :update, :id => @markup.to_param, :markup => {
+        :name => 'Test', 
+        :percent => nil
+      }
+    
+    assert_response :success
+    assert_template :update
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+  
   test "should destroy markup" do
     assert_difference('Markup.count', -1) do
       delete :destroy, :id => @markup.to_param

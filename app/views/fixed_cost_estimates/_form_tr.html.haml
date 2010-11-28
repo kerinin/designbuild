@@ -3,8 +3,8 @@
     %strong= f.label :name
     = f.text_field :name
   %td.field
-    %strong= f.label :cost
-    = f.text_field :cost
+    %strong= f.label :raw_cost, 'Cost'
+    = f.text_field :raw_cost
   %td.field
     %strong= f.label :task_id
     = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)

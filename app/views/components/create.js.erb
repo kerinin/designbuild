@@ -1,5 +1,6 @@
 <% if @component.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@component) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,8 @@
   $("tr.component_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   <% content_for :table do %>
   	<%=render :partial => 'component_list', :locals => {:parent => (@component.is_root? ? @project : @component.parent ), :components => @components} %>
   <% end %>

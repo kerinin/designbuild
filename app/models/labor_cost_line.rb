@@ -13,6 +13,10 @@ class LaborCostLine < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  def total_markup
+    self.labor_set.total_markup unless self.labor_set.blank?
+  end
+  
   marks_up :raw_cost
   #def cost
   #  multiply_or_nil self.raw_cost, (1+(self.labor_set.task.total_markup/100))

@@ -1,5 +1,6 @@
 <% if @contract_cost.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@contract_cost) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,8 @@
   $("table.contract_costs tr.contract_cost_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   <% content_for :table do %>
   	<%=render :partial => 'contract_costs_list', :locals => {:contract_costs => @contract_costs} %>
   <% end %>

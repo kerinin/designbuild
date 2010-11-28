@@ -57,7 +57,7 @@ Parent Component:
     %td.currency= number_to_currency(@component.estimated_component_fixed_cost)
   %tr
     %td Sub-Component Costs
-    %td.currency= number_to_currency(@component.estimated_subcomponent_cost)
+    %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
   %tr.totals
     %td.right
       %strong Component Subtotal

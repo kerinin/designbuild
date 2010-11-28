@@ -1,5 +1,6 @@
 <% if @project.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@project) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,8 @@
   $("table.projects tr.project_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
+  
   <% content_for :table do %>
   	<%=render :partial => 'project_list', :locals => {:projects => @projects} %>
   <% end %>

@@ -1,5 +1,6 @@
 <% if @task.errors.any? %>
-
+  //Error
+  
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@task) %></strong></td></tr>
   <% end %>
@@ -12,7 +13,7 @@
   $("tr.task_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
   <% content_for :table do %>
   	<%=render :partial => 'task_list', :locals => {:tasks => @tasks} %>
   <% end %>

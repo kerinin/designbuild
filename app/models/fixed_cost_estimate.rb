@@ -23,6 +23,10 @@ class FixedCostEstimate < ActiveRecord::Base
     self.task.blank? ? nil : self.task.name
   end
   
+  def total_markup
+    self.component.total_markup unless self.component.blank?
+  end
+  
   marks_up :raw_cost
   #def cost
   #  multiply_or_nil self.raw_cost, (1+(self.component.total_markup/100))

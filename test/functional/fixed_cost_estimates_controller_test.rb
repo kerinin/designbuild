@@ -18,7 +18,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     get :new, :component_id => @component.to_param
     assert_response :success
   end
-  
+    
   test "should get xhr new from component" do
     xhr :get, :new, :component_id => @component
     assert_response(:success)
@@ -36,7 +36,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
   test "should create fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count') do
       post :create, :component_id => @component.to_param, :fixed_cost_estimate => {
-        :name => 'blah', :cost => 20
+        :name => 'blah', :raw_cost => 20
       }
     end
 
@@ -46,14 +46,27 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
   test "should create xhr unit cost estimate" do
     assert_difference('FixedCostEstimate.count') do
       xhr :post, :create, :component_id => @component, :fixed_cost_estimate => {
-        :name => 'blah', :cost => 20
+        :name => 'blah', :raw_cost => 20
       }
     end
     assert_response(:success)
     assert_template(:create)
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
   end
-  
+
+  test "should fail to create xhr unit cost estimate" do
+    assert_no_difference('FixedCostEstimate.count') do
+      xhr :post, :create, :component_id => @component, :fixed_cost_estimate => {
+        :name => nil, :raw_cost => 20
+      }
+    end
+    assert_response(:success)
+    assert_template(:create)
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+    
   test "should show fixed_cost_estimate" do
     get :show, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param
     assert_response :success
@@ -81,8 +94,19 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
     assert_response(:success)
     assert_template(:update) 
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
   end
-  
+
+  test "should fail to update xhr unit cost estimate" do
+    xhr :put, :update, :component_id => @component, :id => @fixed_cost_estimate.to_param, :fixed_cost_estimate => {
+        :name => nil, :raw_cost => 20
+      }
+    assert_response(:success)
+    assert_template(:update) 
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+    
   test "should destroy fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count', -1) do
       delete :destroy, :component_id => @component.to_param, :id => @fixed_cost_estimate.to_param

@@ -18,8 +18,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
   test "should get new" do
     get :new, :task_id => @project.to_param
     assert_response :success
-  end
-  
+  end 
   
   test "should get xhr new" do
     xhr :get, :new, :task_id => @task.to_param
@@ -31,7 +30,7 @@ class MaterialCostsControllerTest < ActionController::TestCase
   test "should create material_cost" do
     assert_difference('MaterialCost.count') do
       post :create, :task_id => @task.to_param, :material_cost => {
-        :date => '1/1/2000', :cost => 100, :supplier => @supplier
+        :date => '1/1/2000', :raw_cost => 100, :supplier => @supplier
       }
     end
 
@@ -41,24 +40,26 @@ class MaterialCostsControllerTest < ActionController::TestCase
   test "should create xhr material_cost" do
     assert_difference('MaterialCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :material_cost => {
-        :date => '1/1/2000', :cost => 100, :supplier => @supplier
+        :date => '1/1/2000', :raw_cost => 100, :supplier => @supplier
       }
     end
     assert_response :success
     assert_template :create
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
   end
   
   test "should fail to create xhr material_cost" do
     assert_no_difference('MaterialCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :material_cost => {
-        :cost => 100, :supplier => nil
+        :raw_cost => 100, :supplier => nil
       }
     end
 
     assert_response :success
     assert_template :create
     assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
   end
 
   test "should show material_cost" do
