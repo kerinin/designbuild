@@ -12,7 +12,7 @@
     %tr{:id => "bid_#{bid.id}"}
       %td= bid.contractor
       %td= bid.date.to_s :long
-      %td.currency= number_to_currency bid.cost
+      %td.currency= number_to_currency bid.raw_cost
       %td= bid.is_active_bid ? 'Yes' : nil
       %td.control
       %td.control.edit= link_to 'Edit', edit_contract_bid_path(@contract, bid), :remote => true

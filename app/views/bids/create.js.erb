@@ -1,5 +1,5 @@
 <% if @bid.errors.any? %>
-
+  //Error
   <% content_for :error_tr do %>
     <tr class='error'><td colspan = 10><strong><%= error_messages_for(@bid) %></strong></td></tr>
   <% end %>
@@ -12,7 +12,7 @@
   $("table.bids tr.bid_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
-
+  //Success
   <% content_for :table do %>
   	<%=render :partial => 'bid_list', :locals => {:bids => @bids} %>
   <% end %>
