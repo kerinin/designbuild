@@ -23,17 +23,13 @@ class Contract < ActiveRecord::Base
   after_save :cascade_cache_values  
   after_destroy :cascade_cache_values
   
+  # cost
   marks_up :raw_cost
-  #def cost
-  #  multiply_or_nil self.raw_cost, (1+(self.total_markup/100))
-  #end
   
   # raw_cost
   
+  # invoiced
   marks_up :raw_invoiced
-  #def invoiced
-  #  multiply_or_nil self.raw_invoiced, (1+(self.total_markup/100))
-  #end
   
   # raw_invoiced
   

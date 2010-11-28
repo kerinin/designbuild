@@ -22,10 +22,8 @@ class LaborCost < ActiveRecord::Base
     self.task.total_markup unless self.task.blank?
   end
   
+  # cost
   marks_up :raw_cost
-  #def cost
-  #  multiply_or_nil self.raw_cost, (1+(self.task.total_markup/100))
-  #end
   
   # raw_cost
   

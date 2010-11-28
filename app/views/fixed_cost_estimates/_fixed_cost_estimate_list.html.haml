@@ -4,8 +4,11 @@
 %table.fixed_costs
   %tr
     %th Name
-    %th.currency Cost
-    %th Task
+    -unless context == :project
+      %th.currency Cost
+    %th.currency Cost w/ Markup
+    -if context == :component
+      %th Task
     %th.control
     %th.control
     %th.control
@@ -13,13 +16,18 @@
   - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
     %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
       %td= fixed_cost_estimate.name
-      %td.currency= number_to_currency(fixed_cost_estimate.raw_cost)
-      %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
+      -unless context == :project
+        %td.currency= number_to_currency(fixed_cost_estimate.raw_cost)
+      %td.currency= number_to_currency(fixed_cost_estimate.cost)
+      -if context == :component
+        %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
       - case context
-      - when :component, :project
+      - when :component
         %td.control.show= link_to 'Show', [(context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate]
         %td.control.edit= link_to 'Edit', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
         %td.control.destroy= link_to 'Destroy', [(context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+      - when :project
+        %td.control{:colspan => 3}= link_to 'Set Task', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
       - when :task
         %td.control{:colspan => 3}
           from 
@@ -42,5 +50,7 @@
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
+    %td.currency
+      %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td{:colspan => 4}
 

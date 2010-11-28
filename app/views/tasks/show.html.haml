@@ -53,26 +53,31 @@
 
 %hr
 
-%h2 Totals
+%h2 Total Cost
 
 %table
   %tr
     %th
     %th.currency Cost
+    %th.currency Cost w/ Markup
     %th.control
     %th.control
     %th.control
   %tr
     %td Labor Costs
+    %td.currency= number_to_currency(@task.raw_labor_cost)
     %td.currency= number_to_currency(@task.labor_cost)
     %td{:colspan => 3}
   %tr
     %td Material Costs
+    %td.currency= number_to_currency(@task.raw_material_cost)
     %td.currency= number_to_currency(@task.material_cost)
     %td{:colspan => 3}
   %tr.totals
     %td.right
       %strong Subtotal
+    %td.right
+      %strong= number_to_currency(@task.raw_cost)
     %td.right
       %strong= number_to_currency(@task.cost)
     %td{:colspan => 3}

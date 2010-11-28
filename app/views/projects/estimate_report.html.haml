@@ -34,7 +34,7 @@
     =render :partial => 'estimate_report_component', :locals => {:component => component, :indent => 0}
       
   -@project.contracts.each do |contract|
-    -unless contract.estimated_cost.nil?
+    -unless contract.cost.nil?
       %tr
         %td.control
         %td.control

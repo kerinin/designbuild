@@ -44,9 +44,6 @@ class Component < ActiveRecord::Base
   # This could also happen on the fixed cost and be requested - fc.cost
   # I like it better here because it doesn't require looking up another object's markup
   marks_up :estimated_raw_component_fixed_cost
-  #def estimated_component_fixed_cost
-  #  multiply_or_nil self.estimated_raw_component_fixed_cost, (1+(self.total_markup/100))
-  #end
   
   def estimated_raw_component_fixed_cost
     self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
@@ -66,9 +63,6 @@ class Component < ActiveRecord::Base
   
   # estimated_raw_unit_cost
   marks_up :estimated_raw_component_unit_cost
-  #def estimated_component_unit_cost
-  #  multiply_or_nil self.estimated_raw_component_unit_cost, (1+(self.total_markup / 100))
-  #end
   
   def estimated_raw_component_unit_cost
     self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}

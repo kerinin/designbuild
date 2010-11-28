@@ -3,8 +3,9 @@
     %th Name
     %th.currency Est. Cost
     %th.currency Cost-to-Date
+    %th.currency Projected Cost
     %th.number % Complete
-    %th.control Deadline
+    %th Deadline
     %th.control
     %th.control
 
@@ -18,8 +19,9 @@
         %td=link_to task.name, [@project, task]
         %td.currency= number_to_currency(task.estimated_cost)
         %td.currency= number_to_currency(task.cost)
+        %td.currency= number_to_currency(task.projected_cost)
         %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
-        %td.control
+        %td
           -if task.deadline.blank?
             =link_to "(Set Deadline)", new_task_deadline_path(task)
           -else

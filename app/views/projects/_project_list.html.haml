@@ -13,7 +13,7 @@
 
   - @projects.each do |project|
     %tr{:id => "project_#{project.id}"}
-      %td= project.name
+      %td= link_to project.name, project
       %td.currency= number_to_currency(project.estimated_cost)
       %td.currency= number_to_currency(project.cost)
       %td.control= link_to 'Components', project_components_path(project)

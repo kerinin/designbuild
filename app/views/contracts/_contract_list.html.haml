@@ -12,7 +12,7 @@
 
   - contracts.each do |contract|
     %tr{:id => "contract_#{contract.id}"}
-      %td= contract.name
+      %td= link_to contract.name, [@project, contract]
       %td= contract.active_bid.contractor unless contract.active_bid.blank?
       %td.currency= number_to_currency contract.raw_cost
       %td.number= number_to_percentage contract.total_markup, :precision => 0

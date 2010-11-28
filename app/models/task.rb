@@ -54,17 +54,13 @@ class Task < ActiveRecord::Base
   
   # -------------------CALCULATIONS
   
+  # estimated_unit_cost
   marks_up :estimated_raw_unit_cost
-  #def estimated_unit_cost
-  #  multiply_or_nil self.estimated_raw_unit_cost, (1+(self.total_markup/100))
-  #end
   
   # estimated_raw_unit_cost
   
+  # estimated_fixed_cost
   marks_up :estimated_raw_fixed_cost
-  #def estimated_fixed_cost
-  #  multiply_or_nil self.estimated_raw_fixed_cost, (1+(self.total_markup/100))
-  #end
   
   # estimated_raw_fixed_cost
   
@@ -76,17 +72,13 @@ class Task < ActiveRecord::Base
     add_or_nil(estimated_raw_fixed_cost, estimated_raw_unit_cost)
   end
   
+  # labor_cost
   marks_up :raw_labor_cost
-  #def labor_cost
-  #  multiply_or_nil self.raw_labor_cost, (1+(self.total_markup/100))
-  #end
   
   # raw_labor_cost
   
+  # material_cost
   marks_up :raw_material_cost
-  #def material_cost
-  #  multiply_or_nil self.raw_material_cost, (1+(self.total_markup/100))
-  #end
   
   # raw_material_cost
   
@@ -98,10 +90,8 @@ class Task < ActiveRecord::Base
     add_or_nil(raw_labor_cost, raw_material_cost)
   end
   
+  # projected_cost
   marks_up :raw_projected_cost
-  #def projected_cost
-  #  multiply_or_nil self.raw_projected_cost, (1+(self.total_markup/100))
-  #end
   
   def raw_projected_cost
     if self.percent_complete >= 100

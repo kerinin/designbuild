@@ -11,8 +11,7 @@
   - deadlines.each do |deadline|
     %tr{:id => "deadline_#{deadline.id}"}
       %td{:colspan => 2}
-        =link_to deadline.name, [@project, deadline]
-        =# link_to "(Add Relative Deadline)", new_deadline_relative_deadline_path(deadline), :remote => true, :class => 'add_relative', :id => "add_relative_to_#{deadline.id}"
+        = deadline.name
       %td= deadline.date.to_s :long
       %td=raw( deadline.tasks.map {|t| link_to t.name, [@project, t]}.join(',') )
       %td.control

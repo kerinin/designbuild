@@ -24,7 +24,11 @@ class Bid < ActiveRecord::Base
   end
   
   def select_label
-    "#{self.name} (#{number_to_currency self.raw_cost})"
+    "#{self.contract}"
+  end
+  
+  def total_markup
+    self.contract.total_markup unless self.contract.blank?
   end
   
   marks_up :raw_cost

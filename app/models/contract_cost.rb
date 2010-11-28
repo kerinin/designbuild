@@ -17,9 +17,6 @@ class ContractCost < ActiveRecord::Base
   end
   
   marks_up :raw_cost
-  #def cost
-  #  multiply_or_nil self.raw_cost, (1+(self.contract.total_markup/100))
-  #end
 
   def cascade_cache_values
     self.contract.save!

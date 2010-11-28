@@ -17,10 +17,8 @@ class LaborCostLine < ActiveRecord::Base
     self.labor_set.total_markup unless self.labor_set.blank?
   end
   
+  # cost
   marks_up :raw_cost
-  #def cost
-  #  multiply_or_nil self.raw_cost, (1+(self.labor_set.task.total_markup/100))
-  #end
   
   def raw_cost
     self.hours * self.laborer.bill_rate unless ( self.laborer.blank? || self.laborer.destroyed? )
