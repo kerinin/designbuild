@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
+=begin
   context "A Project" do
     setup do
       @obj = Factory :project
@@ -139,6 +140,150 @@ class ProjectTest < ActiveSupport::TestCase
     
     should "aggregate costs" do
       assert_equal 111111, @obj.reload.raw_cost
+    end
+  end
+=end 
+  context "A project w/ caching" do
+    setup do
+      @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
+      @component = Factory :component, :project => @project, :name => 'component'
+      @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
+      @task = Factory :task, :project => @project
+      @contract = Factory :contract, :project => @project
+      @laborer = Factory :laborer, :bill_rate => 1
+    end
+    
+    should "reflect root unit costs" do
+      @q = Factory :quantity, :component => @component, :value => 1
+      @uc = Factory :unit_cost_estimate, :component => @component, :quantity => @q, :unit_cost => 100, :drop => 0
+      
+      assert_equal 100, @project.reload.estimated_raw_unit_cost
+      assert_equal 200, @project.reload.estimated_unit_cost
+      assert_equal 100, @project.reload.estimated_raw_cost
+      assert_equal 200, @project.reload.estimated_cost
+      
+      @uc.destroy
+      
+      assert_equal nil, @project.reload.estimated_raw_unit_cost
+      assert_equal nil, @project.reload.estimated_unit_cost
+      assert_equal nil, @project.reload.estimated_raw_cost
+      assert_equal nil, @project.reload.estimated_cost
+    end
+    
+    should "reflect subcomponent unit costs" do
+      @q = Factory :quantity, :component => @subcomponent, :value => 1
+      @uc = Factory :unit_cost_estimate, :component => @subcomponent, :quantity => @q, :unit_cost => 100, :drop => 0, :name => 'unit cost'
+      
+      assert_equal 100, @project.reload.estimated_raw_unit_cost
+      assert_equal 200, @project.reload.estimated_unit_cost
+      assert_equal 100, @project.reload.estimated_raw_cost
+      assert_equal 200, @project.reload.estimated_cost
+      
+      @uc.destroy
+      
+      assert_equal nil, @project.reload.estimated_raw_unit_cost
+      assert_equal nil, @project.reload.estimated_unit_cost
+      assert_equal nil, @project.reload.estimated_raw_cost
+      assert_equal nil, @project.reload.estimated_cost
+    end
+    
+    should "reflect root fixed costs" do
+      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
+      
+      assert_equal 100, @project.reload.estimated_raw_fixed_cost
+      assert_equal 200, @project.reload.estimated_fixed_cost
+      assert_equal 100, @project.reload.estimated_raw_cost
+      assert_equal 200, @project.reload.estimated_cost
+      
+      @fc.destroy
+      
+      assert_equal nil, @project.reload.estimated_raw_fixed_cost
+      assert_equal nil, @project.reload.estimated_fixed_cost
+      assert_equal nil, @project.reload.estimated_raw_cost
+      assert_equal nil, @project.reload.estimated_cost
+    end
+    
+    should "reflect subcomponent fixed costs" do
+      @fc = Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
+      
+      assert_equal 100, @project.reload.estimated_raw_fixed_cost
+      assert_equal 200, @project.reload.estimated_fixed_cost
+      assert_equal 100, @project.reload.estimated_raw_cost
+      assert_equal 200, @project.reload.estimated_cost
+      
+      @fc.destroy
+      
+      assert_equal nil, @project.reload.estimated_raw_fixed_cost
+      assert_equal nil, @project.reload.estimated_fixed_cost
+      assert_equal nil, @project.reload.estimated_raw_cost
+      assert_equal nil, @project.reload.estimated_cost
+    end
+    
+    should "reflect task labor costs" do
+      @lc = Factory :labor_cost, :task => @task
+      @ll = Factory :labor_cost_line, :labor_set => @lc, :laborer => @laborer, :hours => 100
+      
+      assert_equal 100, @project.reload.raw_labor_cost
+      assert_equal 200, @project.reload.labor_cost
+      assert_equal 100, @project.reload.raw_cost
+      assert_equal 200, @project.reload.cost
+      
+      @lc.destroy
+      
+      assert_equal nil, @project.reload.raw_labor_cost
+      assert_equal nil, @project.reload.labor_cost
+      assert_equal nil, @project.reload.raw_cost
+      assert_equal nil, @project.reload.cost
+    end
+    
+    should "reflect task material costs" do
+      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      
+      assert_equal 100, @project.reload.raw_material_cost
+      assert_equal 200, @project.reload.material_cost
+      assert_equal 100, @project.reload.raw_cost
+      assert_equal 200, @project.reload.cost
+      
+      @mc.destroy
+      
+      assert_equal nil, @project.reload.raw_material_cost
+      assert_equal nil, @project.reload.material_cost
+      assert_equal nil, @project.reload.raw_cost
+      assert_equal nil, @project.reload.cost
+    end
+    
+    should "reflect contract cost" do
+      @bid = Factory :bid, :raw_cost => 100, :contract => @contract
+      @contract.active_bid = @bid
+      @contract.save
+      
+      assert_equal 100, @project.reload.raw_contract_cost
+      assert_equal 200, @project.reload.contract_cost
+      assert_equal 100, @project.reload.estimated_raw_cost
+      assert_equal 200, @project.reload.estimated_cost
+      
+      @bid.destroy
+      
+      assert_equal nil, @project.reload.raw_contract_cost
+      assert_equal nil, @project.reload.contract_cost
+      assert_equal nil, @project.reload.estimated_raw_cost
+      assert_equal nil, @project.reload.estimated_cost
+    end
+    
+    should "reflect contract invoiced" do
+      @inv = Factory :contract_cost, :contract => @contract, :raw_cost => 1000
+      
+      assert_equal 1000, @project.reload.raw_contract_invoiced
+      assert_equal 2000, @project.reload.contract_invoiced
+      assert_equal 1000, @project.reload.raw_cost
+      assert_equal 2000, @project.reload.cost
+      
+      @inv.destroy
+      
+      assert_equal nil, @project.reload.raw_contract_invoiced
+      assert_equal nil, @project.reload.contract_invoiced
+      assert_equal nil, @project.reload.raw_cost
+      assert_equal nil, @project.reload.cost
     end
   end
 end

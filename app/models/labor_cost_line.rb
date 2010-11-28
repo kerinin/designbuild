@@ -19,7 +19,7 @@ class LaborCostLine < ActiveRecord::Base
   #end
   
   def raw_cost
-    self.hours * self.laborer.bill_rate unless self.laborer.blank?
+    self.hours * self.laborer.bill_rate unless ( self.laborer.blank? || self.laborer.destroyed? )
   end
 
   def cascade_cache_values

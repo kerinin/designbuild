@@ -53,7 +53,7 @@ class Contract < ActiveRecord::Base
   protected  
   
   def cache_raw_cost
-    self.raw_cost = self.active_bid.blank? ? nil : self.active_bid.raw_cost
+    self.raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
   end
   
   def cache_raw_invoiced
