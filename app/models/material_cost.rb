@@ -30,6 +30,6 @@ class MaterialCost < ActiveRecord::Base
   # raw_cost
 
   def cascade_cache_values
-    self.task.save
+    self.task.save!
   end
 end

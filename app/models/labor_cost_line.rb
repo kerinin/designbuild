@@ -23,6 +23,6 @@ class LaborCostLine < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.labor_set.save
+    self.labor_set.save!
   end
 end

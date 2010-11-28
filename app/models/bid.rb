@@ -28,6 +28,6 @@ class Bid < ActiveRecord::Base
   # raw cost
   
   def cascade_cache_values
-    self.contract.save
+    self.contract.save!
   end
 end

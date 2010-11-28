@@ -31,6 +31,8 @@ class AddCachedValues < ActiveRecord::Migration
     add_column :projects, :raw_labor_cost, :float
     add_column :projects, :contract_cost, :float
     add_column :projects, :raw_contract_cost, :float
+    add_column :projects, :contract_invoiced, :float
+    add_column :projects, :raw_contract_invoiced, :float
     add_column :projects, :projected_cost, :float
     add_column :projects, :raw_projected_cost, :float
     
@@ -71,6 +73,8 @@ class AddCachedValues < ActiveRecord::Migration
     remove_column :projects, :raw_labor_cost
     remove_column :projects, :contract_cost
     remove_column :projects, :raw_contract_cost
+    remove_column :projects, :contract_invoiced
+    remove_column :projects, :raw_contract_invoiced
     remove_column :projects, :projected_cost
     remove_column :projects, :raw_projected_cost
     

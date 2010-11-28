@@ -19,8 +19,9 @@ class Task < ActiveRecord::Base
   validates_presence_of :name, :project
 
   after_create :add_project_markups
-  after_create {|c| c.cache_values; c.save}
-  before_update :cache_values
+  
+  before_save :cache_values
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -128,6 +129,8 @@ class Task < ActiveRecord::Base
   
   
   def cache_values
+    [self.unit_cost_estimates, self.fixed_cost_estimates, self.labor_costs, self.material_costs, self.markups].each {|a| a.reload}
+  
     self.cache_estimated_unit_cost
     self.cache_estimated_fixed_cost
     self.cache_labor_cost
@@ -136,7 +139,7 @@ class Task < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    self.project.save
+    self.project.save!
   end
   
   protected

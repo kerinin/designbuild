@@ -18,7 +18,7 @@ class ProjectTest < ActiveSupport::TestCase
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :raw_cost => 0.1, :task => @task
           @q1 = Factory :quantity, :component => @sc1, :value => 1
           @uc1 = Factory :unit_cost_estimate, :name => 'uc1', :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0, :task => @task #.03
-        
+      
       @c2 = Factory :component, :project => @obj
         @fc2 = Factory :fixed_cost_estimate, :component => @c2, :raw_cost => 1
         @q2 = Factory :quantity, :component => @c2, :value => 1
@@ -33,9 +33,9 @@ class ProjectTest < ActiveSupport::TestCase
         @lc2 = Factory :labor_cost, :task => @t2
           @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @lab, :hours => 1000
           
-      @cont1 = Factory :contract, :project => @obj
+      @cont1 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 10000)
         @cc1 = Factory :contract_cost, :contract => @cont1, :raw_cost => 10000
-      @cont2 = Factory :contract, :project => @obj
+      @cont2 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 100000)
         @cc2 = Factory :contract_cost, :contract => @cont2, :raw_cost => 100000
         
       @dl1 = Factory :deadline, :project => @obj
@@ -112,31 +112,15 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     #---------------------CALCULATIONS
-    
+   
     should "aggregate estimated fixed costs" do
       assert_equal 1.1, @obj.estimated_raw_fixed_cost
     end
- 
+  
     should "aggregate estimated unit costs" do
-      assert_equal 0.03, @uc1.raw_cost
-      assert_equal 0.03, @sc1.estimated_raw_unit_cost
-      
-      assert_equal @sc1.parent, @c1
-      assert_contains @c1.children.all, @sc1
-      #@c1.cache_values
-      #@c1.save
-      #@obj.cache_values
-      
-      #assert_equal nil, @c1.estimated_raw_component_unit_cost
-      #assert_equal 0.03, @c1.estimated_raw_subcomponent_unit_cost
-      
-      assert_equal 0.03, @c1.estimated_raw_unit_cost
-      assert_equal 30, @uc3.raw_cost
-      assert_equal 30, @c2.estimated_raw_unit_cost
-      
-      assert_equal 30.03, @obj.estimated_raw_unit_cost
+      assert_equal 30.03, Project.find(@obj.id).estimated_raw_unit_cost
     end
- 
+   
     should "aggregate estimated costs" do
       assert_equal 31.13, @obj.estimated_raw_cost
     end
@@ -149,12 +133,12 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal 1010, @obj.raw_labor_cost
     end
     
-    should "aggregate contract costs" do
-      assert_equal 110000, @obj.raw_contract_cost
+    should "aggregate contract invoices" do
+      assert_equal 110000, @obj.reload.raw_contract_invoiced
     end
     
     should "aggregate costs" do
-      assert_equal 111111, @obj.raw_cost
+      assert_equal 111111, @obj.reload.raw_cost
     end
   end
 end

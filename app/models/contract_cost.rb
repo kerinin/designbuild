@@ -18,6 +18,6 @@ class ContractCost < ActiveRecord::Base
   #end
 
   def cascade_cache_values
-    self.contract.save
+    self.contract.save!
   end
 end

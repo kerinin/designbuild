@@ -17,8 +17,9 @@ class Contract < ActiveRecord::Base
   validates_presence_of :name, :project
 
   after_create :add_project_markups
-  after_create {|c| c.cache_values; c.save}
-  before_update :cache_values
+  
+  before_save :cache_values
+  
   after_save :cascade_cache_values  
   after_destroy :cascade_cache_values
   
@@ -37,13 +38,15 @@ class Contract < ActiveRecord::Base
   # raw_invoiced
   
   def cache_values
+    [self.bids, self.costs, self.markups].each {|r| r.reload}
+    
     self.cache_raw_cost
     self.cache_raw_invoiced
     self.cache_total_markup
   end
     
   def cascade_cache_values
-    self.project.save
+    self.project.save!
   end
   
   

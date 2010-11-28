@@ -30,8 +30,8 @@ class Markup < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.tasks.all.each {|t| t.save}
-    self.components.all.each {|c| c.save}
-    self.contracts.all.each {|c| c.save}
+    self.tasks.all.each {|t| t.save!}
+    self.components.all.each {|c| c.save!}
+    self.contracts.all.each {|c| c.save!}
   end
 end

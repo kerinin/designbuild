@@ -20,8 +20,10 @@ class Component < ActiveRecord::Base
   
   before_validation :check_project
   after_create :add_parent_markups
+  
   before_save :cache_values, :if => :id
   after_create :cache_values
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -91,6 +93,8 @@ class Component < ActiveRecord::Base
   
   
   def cache_values
+    [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.markups].each {|a| a.reload}
+    
     self.cache_estimated_raw_fixed_cost
     self.cache_estimated_raw_unit_cost
     self.cache_total_markup

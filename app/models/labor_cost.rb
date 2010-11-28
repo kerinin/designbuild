@@ -11,9 +11,10 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task, :percent_complete
   validates_numericality_of :percent_complete
   
-  after_create {|c| c.cache_values; c.save}
-  before_update :cache_values
+  before_save :cache_values
+  
   after_save :deactivate_task_if_done
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -25,11 +26,13 @@ class LaborCost < ActiveRecord::Base
   # raw_cost
   
   def cache_values
+    self.line_items.reload
+    
     self.cache_raw_cost
   end
   
   def cascade_cache_values
-    self.task.save
+    self.task.save!
   end
 
   protected

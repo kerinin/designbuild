@@ -154,6 +154,8 @@ ActiveRecord::Schema.define(:version => 20101127011436) do
     t.float    "raw_labor_cost"
     t.float    "contract_cost"
     t.float    "raw_contract_cost"
+    t.float    "contract_invoiced"
+    t.float    "raw_contract_invoiced"
     t.float    "projected_cost"
     t.float    "raw_projected_cost"
   end

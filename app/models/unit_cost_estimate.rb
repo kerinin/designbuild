@@ -11,8 +11,9 @@ class UnitCostEstimate < ActiveRecord::Base
   validates_numericality_of :unit_cost
   
   before_save :set_component
-  before_save :cache_values, :if => :id
-  after_create :cache_values
+  
+  before_save :cache_values
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -35,12 +36,13 @@ class UnitCostEstimate < ActiveRecord::Base
   
   
   def cache_values
+    self.quantity.reload
+    
     self.cache_cost
   end
   
   def cascade_cache_values
     self.component.save!
-    self.task.save unless self.task.blank?
   end
   
   

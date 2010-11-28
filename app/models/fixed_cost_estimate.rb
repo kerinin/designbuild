@@ -31,7 +31,7 @@ class FixedCostEstimate < ActiveRecord::Base
   # raw_cost
 
   def cascade_cache_values
-    self.component.save
-    self.task.save unless self.task.blank?
+    self.component.save!
+    self.task.save! unless self.task.blank?
   end
 end
