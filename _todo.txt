@@ -4,7 +4,8 @@
 + rework markups
 + auto-deactivate at 100%
 + refactor deadlines to be either relative or absolute, cache relative deadline value
-
++ versioning (https://github.com/airblade/paper_trail)
++ xhr functional tests
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
@@ -22,12 +23,13 @@
 -- help buttons
 -- table alignment
 
+- task ordering / sorting
+- manually set task finished (in case no labor), make unfinished
 - add actual finish date to deadlines
 - task has_many milestones
 - parametric components
-- versioning (https://github.com/airblade/paper_trail)
+- versioning interface
 - equation quantities
-- xhr functional tests
 
 - project dashboard
 -- active tasks (with labor + material creation buttons)
