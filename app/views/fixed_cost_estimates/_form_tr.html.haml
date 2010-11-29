@@ -5,13 +5,14 @@
     %td.field
       %strong= f.label :name
       = f.text_field :name
-    %td.field
+    %td.field.currency
       %strong= f.label :raw_cost, 'Cost'
       = f.text_field :raw_cost
   -else
     %td.field
       %strong= f.label :name
       = @fixed_cost_estimate.name
+  %td
   %td.field
     %strong= f.label :task_id
     = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)

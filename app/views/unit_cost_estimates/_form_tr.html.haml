@@ -15,10 +15,10 @@
         :name, |
         :id, |
         :optgroup_label |
-    %td.field
+    %td.field.number
       %strong= f.label :drop
       = f.text_field :drop
-    %td.field{:colspan => 2}
+    %td.field.currency
       %strong= f.label :unit_cost
       = f.text_field :unit_cost
   -else
@@ -26,13 +26,9 @@
       %strong= f.label :name
       = @unit_cost_estimate.name
     %td{:colspan => 3}
-  %td.field
+  %td.field{:colspan => 3}
     %strong= f.label :task_id
     = f.autocomplete_field :task_name, autocomplete_task_name_project_path(@project)
-    -#unless @project.tasks.empty?
-      =# f.collection_select :task_id, @project.tasks, :id, :name, { :include_blank => "---" }
-      =#or
-    =#link_to "(Add New Task)", new_project_task_path(@project)
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'
 

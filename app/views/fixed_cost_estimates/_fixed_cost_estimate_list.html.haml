@@ -23,7 +23,7 @@
         %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
       - case context
       - when :component
-        %td.control.show= link_to 'Show', [(context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate]
+        %td.control
         %td.control.edit= link_to 'Edit', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
         %td.control.destroy= link_to 'Destroy', [(context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when :project
@@ -46,11 +46,11 @@
       %td{:colspan => 10}= link_to '(Add Fixed Cost)', new_component_fixed_cost_estimate_path(@component), :remote => true
       
   %tr.totals
-    %td.right{:colspan => context == :component ? 2 : 1}
+    %td.right{:colspan => context == :component ? 1 : 1}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
     %td.currency
       %strong= number_to_currency( fixed_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
-    %td{:colspan => 4}
+    %td{:colspan => 10}
 

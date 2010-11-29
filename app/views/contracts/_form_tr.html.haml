@@ -4,6 +4,12 @@
       = f.hidden_field :parent_id, :value => @parent_contract.id
     %strong= f.label :name
     = f.text_field :name
+  %td.field
+    -unless @contract.bids.empty?
+      = form_for [@project, @contract] do |f|
+        = f.collection_select :bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();"
+
+  %td
   %td
   %td
   %td

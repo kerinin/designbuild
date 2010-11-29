@@ -5,7 +5,7 @@
   %tr
     %th Name
     %th Quantity
-    %th Drop
+    %th.number Drop
     %th.currency Unit cost
     -if context == :component
       %th= "Task"
@@ -24,7 +24,7 @@
         = unit_cost_estimate.quantity.unit
         from
         %i= unit_cost_estimate.quantity.name
-      %td= number_to_percentage unit_cost_estimate.drop, :precision => 1
+      %td.number= number_to_percentage unit_cost_estimate.drop, :precision => 1
       %td.currency= number_to_currency(unit_cost_estimate.unit_cost)
       - if context == :component
         %td= unit_cost_estimate.task.blank? ? nil : link_to( unit_cost_estimate.task.name, [@project,unit_cost_estimate.task] )
@@ -33,7 +33,7 @@
       %td.currency= number_to_currency(unit_cost_estimate.cost)
       - case context
       - when :component
-        %td.control.show= link_to 'Show', [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate]
+        %td.control
         %td.control.edit= link_to 'Edit', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
         %td.control.destroy= link_to 'Destroy', [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when :project

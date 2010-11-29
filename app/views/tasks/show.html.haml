@@ -10,8 +10,8 @@
   = @task.name
   
 .main_actions
-  =link_to "Log Hours", new_task_material_cost_path( @task)
-  =link_to "New Purchase Order", new_task_material_cost_path( @task)
+  =link_to "Log Hours", new_task_labor_cost_path( @task), :remote => true
+  =link_to "New Purchase Order", new_task_material_cost_path( @task), :remote => true
   =link_to "Print All Purchase Orders", purchase_order_list_projects_path
 
 

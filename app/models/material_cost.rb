@@ -15,7 +15,7 @@ class MaterialCost < ActiveRecord::Base
   after_destroy :cascade_cache_values
   
   def supplier_name=(string)
-    self.supplier = Supplier.find_or_create_by_name(string) unless string == '' || string.nil?
+    self.supplier = (string == '' || string.nil?) ? nil : Supplier.find_or_create_by_name(string)
   end
   
   def supplier_name

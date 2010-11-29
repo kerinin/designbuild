@@ -18,9 +18,5 @@ $("table.fixed_costs tr#fixed_cost_estimate_<%= @fixed_cost_estimate.id %>").clo
 $("table.fixed_costs tr#fixed_cost_estimate_<%= @fixed_cost_estimate.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("table.fixed_costs tr.fixed_cost_estimate_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("form").bind("ajax:success", function(data, status, xhr) {
-   location.reload();
-});
-
 $("table.fixed_costs tr.add_button").hide();
 $("table.fixed_costs input:text:visible:first").focus();

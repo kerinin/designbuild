@@ -1,6 +1,8 @@
+-context ||= :cost
+
 %h1 Editing material_cost
 
-= render 'form'
+= render :partial => 'form', :locals => {:context => context}
 
 = link_to 'Show', [@task, @material_cost]
 \|

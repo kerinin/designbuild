@@ -13,6 +13,10 @@ class Bid < ActiveRecord::Base
   
   attr_accessor :is_active_bid
   
+  def is_active_bid?
+    self.is_active_bid
+  end
+  
   def is_active_bid
     self.contract.active_bid == self
   end
@@ -24,7 +28,7 @@ class Bid < ActiveRecord::Base
   end
   
   def select_label
-    "#{self.contract}"
+    "#{self.contractor}"
   end
   
   def total_markup

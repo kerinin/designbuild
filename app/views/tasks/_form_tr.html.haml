@@ -1,10 +1,11 @@
 %tr.task_fields
-  %td.field{:colspan => 5}
+  %td.field{:colspan => 6}
     %strong= f.label :name
     = f.text_field :name
   %td.field
     %strong= f.label :active
     = f.check_box :active
+  %td.field
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'
       

@@ -18,9 +18,5 @@ $("table.unit_costs tr#unit_cost_estimate_<%= @unit_cost_estimate.id %>").closes
 $("table.unit_costs tr#unit_cost_estimate_<%= @unit_cost_estimate.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("table.unit_costs tr.unit_cost_estimate_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("form").bind("ajax:success", function(data, status, xhr) {
-   location.reload();
-});
-
 $("table.unit_costs tr.add_button").hide();
 $("table.unit_costs input:text:visible:first").focus();

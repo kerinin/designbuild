@@ -13,7 +13,7 @@ module ApplicationHelper
     when delta == -1
       "Yesterday"
     else
-      "(#{date} days ago)"
+      "#{Date::today - date} days ago"
     end
   end
 end

@@ -13,6 +13,8 @@ body
       background-color : $table-alternating-color
     tr:nth-child(1), tr:nth-child(1):hover
       background-color : $table-header-color
+    tr.emphasize
+      background-color : $table-hover-color
       
     th
       border-left : 1px solid white
@@ -23,10 +25,10 @@ body
     tr.control
       th, td
         text-align : center
-    td.currency, th.currency
+    td.currency, th.currency, td.currency input[type="text"]
       text-align : right
       width : 80px
-    td.number, th.number
+    td.number, th.number, td.number input[type="text"]
       text-align : right
       width : 80px
     td.unit, th.number
