@@ -134,9 +134,11 @@ class Component < ActiveRecord::Base
   
   def cascade_add_markup(markup)
     self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
+    self.save
   end
   
   def cascade_remove_markup(markup)
     self.children.all.each {|c| c.markups.delete( markup ) }
+    self.save
   end
 end

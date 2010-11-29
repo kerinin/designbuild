@@ -20,14 +20,16 @@
       %td.currency= number_to_currency(task.projected_cost)
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 1)
       %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
-      %td.check_box= task.active ? 'Yes' : 'No'
+      %td.check_box
+        =form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_active"} do |f|
+          = f.check_box :active, :onchange => "$('#edit_task_#{task.id}_active').submit();"
       %td
         -if task.deadline.blank?
           Set Deadline:
           = link_to 'New', new_task_deadline_path(task, :context => 'tasks'), :remote => true
           or
-          =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)) do |f|
-            =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}').submit();"
+          =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
+            =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
         -else
           = link_to( task.deadline.name, edit_task_deadline_path(task, :context => 'tasks'), :remote => true ) 
           = date_relative_to_now(task.deadline.date)

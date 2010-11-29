@@ -189,5 +189,11 @@ class TaskTest < ActiveSupport::TestCase
       assert_equal @t_finished_lower.raw_projected_cost, 50
       assert_equal @t_finished_higher.raw_projected_cost, 200
     end
+    
+    should "update total markup after add" do
+      @markup = Factory :markup, :percent => 10
+      @obj.markups << @markup
+      assert_equal 10, @obj.total_markup
+    end
   end
 end

@@ -14,7 +14,7 @@ class Task < ActiveRecord::Base
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :after_add => Proc.new{|t,m| t.save}, :after_remove => Proc.new{|t,m| t.save}
   
   validates_presence_of :name, :project
 

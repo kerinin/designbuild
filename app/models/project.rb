@@ -129,6 +129,7 @@ class Project < ActiveRecord::Base
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.tasks.all.each {|t| t.markups << markup unless t.markups.include? markup }
     self.contracts.all.each {|c| c.markups << markup unless c.markups.include? markup }
+    self.save
   end
   
   def cascade_remove_markup(markup)
@@ -136,5 +137,6 @@ class Project < ActiveRecord::Base
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups.delete( markup ) }
     self.tasks.all.each {|t| t.markups.delete( markup ) }
     self.contracts.all.each {|c| c.markups.delete( markup ) }
+    self.save
   end
 end

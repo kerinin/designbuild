@@ -4,9 +4,9 @@ class Markup < ActiveRecord::Base
   has_many :markings, :dependent => :destroy
   
   has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_add => :cascade_add, :before_remove => :cascade_remove
-  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task'
+  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :after_add => Proc.new{|m,t| t.save}, :after_remove => Proc.new{|m,t| t.save}
   has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :after_add => :cascade_add, :before_remove => :cascade_remove
-  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract'
+  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract', :after_add => Proc.new{|m,c| c.save}, :after_remove => Proc.new{|m,c| c.save}
   
   accepts_nested_attributes_for :markings
   

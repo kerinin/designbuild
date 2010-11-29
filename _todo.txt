@@ -5,12 +5,6 @@
 + auto-deactivate at 100%
 + refactor deadlines to be either relative or absolute, cache relative deadline value
 
--bugs
-edit markup makes tons of duplicates, deleting one removes them all (from project & component)
-new components not inheriting markups on create, but inheriting on edit (from #index and #show)
-changing task to active fucks up redirect (from #index)
-editing deadline removes it from task, but does update the dl (task#index, task#show)
-
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)

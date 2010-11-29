@@ -45,6 +45,8 @@
             %li
               = check_box_tag "deadline[task_ids][]", task.id, @deadline.tasks.include?(task)
               = task.name
+  -else
+    = f.hidden_field :task_ids
       
   .actions
     -if @context == :task || @context == :tasks

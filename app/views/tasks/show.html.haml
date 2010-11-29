@@ -20,8 +20,8 @@
   = link_to 'New', new_task_deadline_path(@task, :context => 'tasks'), :remote => true
   or
   .inline
-    =form_for [@project,@task] do |f|
-      =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{@task.id}').submit();"
+    =form_for [@project,@task], :html => {:id => "edit_task_#{@task.id}_deadline"} do |f|
+      =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{@task.id}_deadline').submit();"
 
 -else
   Deadline:
@@ -29,9 +29,13 @@
   = @task.deadline.date.to_s :long
   = "(#{date_relative_to_now @task.deadline.date})"
   .inline
-    = form_for [@project, @task] do |f|
+    = form_for [@project, @task], :html => {:id => "edit_task_#{@task.id}_deadline"} do |f|
       = f.hidden_field :deadline_id, :value => nil
       = f.submit 'Remove'
+
+=form_for [@project, @task], :html => {:id => "edit_task_#{@task.id}_active"} do |f|
+  = f.label :active
+  = f.check_box :active, :onchange => "$('#edit_task_#{@task.id}_active').submit();"
 
 %hr
 

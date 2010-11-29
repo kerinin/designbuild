@@ -12,7 +12,7 @@ class Contract < ActiveRecord::Base
   has_many :bids, :order => :contractor, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :after_add => Proc.new{|c,m| c.save}, :after_remove => Proc.new{|c,m| c.save}
   
   validates_presence_of :name, :project
 

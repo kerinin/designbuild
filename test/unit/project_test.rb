@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ProjectTest < ActiveSupport::TestCase
-=begin
   context "A Project" do
     setup do
       @obj = Factory :project
@@ -142,7 +141,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal 111111, @obj.reload.raw_cost
     end
   end
-=end 
+
   context "A project w/ caching" do
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
@@ -284,6 +283,16 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal nil, @project.reload.contract_invoiced
       assert_equal nil, @project.reload.raw_cost
       assert_equal nil, @project.reload.cost
+    end
+    
+    should "update total markup after add" do
+      @markup = Factory :markup, :percent => 10
+      @project.markups << @markup
+      assert_contains @component.reload.markups.all, @markup
+      assert_equal 110, @component.reload.total_markup
+      assert_equal 110, @subcomponent.reload.total_markup
+      assert_equal 110, @task.reload.total_markup
+      assert_equal 110, @contract.reload.total_markup
     end
   end
 end
