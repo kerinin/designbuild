@@ -6,6 +6,8 @@
 + refactor deadlines to be either relative or absolute, cache relative deadline value
 + versioning (https://github.com/airblade/paper_trail)
 + xhr functional tests
++ add actual finish date to deadlines
++ task has_many milestones
 
 - simplify project dashboard
 - re-work markups to be at bottom
@@ -27,9 +29,7 @@
 -- table alignment
 
 - task ordering / sorting
-- manually set task finished (in case no labor), make unfinished
-- add actual finish date to deadlines
-- task has_many milestones
+- milestone / task percent complete UI
 - parametric components
 - versioning interface
 - equation quantities

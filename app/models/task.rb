@@ -31,10 +31,11 @@ class Task < ActiveRecord::Base
   }
   
   scope :completed, lambda {
-    joins(:labor_costs) & LaborCost.where( 'percent_complete >= 100' )
+    where( 'percent_complete >= 100' )
   }
   
   scope :future, lambda {
+    where(:percent_complete => 0).where(:active => false)
   }
   
   def cost_estimates
