@@ -114,9 +114,9 @@ class Task < ActiveRecord::Base
     end
   end
   
-  def percent_complete
-    self.labor_costs.empty? ? 0 : self.labor_costs.first.percent_complete
-  end
+  #def percent_complete
+  #  self.labor_costs.empty? ? 0 : self.labor_costs.first.percent_complete
+  #end
   
   
   def cache_values

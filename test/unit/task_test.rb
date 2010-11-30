@@ -66,7 +66,7 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     #-----------------------REQUIRED
-    
+  
     should "be valid" do
       assert @obj.valid?
     end
@@ -147,13 +147,13 @@ class TaskTest < ActiveSupport::TestCase
       assert_contains @obj.costs, @mc1
       assert_contains @obj.costs, @mc2
     end
-    
+   
     should "inherit percent complete" do
-      assert_equal @obj.percent_complete, 20
+      assert_equal @obj.reload.percent_complete, 30
     end
     
     #-----------------CALCULATIONS
-    
+   
     should "aggregate estimated costs" do
       assert_equal 1111, @obj.estimated_raw_cost
     end

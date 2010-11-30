@@ -14,6 +14,7 @@ class LaborCost < ActiveRecord::Base
   before_save :cache_values
   
   after_save :deactivate_task_if_done
+  after_save :set_task_percent_complete
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
@@ -46,5 +47,9 @@ class LaborCost < ActiveRecord::Base
   def deactivate_task_if_done
     self.task.active = false if self.percent_complete >= 100
     self.task.save!
+  end
+  
+  def set_task_percent_complete
+    self.task.percent_complete = self.percent_complete
   end
 end

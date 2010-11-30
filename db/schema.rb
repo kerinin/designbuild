@@ -214,7 +214,7 @@ ActiveRecord::Schema.define(:version => 20101130145930) do
     t.float    "raw_labor_cost"
     t.float    "raw_material_cost"
     t.float    "total_markup"
-    t.float    "percent_complete"
+    t.float    "percent_complete",         :default => 0.0, :null => false
   end
 
   create_table "unit_cost_estimates", :force => true do |t|
