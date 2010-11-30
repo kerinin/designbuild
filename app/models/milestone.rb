@@ -5,14 +5,14 @@ class Milestone < ActiveRecord::Base
   belongs_to :task
   belongs_to :parent_date, :polymorphic => true
   
-  has_many :relative_milestones, :class_name => 'Milestone', :foreign_key => :parent_date_id, :dependent => :destroy
+  has_many :relative_milestones, :class_name => 'Milestone', :as => :parent_date, :dependent => :destroy
   
   validates_presence_of :name, :project, :task
   validates_presence_of :parent_date, :unless => :date
-  validates_presence_of :interval, :if => :parent_date
+  validates_presence_of :interval, :if => :parent_date_id
   
   before_validation :try_inherit_project, :unless => :project_id
-  before_save :set_date, :if => :parent_date
+  before_save :set_date, :if => :parent_date_id
   after_save :cascade_set_date
   
   # NOTE: the existence of a parent milestone uniquely determines the behavior of the milestone
@@ -26,6 +26,10 @@ class Milestone < ActiveRecord::Base
   
   def is_relative?
     !self.is_absolute?
+  end
+  
+  def is_complete?
+    !self.date_completed.nil?
   end
   
   def select_label
@@ -43,10 +47,10 @@ class Milestone < ActiveRecord::Base
   end
       
   def set_date
-    self.date = ( self.parent_date.date + self.interval )
+    self.date = ( ( self.parent_date.is_complete? ? self.parent_date.date_completed : self.parent_date.date ) + self.interval )
   end
   
   def cascade_set_date
-    self.relative_milestones.all.each {|rd| rd.save!}
+    self.relative_milestones.all.each {|rd| rd.save}
   end
 end

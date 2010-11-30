@@ -11,6 +11,9 @@ class DeadlineTest < ActiveSupport::TestCase
       @rd1 = Factory :deadline, :parent_deadline => @obj, :interval => 10
       @rd2 = Factory :deadline, :parent_deadline => @obj, :interval => 10
       @rr_deadline = Factory :deadline, :parent_deadline => @r_deadline, :interval => 5
+      
+      @m1 = Factory :milestone, :parent_date => @obj, :interval => 1
+      @m2 = Factory :milestone, :parent_date => @obj, :interval => 1
     end
 
     teardown do
@@ -49,21 +52,21 @@ class DeadlineTest < ActiveSupport::TestCase
     end
     
     should "allow a finish date" do
-      @obj.finish_date = Date::today
+      @obj.date_completed = Date::today
       assert @obj.valid?
     end
     
-    should "set finished if all tasks 100%" do
+    should_eventually "set finished if all tasks 100%" do
       @t1.percent_complete = 100
       @t2.percent_complete = 100
       @t1.save
       @t2.save
       
-      assert_equal @obj.finish_date, Date::today
+      assert_equal @obj.date_completed, Date::today
     end
     
     should_eventually "set tasks 100% if finished" do
-      @obj.finish_date = Date::today
+      @obj.date_completed = Date::today
       @obj.save
       
       assert_equal @t1.percent_complete, 100
@@ -71,12 +74,12 @@ class DeadlineTest < ActiveSupport::TestCase
     end
     
     should "revise relative deadlines when finished" do
-      @obj.finish_date = Date::today + 10
+      @obj.date_completed = Date::today + 10
       @obj.save
       
-      assert_equal @rd1.date, Date::today + 20
-      assert_equal @rd2.date, Date::today + 20
-      assert_equal @rr_deadline.date, Date::today + 25
+      assert_equal @rd1.reload.date, Date::today + 20
+      assert_equal @rd2.reload.date, Date::today + 20
+      assert_equal @rr_deadline.reload.date, Date::today + 20
     end
             
     should "scope absolute" do
@@ -117,7 +120,12 @@ class DeadlineTest < ActiveSupport::TestCase
       assert_contains @obj.relative_deadlines, @rd1
       assert_contains @obj.relative_deadlines, @rd2
     end
-    
+
+    should "allow multiple relative milestones" do
+      assert_contains @obj.relative_milestones, @m1
+      assert_contains @obj.relative_milestones, @m2
+    end
+        
     should "allow a parent deadline" do
       assert_equal @r_deadline.parent_deadline, @obj
     end

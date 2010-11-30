@@ -6,6 +6,7 @@ class Deadline < ActiveRecord::Base
   
   has_many :tasks
   has_many :relative_deadlines, :class_name => 'Deadline', :foreign_key => :parent_deadline_id, :dependent => :destroy
+  has_many :relative_milestones, :class_name => 'Milestone', :as => :parent_date, :dependent => :destroy
   
   validates_presence_of :name, :project
   validates_presence_of :parent_deadline_id, :unless => :date
@@ -28,6 +29,10 @@ class Deadline < ActiveRecord::Base
     !self.is_absolute?
   end
   
+  def is_complete?
+    !self.date_completed.nil?
+  end
+  
   def select_label
     "#{self.name} - #{self.date.to_s :long}"
   end
@@ -43,10 +48,11 @@ class Deadline < ActiveRecord::Base
   end
       
   def set_date
-    self.date = ( self.parent_deadline.date + self.interval )
+    self.date = ( ( self.parent_deadline.is_complete? ? self.parent_deadline.date_completed : self.parent_deadline.date ) + self.interval )
   end
   
   def cascade_set_date
-    self.relative_deadlines.all.each {|rd| rd.save!}
+    self.relative_deadlines.all.each {|rd| rd.save}
+    self.relative_milestones.all.each {|rm| rm.save}
   end
 end

@@ -7,6 +7,9 @@
 + versioning (https://github.com/airblade/paper_trail)
 + xhr functional tests
 
+- simplify project dashboard
+- re-work markups to be at bottom
+
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
 ++ pop-up for new employee, new PO, new labor cost

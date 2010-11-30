@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130040909) do
+ActiveRecord::Schema.define(:version => 20101130145930) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(:version => 20101130040909) do
     t.datetime "updated_at"
     t.integer  "interval"
     t.integer  "parent_deadline_id"
+    t.date     "date_completed"
   end
 
   create_table "fixed_cost_estimates", :force => true do |t|
@@ -213,6 +214,7 @@ ActiveRecord::Schema.define(:version => 20101130040909) do
     t.float    "raw_labor_cost"
     t.float    "raw_material_cost"
     t.float    "total_markup"
+    t.float    "percent_complete"
   end
 
   create_table "unit_cost_estimates", :force => true do |t|

@@ -12,9 +12,13 @@ class CreateMilestones < ActiveRecord::Migration
 
       t.timestamps
     end
+    
+    add_column :deadlines, :date_completed, :date
   end
 
   def self.down
+    remove_column :deadlines, :date_completed, :date
+    
     drop_table :milestones
   end
 end

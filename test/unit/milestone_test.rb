@@ -61,7 +61,7 @@ class MilestoneTest < ActiveSupport::TestCase
       assert @obj.valid?
     end
     
-    should "set finished if all tasks 100%" do
+    should_eventually "set finished if all tasks 100%" do
       @t1.percent_complete = 100
       @t1.save
       
@@ -79,9 +79,9 @@ class MilestoneTest < ActiveSupport::TestCase
       @obj.date_completed = Date::today + 10
       @obj.save
       
-      assert_equal @rd1.date, Date::today + 20
-      assert_equal @rd2.date, Date::today + 20
-      assert_equal @rr_milestone.date, Date::today + 25
+      assert_equal @rd1.reload.date, Date::today + 20
+      assert_equal @rd2.reload.date, Date::today + 20
+      assert_equal @rr_milestone.reload.date, Date::today + 20
     end
             
     should "scope absolute" do
@@ -211,10 +211,13 @@ class MilestoneTest < ActiveSupport::TestCase
       @m1_1.date_completed = Date::today - 10
       @m2_1.date_completed = Date::today - 10
       @deadline.date_completed = Date::today - 10
+      @m1_1.save
+      @m2_1.save
+      @deadline.save
       
-      assert_equal @m1_2.date, Date::today - 8
-      assert_equal @m2_2.date, Date::today
-      assert_equal @m3_1.date, Date::today - 20
+      assert_equal @m1_2.reload.date, Date::today - 8
+      assert_equal @m2_2.reload.date, Date::today
+      assert_equal @m3_1.reload.date, Date::today - 20
     end
     
     should "not modify task when finished" do
@@ -230,7 +233,7 @@ class MilestoneTest < ActiveSupport::TestCase
       assert_equal 0, @task3.percent_complete
     end
     
-    should "set finish date when task 100%" do
+    should_eventually "set finish date when task 100%" do
       @task1.percent_complete = 100
       @task2.percent_complete = 100
       @task3.percent_complete = 100
