@@ -77,6 +77,14 @@ class Component < ActiveRecord::Base
   end
   
   # Total Cost
+  def estimated_component_cost
+    add_or_nil( self.estimated_component_unit_cost, self.estimated_component_fixed_cost )
+  end
+  
+  def estimated_raw_component_cost
+    add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_component_fixed_cost )
+  end
+  
   def estimated_cost
     add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost )
   end

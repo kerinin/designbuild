@@ -1,4 +1,6 @@
 class Markup < ActiveRecord::Base
+  include AddOrNil
+  
   has_paper_trail
   
   has_many :markings, :dependent => :destroy
@@ -16,6 +18,10 @@ class Markup < ActiveRecord::Base
   after_save {|r| @new_markings.each {|m| r.cascade_add(m.markupable)} }
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
+  
+  def apply_to(value)
+    multiply_or_nil( value, divide_or_nil(self.percent, 100) )
+  end
   
   def cascade_add(obj)
     obj.send :cascade_add_markup, self

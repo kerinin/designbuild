@@ -2,7 +2,6 @@
   %tr
     %th Date
     %th.currency Cost
-    %th.currency Cost w/ Markup
     %th.control
     %th.control
     %th.control
@@ -11,7 +10,6 @@
     %tr{:id => "contract_cost_#{contract_cost.id}"}
       %td= contract_cost.date.to_s :long
       %td.currency= number_to_currency contract_cost.raw_cost
-      %td.currency= number_to_currency contract_cost.cost
       %td.control
       %td.control.edit= link_to 'Edit', edit_contract_contract_cost_path(@contract, contract_cost), :remote => true
       %td.control.destroy= link_to 'Destroy', contract_contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
@@ -23,11 +21,21 @@
   %tr.control.add_button
     %td{:colspan => 10}= link_to '(Add Contract Invoice)', new_contract_contract_cost_path(@contract), :remote => true
 
+  =render :partial => 'markups/subtotal_lines', :locals => { |
+    :parent => @contract, |
+    :markups => @contract.markups, |
+    :raw_cost => @contract.raw_invoiced, |
+    :edit_helper => :edit_contract_markup_path, |
+    :remove_helper => :remove_contract_markup_path} |
   %tr.totals
     %td.right
-      %strong Total
+      %strong Contract Subtotal
     %td.currency
-      %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
-    %td.currency
-      %strong= number_to_currency( contract_costs.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
-    %td{:colspan => 4}
+      %strong= number_to_currency(@contract.invoiced)
+    %td.control{:colspan => 3}
+      =link_to '(Add New Markup)', new_contract_markup_path( @contract ), :remote => true
+      -unless @inactive_markups.empty?
+        or
+        -form_tag add_markup_to_contract_path(@contract), :id => 'add_existing_markup', :method => :post do
+          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "(Add Existing Markup)", :onchange =>"$('form#add_existing_markup').submit();" }
+

@@ -1,0 +1,12 @@
+-markups.each do |markup|
+  %tr.totals
+    %td.right
+      ="#{markup.name} (#{number_to_percentage markup.percent, :precision => 0})"
+    %td.currency
+      =number_to_currency markup.apply_to( raw_cost )
+    %td.control
+    %td.control.edit
+      = link_to 'Edit', eval( "#{edit_helper}(parent, markup)" ), :remote => true
+    %td.control.destroy
+      = link_to 'Remove', eval( "#{remove_helper}(parent, markup)" ), :confirm => "Are you sure?"
+
