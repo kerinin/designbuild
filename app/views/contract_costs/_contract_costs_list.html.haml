@@ -1,4 +1,4 @@
-%table.contract_costs
+%table.contract_costs.totals
   %tr
     %th Date
     %th.currency Cost
@@ -32,10 +32,10 @@
       %strong Contract Subtotal
     %td.currency
       %strong= number_to_currency(@contract.invoiced)
-    %td.control{:colspan => 3}
-      =link_to '(Add New Markup)', new_contract_markup_path( @contract ), :remote => true
+    %td.control.add_button{:colspan => 3}
+      =link_to '+Markup', new_contract_markup_path( @contract ), :remote => true
       -unless @inactive_markups.empty?
         or
         -form_tag add_markup_to_contract_path(@contract), :id => 'add_existing_markup', :method => :post do
-          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "(Add Existing Markup)", :onchange =>"$('form#add_existing_markup').submit();" }
+          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
 

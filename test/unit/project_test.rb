@@ -122,7 +122,7 @@ class ProjectTest < ActiveSupport::TestCase
     end
    
     should "aggregate estimated costs" do
-      assert_equal 31.13, @obj.estimated_raw_cost
+      assert_equal 110031.13, @obj.estimated_raw_cost
     end
     
     should "aggregate material costs" do

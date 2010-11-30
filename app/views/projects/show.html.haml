@@ -48,7 +48,3 @@
 -unless @project.labor_cost.nil?
   %h3 Timeline
   =render :partial => 'timeline'
-  
-%h2 Default Markups
-
-=render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups}

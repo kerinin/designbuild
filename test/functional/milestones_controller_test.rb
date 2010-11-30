@@ -2,7 +2,7 @@ require 'test_helper'
 
 class MilestonesControllerTest < ActionController::TestCase
   setup do
-    @milestone = milestones(:one)
+    @milestone = Factory :milestone
   end
 
   test "should get index" do

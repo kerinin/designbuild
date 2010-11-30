@@ -1,5 +1,6 @@
 class MarkupsController < ApplicationController
-
+  before_filter :get_parent, :only => [:create, :update, :edit, :new]
+  
   def add_to_project
     @parent = Project.find(params[:project_id])
     
@@ -116,7 +117,8 @@ class MarkupsController < ApplicationController
     respond_to do |format|
       if @markup.save
         format.js {
-          @markups = Markup.all
+          @markups = @parent.markups unless @parent.nil?
+          @markups ||= Markup.all
         }
         format.html { redirect_to( params[:redirect_to] || @markup, :notice => 'Markup was successfully created.') }
         format.xml  { render :xml => @markup, :status => :created, :location => @markup }
@@ -136,7 +138,8 @@ class MarkupsController < ApplicationController
     respond_to do |format|
       if @markup.update_attributes(params[:markup])
         format.js {
-          @markups = Markup.all
+          @markups = @parent.markups unless @parent.nil?
+          @markups ||= Markup.all
         }
         format.html { redirect_to( params[:redirect_to] || @markup, :notice => 'Markup was successfully updated.') }
         format.xml  { head :ok }
@@ -162,9 +165,21 @@ class MarkupsController < ApplicationController
   
   private
   
+  def get_parent
+    if params.has_key?(:task_id)
+      @parent = Task.find(params[:task_id])
+    elsif params.has_key?(:component_id)
+      @parent = Component.find(params[:component_id])
+    elsif params.has_key?(:contract_id)
+      @parent = Contract.find(params[:contract_id])
+    elsif params.has_key?(:project_id)
+      @parent = Project.find(params[:project_id])
+    end
+  end
+  
   def add_and_redirect
     @markup = Markup.find params[:id]
-    @parent.markups << @markup
+    @parent.markups << @markup unless @parent.markups.include? @markup
     
     respond_to do |format|
       format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully added.' }

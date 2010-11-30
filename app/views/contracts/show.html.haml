@@ -13,10 +13,6 @@
 
 %hr
 
-%h2 Markups
-
-=render :partial => 'applied_markup_lines', :locals => {:markups => @contract.markups}
-
 %h3 Invoices to Date
 =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
 

@@ -5,6 +5,7 @@ class ContractCostsController < ApplicationController
   # GET /contract_costs.xml
   def index
     @contract_costs = ContractCost.all
+    @inactive_markups = Markup.scoped - @contract.markups
 
     respond_to do |format|
       format.html # index.html.erb
@@ -45,10 +46,11 @@ class ContractCostsController < ApplicationController
   def create
     @contract_cost = ContractCost.new(params[:contract_cost])
     @contract_cost.contract = @contract
-
+    
     respond_to do |format|
       if @contract_cost.save
         format.js {
+          @inactive_markups = Markup.scoped - @contract.markups
           @contract_costs = @contract.costs
         }
         format.html { redirect_to(contract_contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully created.') }
@@ -69,6 +71,7 @@ class ContractCostsController < ApplicationController
     respond_to do |format|
       if @contract_cost.update_attributes(params[:contract_cost])
         format.js {
+          @inactive_markups = Markup.scoped - @contract.markups
           @contract_costs = @contract.costs
         }
         format.html { redirect_to(contract_contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully updated.') }

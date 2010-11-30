@@ -39,9 +39,9 @@
 
 %hr
 
-%h2 Markups
+%h2=# Markups
 
-=render :partial => 'applied_markup_lines', :locals => {:markups => @task.markups}
+=#render :partial => 'applied_markup_lines', :locals => {:markups => @task.markups}
 
 %h2 Purchase Orders
 
@@ -59,7 +59,7 @@
 
 %h2 Total Cost
 
-%table
+%table.totals
   %tr
     %th
     %th.currency Cost
@@ -74,12 +74,7 @@
     %td Material Costs
     %td.currency= number_to_currency(@task.raw_material_cost)
     %td{:colspan => 3}
-  %tr.totals
-    %td.right
-      %strong Subtotal
-    %td.right
-      %strong= number_to_currency(@task.raw_cost)
-    %td{:colspan => 3}
+
   =render :partial => 'markups/subtotal_lines', :locals => { |
     :parent => @task, |
     :markups => @task.markups, |
@@ -91,12 +86,12 @@
       %strong Task Subtotal
     %td.currency
       %strong= number_to_currency(@task.cost)
-    %td.control{:colspan => 3}
-      =link_to '(Add New Markup)', new_task_markup_path( @task ), :remote => true
+    %td.control.add_button{:colspan => 3}
+      =link_to '+Markup', new_task_markup_path( @task ), :remote => true
       -unless @inactive_markups.empty?
         or
         -form_tag add_markup_to_task_path(@task), :id => 'add_existing_markup', :method => :post do
-          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "(Add Existing Markup)", :onchange =>"$('form#add_existing_markup').submit();" }
+          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
 
 %hr
 

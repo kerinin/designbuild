@@ -53,7 +53,7 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
   test "should fail to create xhr material cost line" do
     assert_no_difference('MaterialCostLine.count') do
       xhr :post, :create, :material_cost_id => @material_cost.to_param, :material_cost_line => {
-        :name => 'blah', :quantity => nil
+        :name => nil, :quantity => nil
       }
     end
 
@@ -96,7 +96,7 @@ class MaterialCostLinesControllerTest < ActionController::TestCase
 
   test "should fail to xhr update material cost line" do
     xhr :put, :update, :material_cost_id => @material_cost.to_param, :id => @material_cost_line.to_param, :material_cost_line => {
-        :name => 'blah', :quantity => nil
+        :name => nil, :quantity => nil
       }
     
     assert_response :success

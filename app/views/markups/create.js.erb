@@ -9,8 +9,8 @@
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("table.markups tr.error").remove();
-  $("table.markups tr.markup_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("table.totals tr.error").remove();
+  $("table.totals tr.markup_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
   //Success
@@ -33,10 +33,10 @@
     $('form.new_markup').html( "<%= escape_javascript( yield :table ) %>");
 
     //Remove the form
-    $('table.markups').unwrap();
+    $('table.totals').unwrap();
     
     //Load a new entry field
-    $('table.markups tr.add_button > td > a').click();
+    $('table.totals td.add_button > td > a').click();
     
   <% end %>
 <% end %>

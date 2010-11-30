@@ -1,32 +1,15 @@
-%tr.markup_fields
-  %td.field
+%tr.markup_fields.totals
+  %td.field.right
     %strong= f.label :name
     = f.text_field :name
-  %td.field
+    
     %strong= f.label :percent
     = f.text_field :percent
+  %td.currency
   %td.actions.control{:colspan => 3}
     = f.submit 'Save'
 
     -unless redirect_to.nil?
       =hidden_field_tag :redirect_to, redirect_to
       
-    -case
-    -when params.has_key?( :project_id )
-      =f.fields_for :markings do |marking_form|
-        =marking_form.hidden_field :markupable_id, :value => params[:project_id]
-        =marking_form.hidden_field :markupable_type, :value => 'Project'
-    -when params.has_key?( :component_id )
-      =f.fields_for :markings do |marking_form|
-        =marking_form.hidden_field :markupable_id, :value => params[:component_id]
-        =marking_form.hidden_field :markupable_type, :value => 'Component'
-    -when params.has_key?( :contract_id )
-      =f.fields_for :markings do |marking_form|
-        =marking_form.hidden_field :markupable_id, :value => params[:contract_id]
-        =marking_form.hidden_field :markupable_type, :value => 'Contract'
-    -when params.has_key?( :task_id )
-      =f.fields_for :markings do |marking_form|
-        =marking_form.hidden_field :markupable_id, :value => params[:task_id]
-        =marking_form.hidden_field :markupable_type, :value => 'Task'
 
-    

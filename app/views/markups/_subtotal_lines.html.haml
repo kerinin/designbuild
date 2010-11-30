@@ -1,5 +1,5 @@
 -markups.each do |markup|
-  %tr.totals
+  %tr.totals{:id => "markup_#{markup.id}"}
     %td.right
       ="#{markup.name} (#{number_to_percentage markup.percent, :precision => 0})"
     %td.currency
