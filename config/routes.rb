@@ -1,5 +1,7 @@
 Designbuild::Application.routes.draw do
   
+  resources :milestones
+
   resources :suppliers
   
   resources :projects do

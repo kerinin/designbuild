@@ -12,6 +12,7 @@ class Task < ActiveRecord::Base
   has_many :fixed_cost_estimates, :order => :name
   has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
+  has_many :milestones, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => Proc.new{|t,m| t.save}, :after_remove => Proc.new{|t,m| t.save}
