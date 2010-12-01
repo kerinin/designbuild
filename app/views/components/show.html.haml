@@ -11,14 +11,18 @@
   =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
   = @component.name
 
+=render :partial => 'hierarchy'
+
 .main_actions
   View:
   =link_to "Change Log", changelog_project_component_path(@project, @component)
 
-
-Parent Component: 
-=form_for [@project, @component] do |f|
-  = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
+Change parent component of 
+%i=@component.name
+to:
+.inline
+  =form_for [@project, @component] do |f|
+    = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
 
 %hr
 

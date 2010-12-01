@@ -1,0 +1,26 @@
+%tr{:class => (component == @component ? 'emphasize' : nil), :id => "component_#{component.id}"}
+  %td{:class => "indent_#{indent}"}
+    -if component == @component
+      %strong=component.name
+    -else
+      =link_to component.name, [@project, component]
+  %td.currency= number_to_currency component.estimated_raw_cost
+  %td.currency= number_to_currency component.estimated_cost
+  -if component == @component
+    %td{:colspan => 3}
+  -else
+    %td.control.show= link_to 'Show', [@project, component]
+    %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
+    %td.control.destroy= link_to icon(:delete), [@project, component], :confirm => 'Are you sure?', :method => :delete
+
+  -if component == @component
+    %tr
+      %td{:class => "indent_#{indent+1}", :colspan => 6}
+        = link_to( ( new_project_component_path(@project, :parent_id => component.id) ), :remote => true ) do
+          = icon(:add)
+          Add Subcomponent
+              
+-component.children.each do |child|
+  = render :partial => 'hierarchy_recursion', :locals => {:component => child, :indent => (indent +1)}
+  
+  
