@@ -18,14 +18,17 @@
       %td.currency= number_to_currency(labor_cost_line.raw_cost)
       %td.control
       %td.control.edit= link_to 'Edit', edit_labor_cost_line_item_path(@labor_cost, labor_cost_line), :remote => true
-      %td.control.destroy= link_to 'Destroy', labor_cost_line_item_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to icon(:delete), labor_cost_line_item_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
 
   - if labor_cost_lines.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}= link_to '(Add Employee Hours)', new_labor_cost_line_item_path(@labor_cost), :remote => true
+    %td{:colspan => 10}
+      = link_to new_labor_cost_line_item_path(@labor_cost), :remote => true do
+        = icon(:add)
+        Add Employee Hours
       
   %tr.totals
     %td.right{:colspan => 3}

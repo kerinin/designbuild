@@ -23,14 +23,17 @@
         %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
         %td.control.show= link_to 'Show', [@project, contract]
         %td.control.edit= link_to 'Rename', edit_project_contract_path(@project, contract), :remote => true
-        %td.control.destroy= link_to 'Destroy', [@project, contract], :confirm => 'Are you sure?', :method => :delete
+        %td.control.destroy= link_to icon(:delete), [@project, contract], :confirm => 'Are you sure?', :method => :delete
       
   - if @contracts.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}= link_to '(Add Contract)', new_project_contract_path(@project), :remote => true |
+    %td{:colspan => 10}
+      = link_to new_project_contract_path(@project), :remote => true do
+        =icon :add
+        Add Contract
           
   %tr.totals
     %td{:colspan => 2}

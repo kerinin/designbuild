@@ -23,7 +23,7 @@
 -- after adding employee, active the labor entry field and pre-select the new person
 -- how to destroy markups?  (auto delete if no associated?)
 -- ajax for PO#log_cost material#edit_cost
--- spinners
+++ spinners
 -- icons
 ++ explanative text
 -- help buttons

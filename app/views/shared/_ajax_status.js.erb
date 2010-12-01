@@ -1,0 +1,9 @@
+jQuery(function($) {
+  // create a convenient toggleLoading function
+  var toggleLoading = function() { $("#loading").toggle() };
+
+  $(document)
+    .bind("ajax:loading",  function(){ $("#failure").hide(); $("#loading").show(); })
+    .bind("ajax:failure", function(){ $("#loading").hide(); $("#failure").show(); })
+    .bind("ajax:success", function(){ $("#loading").hide(); $("#failure").hide(); });
+});

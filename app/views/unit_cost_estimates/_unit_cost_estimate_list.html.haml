@@ -35,7 +35,7 @@
       - when :component
         %td.control
         %td.control.edit= link_to 'Edit', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
-        %td.control.destroy= link_to 'Destroy', [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
+        %td.control.destroy= link_to icon(:delete), [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when :project
         %td.control{:colspan => 3}= link_to 'Set Task', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
       - when :task
@@ -53,7 +53,10 @@
 
   -if context == :component 
     %tr.control.add_button
-      %td{:colspan => 10}= link_to '(Add Unit Cost)', new_component_unit_cost_estimate_path(@component), :remote => true
+      %td{:colspan => 10}
+        = link_to new_component_unit_cost_estimate_path(@component), :remote => true do
+          = icon(:add)
+          Add Unit Cost
             
   %tr.totals
     %td.right{:colspan => 5}

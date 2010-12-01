@@ -14,11 +14,14 @@
       %td= quantity.unit
       %td.control
       %td.control.edit= link_to 'Edit', edit_component_quantity_path(@component, quantity), :remote => true
-      %td.control.destroy= link_to 'Destroy', [@component, quantity], :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to icon(:delete), [@component, quantity], :confirm => 'Are you sure?', :method => :delete
 
   - if quantities.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}= link_to '(Add Quantity)', new_component_quantity_path(@component), :remote => true
+    %td{:colspan => 10}
+      = link_to new_component_quantity_path(@component), :remote => true do
+        =icon(:add)
+        Add Quantity

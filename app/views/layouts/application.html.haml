@@ -11,6 +11,7 @@
     = csrf_meta_tag
     
     = javascript_tag render( :partial => 'shared/qtips.js')
+    = javascript_tag render( :partial => 'shared/ajax_status.js')
     
     = yield :head
     
@@ -24,5 +25,13 @@
     -else
       %p.alert.hidden
       
+    #failure.error.hidden
+      =icon :exclamation
+      Something went wrong!  Try <a href="#" onclick="location.reload();">reloading the page</a>
+      
+    #loading.notice.hidden
+      =image_tag 'spinner_small.gif'
+      Working...
+    
     #post_errors
     = yield

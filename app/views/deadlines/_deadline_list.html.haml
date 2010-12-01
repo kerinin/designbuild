@@ -16,12 +16,15 @@
       %td=raw( deadline.tasks.map {|t| link_to t.name, [@project, t]}.join(',') )
       %td.control
       %td.control.edit= link_to 'Edit', edit_project_deadline_path(@project, deadline), :remote => true
-      %td.control.destroy= link_to 'Destroy', [@project, deadline], :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to icon(:delete), [@project, deadline], :confirm => 'Are you sure?', :method => :delete
 
   - if deadlines.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}= link_to '(Add Deadline)', new_project_deadline_path(@project), :remote => true
+    %td{:colspan => 10}
+      = link_to new_project_deadline_path(@project), :remote => true do
+        = icon :add
+        Add Deadline
       

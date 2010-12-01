@@ -12,14 +12,17 @@
       %td.currency= number_to_currency contract_cost.raw_cost
       %td.control
       %td.control.edit= link_to 'Edit', edit_contract_contract_cost_path(@contract, contract_cost), :remote => true
-      %td.control.destroy= link_to 'Destroy', contract_contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to icon(:delete), contract_contract_cost_path(@contract, contract_cost), :confirm => 'Are you sure?', :method => :delete
 
   - if contract_costs.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}= link_to '(Add Contract Invoice)', new_contract_contract_cost_path(@contract), :remote => true
+    %td{:colspan => 10}
+      = link_to new_contract_contract_cost_path(@contract), :remote => true do
+        = icon(:add)
+        Add Contract Invoice
 
   =render :partial => 'markups/subtotal_lines', :locals => { |
     :parent => @contract, |

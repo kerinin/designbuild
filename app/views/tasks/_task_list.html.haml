@@ -38,14 +38,17 @@
             = f.submit 'Remove'
       %td.control.show= link_to 'Show', [@project, task]
       %td.control.edit= link_to 'Edit', edit_project_task_path(@project, task, :context => 'tasks'), :remote => true
-      %td.control.destroy= link_to 'Destroy', [@project, task], :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to icon(:delete), [@project, task], :confirm => 'Are you sure?', :method => :delete
       
   - if tasks.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 11}= link_to '(Add Task)', new_project_task_path(@project), :remote => true |
+    %td{:colspan => 11}
+      = link_to new_project_task_path(@project), :remote => true do
+        =icon :add
+        Add Task
       
   %tr.totals
     %td

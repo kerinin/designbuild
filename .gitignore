@@ -1,6 +1,6 @@
 .bundle
 log
 tmp
-public/stylesheets
+public/stylesheets/compiled
 db/*.sqlite3
 db/data.yml

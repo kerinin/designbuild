@@ -25,7 +25,7 @@
         %td.control= link_to 'Log Cost', edit_task_material_cost_path(task, material_cost)
       - else
         %td.control= link_to 'Edit Cost', edit_task_material_cost_path(task, material_cost)
-      %td.control= link_to 'Destroy', [@task, material_cost], :confirm => 'Are you sure?', :method => :delete
+      %td.control= link_to icond(:delete), [@task, material_cost], :confirm => 'Are you sure?', :method => :delete
 
   - if material_costs.empty?
     %tr
@@ -33,7 +33,10 @@
       
   - if context == :po
     %tr.control.add_button
-      %td{:colspan => 10}=link_to "(Add Purchase Order)", new_task_material_cost_path(@task), :remote => true
+      %td{:colspan => 10}
+        =link_to new_task_material_cost_path(@task), :remote => true do
+          = icon(:add)
+          Add Purchase Order
   
   - if context == :task
     %tr.totals

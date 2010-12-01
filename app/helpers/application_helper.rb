@@ -16,4 +16,8 @@ module ApplicationHelper
       "#{Date::today - date} days ago"
     end
   end
+  
+  def icon(name)
+    image_tag "#{name}.png", :alt => name.to_s.capitalize, :size => "16x16"
+  end
 end

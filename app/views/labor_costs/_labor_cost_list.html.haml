@@ -17,14 +17,17 @@
       %td.number= number_to_percentage(labor_cost.percent_complete, :precision => 0)
       %td.control= link_to 'Show', [@task, labor_cost]
       %td.control=# link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
-      %td.control= link_to 'Destroy', [@task, labor_cost], :confirm => 'Are you sure?', :method => :delete
+      %td.control= link_to icon(:delete), [@task, labor_cost], :confirm => 'Are you sure?', :method => :delete
 
   - if labor_costs.empty?
     %tr
       %td{:colspan => 10} (None)
       
   %tr.control.add_button
-    %td{:colspan => 10}=link_to "(Log Hours)", new_task_labor_cost_path(@task, :context => context), :remote => true
+    %td{:colspan => 10}
+      =link_to new_task_labor_cost_path(@task, :context => context), :remote => true do
+        = icon(:add)
+        Log Hours
     
   %tr.totals
     %td.right
