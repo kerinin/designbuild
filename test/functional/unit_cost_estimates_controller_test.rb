@@ -44,7 +44,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
   test "should create unit_cost_estimate" do
     assert_difference('UnitCostEstimate.count') do
       post :create, :component_id => @component, :unit_cost_estimate => {
-        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20, :drop => 10
+        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20, :drop => 10, :task_name => 'New Task'
       }
     end
     
@@ -54,7 +54,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
   test "should create xhr unit cost estimate" do
     assert_difference('UnitCostEstimate.count') do
       xhr :post, :create, :component_id => @component, :unit_cost_estimate => {
-        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20, :drop => 10
+        :quantity_id => @quantity, :name => 'blah', :unit_cost => 20, :drop => 10, :task_name => 'New Task'
       }
     end
     assert_response(:success)

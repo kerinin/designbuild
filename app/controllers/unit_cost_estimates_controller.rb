@@ -43,8 +43,10 @@ class UnitCostEstimatesController < ApplicationController
   # POST /unit_cost_estimates
   # POST /unit_cost_estimates.xml
   def create
+    task_name = params[:unit_cost_estimate].delete(:task_name)
     @unit_cost_estimate = UnitCostEstimate.new(params[:unit_cost_estimate])
     @unit_cost_estimate.component = @component
+    @unit_cost_estimate.task_name = task_name unless task_name.nil?
 
     respond_to do |format|
       if @unit_cost_estimate.save

@@ -43,8 +43,10 @@ class FixedCostEstimatesController < ApplicationController
   # POST /fixed_cost_estimates
   # POST /fixed_cost_estimates.xml
   def create
+    task_name = params[:fixed_cost_estimate].delete(:task_name)
     @fixed_cost_estimate = FixedCostEstimate.new(params[:fixed_cost_estimate])
     @fixed_cost_estimate.component = @component
+    @fixed_cost_estimate.task_name = task_name unless task_name.nil?
 
     respond_to do |format|
       if @fixed_cost_estimate.save
