@@ -114,6 +114,9 @@ Designbuild::Application.routes.draw do
 
   devise_for :users
   
+  match 'reports', :controller => :reports, :action => :index, :as => :reports
+  match 'reports/:action', :controller => :reports
+  
   # The priority is based upon order of creation:
   # first created -> highest priority.
 
