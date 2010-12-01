@@ -24,9 +24,8 @@
 -- how to destroy markups?  (auto delete if no associated?)
 -- ajax for PO#log_cost material#edit_cost
 ++ spinners
--- icons
+++ icons
 ++ explanative text
--- help buttons
 -- table alignment
 
 - task ordering / sorting
