@@ -3,9 +3,9 @@ class Project < ActiveRecord::Base
   
   has_paper_trail
   
-  has_many :components, :order => :name, :dependent => :destroy
+  has_many :components, :order => :position, :dependent => :destroy
   has_many :tasks, :order => :name, :dependent => :destroy
-  has_many :contracts, :order => :name, :dependent => :destroy
+  has_many :contracts, :order => :position, :dependent => :destroy
   has_many :deadlines, :order => :date, :dependent => :destroy
   has_many :laborers, :order => :name, :dependent => :destroy
   has_many :suppliers, :dependent => :destroy

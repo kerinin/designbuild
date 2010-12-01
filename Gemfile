@@ -37,6 +37,7 @@ gem "abstract"
 # gem 'inherited_resources', '1.1.2'
 gem 'rails3-jquery-autocomplete'
 gem 'paper_trail'
+gem 'acts_as_list'
 
 group :test, :development do
   gem "shoulda"

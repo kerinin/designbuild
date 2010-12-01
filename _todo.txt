@@ -8,9 +8,9 @@
 + xhr functional tests
 + add actual finish date to deadlines
 + task has_many milestones
++ re-work markups to be at bottom
 
 - simplify project dashboard
-- re-work markups to be at bottom
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)

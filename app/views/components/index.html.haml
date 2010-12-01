@@ -1,3 +1,7 @@
+-content_for :head do
+  =javascript_include_tag 'jquery.tablednd.js'
+  =render :partial => 'dnd.js', :locals => {:url => sort_project_components_path(@project)}
+  
 =render :partial => 'shared/project_nav'
 
 %h1 Design Components

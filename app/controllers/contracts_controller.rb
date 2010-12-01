@@ -1,6 +1,15 @@
 class ContractsController < ApplicationController
   before_filter :get_project, :except => :add_markup
   
+  def sort
+    @project.contracts.all.each do |sub|
+      if position = params[:contracts].index("contract_#{sub.id.to_s}")
+        sub.update_attribute(:position, position + 1) unless sub.position == position + 1
+      end
+    end
+    render :nothing => true, :status => 200
+  end
+  
   def add_markup
     @contract = Contract.find(params[:id])
     

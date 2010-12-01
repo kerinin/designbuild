@@ -2,7 +2,7 @@ class Component < ActiveRecord::Base
   include AddOrNil
   include MarksUp
   
-  has_paper_trail
+  has_paper_trail :ignore => [:position]
   has_ancestry
   
   belongs_to :project
@@ -16,6 +16,9 @@ class Component < ActiveRecord::Base
   
   has_and_belongs_to_many :tags
   
+  acts_as_list :scope => :ancestry
+  #acts_as_list :scope => :parent_id
+  
   validates_presence_of :project, :name
   
   before_validation :check_project
@@ -26,6 +29,8 @@ class Component < ActiveRecord::Base
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
+  
+  default_scope :order => :position
   
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all

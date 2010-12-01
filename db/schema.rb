@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101130145930) do
+ActiveRecord::Schema.define(:version => 20101201010629) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -34,6 +34,7 @@ ActiveRecord::Schema.define(:version => 20101130145930) do
     t.float     "estimated_raw_fixed_cost"
     t.float     "estimated_raw_unit_cost"
     t.float     "total_markup"
+    t.integer   "position"
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -60,6 +61,7 @@ ActiveRecord::Schema.define(:version => 20101130145930) do
     t.float     "raw_cost"
     t.float     "raw_invoiced"
     t.float     "total_markup"
+    t.integer   "position"
   end
 
   create_table "deadlines", :force => true do |t|
@@ -149,16 +151,16 @@ ActiveRecord::Schema.define(:version => 20101130145930) do
   end
 
   create_table "milestones", :force => true do |t|
-    t.string   "name"
-    t.date     "date"
-    t.integer  "interval"
-    t.date     "date_completed"
-    t.integer  "task_id"
-    t.integer  "project_id"
-    t.integer  "parent_date_id"
-    t.string   "parent_date_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.date      "date"
+    t.integer   "interval"
+    t.date      "date_completed"
+    t.integer   "task_id"
+    t.integer   "project_id"
+    t.integer   "parent_date_id"
+    t.string    "parent_date_type"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "projects", :force => true do |t|

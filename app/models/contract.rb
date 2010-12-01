@@ -2,7 +2,7 @@ class Contract < ActiveRecord::Base
   include AddOrNil
   include MarksUp
   
-  has_paper_trail
+  has_paper_trail :ignore => [:position]
   
   belongs_to :project
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
@@ -14,6 +14,8 @@ class Contract < ActiveRecord::Base
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => Proc.new{|c,m| c.save}, :after_remove => Proc.new{|c,m| c.save}
   
+  acts_as_list :scope => :project
+  
   validates_presence_of :name, :project
 
   after_create :add_project_markups
@@ -22,6 +24,8 @@ class Contract < ActiveRecord::Base
   
   after_save :cascade_cache_values  
   after_destroy :cascade_cache_values
+  
+  default_scope :order => :position
   
   # cost
   marks_up :raw_cost

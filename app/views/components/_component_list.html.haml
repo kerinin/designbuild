@@ -7,29 +7,29 @@
     %th.control
     %th.control
     %th.control
-
-  - components.each do |component|
-    %tr.component{:id => "component_#{component.id}"}
-      %td= link_to component.name, [@project, component]
-      %td.currency= number_to_currency(component.estimated_raw_cost)
-      %td.number= number_to_percentage component.total_markup, :precision => 0
-      %td.currency= number_to_currency(component.estimated_cost)
-      %td.control.show= link_to 'Show', [@project, component]
-      %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
-      %td.control.destroy= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
+  %tbody#components  
+    - components.each do |component|
+      %tr.component{:id => "component_#{component.id}"}
+        %td.drag_handle= link_to component.name, [@project, component]
+        %td.currency= number_to_currency(component.estimated_raw_cost)
+        %td.number= number_to_percentage component.total_markup, :precision => 0
+        %td.currency= number_to_currency(component.estimated_cost)
+        %td.control.show= link_to 'Show', [@project, component]
+        %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
+        %td.control.destroy= link_to 'Destroy', [@project, component], :confirm => 'Are you sure?', :method => :delete
       
   - if components.empty?
-    %tr
+    %tr#none
       %td{:colspan => 5} (None)
   
-  %tr.control.add_button
+  %tr.control.add_button#add_button
     %td{:colspan => 10}= link_to '(Add Component)', |
       parent.class.name == 'Project' ? |
         new_project_component_path(@project) : |
         new_project_component_path(@project, :parent_id => parent.id), |
       :remote => true |
       
-  %tr.totals
+  %tr.totals#totals
     %td.right
       %strong Subtotal
     %td.currency

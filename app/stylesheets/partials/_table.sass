@@ -11,13 +11,14 @@ body
     $table-hover-color : #DFE7F0
     tr:nth-child(odd)
       background-color : $table-alternating-color
-    tr:nth-child(1), tr:nth-child(1):hover
-      background-color : $table-header-color
+
     tr.emphasize
       background-color : $table-hover-color
       
-    th
+    th, th:hover
       border-left : 1px solid white
+      background-color : $table-header-color
+      
     tr:hover
       background-color : $table-hover-color
     tr.totals, tr.totals:hover

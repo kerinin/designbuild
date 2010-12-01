@@ -9,10 +9,20 @@ Designbuild::Application.routes.draw do
     resources :components do
       member do
         get :changelog
+        post :sort
+      end
+      collection do
+        post :sort
       end
     end
     resources :tasks        # re-nested
-    resources :contracts    # re-nested
+    
+    resources :contracts do
+      collection do
+        post :sort
+      end
+    end
+    
     resources :deadlines    # re-nested
     
     member do

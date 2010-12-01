@@ -1,6 +1,21 @@
 class ComponentsController < ApplicationController
   before_filter :get_project, :except => :add_markup
   
+  def sort
+    if params.has_key?(:id)
+      set = Component.find(params[:id]).children.all
+    else
+      set = @project.components.roots.all
+    end
+    
+    set.each do |sub|
+      if position = params[:components].index("component_#{sub.id.to_s}")
+        sub.update_attribute(:position, position + 1) unless sub.position == position + 1
+      end
+    end
+    render :nothing => true, :status => 200
+  end
+  
   def changelog
     @component = Component.find(params[:id])
     

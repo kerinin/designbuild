@@ -1,0 +1,19 @@
+<script type="text/javascript" charset="utf-8">
+  $().ready(function() {
+    $('#components').tableDnD({
+      dragHandle: 'drag_handle',
+      onDrop: function(table, row) {
+        //alert($.tableDnD.serialize());  
+        $.ajax({
+           type: "POST",
+           url: "<%= url %>",
+           processData: false,
+           data: $.tableDnD.serialize() + '&authenticity_token=' + encodeURIComponent('<%= form_authenticity_token if protect_against_forgery? %>'),
+           //success: function(msg) {
+             //alert("The components have been sorted")
+           //}
+         });
+      }
+    })
+  })
+</script>
