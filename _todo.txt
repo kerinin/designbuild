@@ -9,6 +9,7 @@
 + add actual finish date to deadlines
 + task has_many milestones
 + re-work markups to be at bottom
++ drag & drop positioning of components, tasks, contracts
 
 - simplify project dashboard
 
@@ -18,13 +19,13 @@
 ++ easy way to pair components & tasks
 ++ show which components not associated, quickly make new tasks
 ++ checkbox to show unit costs on estimate
+++ click tr edits/shows
 -- after adding employee, active the labor entry field and pre-select the new person
 -- how to destroy markups?  (auto delete if no associated?)
 -- ajax for PO#log_cost material#edit_cost
--- click tr edits/shows
 -- spinners
 -- icons
--- explanative text
+++ explanative text
 -- help buttons
 -- table alignment
 
@@ -48,7 +49,5 @@
 -- graphs
 
 - bank draws (invoice tracking)
-
-- drag & drop positioning of components, tasks, contracts
 
 - users and permissions

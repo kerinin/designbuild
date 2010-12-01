@@ -1,0 +1,45 @@
+$(document).ready( function() {
+  $('.qtip_component').qtip({
+     content: '<p>Building Components provide a way to organize your design to simplify cost estimation.</p><p>Components can be nested in other components, and each component can be assigned a set ofquantities (describing things like floor area), unit costs (which allow you to specify a unitcost and inherit a value from quantities) and fixed costs (which are just a number)</p>',
+     show: {delay: 1000},
+     position: {
+        corner: {
+           target: 'topLeft',
+           tooltip: 'topRight'
+        }
+     }
+  });
+  
+  $('.qtip_task').qtip({
+     content: '<p>Construction Tasks provide a way to organize the construction process so you can keep track of costs</p><p>Tasks can be associated with estimated costs so you can keep track of how much construction costs relative to your estimate.</p><p>You can keep track of construction costs for a given task by logging time spent on the task, or by keeping track of material costs</p>',
+     show: {delay: 1000},
+     position: {
+        corner: {
+           target: 'topLeft',
+           tooltip: 'topRight'
+        }
+     }
+  });
+  
+  $('.qtip_contract').qtip({
+     content: '<p>Fixed-Bid Contracts provide a way to keep track of subcontractors.</p><p>You can keep track of multiple bids for a given contract, then choose which will be the "active" bid and keep track of invoices from that contractor.',
+     show: {delay: 1000},
+     position: {
+        corner: {
+           target: 'topLeft',
+           tooltip: 'topRight'
+        }
+     }
+  });
+  
+  $('.qtip_deadline').qtip({
+     content: '<p>Deadlines can be associated with multiple tasks to describe when those tasks should be completed</p><p>Deadlines come in two flavors: absolute and relative.  Absolute Deadlines are determined by a given date, while relative deadlines are calculated using a reference deadline and an interval.  The interval is added to the reference deadline, so an interval of +5 indicates 5 days after the reference deadline</p>',
+     show: {delay: 1000},
+     position: {
+        corner: {
+           target: 'topLeft',
+           tooltip: 'topRight'
+        }
+     }
+  });
+});
