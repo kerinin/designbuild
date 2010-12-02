@@ -150,6 +150,10 @@ class ProjectTest < ActiveSupport::TestCase
       @task = Factory :task, :project => @project
       @contract = Factory :contract, :project => @project
       @laborer = Factory :laborer, :bill_rate => 1
+      
+      @fixed_cost = Factory :fixed_cost_estimate, :component => @component, :task => @task, :raw_cost => 100
+      @quantity = Factory :quantity, :component => @component, :value => 1
+      @unit_cost = Factory :unit_cost_estimate, :component => @component, :task => @task, :unit_cost => 100, :drop => 0
     end
     
     should "reflect root unit costs" do
@@ -293,6 +297,20 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal 110, @subcomponent.reload.total_markup
       assert_equal 110, @task.reload.total_markup
       assert_equal 110, @contract.reload.total_markup
+    end
+    
+    should "update component's task after cost change" do
+      assert_equal 200, @task.estimated_raw_cost
+      
+      @fixed_cost.raw_cost = 200
+      @fixed_cost.save
+      
+      assert_equal 300, @task.estimated_raw_cost
+      
+      @unit_cost.unit_cost = 200
+      @unit_cost.save
+      
+      assert_equal 400, @task.reload.estimated_raw_cost
     end
   end
 end
