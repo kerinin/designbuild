@@ -2,15 +2,18 @@
 	<%= form_for [@project, @component], :remote => true do |f|  %>
 		<% content_for :tr do %>
 			<%= render :partial => 'form_tr', :locals => {:f => f} %>
+			<% if params.has_key? :context %>
+			  <%= hidden_field_tag :context, params[:context] %>
+			<% end %>
 		<% end %>
 	<% end %>
 <% end %>
 
 <% content_for :cancel_link do %>
-  <% if @component.is_root? %>
+  <% if @context_component.nil? %>
     <%= link_to( 'Cancel', project_components_path(@project) ) %>
   <% else %>
-    <%= link_to( 'Cancel', [@project, @component.parent] ) %>
+    <%= link_to( 'Cancel', [@project, @context_component] ) %>
   <% end %>
 <% end %>
 
@@ -21,5 +24,6 @@ contents = form.children().detach();
 $("tr#component_<%= @component.id %>").closest("table").wrap(form).append(contents);
 $("tr#component_<%= @component.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
 $("tr.component_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
-$("table.components tr.add_button").hide();
+//$("table.components tr.add_button, table.components tr.add_root_button").hide();
+$("table.components tr.add_button a, table.components tr.add_root_button a").contents().unwrap();
 $("input:text:visible:first").focus();

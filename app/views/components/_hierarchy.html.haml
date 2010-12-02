@@ -1,3 +1,5 @@
+- @context_component ||= context
+
 %table.components
   %tr
     %th Name
@@ -15,9 +17,9 @@
     %td.control.show= link_to 'Show', @project
     %td
     %td
-  %tr
+  %tr.add_root_button
     %td.indent_1{:colspan => 6}
-      = link_to( ( new_project_component_path(@project) ), :remote => true ) do
+      = link_to( ( new_project_component_path(@project, :context => ( @context_component.nil? ? nil : @context_component.id ) ) ), :remote => true ) do
         =icon(:add)
         Add Top-Level Component
           

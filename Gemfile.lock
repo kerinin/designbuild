@@ -28,7 +28,6 @@ GEM
       activemodel (= 3.0.1)
       activesupport (= 3.0.1)
     activesupport (3.0.1)
-    acts_as_list (0.1.2)
     ancestry (1.2.3)
       activerecord (>= 2.2.2)
     arel (1.0.1)
@@ -131,8 +130,7 @@ PLATFORMS
 
 DEPENDENCIES
   abstract
-  acts_as_list
-  ancestry
+  ancestry (= 1.2.3)
   aws-s3
   compass (>= 0.10.6)
   database_cleaner

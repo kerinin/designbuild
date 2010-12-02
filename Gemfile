@@ -31,13 +31,13 @@ gem "aws-s3" #, :lib => "aws/s3"
 gem 'paperclip', ">= 2.3.5"
 gem "friendly_id", "~> 3.1"
 # gem "memcached"
-gem "acts_as_list"
-gem "ancestry"
+# gem "acts_as_list", :git => 'git://github.com/rails/acts_as_list.git'
+gem "ancestry", '1.2.3'
 gem "abstract"
 # gem 'inherited_resources', '1.1.2'
 gem 'rails3-jquery-autocomplete'
 gem 'paper_trail'
-gem 'acts_as_list'
+
 
 group :test, :development do
   gem "shoulda"

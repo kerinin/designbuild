@@ -16,7 +16,8 @@
   //Success
   
   <% content_for :table do %>
-  	<%=render :partial => 'component_list', :locals => {:parent => (@component.is_root? ? @project : @component.parent ), :components => @components} %>
+    <%= "context: #{@context_component}" %>
+  	<%=render :partial => 'hierarchy', :locals => {:context => @context_component}%>
   <% end %>
 
   //Update the html of the div flash_notice with the new one
@@ -32,6 +33,6 @@
   $('table.components').unwrap();
   
   //Load a new entry field
-  $('table.components tr.add_button > td > a').click();
+  //$('table.components tr.add_button > td > a').click();
   
 <% end %>

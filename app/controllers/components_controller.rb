@@ -66,7 +66,9 @@ class ComponentsController < ApplicationController
     @component = Component.new :parent => @parent_component
 
     respond_to do |format|
-      format.js 
+      format.js {
+        @context_component = Component.find(params[:context]) if params.has_key?(:context)
+      }
       format.html # new.html.erb
       format.xml  { render :xml => @component }
     end
@@ -75,6 +77,13 @@ class ComponentsController < ApplicationController
   # GET /components/1/edit
   def edit
     @component = Component.find(params[:id])
+    
+    respond_to do |format|
+      format.js {
+        @context_component = Component.find(params[:context]) if params.has_key?(:context)
+      }
+      format.html
+    end
   end
 
   # POST /components
@@ -84,11 +93,12 @@ class ComponentsController < ApplicationController
     @component = Component.new(params[:component])
     @component.project = @project
     @component.parent = @parent_component unless @parent_component.nil?
-
+    
     respond_to do |format|
       if @component.save
         format.js { 
           @components = @component.is_root? ? @project.components.roots : @component.siblings
+          @context_component = Component.find(params[:context]) if params.has_key?(:context)
         }
         format.html { redirect_to([@project, @component], :notice => 'Component was successfully created.') }
         format.xml  { render :xml => @component, :status => :created, :location => @component }
@@ -109,6 +119,7 @@ class ComponentsController < ApplicationController
       if @component.update_attributes(params[:component])
         format.js { 
           @components = @component.is_root? ? @project.components.roots : @component.siblings
+          @context_component = Component.find(params[:context]) if params.has_key?(:context)
         }
         format.html { 
           if params.has_key? :redirect
@@ -135,7 +146,9 @@ class ComponentsController < ApplicationController
 
     respond_to do |format|
       format.html { 
-        if @parent.nil?
+        if params.has_key? :redirect
+          redirect_to(params[:redirect])
+        elsif @parent.nil?
           redirect_to(project_components_url(@project)) 
         else
           redirect_to(project_component_url(@project, @parent)) 
