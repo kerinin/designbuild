@@ -20,5 +20,5 @@
       =# f.collection_select :task_id, @project.tasks, :id, :name, { :include_blank => "---" }
       =#or
     =#link_to "(Add New Task)", new_project_task_path(@project)
-  %td.actions.control{:colspan => 3}
+  %td.actions.control{:colspan => 2}
     = f.submit 'Save'

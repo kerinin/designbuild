@@ -4,13 +4,11 @@
     %th Percent
     %th
     %th
-    %th
 
   - markups.each do |markup|
     %tr{:id => "markup_#{markup.id}"}
-      %td= markup.name
+      %td=link_to markup.name, markup
       %td.number= number_to_percentage markup.percent, :precision => 1
-      %td.control.show= link_to 'Show', markup
       %td.control.edit= link_to 'Edit', edit_markup_path(markup), :remote => true
       %td.control.destroy= link_to 'Destroy', markup, :confirm => 'Are you sure?', :method => :delete
 

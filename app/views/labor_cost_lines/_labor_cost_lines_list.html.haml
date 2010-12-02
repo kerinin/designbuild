@@ -6,7 +6,6 @@
     %th.currency Cost
     %th.control
     %th.control
-    %th.control
 
   - labor_cost_lines.each do |labor_cost_line|
     %tr{:id => "labor_cost_line_#{labor_cost_line.id}"}
@@ -16,7 +15,6 @@
         = number_to_currency(labor_cost_line.laborer.bill_rate)
         \/hr
       %td.currency= number_to_currency(labor_cost_line.raw_cost)
-      %td.control
       %td.control.edit= link_to 'Edit', edit_labor_cost_line_item_path(@labor_cost, labor_cost_line), :remote => true
       %td.control.destroy= link_to icon(:delete), labor_cost_line_item_path(@labor_cost, labor_cost_line), :confirm => 'Are you sure?', :method => :delete
 
@@ -35,4 +33,4 @@
       %strong Total
     %td.currency
       %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
-    %td{:colspan => 4}
+    %td{:colspan => 3}

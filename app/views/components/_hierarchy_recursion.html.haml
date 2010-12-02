@@ -7,9 +7,8 @@
   %td.currency= number_to_currency component.estimated_raw_cost
   %td.currency= number_to_currency component.estimated_cost
   -if component == @context_component
-    %td{:colspan => 3}
+    %td{:colspan => 2}
   -else
-    %td.control.show= link_to 'Show', [@project, component]
     %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component, :context => ( @context_component.nil? ? nil : @context_component.id ) ), :remote => true
     -if @component.nil? || @context_component.nil?
       %td.control.destroy= link_to icon(:delete), project_component_path(@project, component, :redirect => project_components_path(@project)), :confirm => 'Are you sure?', :method => :delete

@@ -7,14 +7,12 @@
     %th.currency Cost w/ Markup
     %th.control
     %th.control
-    %th.control
     
   %tr
     %td
       %strong= link_to @project.name, @project
     %td.currency= number_to_currency @project.estimated_raw_cost
     %td.currency= number_to_currency @project.estimated_cost
-    %td.control.show= link_to 'Show', @project
     %td
     %td
   %tr.add_root_button

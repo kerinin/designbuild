@@ -6,7 +6,6 @@
     %th.currency Cost w/ Markup
     %th.control
     %th.control
-    %th.control
 
   - bids.each do |bid|
     %tr{:id => "bid_#{bid.id}", :class => (bid.is_active_bid? ? 'emphasize' : nil)}
@@ -14,7 +13,6 @@
       %td= bid.date.to_s :long
       %td.currency= number_to_currency bid.raw_cost
       %td.currency= number_to_currency bid.cost
-      %td.control
       %td.control.edit= link_to 'Edit', edit_contract_bid_path(@contract, bid), :remote => true
       %td.control.destroy= link_to icon(:delete), [@contract, bid], :confirm => 'Are you sure?', :method => :delete
       

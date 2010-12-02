@@ -11,7 +11,6 @@
       %th Task
     %th.control
     %th.control
-    %th.control
 
   - fixed_cost_estimates.limit(limit).each do |fixed_cost_estimate|
     %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
@@ -23,13 +22,12 @@
         %td= fixed_cost_estimate.task.blank? ? nil : link_to( fixed_cost_estimate.task.name, [@project, fixed_cost_estimate.task] )
       - case context
       - when :component
-        %td.control
         %td.control.edit= link_to 'Edit', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
         %td.control.destroy= link_to icon(:delete), [(context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when :project
-        %td.control{:colspan => 3}= link_to 'Set Task', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
+        %td.control{:colspan => 2}= link_to 'Set Task', edit_component_fixed_cost_estimate_path((context == :task ? fixed_cost_estimate.task : fixed_cost_estimate.component), fixed_cost_estimate, :context => context), :remote => true
       - when :task
-        %td.control{:colspan => 3}
+        %td.control{:colspan => 2}
           from 
           = link_to fixed_cost_estimate.component.name, [@project, fixed_cost_estimate.component]
         

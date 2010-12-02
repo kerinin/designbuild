@@ -7,7 +7,6 @@
         %th.currency Cost w/ Markup
       %th.control
       %th.control
-      %th.control
   -else
     %tr
       %th{:colspan => 10}
@@ -20,7 +19,6 @@
       -if context != :po
         %td.currency= number_to_currency material_cost.raw_cost
         %td.currency= number_to_currency material_cost.cost
-      %td.control= link_to 'Show', task_material_cost_path(task, material_cost, :context => :cost)
       - if context == :po
         %td.control= link_to 'Log Cost', edit_task_material_cost_path(task, material_cost)
       - else
@@ -44,4 +42,4 @@
         %strong Subtotal
       %td.currency
         %strong= number_to_currency( material_costs.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
-      %td{:colspan => 4}
+      %td{:colspan => 3}

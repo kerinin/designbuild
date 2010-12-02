@@ -10,7 +10,6 @@
     %th Deadline
     %th.control
     %th.control
-    %th.control
 
   - tasks.each do |task|
     %tr{:id => "task_#{task.id}"}
@@ -36,7 +35,6 @@
           = form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)) do |f|
             = f.hidden_field :deadline_id, :value => nil
             = f.submit 'Remove'
-      %td.control.show= link_to 'Show', [@project, task]
       %td.control.edit= link_to 'Edit', edit_project_task_path(@project, task, :context => 'tasks'), :remote => true
       %td.control.destroy= link_to icon(:delete), [@project, task], :confirm => 'Are you sure?', :method => :delete
       

@@ -4,13 +4,11 @@
     %th.number Quantity
     %th.control
     %th.control
-    %th.control
 
   - material_cost_lines.each do |material_cost_line|
     %tr{:id => "material_cost_line_#{material_cost_line.id}"}
       %td= material_cost_line.name
       %td.number= material_cost_line.quantity
-      %td.control
       %td.control.edit= link_to 'Edit', edit_material_cost_line_item_path(@material_cost, material_cost_line), :remote => true
       %td.control.destroy= link_to icon(:delete), material_cost_line_item_path(@material_cost, material_cost_line), :confirm => 'Are you sure?', :method => :delete
 
@@ -30,4 +28,4 @@
         %strong Total Cost
       %td.currency
         %strong= number_to_currency( @material_cost.cost )
-      %td{:colspan => 5}
+      %td{:colspan => 4}
