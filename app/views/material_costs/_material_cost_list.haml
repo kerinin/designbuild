@@ -7,6 +7,7 @@
         %th.currency Cost w/ Markup
       %th.control
       %th.control
+      %th.control
   -else
     %tr
       %th{:colspan => 10}
@@ -20,6 +21,7 @@
         %td.currency= number_to_currency material_cost.raw_cost
         %td.currency= number_to_currency material_cost.cost
       - if context == :po
+        %td.control.edit= link_to 'Edit', edit_task_material_cost_path(task, material_cost)
         %td.control= link_to 'Log Cost', edit_task_material_cost_path(task, material_cost)
       - else
         %td.control= link_to 'Edit Cost', edit_task_material_cost_path(task, material_cost)

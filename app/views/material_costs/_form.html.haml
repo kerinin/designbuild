@@ -10,6 +10,9 @@
           %li= msg
 
   .field
+    = f.label :date
+    = f.date_select :date
+  .field
     = f.label :supplier
     = f.autocomplete_field :supplier_name, autocomplete_supplier_name_material_costs_path(@material_cost), :id_element => "#supplier_id"
     =# f.hidden_field :supplier_id
