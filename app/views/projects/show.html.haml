@@ -32,6 +32,10 @@
   %h3 Tasks
   = render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
 
+-unless @project.contracts.empty?
+  %h3 Fixed-Bid Contracts
+  =render :partial => 'contracts/project_dashboard'
+  
 -unless @project.unit_cost_estimates.unassigned.count == 0 && @project.fixed_cost_estimates.unassigned == 0
   %h2 Costs Without a Task
   
