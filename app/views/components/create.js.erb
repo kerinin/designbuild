@@ -16,7 +16,6 @@
   //Success
   
   <% content_for :table do %>
-    <%= "context: #{@context_component}" %>
   	<%=render :partial => 'hierarchy', :locals => {:context => @context_component}%>
   <% end %>
 
