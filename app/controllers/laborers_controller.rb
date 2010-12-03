@@ -42,9 +42,7 @@ class LaborersController < ApplicationController
   # POST /laborers
   # POST /laborers.xml
   def create
-    @laborer = Laborer.new(params[:laborer])
-    @laborer.project = @project
-    
+    @laborer = Laborer.new(params[:laborer]) 
 
     respond_to do |format|
       if @laborer.save
