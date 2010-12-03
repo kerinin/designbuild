@@ -141,7 +141,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal 111111, @obj.reload.raw_cost
     end
   end
-
+  
   context "A project w/ caching" do
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
@@ -150,12 +150,8 @@ class ProjectTest < ActiveSupport::TestCase
       @task = Factory :task, :project => @project
       @contract = Factory :contract, :project => @project
       @laborer = Factory :laborer, :bill_rate => 1
-      
-      @fixed_cost = Factory :fixed_cost_estimate, :component => @component, :task => @task, :raw_cost => 100
-      @quantity = Factory :quantity, :component => @component, :value => 1
-      @unit_cost = Factory :unit_cost_estimate, :component => @component, :task => @task, :unit_cost => 100, :drop => 0
     end
-    
+
     should "reflect root unit costs" do
       @q = Factory :quantity, :component => @component, :value => 1
       @uc = Factory :unit_cost_estimate, :component => @component, :quantity => @q, :unit_cost => 100, :drop => 0
@@ -300,17 +296,31 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     should "update component's task after cost change" do
-      assert_equal 200, @task.estimated_raw_cost
+      @fixed_cost = Factory :fixed_cost_estimate, :component => @component, :task => @task, :raw_cost => 100
+      @quantity = Factory :quantity, :component => @component, :value => 1
+      @unit_cost = Factory :unit_cost_estimate, :component => @component, :task => @task, :unit_cost => 100, :drop => 0, :quantity => @quantity
+      @task.reload
+      
+      assert_contains @task.fixed_cost_estimates.all, @fixed_cost
+      assert_contains @task.unit_cost_estimates.all, @unit_cost
+      assert_equal 100, @fixed_cost.raw_cost
+      assert_equal 100, @unit_cost.raw_cost
+      assert_equal 200, @task.reload.estimated_raw_cost
       
       @fixed_cost.raw_cost = 200
       @fixed_cost.save
       
-      assert_equal 300, @task.estimated_raw_cost
+      assert_equal 300, @task.reload.estimated_raw_cost
       
       @unit_cost.unit_cost = 200
       @unit_cost.save
       
       assert_equal 400, @task.reload.estimated_raw_cost
+      
+      @quantity.value = 2
+      @quantity.save
+      
+      assert_equal 600, @task.reload.estimated_raw_cost
     end
   end
 end

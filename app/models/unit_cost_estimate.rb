@@ -45,6 +45,7 @@ class UnitCostEstimate < ActiveRecord::Base
   
   def cascade_cache_values
     self.component.save!
+    self.task.save! unless self.task.blank?
   end
   
   
