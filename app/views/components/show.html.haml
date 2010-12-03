@@ -11,19 +11,20 @@
   =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
   = @component.name
 
+%hr
+
+=render :partial => 'hierarchy', :locals => {:context => @component}
+
 .main_actions
   View:
   =link_to "Change Log", changelog_project_component_path(@project, @component)
 
-
-Parent Component: 
-=form_for [@project, @component] do |f|
-  = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
-
-%hr
-
-%h2 Sub-Components
-=render :partial => 'component_list', :locals => {:parent => @component, :components => @component.children.order(:name)}
+Change parent component of 
+%i=@component.name
+to:
+.inline
+  =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
+    = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
 
 %hr
 
@@ -46,7 +47,6 @@ Parent Component:
     %th.currency Est. Cost
     %th.control
     %th.control
-    %th.control
   %tr
     %td Estimated Unit Costs
     %td.currency= number_to_currency(@component.estimated_raw_component_unit_cost)
@@ -67,7 +67,7 @@ Parent Component:
       %strong Component Subtotal
     %td.currency
       %strong= number_to_currency(@component.estimated_cost)
-    %td.control.add_button{:colspan => 3}
+    %td.control.add_button{:colspan => 2}
       =link_to '+Markup', new_component_markup_path( @component ), :remote => true
       -unless @inactive_markups.empty?
         or

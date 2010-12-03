@@ -6,7 +6,6 @@
     %th.currency Cost w/ Markup
     %th.control
     %th.control
-    %th.control
   %tbody#components  
     - components.each do |component|
       %tr.component{:id => "component_#{component.id}"}
@@ -14,7 +13,6 @@
         %td.currency= number_to_currency(component.estimated_raw_cost)
         %td.number= number_to_percentage component.total_markup, :precision => 0
         %td.currency= number_to_currency(component.estimated_cost)
-        %td.control.show= link_to 'Show', [@project, component]
         %td.control.edit= link_to 'Rename', edit_project_component_path(@project, component), :remote => true
         %td.control.destroy= link_to icon(:delete), [@project, component], :confirm => 'Are you sure?', :method => :delete
       
@@ -36,5 +34,5 @@
     %td.number
     %td.currency
       %strong= number_to_currency( components.inject(nil) {|memo,obj| add_or_nil( memo, obj.estimated_cost ) } )
-    %td{:colspan => 3}
+    %td{:colspan => 2}
     

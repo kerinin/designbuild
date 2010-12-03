@@ -9,7 +9,6 @@
     %th
     %th.control
     %th.control
-    %th.control
 
   - @projects.each do |project|
     %tr{:id => "project_#{project.id}"}
@@ -20,7 +19,6 @@
       %td.control= link_to 'Tasks', project_tasks_path(project)
       %td.control= link_to 'Contracts', project_contracts_path(project)
       %td.control= link_to 'Deadlines', project_deadlines_path(project)
-      %td.control.show= link_to 'Show', project
       %td.control.edit= link_to 'Rename', edit_project_path(project), :remote => true
       %td.control.destroy= link_to icon(:delete), project, :confirm => 'Are you sure?', :method => :delete
       

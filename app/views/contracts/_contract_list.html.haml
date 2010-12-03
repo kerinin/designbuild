@@ -9,7 +9,6 @@
     %th.number % Total
     %th.control
     %th.control
-    %th.control
   
   %tbody#contracts
     - contracts.each do |contract|
@@ -21,7 +20,6 @@
         %td.currency= number_to_currency contract.cost
         %td.currency= number_to_currency contract.raw_invoiced
         %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
-        %td.control.show= link_to 'Show', [@project, contract]
         %td.control.edit= link_to 'Rename', edit_project_contract_path(@project, contract), :remote => true
         %td.control.destroy= link_to icon(:delete), [@project, contract], :confirm => 'Are you sure?', :method => :delete
       
@@ -47,4 +45,4 @@
       %strong= number_to_currency( @contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.raw_invoiced})
     %td.number
       %strong= number_to_percentage( multiply_or_nil( 100, divide_or_nil( @project.contract_invoiced, @project.contract_cost ) ), :precision => 1 )
-    %td{:colspan => 4}
+    %td{:colspan => 3}

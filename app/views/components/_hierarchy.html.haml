@@ -1,0 +1,30 @@
+- @context_component ||= context
+
+%table.components
+  %tr
+    %th Name
+    %th.currency Cost
+    %th.currency Cost w/ Markup
+    %th.control
+    %th.control
+    
+  %tr
+    %td
+      %strong= link_to @project.name, @project
+    %td.currency= number_to_currency @project.estimated_raw_cost
+    %td.currency= number_to_currency @project.estimated_cost
+    %td
+    %td
+  %tr.add_root_button
+    %td.indent_1{:colspan => 6}
+      = link_to( ( new_project_component_path(@project, :context => ( @context_component.nil? ? nil : @context_component.id ) ) ), :remote => true ) do
+        =icon(:add)
+        Add Top-Level Component
+          
+  -if @context_component.nil?
+    %tbody#components
+      -@project.components.roots.all.each do |component|
+        = render :partial => 'hierarchy_recursion', :locals => {:component => component, :indent => 1}
+  -else
+    -@project.components.roots.all.each do |component|
+      = render :partial => 'hierarchy_recursion', :locals => {:component => component, :indent => 1}

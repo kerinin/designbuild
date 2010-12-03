@@ -14,7 +14,6 @@
     %th.currency Cost w/ Markup
     %th.control
     %th.control
-    %th.control
 
   - unit_cost_estimates.limit(limit).each do |unit_cost_estimate|
     %tr{:id => "unit_cost_estimate_#{unit_cost_estimate.id}"}
@@ -33,13 +32,12 @@
       %td.currency= number_to_currency(unit_cost_estimate.cost)
       - case context
       - when :component
-        %td.control
         %td.control.edit= link_to 'Edit', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
         %td.control.destroy= link_to icon(:delete), [(context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate], :confirm => 'Are you sure?', :method => :delete
       - when :project
-        %td.control{:colspan => 3}= link_to 'Set Task', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
+        %td.control{:colspan => 2}= link_to 'Set Task', edit_component_unit_cost_estimate_path((context == :task ? unit_cost_estimate.task : unit_cost_estimate.component), unit_cost_estimate, :context => context), :remote => true
       - when :task
-        %td.control{:colspan => 3}
+        %td.control{:colspan => 2}
           from
           = link_to unit_cost_estimate.component.name, [@project, unit_cost_estimate.component]
 
@@ -59,11 +57,11 @@
           Add Unit Cost
             
   %tr.totals
-    %td.right{:colspan => 5}
+    %td.right{:colspan => 4}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
     %td.currency
       %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
-    %td{:colspan => 4}
+    %td{:colspan => 2}
     

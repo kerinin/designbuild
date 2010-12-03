@@ -3,11 +3,18 @@ require File.dirname(__FILE__) + '/../test_helper'
 class MarkupsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
-    @component = Factory :component, :project => @project
-    @task = Factory :task, :project => @project
-    @contract = Factory :contract, :project => @project
+    @markup = Factory :markup, :percent => 100
+    @markup2 = Factory :markup, :percent => 100
+    @markup3 = Factory :markup, :percent => 100
     
-    @markup = Factory :markup
+    @project.markups << @markup3
+    @component = Factory :component, :project => @project
+    @component.markups << [@markup, @markup2]
+    @task = Factory :task, :project => @project
+    @task.markups << [@markup, @markup2]
+    @contract = Factory :contract, :project => @project
+    @contract.markups << [@markup, @markup2]
+
     sign_in Factory :user
   end
   
@@ -19,6 +26,49 @@ class MarkupsControllerTest < ActionController::TestCase
     Markup.delete_all
   end
 
+  test "should remove markup from component" do
+    assert_equal 300, @component.reload.total_markup
+    
+    get :remove_from_component, :component_id => @component.to_param, :id => @markup.to_param
+    assert_redirected_to project_component_path(@project, @component)
+    
+    assert_does_not_contain @component.reload.markups, @markup
+    assert_contains @component.reload.markups, @markup2
+    assert_equal 200, @component.reload.total_markup
+  end
+
+  test "should remove markup from project" do
+    get :remove_from_project, :project_id => @project.to_param, :id => @markup3.to_param
+    assert_redirected_to project_path(@project)
+    
+    assert_does_not_contain @component.reload.markups, @markup3
+    assert_equal 200, @component.reload.total_markup
+    assert_equal 200, @task.reload.total_markup
+    assert_equal 200, @contract.reload.total_markup
+  end
+
+  test "should remove markup from contract" do
+    assert_equal 300, @contract.reload.total_markup
+    
+    get :remove_from_contract, :contract_id => @contract.to_param, :id => @markup.to_param
+    assert_redirected_to project_contract_path(@project, @contract)
+    
+    assert_does_not_contain @contract.reload.markups, @markup
+    assert_contains @contract.reload.markups, @markup2
+    assert_equal 200, @contract.reload.total_markup
+  end
+
+  test "should remove markup from task" do
+    assert_equal 300, @task.reload.total_markup
+    
+    get :remove_from_task, :task_id => @task.to_param, :id => @markup.to_param
+    assert_redirected_to project_task_path(@project, @task)
+    
+    assert_does_not_contain @task.reload.markups, @markup
+    assert_contains @task.reload.markups, @markup2
+    assert_equal 200, @task.reload.total_markup
+  end
+         
   test "should get index" do
     get :index
     assert_response :success

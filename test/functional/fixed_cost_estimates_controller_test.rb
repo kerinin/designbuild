@@ -36,7 +36,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
   test "should create fixed_cost_estimate" do
     assert_difference('FixedCostEstimate.count') do
       post :create, :component_id => @component.to_param, :fixed_cost_estimate => {
-        :name => 'blah', :raw_cost => 20
+        :name => 'blah', :raw_cost => 20, :task_name => 'New Task'
       }
     end
 
@@ -46,7 +46,7 @@ class FixedCostEstimatesControllerTest < ActionController::TestCase
   test "should create xhr unit cost estimate" do
     assert_difference('FixedCostEstimate.count') do
       xhr :post, :create, :component_id => @component, :fixed_cost_estimate => {
-        :name => 'blah', :raw_cost => 20
+        :name => 'blah', :raw_cost => 20, :task_name => 'New Task'
       }
     end
     assert_response(:success)
