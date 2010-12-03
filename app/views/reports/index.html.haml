@@ -15,7 +15,7 @@
   
   %ul
     %li=link_to 'All Purchase Orders', purchase_order_list_projects_path
-    -@projects.all.map{|p| p unless (@material_costs.purchase_order.joins(:task).where('tasks.project_id == ?', p.id)).empty? }.compact.each do |project|
+    -@projects.all.map{|p| p unless (@material_costs.purchase_order.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
       %li=link_to "#{project.name} Purchase Orders", purchase_order_list_for_project_path(project)
 
 -unless @labor_costs.empty?
@@ -23,7 +23,7 @@
   
   %ul
     %li=link_to 'Labor Summary for All Projects', labor_summary_projects_path
-    -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id == ?', p.id)).empty? }.compact.each do |project|
+    -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
       %li=link_to "#{project.name} Labor Summary", labor_summary_for_project_path(project)
 
   %h2 Payroll Summary
@@ -38,7 +38,7 @@
           %p
             = link_to 'Payroll for All Projects', payroll_summary_projects_path('date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
             -@projects.all.each do |project|
-              -costs = weekly_labor.joins(:task).where('tasks.project_id == ?', project.id)
+              -costs = weekly_labor.joins(:task).where('tasks.project_id = ?', project.id)
               -unless costs.empty?
                 =link_to "Payroll for #{project.name}", payroll_summary_for_project_path(project, 'date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
         
