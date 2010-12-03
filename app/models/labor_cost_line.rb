@@ -15,7 +15,7 @@ class LaborCostLine < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  scope :by_project, lambda {|project| joins(:labor_set => :task).where('tasks.project_id == ?', project.id) } 
+  scope :by_project, lambda {|project| joins(:labor_set => :task).where('tasks.project_id = ?', project.id) } 
   
   def total_markup
     self.labor_set.total_markup unless self.labor_set.blank?
