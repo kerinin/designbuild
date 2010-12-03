@@ -64,11 +64,6 @@ class ProjectTest < ActiveSupport::TestCase
     
     #--------------------ASSOCIATIONS
     
-    should "allow multiple laborers" do
-      assert_contains @obj.laborers, @lab
-      assert_contains @obj.laborers, @lab2
-    end
-    
     should "allow multiple users" do
       assert_contains @obj.users, @u1
       #assert_contains @obj.users, @u2

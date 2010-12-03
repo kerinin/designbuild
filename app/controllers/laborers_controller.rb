@@ -1,5 +1,4 @@
 class LaborersController < ApplicationController
-  before_filter :get_project
   
   # GET /laborers
   # GET /laborers.xml
@@ -50,7 +49,7 @@ class LaborersController < ApplicationController
     respond_to do |format|
       if @laborer.save
         format.js { 
-          @redirect = redirect_pop_or( project_laborer_url(@project, @laborer) )
+          @redirect = redirect_pop_or( laborer_url(@laborer) )
           render 
         }
         format.html { redirect_to([@project, @laborer], :notice => 'Laborer was successfully created.') }
@@ -86,7 +85,7 @@ class LaborersController < ApplicationController
     @laborer.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_laborers_url(@project)) }
+      format.html { redirect_to(laborers_url) }
       format.xml  { head :ok }
     end
   end

@@ -7,7 +7,7 @@ class Project < ActiveRecord::Base
   has_many :tasks, :order => :name, :dependent => :destroy
   has_many :contracts, :order => :position, :dependent => :destroy
   has_many :deadlines, :order => :date, :dependent => :destroy
-  has_many :laborers, :order => :name, :dependent => :destroy
+  #has_many :laborers, :order => :name, :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy

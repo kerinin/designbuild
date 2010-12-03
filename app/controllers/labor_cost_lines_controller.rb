@@ -27,7 +27,7 @@ class LaborCostLinesController < ApplicationController
   # GET /labor_cost_lines/new.xml
   def new
     @labor_cost_line = LaborCostLine.new
-    @laborers = @project.laborers.all - @labor_cost.line_items.all.map{|li| li.laborer}
+    @laborers = Laborer.scoped - @labor_cost.line_items.all.map{|li| li.laborer}
 
     respond_to do |format|
       format.js
@@ -39,7 +39,7 @@ class LaborCostLinesController < ApplicationController
   # GET /labor_cost_lines/1/edit
   def edit
     @labor_cost_line = LaborCostLine.find(params[:id])
-    @laborers = @project.laborers
+    @laborers = Laborer.scoped
   end
 
   # POST /labor_cost_lines
@@ -47,7 +47,7 @@ class LaborCostLinesController < ApplicationController
   def create
     @labor_cost_line = LaborCostLine.new(params[:labor_cost_line])
     @labor_cost_line.labor_set = @labor_cost
-    @laborers = @project.laborers
+    @laborers = Laborer.scoped
 
     respond_to do |format|
       if @labor_cost_line.save

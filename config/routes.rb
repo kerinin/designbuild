@@ -4,8 +4,9 @@ Designbuild::Application.routes.draw do
 
   resources :suppliers
   
+  resources :laborers  
+  
   resources :projects do
-    resources :laborers     
     resources :components do
       member do
         get :changelog

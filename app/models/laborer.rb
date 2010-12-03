@@ -5,9 +5,10 @@ class Laborer < ActiveRecord::Base
   
   has_many :labor_cost_lines, :dependent => :destroy
   
-  validates_presence_of :project, :bill_rate
+  validates_presence_of :bill_rate
   
   validates_numericality_of :bill_rate
+  validates_numericality_of :pay_rate, :if => :pay_rate
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values

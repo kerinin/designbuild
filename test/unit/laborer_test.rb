@@ -17,12 +17,13 @@ class LaborerTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
       assert_not_nil @obj.bill_rate
+      assert_not_nil @obj.pay_rate
     end
     
-    should "require a project" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :laborer, :project => nil
-      end
-    end
+    #should "require a project" do
+    #  assert_raise ActiveRecord::RecordInvalid do
+    #    Factory :laborer, :project => nil
+    #  end
+    #end
   end
 end
