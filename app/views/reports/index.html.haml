@@ -26,3 +26,19 @@
     -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id == ?', p.id)).empty? }.compact.each do |project|
       %li=link_to "#{project.name} Labor Summary", labor_summary_for_project_path(project)
 
+  %h2 Payroll Summary
+  
+  %ul
+    -weeks = ( @labor_costs.order(:date).first.date..@labor_costs.order(:date).last.date).map {|date| date if date.cwday == 5}.compact.reverse.map {|date| {:start => date - 7, :end => date}}
+    -weeks.each do |span|
+      -weekly_labor = @labor_costs.where('date <= ?', span[:end]).where('date > ?', span[:start])
+      -unless weekly_labor.empty?
+        %li
+          = "Week ending on #{span[:end].to_s(:long)}:"
+          %p
+            = link_to 'Payroll for All Projects', payroll_summary_projects_path('date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
+            -@projects.all.each do |project|
+              -costs = weekly_labor.joins(:task).where('tasks.project_id == ?', project.id)
+              -unless costs.empty?
+                =link_to "Payroll for #{project.name}", payroll_summary_for_project_path(project, 'date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
+        

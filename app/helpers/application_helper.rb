@@ -20,4 +20,27 @@ module ApplicationHelper
   def icon(name)
     image_tag "#{name}.png", :alt => name.to_s.capitalize, :size => "16x16"
   end
+  
+  def weekday(day, week_date)
+    day = case day
+    when :sun, :sunday
+      7
+    when :mon, :monday
+      1
+    when :tue, :tuesday
+      2
+    when :wed, :wednesday
+      3
+    when :thur, :thursday, :thu
+      4
+    when :fri, :friday
+      5
+    when :sat, :saturday
+      6
+    else
+      day
+    end
+    
+    Date::commercial(d.cwyear, d.cweek, day)
+  end
 end

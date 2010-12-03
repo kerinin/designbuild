@@ -1,7 +1,9 @@
 .control
   =render :partial => 'shared/project_nav'
   
-%h1 Labor Summary
+%h1
+  =@project.name unless @project.nil?
+  Payroll Summary
 
 =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
   Labor Summary for week of

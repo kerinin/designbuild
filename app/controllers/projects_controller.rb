@@ -17,12 +17,40 @@ class ProjectsController < ApplicationController
 
     render :json => json_for_autocomplete(items, options[:display_value] ||= method)
   end
-  
+
+  def payroll_summary
+    if params.has_key?(:id)
+      @project = Project.find(params[:id])
+      @labor_costs = LaborCost.by_project(@project)
+    else
+      @projects = Project.scoped
+      @labor_costs = LaborCost.scoped
+    end
+    
+    if params.has_key? :date
+      @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+    else
+      @date = Date::today
+    end
+    
+    respond_to do |format|
+      format.html
+    end    
+  end
+    
   def labor_summary
     if params.has_key?(:id)
-      @projects = [Project.find(params[:id])]
+      @project = Project.find(params[:id])
+      @labor_costs = LaborCost.by_project(@projects)
     else
-      @projects = Project.all
+      @projects = Project.scoped
+      @labor_costs = LaborCost.scoped
+    end
+    
+    if params.has_key? :date
+      @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+    else
+      @date = Date::today
     end
     
     respond_to do |format|
