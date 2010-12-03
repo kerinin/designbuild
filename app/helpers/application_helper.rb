@@ -41,6 +41,6 @@ module ApplicationHelper
       day
     end
     
-    Date::commercial(d.cwyear, d.cweek, day)
+    Date::commercial(week_date.cwyear, week_date.cweek, day)
   end
 end
