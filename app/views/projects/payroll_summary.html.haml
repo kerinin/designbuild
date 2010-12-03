@@ -1,3 +1,6 @@
+-start_day = weekday(4, @date)-6
+-end_day = weekday(4, @date)
+
 .control
   =render :partial => 'shared/project_nav'
   
@@ -12,9 +15,9 @@
 
 %h2
   Labor Summary for
-  =(weekday(5, @date)-6).strftime('%A %b %d')
+  =start_day.strftime('%A %b %d')
   ='-'
-  =weekday(5, @date).strftime('%A %b %d')
+  =end_day.strftime('%A %b %d')
 
 -@projects ||= [@project]
 -@laborers = Laborer.scoped
@@ -26,7 +29,7 @@
   %th Total Pay
     
   -@laborers.each do |laborer|
-    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).where('labor_costs.date <= ?', weekday(5, @date)).where('labor_costs.date > ?', weekday(5, @date)-7)
+    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
     -unless labor_cost_lines.empty?
       %tr
         %td= laborer.name
@@ -53,7 +56,7 @@
   %tr  
     %th.right Total Bill
     -@projects.each do |project|
-      -labor_cost_lines = LaborCostLine.by_project(project).joins(:labor_set).where('labor_costs.date <= ?', weekday(5, @date)).where('labor_costs.date > ?', weekday(5, @date)-7)
+      -labor_cost_lines = LaborCostLine.by_project(project).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
       %td.currency
         %strong= number_to_currency labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, multiply_or_nil( obj.hours, obj.laborer.bill_rate ) }
       
