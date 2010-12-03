@@ -1,10 +1,63 @@
+-start_day = @date-6
+-end_day = @date
+
 .control
   =render :partial => 'shared/project_nav'
-  
-%h1 Labor Summary
 
-=form_tag( nil, {:method => :get, :id => 'date_select'} ) do
-  Labor Summary for week of
-  .inline=select_date @date, {}, {:onchange => "$('#date_select').submit();"}
+%h1
+  =@project.name unless @project.nil?
+  Labor Summary
+
+.control
+  =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
+    change date:
+    =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
+
+%h2
+  Labor Summary for
+  =start_day.strftime('%A %b %d')
+  ='-'
+  =end_day.strftime('%A %b %d')
+
+-@laborers = Laborer.scoped
+-tasks = Task.joins(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day).uniq
+
+%table
+  %tr
+    %th Task
+    -tasks.each do |task|
+      %th.number
+        %i= task.project.name
+        = task.name
+    %th Total Hours
+
+  -@laborers.each do |laborer|
   
-%strong Coming...
+    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+    -unless labor_cost_lines.empty?
+      %tr
+        %td
+          %strong= laborer.name
+          
+        -tasks.each do |task|
+          -lines = labor_cost_lines.where('labor_costs.task_id = ?', task.id)
+          %td.number
+            -hours = lines.inject(nil) {|memo,obj| add_or_nil memo, obj.hours }
+            -if hours
+              =hours
+              h
+        %td.number
+          %strong
+            = labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.hours}
+            h
+  %tr
+    %td.right
+      %strong Total Hours
+    -tasks.each do |task|
+      -labor_cost_lines = LaborCostLine.where('labor_costs.task_id = ?', task.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+      %td.number
+        %strong
+          = labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.hours}
+          h
+            
+
