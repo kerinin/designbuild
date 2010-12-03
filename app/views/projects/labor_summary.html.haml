@@ -1,0 +1,10 @@
+.control
+  =render :partial => 'shared/project_nav'
+  
+%h1 Labor Summary
+
+=form_tag( nil, {:method => :get, :id => 'date_select'} ) do
+  Labor Summary for week of
+  .inline=select_date Date::today, {}, {:onchange => "$('#date_select').submit();"}
+  
+%strong Coming...

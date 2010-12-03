@@ -18,6 +18,18 @@ class ProjectsController < ApplicationController
     render :json => json_for_autocomplete(items, options[:display_value] ||= method)
   end
   
+  def labor_summary
+    if params.has_key?(:id)
+      @projects = [Project.find(params[:id])]
+    else
+      @projects = Project.all
+    end
+    
+    respond_to do |format|
+      format.html
+    end    
+  end
+  
   def purchase_order_list
     if params.has_key?(:id)
       @projects = [Project.find(params[:id])]

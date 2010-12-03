@@ -14,6 +14,10 @@ class MaterialCost < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  scope :purchase_order, lambda {
+    where(:raw_cost => nil)
+  }
+  
   def supplier_name=(string)
     self.supplier = (string == '' || string.nil?) ? nil : Supplier.find_or_create_by_name(string)
   end

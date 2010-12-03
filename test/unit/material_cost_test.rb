@@ -9,8 +9,8 @@ class MaterialCostTest < ActiveSupport::TestCase
       @task2 = Factory :task, :project => @proj2
       
       @obj = Factory :material_cost
-      @o1 = Factory :material_cost, :task => @task1
-      @o2 = Factory :material_cost, :task => @task1
+      @o1 = Factory :material_cost, :task => @task1, :raw_cost => nil
+      @o2 = Factory :material_cost, :task => @task1, :raw_cost => nil
       @o3 = Factory :material_cost, :task => @task2
       @o4 = Factory :material_cost, :task => @task2
       
@@ -41,6 +41,13 @@ class MaterialCostTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :material_cost, :supplier => nil
       end
+    end
+    
+    should "scope to purchase orders" do
+      assert_contains MaterialCost.purchase_order.all, @o1
+      assert_contains MaterialCost.purchase_order.all, @o2
+      assert_does_not_contain MaterialCost.purchase_order.all, @o3
+      assert_does_not_contain MaterialCost.purchase_order.all, @o4
     end
     
     should "allow multiple line items" do

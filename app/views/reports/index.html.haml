@@ -1,0 +1,28 @@
+%h1 Reports
+
+%hr
+
+-projects = @projects.all.map{|p| p unless p.estimated_cost.nil? }.compact
+-unless projects.empty?
+  %h2 Estimated Cost Report
+  
+  %ul
+    -projects.each do |project|
+      %li=link_to project.name, estimate_report_for_project_path(project)
+
+-unless @material_costs.purchase_order.empty?
+  %h2 Purchase Orders
+  
+  %ul
+    %li=link_to 'All Purchase Orders', purchase_order_list_projects_path
+    -@projects.all.map{|p| p unless (@material_costs.purchase_order.joins(:task).where('tasks.project_id == ?', p.id)).empty? }.compact.each do |project|
+      %li=link_to "#{project.name} Purchase Orders", purchase_order_list_for_project_path(project)
+
+-unless @labor_costs.empty?
+  %h2 Labor Summary
+  
+  %ul
+    %li=link_to 'Labor Summary for All Projects', labor_summary_projects_path
+    -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id == ?', p.id)).empty? }.compact.each do |project|
+      %li=link_to "#{project.name} Labor Summary", labor_summary_for_project_path(project)
+

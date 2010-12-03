@@ -1,7 +1,9 @@
 %ul.main_nav
   %li= link_to 'All Projects', projects_path
-  %li= link_to @project.name, @project
-  %li.qtip_component= link_to '>Components', project_components_path(@project)
-  %li.qtip_task= link_to '>Tasks', project_tasks_path(@project)
-  %li.qtip_contract= link_to '>Contracts', project_contracts_path(@project)
-  %li.qtip_deadline= link_to '>Deadlines', project_deadlines_path(@project)
+  %li= link_to 'Reports', reports_path
+  -unless @project.nil?
+    %li= link_to @project.name, @project
+    %li.qtip_component= link_to '>Components', project_components_path(@project)
+    %li.qtip_task= link_to '>Tasks', project_tasks_path(@project)
+    %li.qtip_contract= link_to '>Contracts', project_contracts_path(@project)
+    %li.qtip_deadline= link_to '>Deadlines', project_deadlines_path(@project)
