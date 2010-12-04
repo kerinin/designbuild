@@ -13,63 +13,87 @@
 
 .container
   .header
-    %h2 Planning Dashboard
-
-  .left
-    %h3 Estimated Cost Graph
-    .boxed= render :partial => 'estimated_cost_graph'
-    
-    .right
-      =link_to estimate_report_for_project_path(@project) do
-        %button Project Cost Estimate
-        
-  .right
-    %h3 Tasks without a Deadline
+    %h2
+      Planning Dashboard
+      -if @project.show_planning
+        .control.inline
+          =form_for @project do |f|
+            =f.hidden_field :show_planning, :value => false
+            =f.submit 'Hide'
+      -else
+        .control.inline
+          =form_for @project do |f|
+            =f.hidden_field :show_planning, :value => true
+            =f.submit 'Show'
+                        
+  
+  -if @project.show_planning
+    .left
+      %h3 Estimated Cost Graph
+      .boxed= render :partial => 'estimated_cost_graph'
       
-    .boxed= render :partial => 'tasks/without_deadline'
-  .left
-    %h3 Unassigned Unit Costs
-    .boxed=render :partial => 'unit_cost_estimates/unassigned', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned,}
-  .right
-    %h3 Unassigned Fixed Costs
-    .boxed=render :partial => 'fixed_cost_estimates/unassigned', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned}
+      .right
+        =link_to estimate_report_for_project_path(@project) do
+          %button Project Cost Estimate
+          
+    .right
+      %h3 Tasks without a Deadline
+        
+      .boxed= render :partial => 'tasks/without_deadline'
+    .left
+      %h3 Unassigned Unit Costs
+      .boxed=render :partial => 'unit_cost_estimates/unassigned', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned,}
+    .right
+      %h3 Unassigned Fixed Costs
+      .boxed=render :partial => 'fixed_cost_estimates/unassigned', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned}
 
   %hr
 
   .header
-    %h2 Construction Dashboard
-    
-  
-  .full_width
-    %h3 Projected vs Estimated Cost
-    =render :partial => 'projected_vs_estimated'
-    
-  .right
-    %h3
-      Currently Invoicing Contracts
-    .boxed=render :partial => 'contracts/currently_invoicing'
-    
-  .right
-    %h3 Current Purchase Orders
-    .boxed=render :partial => 'material_costs/purchase_orders'
-    
-    .right
-      =link_to purchase_order_list_for_project_path(@project) do
-        %button Project Purchase Orders
-      =link_to purchase_order_list_projects_path do
-        %button All Purchase Orders
-    
-  .full_width
-    %h3 Active Task Summary
-    =render :partial => 'tasks/active_summary'
-    
-  .full_width
-    %h3 Labor Allocation Timeline
-    =render :partial => 'timeline', :locals => {:height => 150}
+    %h2 
+      Construction Dashboard
+      -if @project.show_construction
+        .control.inline
+          =form_for @project do |f|
+            =f.hidden_field :show_construction, :value => false
+            =f.submit 'Hide'
+      -else
+        .control.inline
+          =form_for @project do |f|
+            =f.hidden_field :show_construction, :value => true
+            =f.submit 'Show'
+            
+  -if @project.show_construction    
+    .full_width
+      %h3 Active Task Summary
+      =render :partial => 'tasks/active_summary'
+      
+    .full_width
+      %h3 Labor Allocation Timeline
+      =render :partial => 'timeline', :locals => {:height => 150}
 
+      .right
+        =link_to timeline_for_project_path(@project) do
+          %button View Larger
+            
+    .full_width
+      %h3 Projected vs Estimated Cost
+      =render :partial => 'projected_vs_estimated'
+      
     .right
-      =link_to timeline_for_project_path(@project) do
-        %button View Larger
+      %h3
+        Currently Invoicing Contracts
+      .boxed=render :partial => 'contracts/currently_invoicing'
+      
+    .right
+      %h3 Current Purchase Orders
+      .boxed=render :partial => 'material_costs/purchase_orders'
+      
+      .right
+        =link_to purchase_order_list_for_project_path(@project) do
+          %button Project Purchase Orders
+        =link_to purchase_order_list_projects_path do
+          %button All Purchase Orders
 
 
 /

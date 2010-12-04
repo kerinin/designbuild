@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101203185951) do
+ActiveRecord::Schema.define(:version => 20101204224318) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -111,11 +111,11 @@ ActiveRecord::Schema.define(:version => 20101203185951) do
   end
 
   create_table "laborers", :force => true do |t|
-    t.string   "name"
-    t.float    "bill_rate"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "pay_rate"
+    t.string    "name"
+    t.float     "bill_rate"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.float     "pay_rate"
   end
 
   create_table "markings", :force => true do |t|
@@ -183,6 +183,8 @@ ActiveRecord::Schema.define(:version => 20101203185951) do
     t.float     "raw_contract_invoiced"
     t.float     "projected_cost"
     t.float     "raw_projected_cost"
+    t.boolean   "show_planning",               :default => true
+    t.boolean   "show_construction",           :default => false
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
