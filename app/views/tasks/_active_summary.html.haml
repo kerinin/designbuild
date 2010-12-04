@@ -1,0 +1,31 @@
+#active_task_summary
+  %table.tasks
+    %tr
+      %th Name
+      %th.currency Est. Cost
+      %th.currency Cost-to-Date
+      %th.number % of Estimated
+      %th.number % Complete
+      %th Deadline
+      %th.control
+      %th.control
+
+    - @project.tasks.active.each do |task|
+      %tr{:id => "task_#{task.id}"}
+        %td=link_to task.name, [@project, task]
+        %td.currency= number_to_currency(task.estimated_cost)
+        %td.currency= number_to_currency(task.cost)
+        %td.currency= number_to_percentage( task.percent_of_estimated, :precision => 0 )
+        %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
+        %td
+          -unless task.deadline.blank?
+            = date_relative_to_now(task.deadline.date) if task.deadline.date > Date::today
+            .error= date_relative_to_now(task.deadline.date) if task.deadline.date <= Date::today
+        %td.control= link_to "Log Hours", new_task_labor_cost_path(task, :context => :project), :remote => true
+        %td.control= link_to "New Purchase Order", new_task_material_cost_path(task), :remote => true
+      
+    - if @project.tasks.active.empty?
+      %tr
+        %td{:colspan => 10} (None)
+
+

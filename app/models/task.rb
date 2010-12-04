@@ -38,6 +38,10 @@ class Task < ActiveRecord::Base
     where(:percent_complete => 0).where(:active => false)
   }
   
+  def percent_of_estimated
+    multiply_or_nil(100, divide_or_nil(self.cost, self.estimated_cost))
+  end
+  
   def cost_estimates
     self.unit_cost_estimates.all + self.fixed_cost_estimates.all
   end

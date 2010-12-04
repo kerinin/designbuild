@@ -16,39 +16,87 @@
 
 %hr
 
-%h2 Overview
+.container
+  .header
+    %h2 Planning Dashboard
 
-%p
-  Estimated Cost:
-  %strong=number_to_currency @project.estimated_cost
-  %br
-  Cost to Date:
-  %strong=number_to_currency @project.cost
-  %br
-  Projected Cost:
-  %strong=number_to_currency @project.projected_cost
-  
--unless @project.tasks.empty?
-  %h3 Tasks
-  = render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
+  .left
+    %h3 Estimated Cost Graph
+    .boxed= render :partial => 'estimated_cost_graph'
+  .right
+    %h3 Tasks w/o Deadline
+    .boxed= render :partial => 'tasks/without_deadline'
+  .left
+    %h3 Unassigned Unit Costs
+    .boxed=render :partial => 'unit_cost_estimates/unassigned', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned,}
+  .right
+    %h3 Unassigned Fixed Costs
+    .boxed=render :partial => 'fixed_cost_estimates/unassigned', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned}
 
--unless @project.contracts.empty?
-  %h3 Fixed-Bid Contracts
-  =render :partial => 'contracts/project_dashboard'
+
   
--unless @project.unit_cost_estimates.unassigned.count == 0 && @project.fixed_cost_estimates.unassigned == 0
-  %h2 Costs Without a Task
-  
-  -unless @project.unit_cost_estimates.unassigned.count == 0
-    %h3 Unit Costs
-      
-    =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned, :context => :project}
+%hr
+
+.container
+  .header
+    %h2 Construction Dashboard
     
-  -unless @project.fixed_cost_estimates.unassigned.count == 0
-    %h3 Fixed Costs
-      
-    =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned, :context => :project}
+  
+  .full_width
+    %h3 Projected vs Estimated Cost
+    =render :partial => 'projected_vs_estimated'
+    
+  .right
+    %h3 Currently Invoicing Contracts
+    .boxed=render :partial => 'contracts/currently_invoicing'
+    
+  .right
+    %h3 Current Purchase Orders
+    .boxed=render :partial => 'material_costs/purchase_orders'
+    
+  .full_width
+    %h3 Active Task Summary
+    =render :partial => 'tasks/active_summary'
+    
+  .full_width
+    %h3 Labor Allocation Timeline
+    =render :partial => 'timeline'
 
--unless @project.labor_cost.nil?
-  %h3 Timeline
-  =render :partial => 'timeline'
+
+/
+  %h2 Overview
+
+  %p
+    Estimated Cost:
+    %strong=number_to_currency @project.estimated_cost
+    %br
+    Cost to Date:
+    %strong=number_to_currency @project.cost
+    %br
+    Projected Cost:
+    %strong=number_to_currency @project.projected_cost
+    
+  -unless @project.tasks.empty?
+    %h3 Tasks
+    =# render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
+
+  -unless @project.contracts.empty?
+    %h3 Fixed-Bid Contracts
+    =render :partial => 'contracts/project_dashboard'
+    
+  -unless @project.unit_cost_estimates.unassigned.count == 0 && @project.fixed_cost_estimates.unassigned == 0
+    %h2 Costs Without a Task
+    
+    -unless @project.unit_cost_estimates.unassigned.count == 0
+      %h3 Unit Costs
+        
+      =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned, :context => :project}
+      
+    -unless @project.fixed_cost_estimates.unassigned.count == 0
+      %h3 Fixed Costs
+        
+      =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned, :context => :project}
+
+  -unless @project.labor_cost.nil?
+    %h3 Timeline
+    =render :partial => 'timeline'

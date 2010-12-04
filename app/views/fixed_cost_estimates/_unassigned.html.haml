@@ -1,0 +1,12 @@
+#unassigned_fixed_costs
+  %table.fixed_costs
+    - fixed_cost_estimates.each do |fixed_cost_estimate|
+      %tr{:id => "fixed_cost_estimate_#{fixed_cost_estimate.id}"}
+        %td= raw ( (fixed_cost_estimate.component.ancestors + [fixed_cost_estimate.component]).map{|component| link_to(component.name, [@project, component])} + [ "#{fixed_cost_estimate.name} (#{number_to_currency fixed_cost_estimate.cost, :precision => 0})"] ).join(' > ')
+        %td.control{:colspan => 2}= link_to 'Set Task', edit_component_fixed_cost_estimate_path(fixed_cost_estimate.component, fixed_cost_estimate, :context => :unassigned), :remote => true
+
+    - if fixed_cost_estimates.empty?
+      %tr
+        %td{:colspan => 10} (None)
+
+

@@ -27,6 +27,10 @@ class Contract < ActiveRecord::Base
   
   default_scope :order => :position
   
+  def percent_invoiced
+    multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
+  end
+  
   # cost
   marks_up :raw_cost
   

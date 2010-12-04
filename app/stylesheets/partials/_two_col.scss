@@ -22,9 +22,9 @@
 //    +--------+---------------+
 
 body.two-col {
-  #container {
+  #container, .container {
     @include container; }
-  #header, #footer {
+  #header, #footer, .header, .footer {
     @include column($blueprint-grid-columns); }
   #sidebar {
     // One third of the grid columns, rounding down. With 24 cols, this is 8.
@@ -35,4 +35,24 @@ body.two-col {
     // With 24 cols, this is 16.
     $content-columns: ceil(2 * $blueprint-grid-columns / 3);
     // true means it's the last column in the row
-    @include column($content-columns, true); } }
+    @include column($content-columns, true); }
+    
+  .left {
+    // Two thirds of the grid columns, rounding up.
+    // With 24 cols, this is 16.
+    $left-columns: floor($blueprint-grid-columns / 2);
+    // true means it's the last column in the row
+    @include column($left-columns); }
+  .right {
+    // Two thirds of the grid columns, rounding up.
+    // With 24 cols, this is 16.
+    $right-columns: ceil( $blueprint-grid-columns / 2);
+    // true means it's the last column in the row
+    @include column($right-columns, true); } 
+  .full_width {
+    // Two thirds of the grid columns, rounding up.
+    // With 24 cols, this is 16.
+    $full-columns: ceil( $blueprint-grid-columns);
+    // true means it's the last column in the row
+    @include column($full-columns, true); } 
+}
