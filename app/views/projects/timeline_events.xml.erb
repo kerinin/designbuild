@@ -1,0 +1,118 @@
+<% @trackCount = 0 %>
+<data>
+  <% @project.tasks.completed.each do |task| %>
+    <% unless task.labor_costs.empty? %>
+      <event
+        start="<%=task.labor_costs.last.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        latestStart="<%=task.labor_costs.first.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        end="<%=task.labor_costs.first.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        durationEvent="true"
+        trackNum="<%=@trackCount%>"></event>
+    <% end %>
+    <% task.labor_costs.each do |labor_cost| %>
+      <% if( task.labor_costs.where('date >= ?', weekday(1, labor_cost.date)).where('date < ?', labor_cost.date).empty? ) %>
+        <event
+          start="<%=weekday(1,labor_cost.date).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          end="<%=weekday(1,labor_cost.date).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          durationEvent="true"
+          trackNum="<%=@trackCount%>"
+          title="<%=task.name%>"
+          textColor="black"> Task name, final summary</event>
+      <% end %>  
+    
+      <event 
+        start="<%=labor_cost.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        end="<%=(labor_cost.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        durationEvent="true"
+        trackNum="<%=@trackCount%>"
+        color="green"></event>
+    <% end %>
+    <% @trackCount += 1 %>
+  <% end %>
+  
+  <% @project.tasks.active.order(:percent_complete).each do |task| %>
+    <% unless task.deadline.blank? %>
+      <% unless task.deadline.date <= Date::today %>
+        <event
+          <% unless task.labor_costs.empty? %>
+            start="<%=task.labor_costs.last.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+            latestStart="<%=Time.now.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          <% else %>
+            start="<%=Time.now.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          <% end %>
+          end="<%=task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          durationEvent="true"
+          trackNum="<%=@trackCount%>" ></event>
+      <% end %>
+      <event
+        start="<%=task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        trackNum="<%=@trackCount%>"
+        title="<%=task.name%> deadline: <%=task.deadline.name%>"></event>
+    <% end %>
+    <% task.labor_costs.each do |labor_cost| %>
+      <% color = 'red' if !task.deadline.blank? && task.deadline.date <= labor_cost.date %>
+      <% color ||= nil %>
+      
+      <% if( task.labor_costs.where('date >= ?', weekday(1, labor_cost.date)).where('date < ?', labor_cost.date).empty? ) %>
+        <event
+          start="<%=weekday(1,labor_cost.date).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          end="<%=weekday(1,labor_cost.date).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          durationEvent="true"
+          trackNum="<%=@trackCount%>"
+          title="<%=task.name%>"
+          textColor="black">Task name, weekly summary, etc</event>
+      <% end %>   
+
+      <event
+        start="<%=labor_cost.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        end="<%=(labor_cost.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        durationEvent="true"
+        trackNum="<%=@trackCount%>"
+        textColor="black"
+        <% if color.nil? %>
+          classname="<%=class_from_percent(labor_cost.percent_complete)%>"
+        <% else %>
+          color="<%=color%>"
+        <% end %> ></event>
+    <% end %>
+    
+    <% @trackCount += 1 %>
+  <% end %>
+  
+  <% @project.tasks.future.each do |task| %>
+    <% unless task.deadline.blank? %>
+      <% unless task.deadline.date <= Date::today %>
+        <event
+          <% unless task.labor_costs.empty? %>
+            start="<%=task.labor_costs.last.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+            latestStart="<%=Time.now.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          <% else %>
+            title="<%=task.name%>"
+            start="<%=Time.now.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          <% end %>
+          end="<%=task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+          durationEvent="true"
+          trackNum="<%=@trackCount%>" ></event>
+      <% end %>
+      <event
+        start="<%=task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        trackNum="<%=@trackCount%>"
+        title="<%=task.name%> deadline: <%=task.deadline.name%>"></event>
+    <% end %>
+    
+    <% task.labor_costs.each do |labor_cost| %>
+      <event
+        start="<%=labor_cost.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        end="<%=(labor_cost.date + 1).strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        durationEvent="true"
+        trackNum="<%=@trackCount%>"></event>
+    <% end %>
+    <% unless task.deadline.blank? %>
+      <event
+        start="<%=task.deadline.date.strftime('%b %d %Y %H:%M:%S GMT%z')%>"
+        trackNum="<%=@trackCount%>"
+        title="<%=task.deadline.name%>"></event>
+    <% end %>
+    <% @trackCount += 1 %>
+  <% end %>
+</data>    

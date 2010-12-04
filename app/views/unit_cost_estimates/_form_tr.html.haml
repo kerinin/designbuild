@@ -1,7 +1,7 @@
 -context ||= params.has_key?(:context) ? params[:context].to_sym : :component
 
 %tr.unit_cost_estimate_fields
-  -unless context == :project
+  -unless context == :project || context == :unassigned
     %td.field
       %strong= f.label :name
       = f.text_field :name

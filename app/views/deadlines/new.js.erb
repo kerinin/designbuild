@@ -12,6 +12,8 @@
     <%= link_to('Cancel', project_tasks_path(@project) ) %>
   <% elsif @context == :task %>
     <%= link_to('Cancel', project_task_path(@project, @task) ) %>
+  <% elsif @context == :dashboard %>
+    <%= link_to('Cancel', @project ) %>
   <% else %>
     <%= link_to( 'Cancel', project_deadlines_path(@project) ) %>
   <% end %>

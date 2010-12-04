@@ -1,6 +1,14 @@
 class ProjectsController < ApplicationController
   autocomplete :task, :name, :full => true
   
+  def timeline
+    @project = Project.find(params[:id])
+    
+    respond_to do |format|
+      format.html
+    end      
+  end
+  
   def autocomplete_task_name
     object = :task
     method = :name

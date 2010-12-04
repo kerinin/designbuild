@@ -3,12 +3,7 @@
     - @project.tasks.where(:deadline_id => nil).each do |task|
       %tr{:id => "task_#{task.id}"}
         %td= link_to task.name, [@project, task]
-        %td
-          Set Deadline:
-          = link_to 'New', new_task_deadline_path(task, :context => 'tasks'), :remote => true
-          or
-          =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
-            =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
+        %td= render :partial => 'deadlines/set_deadline', :locals => {:context => 'dashboard', :task => task}
 
     - if @project.tasks.where(:deadline_id => nil).empty?
       %tr

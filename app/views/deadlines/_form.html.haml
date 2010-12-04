@@ -35,7 +35,7 @@
       = f.label :interval
       = f.text_field :interval, {:disabled => @deadline.is_absolute?}
     
-  -unless @context == :task || @context == :tasks
+  -unless @context == :task || @context == :tasks || @context == :dashboard
     %p
       .field
         = f.label :tasks

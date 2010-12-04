@@ -6,7 +6,8 @@
       %tr{:id => "purchase_order_#{po.id}"}
         %td= link_to po.task.name, [@project, po.task]
         %td= link_to "#{po.supplier.name}, #{po.date.strftime('%A %b %d')}", [po.task, po]
-        %td.control= link_to 'Log Cost', '/'
+        %td.control= 'Log Cost'
     -if costs.purchase_order.empty?
       %tr
         %td{:colspan => 2} (None)
+        

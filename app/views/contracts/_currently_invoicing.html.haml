@@ -6,7 +6,7 @@
       %tr
         %td=link_to contract.name, [@project,contract]
         %td="#{number_to_percentage contract.percent_invoiced, :precision => 0} of #{number_to_currency contract.raw_cost, :precision => 0} invoiced to date"
-        %td.control= link_to 'Log Invoice', '/'
+        %td.control='Log Invoice'
     -if contracts.empty?
       %tr
         %td{:colspan => 3} (None)

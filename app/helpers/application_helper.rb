@@ -1,6 +1,10 @@
 module ApplicationHelper
   include AddOrNil
   
+  def class_from_percent(percent)
+    (0..100).step(20) {|i| return "percent_#{i}" if percent <= i}
+  end
+  
   def date_relative_to_now(date)
     delta = date - Date::today
     case

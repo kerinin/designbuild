@@ -28,7 +28,8 @@ class DeadlinesController < ApplicationController
   # GET /deadlines/new.xml
   def new
     @deadline = Deadline.new
-
+    @deadline.tasks << @task unless @task.nil?
+    
     respond_to do |format|
       format.js
       format.html # new.html.erb

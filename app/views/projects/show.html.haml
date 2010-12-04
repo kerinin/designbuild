@@ -9,11 +9,6 @@
   Project:
   = @project.name
 
-.main_actions
-  View:
-  =link_to "#{@project.name} Purchase Orders", purchase_order_list_for_project_path(@project)
-  =link_to "Project Cost Estimate", estimate_report_for_project_path(@project)
-
 %hr
 
 .container
@@ -23,8 +18,14 @@
   .left
     %h3 Estimated Cost Graph
     .boxed= render :partial => 'estimated_cost_graph'
+    
+    .right
+      =link_to estimate_report_for_project_path(@project) do
+        %button Project Cost Estimate
+        
   .right
-    %h3 Tasks w/o Deadline
+    %h3 Tasks without a Deadline
+      
     .boxed= render :partial => 'tasks/without_deadline'
   .left
     %h3 Unassigned Unit Costs
@@ -33,11 +34,8 @@
     %h3 Unassigned Fixed Costs
     .boxed=render :partial => 'fixed_cost_estimates/unassigned', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned}
 
+  %hr
 
-  
-%hr
-
-.container
   .header
     %h2 Construction Dashboard
     
@@ -47,12 +45,19 @@
     =render :partial => 'projected_vs_estimated'
     
   .right
-    %h3 Currently Invoicing Contracts
+    %h3
+      Currently Invoicing Contracts
     .boxed=render :partial => 'contracts/currently_invoicing'
     
   .right
     %h3 Current Purchase Orders
     .boxed=render :partial => 'material_costs/purchase_orders'
+    
+    .right
+      =link_to purchase_order_list_for_project_path(@project) do
+        %button Project Purchase Orders
+      =link_to purchase_order_list_projects_path do
+        %button All Purchase Orders
     
   .full_width
     %h3 Active Task Summary
@@ -60,7 +65,11 @@
     
   .full_width
     %h3 Labor Allocation Timeline
-    =render :partial => 'timeline'
+    =render :partial => 'timeline', :locals => {:height => 150}
+
+    .right
+      =link_to timeline_for_project_path(@project) do
+        %button View Larger
 
 
 /
@@ -99,4 +108,4 @@
 
   -unless @project.labor_cost.nil?
     %h3 Timeline
-    =render :partial => 'timeline'
+    =#render :partial => 'timeline'
