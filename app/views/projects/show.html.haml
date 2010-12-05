@@ -30,7 +30,7 @@
   -if @project.show_planning
     .left
       %h3 Estimated Cost Graph
-      .boxed= render :partial => 'estimated_cost_graph'
+      .boxed= image_tag estimated_cost_graph_for_project_path(@project), :size => '490x120'
       
       .right
         =link_to estimate_report_for_project_path(@project) do

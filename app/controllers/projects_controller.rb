@@ -1,6 +1,35 @@
 class ProjectsController < ApplicationController
   autocomplete :task, :name, :full => true
   
+  def estimated_cost_graph
+    @project = Project.find(params[:id])
+    
+    g = Gruff::Line.new('490x120')
+    #g.title = "Scores for Bart" 
+    #g.font = File.expand_path('artwork/fonts/Vera.ttf', RAILS_ROOT)
+    #g.labels = { 0 => 'Mon', 2 => 'Wed', 4 => 'Fri', 6 => 'Sun' }
+
+    # Modify this to represent your actual data models
+    @data = (@project.versions.first.created_at.to_date..Date::today).to_a.map{|date| @project.version_at(date) }
+    g.data('Cost', @data.map{|project| project.estimated_cost}, 'orange' )
+    
+    g.theme = {
+     :colors => %w(blue black),
+     :marker_color => 'black',
+     :background_colors => 'white'
+    }
+    g.dot_radius = 0.5
+    g.hide_dots = true
+    g.hide_legend = true
+    g.hide_title = true
+    g.margins = 0
+    
+    send_data(g.to_blob, 
+              :disposition => 'inline', 
+              :type => 'image/png', 
+              :filename => "#{@project.name.parameterize}_estimated_cost_graph_#{Date::today.to_s}.png")
+  end
+  
   def timeline
     @project = Project.find(params[:id])
     
