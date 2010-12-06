@@ -11,6 +11,7 @@
 + re-work markups to be at bottom
 + drag & drop positioning of components, tasks, contracts
 
+- http://vis.stanford.edu/protovis/
 - google charts (http://code.google.com/apis/visualization/documentation/gallery.html)
   http://code.google.com/p/rgviz-rails/ (preferred)
   https://github.com/mwarnock/rails-google-visualization-plugin
