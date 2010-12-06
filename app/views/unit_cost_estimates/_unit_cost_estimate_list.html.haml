@@ -57,7 +57,7 @@
           Add Unit Cost
             
   %tr.totals
-    %td.right{:colspan => 4}
+    %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
