@@ -112,7 +112,7 @@ class ProjectsController < ApplicationController
   def labor_summary
     if params.has_key?(:id)
       @project = Project.find(params[:id])
-      @labor_costs = LaborCost.by_project(@projects)
+      @labor_costs = LaborCost.by_project(@project)
     else
       @projects = Project.scoped
       @labor_costs = LaborCost.scoped

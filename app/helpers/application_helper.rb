@@ -45,6 +45,7 @@ module ApplicationHelper
       day
     end
     
-    Date::commercial(week_date.cwyear, week_date.cweek, day)
+    offset = day - week_date.cwday
+    week_date + offset
   end
 end

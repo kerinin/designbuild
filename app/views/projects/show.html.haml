@@ -68,6 +68,12 @@
       %h3 Active Task Summary
       =render :partial => 'tasks/active_summary'
       
+      -thursday = weekday(4,Date::today)
+      =link_to labor_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
+        %button This Week's Labor Summary     
+      =link_to payroll_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
+        %button This Week's Payroll Summary
+              
     .full_width
       %h3 Labor Allocation Timeline
       =render :partial => 'timeline', :locals => {:height => 150}
@@ -84,7 +90,7 @@
       %h3
         Currently Invoicing Contracts
       .boxed=render :partial => 'contracts/currently_invoicing'
-      
+
     .right
       %h3 Current Purchase Orders
       .boxed=render :partial => 'material_costs/purchase_orders'
