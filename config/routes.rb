@@ -46,6 +46,7 @@ Designbuild::Application.routes.draw do
       get :labor_summary, :as => :labor_summary_for
       get :payroll_summary, :as => :payroll_summary_for
       get :estimated_cost_graph, :as => :estimated_cost_graph_for
+      get :construction_cost_graph, :as => :construction_cost_graph_for
     end
     
     collection do
