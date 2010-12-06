@@ -11,6 +11,13 @@
 + re-work markups to be at bottom
 + drag & drop positioning of components, tasks, contracts
 
+- google charts (http://code.google.com/apis/visualization/documentation/gallery.html)
+  http://code.google.com/p/rgviz-rails/ (preferred)
+  https://github.com/mwarnock/rails-google-visualization-plugin
+  https://github.com/jeremyolliver/gvis
+  https://github.com/winston/google_visualr
+  https://github.com/Bantik/seer
+
 - simplify project dashboard
 
 - usability tweaks
