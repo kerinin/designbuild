@@ -1,16 +1,69 @@
 <% start_date = LaborCost.by_project(@project).order(:date).first.date %>
 <% data = (@project.tasks & Task.joins(:labor_costs)).map do |task| %>
   <% # [task_name, [labor_date, labor_date, labor_date], [deadline_name, deadline_date]] %>
-  <% [task.name, task.labor_costs.all.reverse.map {|lc| lc.date - start_date }, task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] ] %>
+  <% {
+    :start => rand(10),
+    :end => rand(10)+10,
+    :task_name => task.name, 
+    :task_start => task.labor_costs.first.date - start_date,
+    :task_end => (task.is_complete? ? task.labor_costs.last.date : Date::today) - start_date,
+    :labor_costs => task.labor_costs.all.reverse.map {|lc| lc.date - start_date }, 
+    :deadline => task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] 
+    } %>
 <% end %>
 
-new pv.Panel()
-    .width(800)
-    .height(200)
-  .add(pv.Bar)
-    .data(<%= raw data.to_json %>)
-    .height(20)
-    .bottom(function() this.index * 25)
-    .width(function(d) (d[1] - d[0]) * 100)
-    .left(function(d) d[0] * 50)
-  .root.render();
+
+var scale = <%= 400/(Date::today - start_date) %>;
+var data = <%= raw data.to_json %>;
+
+var w = 800,
+    h = 400,
+    kx = <%= (Date::today - start_date) %>,
+    ky = 1,
+    x = pv.Scale.linear(0, kx).range(0, w);
+    
+vis = new pv.Panel()
+   .width(w)
+    .height(h)
+    .top(30)
+    .left(40)
+    .right(20)
+    .bottom(20);
+
+vis.add(pv.Panel)
+  .overflow("hidden")
+.add(pv.Bar)
+  .data(data)
+  .height(20)
+  .top(function() this.index * 25)
+  .width(function(d) x(d['task_end']) - x(d['task_start']) )
+  .left(function(d) x(d['task_start'])  )
+.anchor("right").add(pv.Label)
+  .text(function(d) d['task_name']);
+
+vis.add(pv.Panel)
+.add(pv.Dot)
+  .data(data)
+  .visible(function(d) d['deadline'][1])
+  .left(function(d) x(d['deadline'][1]))
+  .top(function() this.index * 25 + 10)
+  .fillStyle(pv.rgb(121, 173, 210, .5))
+  .radius(function() 6 / this.scale);
+
+vis.add(pv.Panel)
+    .events("all")
+    .event("mousedown", pv.Behavior.pan())
+    .event("mousewheel", pv.Behavior.zoom())
+    .event("pan", transform)
+    .event("zoom", transform);
+    
+function transform() {
+  var t = this.transform().invert();
+  var k = Math.pow(t.k, 20);
+  
+  x.domain( kx-(kx*k)+(t.x*(kx/w*k)), kx+(t.x*(kx/w*k)));
+  vis.render();
+}
+
+
+vis.render();
