@@ -1,0 +1,16 @@
+<% start_date = LaborCost.by_project(@project).order(:date).first.date %>
+<% data = (@project.tasks & Task.joins(:labor_costs)).map do |task| %>
+  <% # [task_name, [labor_date, labor_date, labor_date], [deadline_name, deadline_date]] %>
+  <% [task.name, task.labor_costs.all.reverse.map {|lc| lc.date - start_date }, task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] ] %>
+<% end %>
+
+new pv.Panel()
+    .width(800)
+    .height(200)
+  .add(pv.Bar)
+    .data(<%= raw data.to_json %>)
+    .height(20)
+    .bottom(function() this.index * 25)
+    .width(function(d) (d[1] - d[0]) * 100)
+    .left(function(d) d[0] * 50)
+  .root.render();

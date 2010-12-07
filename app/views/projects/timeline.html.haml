@@ -1,1 +1,5 @@
-=render :partial => 'timeline', :locals => {:height => 500}
+-content_for :head do
+  =javascript_include_tag 'protovis-d3.2.js'
+
+%script{:type => 'text/javascript+protovis'}
+  =render :partial => 'timeline.js'
