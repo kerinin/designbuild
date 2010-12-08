@@ -11,16 +11,19 @@
     :deadline => task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] 
     } %>
 <% end %>
+<% weeks = (0..60).to_a.reverse.map{|week| day = weekday(2, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
 
 
 var scale = <%= 400/(Date::today - start_date) %>;
 var data = <%= raw data.to_json %>;
+var weeks = <%= raw weeks.to_json %>;
+var rangeStart = <%= Date::today - start_date > 60 ? (Date::today - start_date) - 60 : Date::today - start_date %>;
+var rangeEnd = <%= (Date::today - start_date) + 7 %>;
 
 var w = 800,
     h = 400,
-    kx = <%= (Date::today - start_date) %>,
-    ky = 1,
-    x = pv.Scale.linear(0, kx).range(0, w/1.25);
+    x = pv.Scale.linear(rangeStart, rangeEnd).range(0, w/1.25);
+    ww = pv.Scale.linear(0, (rangeEnd - rangeStart)).range(0, w/1.25);
     
 vis = new pv.Panel()
     .width(w)
@@ -31,26 +34,39 @@ vis = new pv.Panel()
     .bottom(20)
   .add(pv.Panel)
     .data(data);
-    
-// Task bars
+ 
+// Week Highlighting
 vis.add(pv.Bar)
+    .data( weeks )
+    .top(0)
+    .bottom(0)
+    .width( function(d) ww(5) )
+    .left( function(d) x(d['value']) )
+    .fillStyle(pv.color('rgba(200,200,200,.01)') )
+  .anchor('bottom').add(pv.Label)
+    .text( function(d) d['name'] );
+   
+// Task bars
+var tasks = vis.add(pv.Bar)
     .height(20)
     .top(function() vis.index * 25)
     .width(function(d) x(d['task_end']) - x(d['task_start']) )
-    .left(function(d) x(d['task_start']) -1  )
-    .fillStyle(pv.color('rgba(0,0,0,.1)') )
-  .anchor('right').add(pv.Label)
-    .textAlign('left')
-    .text(function(d) d['task_name']);
+    .left(function(d) x(d['task_start']) - 1  )
+    .fillStyle(pv.color('rgba(0,0,0,.1)') );
 
 // Labor stripes
 vis.add(pv.Bar)
   .data(function(d) d['labor_costs'] )
   .height(18)
   .top(function() vis.index * 25 + 1 )
-  .width(x(.65))
-  .left(function(d) x(d));
+  .width( function(d) ww(.65) )
+  .left(function(d) x(d) );
 
+// Task Labels
+tasks.anchor('right').add(pv.Label)
+    .textAlign('left')
+    .text(function(d) d['task_name']);
+    
 // Pan/zoom panel 
 vis.add(pv.Panel)
     .events("all")
@@ -74,7 +90,13 @@ function transform() {
   var t = this.transform().invert();
   var k = Math.pow(t.k, 20);
   
-  x.domain( kx-(kx*k)+(t.x*(kx/w*k)), kx+(t.x*(kx/w*k)));
+  var span = rangeEnd - rangeStart;
+  
+  var low = rangeEnd-(span*k)+(t.x*(span/w*k));
+  var high = rangeEnd+(t.x*(span/w*k));
+  
+  x.domain( low, high );
+  ww.domain( 0, (high - low) );
   vis.render();
 }
 
