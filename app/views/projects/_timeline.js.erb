@@ -11,7 +11,7 @@
     :deadline => task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] 
     } %>
 <% end %>
-<% weeks = (0..60).to_a.reverse.map{|week| day = weekday(2, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
+<% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
 
 
 var scale = <%= 400/(Date::today - start_date) %>;
@@ -31,41 +31,7 @@ vis = new pv.Panel()
     .top(30)
     .left(40)
     .right(20)
-    .bottom(20)
-  .add(pv.Panel)
-    .data(data);
- 
-// Week Highlighting
-vis.add(pv.Bar)
-    .data( weeks )
-    .top(0)
-    .bottom(0)
-    .width( function(d) ww(5) )
-    .left( function(d) x(d['value']) )
-    .fillStyle(pv.color('rgba(200,200,200,.01)') )
-  .anchor('bottom').add(pv.Label)
-    .text( function(d) d['name'] );
-   
-// Task bars
-var tasks = vis.add(pv.Bar)
-    .height(20)
-    .top(function() vis.index * 25)
-    .width(function(d) x(d['task_end']) - x(d['task_start']) )
-    .left(function(d) x(d['task_start']) - 1  )
-    .fillStyle(pv.color('rgba(0,0,0,.1)') );
-
-// Labor stripes
-vis.add(pv.Bar)
-  .data(function(d) d['labor_costs'] )
-  .height(18)
-  .top(function() vis.index * 25 + 1 )
-  .width( function(d) ww(.65) )
-  .left(function(d) x(d) );
-
-// Task Labels
-tasks.anchor('right').add(pv.Label)
-    .textAlign('left')
-    .text(function(d) d['task_name']);
+    .bottom(20);
     
 // Pan/zoom panel 
 vis.add(pv.Panel)
@@ -74,13 +40,52 @@ vis.add(pv.Panel)
     .event("mousewheel", pv.Behavior.zoom())
     .event("pan", transform)
     .event("zoom", transform);
+        
+ 
+// Week Highlighting
+vis.add(pv.Bar)
+    .data( weeks )
+    .top(0)
+    .bottom(0)
+    .width( function(d) ww(5) )
+    .left( function(d) x(d['value']) )
+    .fillStyle(pv.color('rgba(0,0,0,.05)') )
+  .anchor('bottom').add(pv.Label)
+    .text( function(d) d['name'] );
+  
+
+// Task bars
+var tasks = vis.add(pv.Bar)
+    .data(data)
+    .height(20)
+    .top(function() this.index * 25)
+    .width(function(d) x(d['task_end']) - x(d['task_start']) )
+    .left(function(d) x(d['task_start']) - 1  )
+    .fillStyle(pv.color('rgba(0,0,0,.1)') );
+
+// Labor stripes
+var labor = vis.add(pv.Panel)
+    .data(data);
+labor.add(pv.Bar)
+    .data(function(d) d['labor_costs'] )
+    .height(18)
+    .top(function() labor.index * 25 + 1 )
+    .width( function(d) ww(.65) )
+    .left(function(d) x(d) )
+    .event('mouseover', function(){alert('hi');});
+
+
+// Task Labels
+tasks.anchor('right').add(pv.Label)
+    .textAlign('left')
+    .text(function(d) d['task_name']);
+    
      
 // Deadlines
-vis.add(pv.Panel)
-.add(pv.Dot)
+tasks.add(pv.Dot)
   .visible(function(d) d['deadline'][1])
   .left(function(d) x(d['deadline'][1]))
-  .top(function() vis.index * 25 + 10)
+  .top(function() this.index * 25 + 10)
   .strokeStyle('red')
   .fillStyle(pv.rgb(255, 0, 0, .25))
   .radius(function() 6 / this.scale);
