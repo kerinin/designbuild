@@ -4,9 +4,9 @@
   <% {
     :start => rand(10),
     :end => rand(10)+10,
-    :task_name => task.name, 
-    :task_start => task.labor_costs.first.date - start_date,
-    :task_end => (task.is_complete? ? task.labor_costs.last.date : Date::today) - start_date,
+    :task_name => "#{task.name} #{number_to_percentage task.percent_complete, :precision => 0} est, #{number_to_percentage( task.percent_of_estimated || 0, :precision => 0)} spent", 
+    :task_start => task.labor_costs.last.date - start_date,
+    :task_end => (task.is_complete? ? task.labor_costs.first.date : Date::today) - start_date,
     :labor_costs => task.labor_costs.all.reverse.map {|lc| lc.date - start_date }, 
     :deadline => task.deadline.blank? ? [nil,nil] : [task.deadline.name, task.deadline.date - start_date] 
     } %>
@@ -20,42 +20,55 @@ var w = 800,
     h = 400,
     kx = <%= (Date::today - start_date) %>,
     ky = 1,
-    x = pv.Scale.linear(0, kx).range(0, w);
+    x = pv.Scale.linear(0, kx).range(0, w/1.25);
     
 vis = new pv.Panel()
-   .width(w)
+    .width(w)
     .height(h)
     .top(30)
     .left(40)
     .right(20)
-    .bottom(20);
+    .bottom(20)
+  .add(pv.Panel)
+    .data(data);
+    
+// Task bars
+vis.add(pv.Bar)
+    .height(20)
+    .top(function() vis.index * 25)
+    .width(function(d) x(d['task_end']) - x(d['task_start']) )
+    .left(function(d) x(d['task_start']) -1  )
+    .fillStyle(pv.color('rgba(0,0,0,.1)') )
+  .anchor('right').add(pv.Label)
+    .textAlign('left')
+    .text(function(d) d['task_name']);
 
-vis.add(pv.Panel)
-  .overflow("hidden")
-.add(pv.Bar)
-  .data(data)
-  .height(20)
-  .top(function() this.index * 25)
-  .width(function(d) x(d['task_end']) - x(d['task_start']) )
-  .left(function(d) x(d['task_start'])  )
-.anchor("right").add(pv.Label)
-  .text(function(d) d['task_name']);
+// Labor stripes
+vis.add(pv.Bar)
+  .data(function(d) d['labor_costs'] )
+  .height(18)
+  .top(function() vis.index * 25 + 1 )
+  .width(x(.65))
+  .left(function(d) x(d));
 
-vis.add(pv.Panel)
-.add(pv.Dot)
-  .data(data)
-  .visible(function(d) d['deadline'][1])
-  .left(function(d) x(d['deadline'][1]))
-  .top(function() this.index * 25 + 10)
-  .fillStyle(pv.rgb(121, 173, 210, .5))
-  .radius(function() 6 / this.scale);
-
+// Pan/zoom panel 
 vis.add(pv.Panel)
     .events("all")
     .event("mousedown", pv.Behavior.pan())
     .event("mousewheel", pv.Behavior.zoom())
     .event("pan", transform)
     .event("zoom", transform);
+     
+// Deadlines
+vis.add(pv.Panel)
+.add(pv.Dot)
+  .visible(function(d) d['deadline'][1])
+  .left(function(d) x(d['deadline'][1]))
+  .top(function() vis.index * 25 + 10)
+  .strokeStyle('red')
+  .fillStyle(pv.rgb(255, 0, 0, .25))
+  .radius(function() 6 / this.scale);
+  
     
 function transform() {
   var t = this.transform().invert();
@@ -64,6 +77,5 @@ function transform() {
   x.domain( kx-(kx*k)+(t.x*(kx/w*k)), kx+(t.x*(kx/w*k)));
   vis.render();
 }
-
 
 vis.render();
