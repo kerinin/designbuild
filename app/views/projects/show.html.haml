@@ -78,6 +78,8 @@
         %button This Week's Labor Summary     
       =link_to payroll_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
         %button This Week's Payroll Summary
+      =link_to material_cost_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
+        %button This Week's Material Cost Summary
               
     .full_width
       %h3 Labor Allocation Timeline

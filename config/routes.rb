@@ -45,6 +45,7 @@ Designbuild::Application.routes.draw do
       get :purchase_order_list, :as => :purchase_order_list_for
       get :labor_summary, :as => :labor_summary_for
       get :payroll_summary, :as => :payroll_summary_for
+      get :material_cost_summary, :as => :material_cost_summary_for
       get :estimated_cost_graph, :as => :estimated_cost_graph_for
       get :construction_cost_graph, :as => :construction_cost_graph_for
     end
@@ -53,6 +54,7 @@ Designbuild::Application.routes.draw do
       get :purchase_order_list
       get :labor_summary
       get :payroll_summary
+      get :material_cost_summary
     end
   end
 

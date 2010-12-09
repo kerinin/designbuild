@@ -20,20 +20,21 @@
   =end_day.strftime('%A %b %d')
 
 -@laborers = Laborer.scoped
--tasks = Task.joins(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day).uniq
+-tasks = @tasks.joins(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day).uniq
 
 %table
   %tr
     %th Task
     -tasks.each do |task|
       %th.number
-        %i= task.project.name
+        -unless @projects.nil?
+          %i= task.project.name 
         = task.name
     %th Total Hours
 
   -@laborers.each do |laborer|
   
-    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).includes(:labor_set => :task).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day) 
     -unless labor_cost_lines.empty?
       %tr
         %td

@@ -17,6 +17,12 @@ class MaterialCost < ActiveRecord::Base
   scope :purchase_order, lambda {
     where(:raw_cost => nil)
   }
+
+  scope :purchase, lambda {
+    where('raw_cost IS NOT NULL')
+  }
+    
+  scope :by_project, lambda {|project| joins(:task).where('tasks.project_id = ?', project.id) } 
   
   def supplier_name=(string)
     self.supplier = (string == '' || string.nil?) ? nil : Supplier.find_or_create_by_name(string)

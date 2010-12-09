@@ -112,10 +112,10 @@ class ProjectsController < ApplicationController
   def labor_summary
     if params.has_key?(:id)
       @project = Project.find(params[:id])
-      @labor_costs = LaborCost.by_project(@project)
+      @tasks = @project.tasks.scoped
     else
       @projects = Project.scoped
-      @labor_costs = LaborCost.scoped
+      @tasks = Task.joins(:project) & @projects
     end
     
     if params.has_key? :date
@@ -128,7 +128,27 @@ class ProjectsController < ApplicationController
       format.html
     end    
   end
-  
+
+  def material_cost_summary
+    if params.has_key?(:id)
+      @project = Project.find(params[:id])
+      @tasks = @project.tasks
+    else
+      @projects = Project.scoped
+      @tasks = Task.includes(:project) & @projects
+    end
+    
+    if params.has_key? :date
+      @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+    else
+      @date = Date::today
+    end
+    
+    respond_to do |format|
+      format.html
+    end    
+  end
+    
   def purchase_order_list
     if params.has_key?(:id)
       @projects = [Project.find(params[:id])]
