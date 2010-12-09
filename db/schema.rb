@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101204224318) do
+ActiveRecord::Schema.define(:version => 20101209180544) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -108,6 +108,7 @@ ActiveRecord::Schema.define(:version => 20101204224318) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.float     "raw_cost"
+    t.string    "note"
   end
 
   create_table "laborers", :force => true do |t|

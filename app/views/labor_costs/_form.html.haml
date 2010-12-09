@@ -14,6 +14,10 @@
   .field
     = f.label :percent_complete
     = f.text_field :percent_complete
+  .field
+    = f.label :note
+    %br
+    = f.text_area :note
 
   .actions
     .submit= f.submit 'Save'

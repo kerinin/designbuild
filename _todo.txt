@@ -11,13 +11,10 @@
 + re-work markups to be at bottom
 + drag & drop positioning of components, tasks, contracts
 
-- http://vis.stanford.edu/protovis/
-- google charts (http://code.google.com/apis/visualization/documentation/gallery.html)
-  http://code.google.com/p/rgviz-rails/ (preferred)
-  https://github.com/mwarnock/rails-google-visualization-plugin
-  https://github.com/jeremyolliver/gvis
-  https://github.com/winston/google_visualr
-  https://github.com/Bantik/seer
+- add note field to labor cost
+- allow editing of labor cost date (material cost?)
+- material cost summary
+- projected net (estimated_cost - raw_projected_cost)
 
 - simplify project dashboard
 

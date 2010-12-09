@@ -29,7 +29,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   test "should create labor_cost" do
     assert_difference('LaborCost.count') do
       post :create, :task_id => @task.to_param, :labor_cost => {
-        :date => '1/1/2000', :percent_complete => 10
+        :date => '1/1/2000', :percent_complete => 10, :note => 'blah'
       }
     end
 
@@ -39,7 +39,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   test "should create xhr labor_cost" do
     assert_difference('LaborCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
-        :date => '1/1/2000', :percent_complete => 10
+        :date => '1/1/2000', :percent_complete => 10, :note => 'blah'
       }
     end
     
@@ -52,7 +52,7 @@ class LaborCostsControllerTest < ActionController::TestCase
   test "should fail to create xhr labor_cost" do
     assert_no_difference('LaborCost.count') do
       xhr :post, :create, :task_id => @task.to_param, :labor_cost => {
-        :date => '1/1/2000', :percent_complete => nil
+        :date => '1/1/2000', :percent_complete => nil, :note => 'blah'
       }
     end
 
