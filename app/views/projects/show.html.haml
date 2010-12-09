@@ -31,7 +31,11 @@
   -if @project.show_planning
     .left
       %h3 Estimated Cost Graph
-      .boxed= image_tag estimated_cost_graph_for_project_path(@project), :size => '490x120'
+      .boxed
+        %script{:type => 'text/javascript+protovis'}
+          -data = (0..30).to_a.reverse.map{|d| p = @project.version_at(d.days.ago); {:value => p.estimated_cost, :label => "#{d.days.ago.to_date.strftime('%b %d')}: #{number_to_currency p.estimated_cost, :precision => 0}"} }
+          =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :min => 0}
+        =# image_tag estimated_cost_graph_for_project_path(@project), :size => '490x120'
       
       .right
         =link_to estimate_report_for_project_path(@project) do
@@ -78,8 +82,7 @@
     .full_width
       %h3 Labor Allocation Timeline
       %script{:type => 'text/javascript+protovis'}
-        =render :partial => 'timeline.js', :locals => {:height => 150, :width => 990, :tasks => @project.tasks.active}
-      =#render :partial => 'timeline', :locals => {:height => 150}
+        =render :partial => 'shared/protovis_timeline.js', :locals => {:height => 150, :width => 990, :tasks => @project.tasks.active}
 
       .right
         =link_to timeline_for_project_path(@project) do

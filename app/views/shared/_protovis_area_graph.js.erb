@@ -1,0 +1,61 @@
+<%# 
+  data = [{:value => 1.1, :label => 'blah'}] 
+  width
+  height
+  min
+  max
+%>
+
+<% min ||= data.map{|d| d[:value]}.min * 0.8 %>
+<% max ||= data.map{|d| d[:value]}.max * 1.2 %>
+
+var ag_data = <%= raw data.to_json %>;
+
+var ag_w = <%= width %>,
+    ag_h = <%= height %>,
+    ag_max = <%= max %>,
+    ag_min = <%= min %>,
+    ag_idx = -1,
+    ag_x = pv.Scale.linear(0, <%= data.size %>).range(0,ag_w);
+    ag_y = pv.Scale.linear(ag_min, ag_max).range(0,ag_h);
+    ag_color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
+    
+var ag_vis = new pv.Panel()
+    .def('i', -1)
+    .width(ag_w)
+    .height(ag_h)
+    .events("all")
+    .event("mousemove", pv.Behavior.point(Infinity).collapse("y"));
+        
+ 
+// Area graph
+var ag_area = ag_vis.add(pv.Area)
+    .data( ag_data )
+    .segmented( true )
+    .bottom(0)
+    .height(function(d) ag_y(d['value']) )
+    .left(function() ag_x(this.index) )
+    .fillStyle( 'rgba(255,165,0,.1)' )
+    .event("point", function(d) ag_vis.i(this.index) )
+    .event("unpoint", function() ag_vis.i(-1) );
+    
+// Top Line
+ag_area.anchor('top').add(pv.Line)
+    .strokeStyle('orange')
+    .lineWidth(4);
+    
+// Points
+ag_area.add(pv.Dot)
+    .radius(5)
+    .strokeStyle(null)
+    .fillStyle( 'orange' )
+    .left( function() ag_x(this.index) )
+    .bottom( function(d) ag_y(d['value']) )
+    .visible( function() ag_vis.i() == this.index )
+  .anchor('top').add(pv.Label)
+    .text( function(d) d['label'] );
+
+    
+ag_vis.render();
+
+
