@@ -2,6 +2,7 @@
   =javascript_include_tag "autocomplete-rails.js"
   =javascript_include_tag "jquery.dimscreen.js"
   =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
+  =javascript_include_tag 'protovis-d3.2.js'
   
 =render :partial => 'shared/project_nav'
 
@@ -76,7 +77,9 @@
               
     .full_width
       %h3 Labor Allocation Timeline
-      =render :partial => 'timeline', :locals => {:height => 150}
+      %script{:type => 'text/javascript+protovis'}
+        =render :partial => 'timeline.js', :locals => {:height => 150, :width => 990, :tasks => @project.tasks.active}
+      =#render :partial => 'timeline', :locals => {:height => 150}
 
       .right
         =link_to timeline_for_project_path(@project) do
