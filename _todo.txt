@@ -10,10 +10,10 @@
 + task has_many milestones
 + re-work markups to be at bottom
 + drag & drop positioning of components, tasks, contracts
++ add note field to labor cost
 
-- add note field to labor cost
-- allow editing of labor cost date (material cost?)
 - material cost summary
+- allow editing of labor cost date (material cost?)
 - projected net (estimated_cost - raw_projected_cost)
 
 - simplify project dashboard

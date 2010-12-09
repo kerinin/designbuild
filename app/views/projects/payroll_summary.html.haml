@@ -29,7 +29,10 @@
   %th Total Pay
     
   -@laborers.each do |laborer|
-    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+    -if @project.nil?
+      -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).includes(:labor_set => { :task => :project } ).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day) & @projects
+    -else
+      -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).includes(:labor_set => { :task => :project } ).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day).where('tasks.project_id = ?', @project.id)
     -unless labor_cost_lines.empty?
       %tr
         %td= laborer.name

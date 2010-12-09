@@ -14,7 +14,7 @@
       %td.currency= number_to_currency(labor_cost.raw_cost)
       %td.currency= number_to_currency(labor_cost.cost)
       %td.number= number_to_percentage(labor_cost.percent_complete, :precision => 0)
-      %td.control=# link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
+      %td.control= link_to 'Edit', edit_task_labor_cost_path(@task, labor_cost)
       %td.control= link_to icon(:delete), [@task, labor_cost], :confirm => 'Are you sure?', :method => :delete
 
   - if labor_costs.empty?
