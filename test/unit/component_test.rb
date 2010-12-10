@@ -19,10 +19,10 @@ class ComponentTest < ActiveSupport::TestCase
       @fc3 = Factory :fixed_cost_estimate, :component => @sub1, :raw_cost => 100000
       @uc1 = Factory :unit_cost_estimate, :quantity => @q1, :unit_cost => 100, :drop => 0 # x1
       @uc2 = Factory :unit_cost_estimate, :quantity => @q2, :unit_cost => 1000, :drop => 0 # x2
-      @c1 = Factory :contract, :component => @obj, :active_bid => Factory(:bid, :amount =>  1000000)
-      @c2 = Factory :contract, :component => @obj, :active_bid => Factory(:bid, :amount =>  10000000)
-      @c3 = Factory :contract, :component => @sub1, :active_bid => Factory(:bid, :amount => 100000000)
-      @c4 = Factory :contract, :component => @sub2, :active_bid => Factory(:bid, :amount => 1000000000)
+      @c1 = Factory :contract, :component => @obj, :active_bid => Factory(:bid, :raw_cost =>  1000000)
+      @c2 = Factory :contract, :component => @obj, :active_bid => Factory(:bid, :raw_cost =>  10000000)
+      @c3 = Factory :contract, :component => @sub1, :active_bid => Factory(:bid, :raw_cost => 100000000)
+      @c4 = Factory :contract, :component => @sub2, :active_bid => Factory(:bid, :raw_cost => 1000000000)
     end
 
     teardown do
@@ -111,9 +111,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
 
     #--------------------------CALCULATIONS
-    
+  
     should "aggregate estimated costs" do
-      assert_equal 1111102111, @obj.estimated_raw_cost
+      assert_equal 1111102111, @obj.reload.estimated_raw_cost
     end
         
     should "return estimated cost nil if no estimates" do
