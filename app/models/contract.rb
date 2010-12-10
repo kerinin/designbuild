@@ -19,7 +19,8 @@ class Contract < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
-  after_create :add_project_markups
+  after_create :add_project_markups, :unless => :component_id
+  after_create :add_component_markups, :if => :component_id
   
   before_save :cache_values
   
@@ -51,7 +52,8 @@ class Contract < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    self.project.save!
+    self.component.save! unless self.component.blank?
+    self.project.save! if self.component.blank?
   end
   
   
@@ -72,5 +74,9 @@ class Contract < ActiveRecord::Base
   
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  end
+  
+  def add_component_markups
+    self.component.markups.all.each {|m| self.markups << m unless self.markups.include? m }
   end
 end
