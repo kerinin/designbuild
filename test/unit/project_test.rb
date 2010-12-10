@@ -37,7 +37,9 @@ class ProjectTest < ActiveSupport::TestCase
         @cc1 = Factory :contract_cost, :contract => @cont1, :raw_cost => 10000
       @cont2 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 100000)
         @cc2 = Factory :contract_cost, :contract => @cont2, :raw_cost => 100000
-        
+      @cont3 = Factory :contract, :project => @obj, :component => c1, :active_bid => Factory(:bid, :raw_cost => 1000000)
+        @cc3 = Factory :contract_cost, :contract => @cont3, :raw_cost => 1000000
+                
       @dl1 = Factory :deadline, :project => @obj
       @dl2 = Factory :deadline, :project => @obj
       @rdl1 = Factory :deadline, :parent_deadline => @dl1, :interval => 10
@@ -109,31 +111,35 @@ class ProjectTest < ActiveSupport::TestCase
     #---------------------CALCULATIONS
    
     should "aggregate estimated fixed costs" do
-      assert_equal 1.1, @obj.estimated_raw_fixed_cost
+      assert_equal 1.1, @obj.reload.estimated_raw_fixed_cost
     end
   
     should "aggregate estimated unit costs" do
-      assert_equal 30.03, Project.find(@obj.id).estimated_raw_unit_cost
+      assert_equal 30.03, @obj.reload.estimated_raw_unit_cost
     end
-   
+
+    should "aggregate estimated contract costs" do
+      assert_equal 1110000, @obj.reload.estimated_raw_contract_cost
+    end
+       
     should "aggregate estimated costs" do
-      assert_equal 110031.13, @obj.estimated_raw_cost
+      assert_equal 1110031.13, @obj.reload.estimated_raw_cost
     end
     
     should "aggregate material costs" do
-      assert_equal 101, @obj.raw_material_cost
+      assert_equal 101, @obj.reload.raw_material_cost
     end
     
     should "aggregate labor costs" do
-      assert_equal 1010, @obj.raw_labor_cost
+      assert_equal 1010, @obj.reload.raw_labor_cost
     end
     
     should "aggregate contract invoices" do
-      assert_equal 110000, @obj.reload.raw_contract_invoiced
+      assert_equal 1110000, @obj.reload.raw_contract_invoiced
     end
     
     should "aggregate costs" do
-      assert_equal 111111, @obj.reload.raw_cost
+      assert_equal 1111111, @obj.reload.raw_cost
     end
     
     should "determine projected net" do
@@ -141,7 +147,7 @@ class ProjectTest < ActiveSupport::TestCase
       @markup = Factory :markup, :percent => 100
       @obj.markups << @markup
       
-      assert_equal (220062.26-111111.13), @obj.reload.projected_net
+      assert_equal (2220062.26-1111111.13), @obj.reload.projected_net
     end
   end
   
