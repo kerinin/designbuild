@@ -29,6 +29,10 @@
                         
   
   -if @project.show_planning
+    .full_width
+      %h3 Default markups
+      =render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups}
+      
     .left
       %h3 Estimated Cost Graph
       .boxed
