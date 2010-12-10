@@ -52,11 +52,11 @@ class Project < ActiveRecord::Base
   # estimated_raw_contract_cost
   
   def estimated_cost
-    add_or_nil( self.contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost)} )
+    add_or_nil( self.contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
   end
   
   def estimated_raw_cost
-    add_or_nil( self.raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost)} )
+    add_or_nil( self.raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
   end
   
   # labor_cost

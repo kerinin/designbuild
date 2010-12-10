@@ -150,7 +150,7 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal (2220062.26-1111111.13), @obj.reload.projected_net
     end
   end
-=begin  
+  
   context "A project w/ caching" do
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
@@ -332,5 +332,4 @@ class ProjectTest < ActiveSupport::TestCase
       assert_equal 600, @task.reload.estimated_raw_cost
     end
   end
-=end
 end
