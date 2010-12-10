@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101209180544) do
+ActiveRecord::Schema.define(:version => 20101210150015) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -35,6 +35,8 @@ ActiveRecord::Schema.define(:version => 20101209180544) do
     t.float     "estimated_raw_unit_cost"
     t.float     "total_markup"
     t.integer   "position"
+    t.float     "estimated_contract_cost"
+    t.float     "estimated_raw_contract_cost"
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -62,6 +64,7 @@ ActiveRecord::Schema.define(:version => 20101209180544) do
     t.float     "raw_invoiced"
     t.float     "total_markup"
     t.integer   "position"
+    t.integer   "component_id"
   end
 
   create_table "deadlines", :force => true do |t|
@@ -112,11 +115,11 @@ ActiveRecord::Schema.define(:version => 20101209180544) do
   end
 
   create_table "laborers", :force => true do |t|
-    t.string    "name"
-    t.float     "bill_rate"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "pay_rate"
+    t.string   "name"
+    t.float    "bill_rate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "pay_rate"
   end
 
   create_table "markings", :force => true do |t|

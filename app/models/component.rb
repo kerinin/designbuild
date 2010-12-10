@@ -10,6 +10,7 @@ class Component < ActiveRecord::Base
   has_many :quantities, :order => :name, :dependent => :destroy
   has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
+  has_many :contracts, :order => :name
   
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
@@ -81,21 +82,43 @@ class Component < ActiveRecord::Base
     self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
   end
   
+  # Contract Costs
+  #estimated_contract_cost
+  
+  #estimated_raw_contract_cost
+  
+  def estimated_component_contract_cost
+    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+  end
+  
+  def estimated_raw_component_contract_cost
+    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
+  
+  def estimated_subcomponent_contract_cost
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_contract_cost)}
+  end
+  
+  def estimated_raw_subcomponent_contract_cost
+    self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_contract_cost)}
+  end
+  
+  
   # Total Cost
   def estimated_component_cost
-    add_or_nil( self.estimated_component_unit_cost, self.estimated_component_fixed_cost )
+    add_or_nil( add_or_nil( self.estimated_component_unit_cost, self.estimated_component_fixed_cost ), self.estimated_component_contract_cost )
   end
   
   def estimated_raw_component_cost
-    add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_component_fixed_cost )
+    add_or_nil( add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_component_fixed_cost ), self.estimated_raw_component_contract_cost )
   end
   
   def estimated_cost
-    add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost )
+    add_or_nil( add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost ), self.estimated_contract_cost )
   end
   
   def estimated_raw_cost
-    add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost )
+    add_or_nil( add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost ), self.estimated_raw_contract_cost )
   end
   
   
@@ -104,6 +127,7 @@ class Component < ActiveRecord::Base
     
     self.cache_estimated_fixed_cost
     self.cache_estimated_unit_cost
+    self.cache_estimated_contract_cost
     self.cache_total_markup
   end
     
@@ -128,6 +152,11 @@ class Component < ActiveRecord::Base
     self.estimated_raw_unit_cost = add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_subcomponent_unit_cost )
   end
 
+  def cache_estimated_contract_cost
+    self.estimated_contract_cost = add_or_nil( self.estimated_component_contract_cost, self.estimated_subcomponent_contract_cost )
+    self.estimated_raw_contract_cost = add_or_nil( self.estimated_raw_component_contract_cost, self.estimated_raw_subcomponent_contract_cost )
+  end
+  
   def cache_total_markup
     self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
   end
@@ -146,11 +175,13 @@ class Component < ActiveRecord::Base
   end
   
   def cascade_add_markup(markup)
+    self.contracts.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.save
   end
   
   def cascade_remove_markup(markup)
+    self.contracts.all.each {|c| c.makrups.delete( markup ) }
     self.children.all.each {|c| c.markups.delete( markup ) }
     self.save
   end

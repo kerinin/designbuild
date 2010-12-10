@@ -5,6 +5,7 @@ class Contract < ActiveRecord::Base
   has_paper_trail :ignore => [:position]
   
   belongs_to :project
+  belongs_to :component
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   
   has_many :tasks, :order => :name
@@ -18,8 +19,10 @@ class Contract < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
-  after_create :add_project_markups
+  after_create :add_project_markups, :unless => :component_id
+  after_create :add_component_markups, :if => :component_id
   
+  before_validation :check_project
   before_save :cache_values
   
   after_save :cascade_cache_values  
@@ -50,11 +53,16 @@ class Contract < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    self.project.save!
+    self.component.save! unless self.component.blank?
+    self.project.save! unless self.project.blank?
   end
   
   
   protected  
+  
+  def check_project
+    self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
+  end
   
   def cache_raw_cost
     self.raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
@@ -71,5 +79,9 @@ class Contract < ActiveRecord::Base
   
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  end
+  
+  def add_component_markups
+    self.component.markups.all.each {|m| self.markups << m unless self.markups.include? m }
   end
 end

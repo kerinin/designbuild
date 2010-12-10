@@ -3,7 +3,16 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContractTest < ActiveSupport::TestCase
   context "A Contract" do
     setup do
-      @obj = Factory :contract
+      @project = Factory :project
+      @pm = Factory :markup, :percent => 100
+      @project.markups << @pm
+      
+      @component = Factory :component, :project => @project
+      @cm = Factory :markup, :percent => 100
+      @component.markups << @cm
+      
+      @obj = Factory :contract, :component => @component
+      @contract2 = Factory :contract, :project => @project
       
       @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1
       @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10
@@ -40,9 +49,39 @@ class ContractTest < ActiveSupport::TestCase
       assert_contains @obj.bids, @b1
       assert_contains @obj.bids, @b2
     end
-    
+
+    should "allow a component" do
+      assert_equal @component, @obj.component
+    end
+        
     should "allow an active bid" do
       assert_equal @obj.active_bid, @b2
+    end
+    
+    #-------------------Markups
+    
+    should "inherit project markups" do
+      assert_contains @obj.reload.markups, @pm
+      assert_contains @contract2.reload.markups, @pm
+    end
+    
+    should "inherit component markups" do
+      assert_contains @obj.reload.markups, @cm
+    end
+    
+    should "cascade project markups" do
+      @markup = Factory :markup
+      @project.markups << @markup
+      
+      assert_contains @obj.reload.markups, @markup
+      assert_contains @contract2.reload.markups, @markup
+    end
+    
+    should "cascade component markups" do
+      @markup = Factory :markup
+      @component.markups << @markup
+      
+      assert_contains @obj.reload.markups, @markup
     end
     
     #-------------------CALCULATIONS
@@ -58,7 +97,7 @@ class ContractTest < ActiveSupport::TestCase
     should "update total markup after add" do
       @markup = Factory :markup, :percent => 10
       @obj.markups << @markup
-      assert_equal 10, @obj.total_markup
+      assert_equal 210, @obj.total_markup
     end
   end
 end

@@ -13,10 +13,14 @@
 + add note field to labor cost
 + material cost summary
 + allow editing of labor cost date (material cost?)
++ projected net (estimated_cost - raw_projected_cost)
 
-- projected net (estimated_cost - raw_projected_cost)
-- bank draws (invoice tracking)
 - contracts in components
+-- markups?
+-- cost calculations?
+
+- bank draws (invoice tracking)
+-- track costs back to estimate
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)

@@ -39,16 +39,24 @@ class Project < ActiveRecord::Base
   
   # estimated_raw_unit_cost
   
+  def estimated_contract_cost
+    self.contract_cost
+  end
+  
+  def estimated_raw_contract_cost
+    self.raw_contract_cost
+  end
+  
   # estimated_contract_cost
   
   # estimated_raw_contract_cost
   
   def estimated_cost
-    add_or_nil( self.contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost)} )
+    add_or_nil( self.contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
   end
   
   def estimated_raw_cost
-    add_or_nil( self.raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost)} )
+    add_or_nil( self.raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
   end
   
   # labor_cost
@@ -100,7 +108,7 @@ class Project < ActiveRecord::Base
     self.estimated_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
     self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
   end
-  
+    
   def cache_contract_cost
     self.contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost )}
     self.raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_cost )}
