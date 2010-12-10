@@ -1,0 +1,62 @@
+<%# 
+  data = [ { :name => 'one', :color => 'orange', :data => [{:value => 1.1, :label => 'blah'}] } ]
+  width
+  heighth
+  min
+  max
+%>
+
+<% min ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.min }.min, 0.8 %>
+<% max ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.max }.max, 1.2 %>
+
+var lg_data = <%= raw data.to_json %>;
+
+var lg_w = <%= width %>,
+    lg_h = <%= height %>,
+    lg_max = <%= max %>,
+    lg_min = <%= min %>,
+    lg_x = pv.Scale.linear(0, <%= data[0][:data].size %>).range(0,lg_w);
+    lg_y = pv.Scale.linear(lg_min, lg_max).range(0,lg_h);
+    
+var lg_vis = new pv.Panel()
+    .def('i', -1)
+    .width(lg_w)
+    .height(lg_h)
+    .events("all")
+    .event("mousemove", pv.Behavior.point(Infinity).collapse("y"));
+        
+ 
+// Area graph
+var lg_graph = lg_vis.add(pv.Panel)
+    .data( lg_data );
+
+    
+// Lines
+var lg_lines = lg_graph.add(pv.Panel)
+    .def('color', function(d) d['color'] )
+    .def('line', function(d) d['line'] )
+  .add(pv.Line)
+    .data( function(d) d['data'] )
+    .bottom( function(d) lg_y( d['value'] ) )
+    .left(function() lg_x(this.index) )
+    .lineWidth( function(d) this.parent.line() ? this.parent.line() : 4 )
+    .strokeStyle( function() this.parent.color() )
+    .event("point", function(d) lg_vis.i(this.index) )
+    .event("unpoint", function() lg_vis.i(-1) );
+
+// Points
+var lg_points = lg_lines.add(pv.Dot)
+    .radius(5)
+    .strokeStyle(null)
+    .fillStyle( function() this.parent.color() )
+    .left( function() lg_x(this.index) )
+    .bottom( function(d) lg_y(d['value']) )
+    .visible( function() lg_vis.i() == this.index );
+    
+// Labels
+lg_points.anchor('top').add(pv.Label)
+    .text( function(d)  d['value'] == null ? null : d['label'] );
+ 
+lg_vis.render();
+
+

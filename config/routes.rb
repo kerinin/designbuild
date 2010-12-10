@@ -40,14 +40,11 @@ Designbuild::Application.routes.draw do
     
     member do
       get :timeline, :as => :timeline_for
-      get :timeline_events, :as => :timeline_events_for
       get :estimate_report, :as => :estimate_report_for
       get :purchase_order_list, :as => :purchase_order_list_for
       get :labor_summary, :as => :labor_summary_for
       get :payroll_summary, :as => :payroll_summary_for
       get :material_cost_summary, :as => :material_cost_summary_for
-      get :estimated_cost_graph, :as => :estimated_cost_graph_for
-      get :construction_cost_graph, :as => :construction_cost_graph_for
     end
     
     collection do

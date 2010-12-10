@@ -55,7 +55,6 @@ GEM
     forgery (0.3.6)
     friendly_id (3.1.7)
       babosa (~> 0.2.0)
-    gruff (0.3.6)
     haml (3.0.23)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -101,7 +100,6 @@ GEM
       rake (>= 0.8.4)
       thor (~> 0.14.0)
     rake (0.8.7)
-    rmagick (2.13.1)
     rspec (2.0.0.beta.12)
       rspec-core (= 2.0.0.beta.12)
       rspec-expectations (= 2.0.0.beta.12)
@@ -140,7 +138,6 @@ DEPENDENCIES
   factory_girl_rails
   forgery
   friendly_id (~> 3.1)
-  gruff
   haml-rails
   jquery-rails
   paper_trail
@@ -148,7 +145,6 @@ DEPENDENCIES
   rails (= 3.0.1)
   rails3-generators
   rails3-jquery-autocomplete
-  rmagick
   rspec-rails (= 2.0.0.beta.12)
   shoulda
   sqlite3-ruby

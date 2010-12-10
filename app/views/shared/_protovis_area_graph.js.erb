@@ -6,8 +6,8 @@
   max
 %>
 
-<% min ||= data.map{|d| d[:value]}.min * 0.8 %>
-<% max ||= data.map{|d| d[:value]}.max * 1.2 %>
+<% min ||= multiply_or_nil data.map{|d| d[:value]}.compact.min, 0.8 %>
+<% max ||= multiply_or_nil data.map{|d| d[:value]}.compact.max, 1.2 %>
 
 var ag_data = <%= raw data.to_json %>;
 
