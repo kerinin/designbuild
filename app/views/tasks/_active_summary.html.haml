@@ -3,10 +3,10 @@
     %tr
       %th Name
       %th.currency Est. Cost
+      %th.currency Markup
       %th.currency Cost-to-Date
       %th.currency.qtip_net Net
-      %th.number % of Estimated
-      %th.number % Complete
+      %th.number % Complete (Est./Act.)
       %th Deadline
       %th.control
       %th.control
@@ -14,11 +14,14 @@
     - @project.tasks.active.each do |task|
       %tr{:id => "task_#{task.id}"}
         %td=link_to task.name, [@project, task]
-        %td.currency= number_to_currency(task.estimated_cost)
+        %td.currency= number_to_currency(task.estimated_raw_cost)
+        %td.currency= number_to_currency( subtract_or_nil( task.estimated_cost, task.estimated_raw_cost ) )
         %td.currency= number_to_currency(task.cost)
         %td.currency= number_to_currency task.projected_net
-        %td.currency= number_to_percentage( task.percent_of_estimated, :precision => 0 )
-        %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
+        %td.number
+          = number_to_percentage( task.percent_complete, :precision => 0 )
+          ='/'
+          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
         %td
           -unless task.deadline.blank?
             -if task.deadline.date <= Date::today
