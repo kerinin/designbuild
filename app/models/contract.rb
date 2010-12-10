@@ -5,6 +5,7 @@ class Contract < ActiveRecord::Base
   has_paper_trail :ignore => [:position]
   
   belongs_to :project
+  belongs_to :component
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   
   has_many :tasks, :order => :name

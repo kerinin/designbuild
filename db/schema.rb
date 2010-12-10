@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101209180544) do
+ActiveRecord::Schema.define(:version => 20101210150015) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20101209180544) do
     t.float     "raw_invoiced"
     t.float     "total_markup"
     t.integer   "position"
+    t.integer   "component_id"
   end
 
   create_table "deadlines", :force => true do |t|

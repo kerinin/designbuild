@@ -3,7 +3,9 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContractTest < ActiveSupport::TestCase
   context "A Contract" do
     setup do
-      @obj = Factory :contract
+      @component = Factory :component
+      
+      @obj = Factory :contract, :component => @component
       
       @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1
       @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10
@@ -40,7 +42,11 @@ class ContractTest < ActiveSupport::TestCase
       assert_contains @obj.bids, @b1
       assert_contains @obj.bids, @b2
     end
-    
+
+    should "allow a component" do
+      assert_equal @component, @obj.component
+    end
+        
     should "allow an active bid" do
       assert_equal @obj.active_bid, @b2
     end
