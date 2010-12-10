@@ -54,7 +54,7 @@ class Contract < ActiveRecord::Base
     
   def cascade_cache_values
     self.component.save! unless self.component.blank?
-    self.project.save! if self.component.blank?
+    self.project.save! unless self.project.blank?
   end
   
   

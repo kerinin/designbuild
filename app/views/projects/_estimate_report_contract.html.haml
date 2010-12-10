@@ -1,0 +1,35 @@
+-unless contract.cost.nil?
+  %tr
+    %td.control
+    %td.control
+    %td{:class => "indent_#{indent}"}
+      -if indent == 0
+        %strong= contract.name
+      -else
+        =contract.name
+    -if session[:break_out_unit_costs]
+      %td= "Fixed Bid from #{contract.active_bid.contractor}"
+      %td.currency
+    -if session[:break_out_markup]
+      %td.currency= number_to_currency contract.raw_cost
+    %td.currency
+      -if indent == 0
+        %strong= number_to_currency contract.cost
+      -else
+        =number_to_currency contract.cost
+      
+  -if session[:break_out_unit_costs]    
+    -contract.bids.each do |alternate|
+      -unless alternate.is_active_bid
+        %tr
+          %td.control
+          %td.control
+          %td
+          %td{:class => "indent_#{indent+1}"}
+            %i= "Alternate Bid from #{alternate.contractor}"
+          %td.currency
+          -if session[:break_out_markup]
+            %td.currency
+              %i= number_to_currency alternate.raw_cost
+          %td.currency
+            %i= number_to_currency alternate.cost

@@ -6,7 +6,7 @@
           =f.check_box :expand_in_estimate, :onchange => "$('form#expand_#{component.id}').submit();"
           =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
     %td.control
-      -unless component.fixed_cost_estimates.empty? && component.unit_cost_estimates.empty?
+      -unless component.fixed_cost_estimates.empty? && component.unit_cost_estimates.empty? && component.contracts.empty?
         =form_for( [@project, component], :html => { :id => "costs_#{component.id}" } ) do |f|
           =f.check_box :show_costs_in_estimate, :onchange => "$('form#costs_#{component.id}').submit();"
           =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
@@ -60,6 +60,9 @@
             %i= number_to_currency fixed_cost.raw_cost
         %td.currency
           %i= number_to_currency fixed_cost.cost
+          
+    -component.contracts.each do |contract|
+      =render :partial => 'estimate_report_contract', :locals => {:contract => contract, :indent => indent+1}
       
   -if component.expand_in_estimate
     -component.children.each do |subcomponent|
