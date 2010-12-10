@@ -22,6 +22,7 @@ class Contract < ActiveRecord::Base
   after_create :add_project_markups, :unless => :component_id
   after_create :add_component_markups, :if => :component_id
   
+  before_validation :check_project
   before_save :cache_values
   
   after_save :cascade_cache_values  
@@ -58,6 +59,10 @@ class Contract < ActiveRecord::Base
   
   
   protected  
+  
+  def check_project
+    self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
+  end
   
   def cache_raw_cost
     self.raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )

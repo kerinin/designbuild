@@ -87,7 +87,8 @@ class ContractsController < ApplicationController
   # PUT /contracts/1.xml
   def update
     @contract = Contract.find(params[:id])
-
+    puts "CONTRACT"
+    puts params[:contract]
     respond_to do |format|
       if @contract.update_attributes(params[:contract])
         format.js {
