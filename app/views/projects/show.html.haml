@@ -80,23 +80,25 @@
         %button This Week's Payroll Summary
       =link_to material_cost_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
         %button This Week's Material Cost Summary
-              
-    .full_width
-      %h3 Labor Allocation Timeline
-      %script{:type => 'text/javascript+protovis'}
-        =render :partial => 'shared/protovis_timeline.js', :locals => {:height => 150, :width => 990, :tasks => @project.tasks.active}
+    
+    -unless LaborCost.includes(:task).where('tasks.project_id = ?', @project.id).empty?
+      .full_width
+        %h3 Labor Allocation Timeline
+        %script{:type => 'text/javascript+protovis'}
+          -tasks = @project.tasks.active.empty? ? @project.tasks : @project.tasks.active
+          =render :partial => 'shared/protovis_timeline.js', :locals => {:height => 150, :width => 990, :tasks => tasks}
 
-      .right
-        =link_to timeline_for_project_path(@project) do
-          %button View Larger
+        .right
+          =link_to timeline_for_project_path(@project) do
+            %button View Larger
             
     .full_width
       %h3 Projected vs Estimated Cost
       %script{:type => 'text/javascript+protovis'}
         -versions = (0..56).to_a.reverse.map{|i| @project.version_at(i.days.ago.to_date)}
-        -estimated = versions.map{|v| {:value => v.estimated_cost, :label => "Estimate: #{number_to_currency(v.estimated_cost, :precision => 0)}" } }
-        -projected = versions.map{|v| {:value => v.projected_cost, :label => "Projected: #{number_to_currency(v.projected_cost, :precision => 0)}" } }
-        -actual = versions.map{|v| {:value => v.cost, :label => "To Date: #{number_to_currency(v.cost, :precision => 0) }" } }
+        -estimated = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.estimated_cost, :label => "Estimate: #{number_to_currency(v.estimated_cost, :precision => 0)}" } }
+        -projected = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.projected_cost, :label => "Projected: #{number_to_currency(v.projected_cost, :precision => 0)}" } }
+        -actual = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.cost, :label => "To Date: #{number_to_currency(v.cost, :precision => 0) }" } }
         -data = [ |
           {:name => 'Cost to Date', :color => 'hsl(0,0,75)', :line => '2', :data => actual}, |
           {:name => 'Projected Cost', :color => 'red', :data => projected}, |

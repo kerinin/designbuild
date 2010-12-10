@@ -6,8 +6,8 @@
   max
 %>
 
-<% min ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.min }.min, 0.8 %>
-<% max ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.max }.max, 1.2 %>
+<% min ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.min }.compact.min, 0.8 %>
+<% max ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.max }.compact.max, 1.2 %>
 
 var lg_data = <%= raw data.to_json %>;
 
