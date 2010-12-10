@@ -141,7 +141,7 @@ class TaskTest < ActiveSupport::TestCase
       assert_contains @obj.cost_estimates, @uce2
     end
        
-    should "aggregate costs" do
+    should "aggregate cost objects" do
       assert_contains @obj.costs, @lc1
       assert_contains @obj.costs, @lc2
       assert_contains @obj.costs, @mc1
@@ -194,6 +194,13 @@ class TaskTest < ActiveSupport::TestCase
       @markup = Factory :markup, :percent => 10
       @obj.markups << @markup
       assert_equal 10, @obj.total_markup
+    end
+    
+    should "determine projected_net" do
+      # estimated - projected net
+      @markup = Factory :markup, :percent => 100
+      @obj.markups << @markup
+      assert_equal (2222 - 222222), @obj.reload.projected_net
     end
   end
 end

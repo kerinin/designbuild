@@ -41,5 +41,25 @@ $(document).ready( function() {
            tooltip: 'topRight'
         }
      }
+     
+   $('.qtip_net').qtip({
+      content: '<p>The difference between the estimated cost (including markup) and the projected cost (without markup)</p>',
+      show: {delay: 1000},
+      position: {
+         corner: {
+            target: 'topLeft',
+            tooltip: 'topRight'
+         }
+      }
+      
+    $('.qtip_projected').qtip({
+       content: "<p>If a task is finished, the amount spent on the task.  If a task hasn't started, the estimated cost.  Otherwise, the greater of the estimated cost and cost to date</p>",
+       show: {delay: 1000},
+       position: {
+          corner: {
+             target: 'topLeft',
+             tooltip: 'topRight'
+          }
+       }
   });
 });

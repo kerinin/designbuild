@@ -4,6 +4,7 @@
       %th Name
       %th.currency Est. Cost
       %th.currency Cost-to-Date
+      %th.currency.qtip_net Net
       %th.number % of Estimated
       %th.number % Complete
       %th Deadline
@@ -15,6 +16,7 @@
         %td=link_to task.name, [@project, task]
         %td.currency= number_to_currency(task.estimated_cost)
         %td.currency= number_to_currency(task.cost)
+        %td.currency= number_to_currency task.projected_net
         %td.currency= number_to_percentage( task.percent_of_estimated, :precision => 0 )
         %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
         %td

@@ -26,11 +26,11 @@ class ProjectTest < ActiveSupport::TestCase
 
       @t1 = Factory :task, :project => @obj
         @mc1 = Factory :material_cost, :task => @t1, :raw_cost => 1, :supplier => @s1
-        @lc1 = Factory :labor_cost, :task => @t1
+        @lc1 = Factory :labor_cost, :task => @t1, :percent_complete => 100
           @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @lab, :hours => 10
       @t2 = Factory :task, :project => @obj
         @mc2 = Factory :material_cost, :task => @t2, :raw_cost => 100, :supplier => @s2
-        @lc2 = Factory :labor_cost, :task => @t2
+        @lc2 = Factory :labor_cost, :task => @t2, :percent_complete => 100
           @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @lab, :hours => 1000
           
       @cont1 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 10000)
@@ -53,7 +53,7 @@ class ProjectTest < ActiveSupport::TestCase
       Deadline.delete_all
       Quantity.delete_all
     end
- 
+
     should "be valid" do
       assert @obj.valid?
     end
@@ -134,6 +134,14 @@ class ProjectTest < ActiveSupport::TestCase
     
     should "aggregate costs" do
       assert_equal 111111, @obj.reload.raw_cost
+    end
+    
+    should "determine projected net" do
+      # estimated - projected raw
+      @markup = Factory :markup, :percent => 100
+      @obj.markups << @markup
+      
+      assert_equal (220062.26-111111.13), @obj.reload.projected_net
     end
   end
   

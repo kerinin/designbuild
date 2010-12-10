@@ -3,7 +3,8 @@
     %th Name
     %th.currency Est. Cost
     %th.currency Cost-to-Date
-    %th.currency Projected Cost
+    %th.currency.qtip_projected Projected Cost
+    %th.currency.qtip_net Net
     %th.number % of Est.
     %th.number % Complete
     %th.check_box Active
@@ -17,6 +18,7 @@
       %td.currency= number_to_currency(task.estimated_cost)
       %td.currency= number_to_currency(task.cost)
       %td.currency= number_to_currency(task.projected_cost)
+      %td.currency{:class => (!task.projected_net.nil? && task.projected_net < 0 ? 'negative' : nil)}= number_to_currency task.projected_net
       %td.number= number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 1)
       %td.number= number_to_percentage( task.percent_complete, :precision => 0 )
       %td.check_box
@@ -40,10 +42,10 @@
       
   - if tasks.empty?
     %tr
-      %td{:colspan => 10} (None)
+      %td{:colspan => 12} (None)
       
   %tr.control.add_button
-    %td{:colspan => 11}
+    %td{:colspan => 12}
       = link_to new_project_task_path(@project), :remote => true do
         =icon :add
         Add Task
@@ -57,6 +59,8 @@
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_cost })
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_net })
     %td.number
       %strong= tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}), :precision => 1)
     %td{:colspan => 10}

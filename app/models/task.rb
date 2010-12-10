@@ -62,6 +62,10 @@ class Task < ActiveRecord::Base
     self.material_costs.where( "material_costs.raw_cost IS NOT NULL" )
   end
   
+  def projected_net
+    subtract_or_nil self.estimated_cost, self.raw_projected_cost
+  end
+  
   # -------------------CALCULATIONS
   
   # estimated_unit_cost

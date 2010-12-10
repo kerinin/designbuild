@@ -12,7 +12,7 @@ class Component < ActiveRecord::Base
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
   
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
+  has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
   
   has_and_belongs_to_many :tags
   

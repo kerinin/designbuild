@@ -11,12 +11,12 @@
 + re-work markups to be at bottom
 + drag & drop positioning of components, tasks, contracts
 + add note field to labor cost
++ material cost summary
++ allow editing of labor cost date (material cost?)
 
-- material cost summary
-- allow editing of labor cost date (material cost?)
 - projected net (estimated_cost - raw_projected_cost)
-
-- simplify project dashboard
+- bank draws (invoice tracking)
+- contracts in components
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
@@ -31,7 +31,7 @@
 ++ spinners
 ++ icons
 ++ explanative text
--- table alignment
+++ table alignment
 
 - task ordering / sorting
 - milestone / task percent complete UI
@@ -51,7 +51,5 @@
 -- work timeline w/ deadlines
 -- labor reporting for michelle
 -- graphs
-
-- bank draws (invoice tracking)
 
 - users and permissions
