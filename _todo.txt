@@ -14,11 +14,30 @@
 + material cost summary
 + allow editing of labor cost date (material cost?)
 + projected net (estimated_cost - raw_projected_cost)
-
-- contracts in components
--- markups?
++ contracts in components
++ project dashboard
+++ active tasks (with labor + material creation buttons)
+++ printable timeline
+++ projected cost
+++ print purchase orders
+++ schedule
 
 - bank draws (invoice tracking)
+
+Objectives
+* request funds based on component % complete
+* keep track of available funds for each component
+- Invoice, Payment
+-- single request/transfer of monies (indexed by date)
+-- effective date: the time period through which the invoice is meant to cover
+-- invoices have line items for each component representing the amount of estimated being requested
+-- amount requested defaults to un-funded costs at effective date (cost at date - funded at date)
+-- payments have same set of line items describing where the payment should be allocated - used purely to track remaining available
+-- amount paid defaults to total requested for oldest tasks, fully funds tasks until gone (based on age)
+- InvoiceLine, PaymentLine
+-- belongs_to parent, belongs_to component/contract, amount
+- project, component, contract caches invoiced, paid
+
 -- track costs back to estimate
 
 - use awesome_nested_set instead of ancestry
@@ -44,17 +63,14 @@
 - versioning interface
 - equation quantities
 
-- project dashboard
--- active tasks (with labor + material creation buttons)
--- printable timeline
--- projected cost
--- print purchase orders
--- schedule
+
 
 - reporting
 -- estimates, proposals, invoices
 ++ work timeline w/ deadlines
 ++ labor reporting for michelle
 ++ graphs
+
+- redesign UI to reduce vertical scrolling, white space
 
 - user permissions
