@@ -32,6 +32,16 @@ class FixedCostEstimate < ActiveRecord::Base
   
   # raw_cost
 
+
+  # Invoicing
+  [:labor_cost, :material_cost].each do |sym|
+    self.send(:define_method, sym) do
+      self.task.blank? || self.task.send(sym).nil? || self.cost.nil? ? nil : self.task.send(sym) * self.cost / self.task.estimated_cost
+    end
+  end
+  
+  protected
+  
   def cascade_cache_values
     self.component.reload.save!
     self.task.reload.save! unless self.task.blank?

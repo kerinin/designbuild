@@ -99,6 +99,13 @@ class Project < ActiveRecord::Base
   end
   
   
+  # Invoicing
+  [:labor_percent_retainage, :material_percent_retainage, :contract_percent_retainage].each do |sym|
+    self.send(:define_method, "#{sym.to_s}_float") do
+      self.send(sym) / 100
+    end
+  end
+  
   protected
     
   def cache_estimated_fixed_cost

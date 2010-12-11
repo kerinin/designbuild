@@ -144,7 +144,30 @@ class Component < ActiveRecord::Base
   end
   
   
-  #protected
+  # Invoicing
+  [:labor_invoiced, :material_invoiced, :contract_invoiced, :invoiced, :labor_retainage, :material_retainage, :contract_retainage, :retainage, :labor_paid, :material_paid, :contract_paid, :paid, :labor_retained, :material_retained, :contract_retained, :retained].each do |sym|
+    self.send(:define_method, sym) do
+      self.invoice_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.send(sym)}
+    end
+  end
+  
+  [:labor_cost, :material_cost].each do |sym|
+    self.send(:define_method, sym) do
+      add_or_nil( self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}, self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym) } )
+    end
+  end
+  
+  def contract_cost
+    self.contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.cost }
+  end
+  
+  def contract_percent_complete
+  end
+  
+  def non_contract_percent_complete
+  end
+  
+  protected
   
   def cache_estimated_fixed_cost
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )

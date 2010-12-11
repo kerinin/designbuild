@@ -50,6 +50,8 @@ class InvoiceLineTest < ActiveSupport::TestCase
   
       @invoice = Factory :invoice, :project => @project
       @obj = Factory :invoice_line, :invoice => @invoice, :component => @component
+      
+      [@obj, @project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @p_invoice, @invoice].each {|i| i.reload}
     end
     
     should "be valid" do
@@ -76,8 +78,6 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert_not_nil @obj.material_retained
       assert_not_nil @obj.contract_retained
       assert_not_nil @obj.retained
-      
-      assert_not_nil @obj.comment
     end
     
     should "require an invoice" do
@@ -149,7 +149,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert_equal ( (
         (@task1.percent_complete_float * @task1.estimated_cost ) +             # task % of estimated cost
         (@task2.percent_complete_float * @task2.estimated_cost )
-        ) / (@component.estimated_unit_cost + @component.estimated_fixed_cost)  # non-contract estimate
+        ) / ( add_or_nil @component.estimated_unit_cost, @component.estimated_fixed_cost )  # non-contract estimate
       ), @component.non_contract_percent_complete
       
       assert_equal (
@@ -218,9 +218,13 @@ class InvoiceLineTest < ActiveSupport::TestCase
   
       @invoice = Factory :invoice, :project => @project
       @obj = Factory :invoice_line, :invoice => @invoice, :component => @component
+      
+      [@obj, @project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @p_invoice, @invoice].each {|i| i.reload}
+      
     end
     
-    should "default to % complete * estimated - requested" do
+    should_eventually "default to % complete * estimated - requested" do
+      # How to handle non estimating labor & material explicitly?
       assert_equal (
         ( ( @component.non_contract_percent_complete * @component.estimated_labor_cost) *      # percent of labor estimate
           (1-@project.labor_percent_retainage_float ) ) +                                    # labor retainage

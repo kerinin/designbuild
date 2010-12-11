@@ -42,6 +42,10 @@ class Task < ActiveRecord::Base
     self.percent_complete >= 100
   end
   
+  def percent_complete_float
+    self.percent_complete / 100
+  end
+  
   def percent_of_estimated
     multiply_or_nil(100, divide_or_nil(self.cost, self.estimated_cost))
   end

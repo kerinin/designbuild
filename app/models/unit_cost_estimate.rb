@@ -52,6 +52,13 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   
+  # Invoicing
+  [:labor_cost, :material_cost].each do |sym|
+    self.send(:define_method, sym) do
+      self.task.blank? || self.task.send(sym).nil? || self.cost.nil? ? nil : self.task.send(sym) * self.cost / self.task.estimated_cost
+    end
+  end
+  
   protected
     
   def cache_cost
