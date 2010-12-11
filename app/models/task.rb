@@ -150,6 +150,18 @@ class Task < ActiveRecord::Base
     self.project.save!
   end
   
+  
+  
+  # Invoicing
+  
+  def labor_percent
+    100 * ( divide_or_nil( self.labor_cost, self.cost ) || 0 )
+  end
+  
+  def material_percent
+    100 * ( divide_or_nil( self.material_cost, self.cost ) || 0 )
+  end
+  
   protected
 
   def cache_estimated_unit_cost

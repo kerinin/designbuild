@@ -1,13 +1,14 @@
 # Read about factories at http://github.com/thoughtbot/factory_girl
 
 Factory.define :invoice_line do |f|
-  f.labor_invoiced { rand(100) }
-  f.material_invoiced { rand(100) }
-  f.contract_invoiced { rand(100) }
+  # These should be generated from default procedures
+  #f.labor_invoiced { rand(100) }
+  #f.material_invoiced { rand(100) }
+  #f.contract_invoiced { rand(100) }
   
-  f.labor_retainage { rand(50) }
-  f.material_retainage { rand(50) }
-  f.contract_retainage { rand(50) }
+  #f.labor_retainage { rand(50) }
+  #f.material_retainage { rand(50) }
+  #f.contract_retainage { rand(50) }
   
   f.labor_paid { rand(100) }
   f.material_paid { rand(100) }

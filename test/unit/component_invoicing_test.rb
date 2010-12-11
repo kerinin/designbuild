@@ -48,8 +48,28 @@ class ComponentTest < ActiveSupport::TestCase
       @cc3 = Factory :contract_cost, :contract => @c3, :raw_cost => 1000000
       
       [@obj, @task, @other, @project, @fc1, @fc2, @fc3, @fc4, @fc5, @fc6, @uc1, @uc2, @uc3, @uc4, @uc5, @uc6, @c1, @c2, @c3, @b1, @b2, @b3, @lc1, @lc2].each {|i| i.reload}
+
+      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10, :state => 'paid'
+      @p_line = Factory( :invoice_line, 
+        :invoice => @p_invoice,
+        :component => @obj, 
+        :labor_invoiced => 5, 
+        :labor_paid => 1, 
+        :labor_retainage => 2, 
+        :labor_retained => 1, 
+        :material_invoiced => 50, 
+        :material_paid => 10, 
+        :material_retainage => 20, 
+        :material_retained => 10,
+        :contract_invoiced => 500, 
+        :contract_paid => 100, 
+        :contract_retainage => 200, 
+        :contract_retained => 100
+      )
+      
+      [@obj,@p_invoice, @p_line, @task, @other, @project, @fc1, @fc2, @fc3, @fc4, @fc5, @fc6, @uc1, @uc2, @uc3, @uc4, @uc5, @uc6, @c1, @c2, @c3, @b1, @b2, @b3, @lc1, @lc2].each {|i| i.reload}
     end
-       
+    
     should "determine fixed cost" do
       # NOTE: This is assuming that task estimates are uniquely determined by component estimates
       
@@ -94,6 +114,36 @@ class ComponentTest < ActiveSupport::TestCase
 
     should_eventually "determine cost" do
       assert_equal (@obj.labor_cost + @obj.material_cost + @obj.contract_cost), @obj.cost
+    end
+
+    should "determine invoiced" do
+      # excludes retainage
+      assert_equal 5, @obj.labor_invoiced
+      assert_equal 50, @obj.material_invoiced
+      assert_equal 500, @obj.contract_invoiced
+      assert_equal 555, @obj.invoiced
+    end
+
+    should "determine retainage" do
+      # excludes retainage
+      assert_equal 2, @obj.labor_retainage
+      assert_equal 20, @obj.material_retainage
+      assert_equal 200, @obj.contract_retainage
+      assert_equal 222, @obj.retainage
+    end
+        
+    should "determine paid" do
+      assert_equal 1, @obj.labor_paid
+      assert_equal 10, @obj.material_paid
+      assert_equal 100, @obj.contract_paid
+      assert_equal 111, @obj.paid 
+    end
+
+    should "determine retainage" do
+      assert_equal 1, @obj.labor_retained
+      assert_equal 10, @obj.material_retained
+      assert_equal 100, @obj.contract_retained
+      assert_equal 111, @obj.retained
     end
   end
 end

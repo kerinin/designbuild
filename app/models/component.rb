@@ -161,11 +161,6 @@ class Component < ActiveRecord::Base
     self.contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.cost }
   end
   
-  def contract_percent_complete
-  end
-  
-  def non_contract_percent_complete
-  end
   
   protected
   

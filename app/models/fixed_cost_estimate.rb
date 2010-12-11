@@ -15,6 +15,8 @@ class FixedCostEstimate < ActiveRecord::Base
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
+  scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
+  
   def task_name=(string)
     self.task = (string == '' || string.nil?) ? nil : Task.find_or_create_by_name(string, :project => self.component.project)
   end
