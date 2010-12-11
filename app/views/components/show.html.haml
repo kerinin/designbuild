@@ -56,6 +56,9 @@ to:
     %td Estimated Fixed Costs
     %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
   %tr
+    %td Contract Costs (Includes Markup)
+    %td.currency= number_to_currency(@component.estimated_component_cost)
+  %tr
     %td Sub-Component Costs (Includes Markup)
     %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
   =render :partial => 'markups/subtotal_lines', :locals => { |
