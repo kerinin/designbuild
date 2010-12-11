@@ -123,8 +123,7 @@ class Component < ActiveRecord::Base
   
   
   def cache_values
-    logger.info "caching from #{self.id}"
-    [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.markups].each {|a| a.reload}
+    [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.contracts, self.markups].each {|a| a.reload}
     
     self.cache_estimated_fixed_cost
     self.cache_estimated_unit_cost
@@ -133,16 +132,17 @@ class Component < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    logger.info "cascading from #{self.id}"
     if self.is_root?
-      self.project.save!
+      self.project.reload.save!
     else
-      self.parent.save!
+      self.parent.reload.save!
     end
+    
+    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?
   end
   
   
-  protected
+  #protected
   
   def cache_estimated_fixed_cost
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )

@@ -44,13 +44,11 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   def cascade_cache_values
-    self.component.save!
-    self.task.save! unless self.task.blank?
-    
-    logger.info "was: #{self.component_id_was if self.component_id_changed? && !self.component_id_was.nil?}"
+    self.component.reload.save!
+    self.task.reload.save! unless self.task.blank?
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
+    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?    
   end
   
   

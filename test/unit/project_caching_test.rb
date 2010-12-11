@@ -24,13 +24,9 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal 100, @project.reload.estimated_raw_cost
       assert_equal 200, @project.reload.estimated_cost
 
-      puts "start"
-      
       @uc.component = @random_component
       @uc.save
-      
-      puts "component: #{@component.id}"
-      
+
       assert_equal nil, @project.reload.estimated_raw_unit_cost
       assert_equal nil, @project.reload.estimated_unit_cost
       assert_equal nil, @project.reload.estimated_raw_cost
@@ -51,7 +47,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal nil, @project.reload.estimated_raw_cost
       assert_equal nil, @project.reload.estimated_cost
     end
-=begin    
+   
     should "reflect subcomponent unit costs" do
       @q = Factory :quantity, :component => @subcomponent, :value => 1
       @uc = Factory :unit_cost_estimate, :component => @subcomponent, :quantity => @q, :unit_cost => 100, :drop => 0, :name => 'unit cost'
@@ -196,7 +192,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal nil, @project.reload.estimated_raw_cost
       assert_equal nil, @project.reload.estimated_cost
     end
-    
+  
     should "reflect subcomponent contract costs" do
       @bid = Factory :bid, :contract => @contract2, :raw_cost => 100
       @contract2.active_bid = @bid
@@ -410,6 +406,5 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       assert_equal 600, @task.reload.estimated_raw_cost
     end
-=end
   end
 end

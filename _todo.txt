@@ -17,10 +17,11 @@
 
 - contracts in components
 -- markups?
--- cost calculations?
 
 - bank draws (invoice tracking)
 -- track costs back to estimate
+
+- use awesome_nested_set instead of ancestry
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
@@ -52,8 +53,8 @@
 
 - reporting
 -- estimates, proposals, invoices
--- work timeline w/ deadlines
--- labor reporting for michelle
--- graphs
+++ work timeline w/ deadlines
+++ labor reporting for michelle
+++ graphs
 
-- users and permissions
+- user permissions
