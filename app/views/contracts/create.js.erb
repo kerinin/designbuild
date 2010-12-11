@@ -9,16 +9,18 @@
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.contract_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("table.contracts tr.error").remove();
+  $("table.contracts tr.contract_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
   //Success
   
   <% content_for :table do %>
-  	<%=render :partial => 'contract_list', :locals => {:contracts => @contracts} %>
+  	<%=render :partial => 'contract_list', :locals => {:contracts => @contracts, :context => @component.nil? ? :contract : :component} %>
   <% end %>
 
+  //<%= @component %>
+  
   //Update the html of the div flash_notice with the new one
   $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
 
@@ -32,6 +34,6 @@
   $('table.contracts').unwrap();
   
   //Load a new entry field
-  $('tr.add_button > td > a').click();
+  //$('tr.add_button > td > a').click();
   
 <% end %>

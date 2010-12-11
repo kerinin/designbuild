@@ -24,7 +24,9 @@
         -if context == :contract
           %td.currency= number_to_currency contract.raw_invoiced
           %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
-        %td.control.edit= link_to 'Rename', edit_project_contract_path(@project, contract), :remote => true
+          %td.control.edit= link_to 'Edit', edit_project_contract_path(@project, contract), :remote => true
+        -else
+          %td.control.edit= link_to 'Edit', edit_component_contract_path(@component, contract), :remote => true
         %td.control.destroy= link_to icon(:delete), [@project, contract], :confirm => 'Are you sure?', :method => :delete
       
   - if contracts.empty?

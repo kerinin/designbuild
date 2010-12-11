@@ -73,7 +73,8 @@ class ContractsController < ApplicationController
     respond_to do |format|
       if @contract.save
         format.js {
-          @contracts = @project.contracts
+          @contracts = @component.contracts unless @component.nil?
+          @contracts = @project.contracts if @component.nil?
         }
         format.html { redirect_to([@project, @contract], :notice => 'Contract was successfully created.') }
         format.xml  { render :xml => @contract, :status => :created, :location => @contract }
@@ -93,7 +94,8 @@ class ContractsController < ApplicationController
     respond_to do |format|
       if @contract.update_attributes(params[:contract])
         format.js {
-          @contracts = @project.contracts
+          @contracts = @component.contracts unless @component.nil?
+          @contracts = @project.contracts if @component.nil?
         }
         format.html { redirect_to([@project, @contract], :notice => 'Contract was successfully updated.') }
         format.xml  { head :ok }

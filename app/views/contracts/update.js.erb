@@ -16,7 +16,7 @@
   //Success
   
   <% content_for :table do %>
-  	<%=render :partial => 'contract_list', :locals => {:contracts => @contracts} %>
+	  <%=render :partial => 'contract_list', :locals => {:contracts => @contracts, :context => @component.nil? ? :contract : :component} %>
   <% end %>
 
   //Update the html of the div flash_notice with the new one
@@ -29,6 +29,6 @@
   $('form.edit_contract').html( "<%= escape_javascript( yield :table ) %>");
 
   //Remove the form
-  $('table#contracts').unwrap();
+  $('table.contracts').unwrap();
   
 <% end %>
