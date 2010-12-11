@@ -50,9 +50,11 @@ class ComponentTest < ActiveSupport::TestCase
       [@obj, @task, @other, @project, @fc1, @fc2, @fc3, @fc4, @fc5, @fc6, @uc1, @uc2, @uc3, @uc4, @uc5, @uc6, @c1, @c2, @c3, @b1, @b2, @b3, @lc1, @lc2].each {|i| i.reload}
 
       @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10, :state => 'paid'
+      
+      # NOTE: this needs to be distributed to costs
       @p_line = Factory( :invoice_line, 
         :invoice => @p_invoice,
-        :component => @obj, 
+        :cost => @fc1, 
         :labor_invoiced => 5, 
         :labor_paid => 1, 
         :labor_retainage => 2, 
@@ -60,11 +62,7 @@ class ComponentTest < ActiveSupport::TestCase
         :material_invoiced => 50, 
         :material_paid => 10, 
         :material_retainage => 20, 
-        :material_retained => 10,
-        :contract_invoiced => 500, 
-        :contract_paid => 100, 
-        :contract_retainage => 200, 
-        :contract_retained => 100
+        :material_retained => 10
       )
       
       [@obj,@p_invoice, @p_line, @task, @other, @project, @fc1, @fc2, @fc3, @fc4, @fc5, @fc6, @uc1, @uc2, @uc3, @uc4, @uc5, @uc6, @c1, @c2, @c3, @b1, @b2, @b3, @lc1, @lc2].each {|i| i.reload}

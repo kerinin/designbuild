@@ -96,13 +96,10 @@ ActiveRecord::Schema.define(:version => 20101211155214) do
     t.float    "material_retainage"
     t.float    "material_paid"
     t.float    "material_retained"
-    t.float    "contract_invoiced"
-    t.float    "contract_retainage"
-    t.float    "contract_paid"
-    t.float    "contract_retained"
     t.string   "comment"
     t.integer  "invoice_id"
-    t.integer  "component_id"
+    t.integer  "cost_id"
+    t.string   "cost_type"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -211,7 +208,6 @@ ActiveRecord::Schema.define(:version => 20101211155214) do
     t.boolean  "show_construction",           :default => false
     t.float    "labor_percent_retainage"
     t.float    "material_percent_retainage"
-    t.float    "contract_percent_retainage"
     t.boolean  "fixed_bid",                   :default => false
   end
 

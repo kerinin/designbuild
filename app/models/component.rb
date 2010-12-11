@@ -15,8 +15,6 @@ class Component < ActiveRecord::Base
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
   
-  has_many :invoice_lines
-  
   has_and_belongs_to_many :tags
   
   #acts_as_list :scope => 'ancestry'
@@ -145,20 +143,12 @@ class Component < ActiveRecord::Base
   
   
   # Invoicing
-  [:labor_invoiced, :material_invoiced, :contract_invoiced, :invoiced, :labor_retainage, :material_retainage, :contract_retainage, :retainage, :labor_paid, :material_paid, :contract_paid, :paid, :labor_retained, :material_retained, :contract_retained, :retained].each do |sym|
+  [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained].each do |sym|
     self.send(:define_method, sym) do
-      self.invoice_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.send(sym)}
+      (self.fixed_cost_estimates + self.unit_cost_estimates + self.contracts).inject(nil) do |memo, obj|
+        add_or_nil memo, obj.send(sym)
+      end
     end
-  end
-  
-  [:labor_cost, :material_cost].each do |sym|
-    self.send(:define_method, sym) do
-      add_or_nil( self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}, self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym) } )
-    end
-  end
-  
-  def contract_cost
-    self.contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.cost }
   end
   
   

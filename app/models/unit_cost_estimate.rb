@@ -6,6 +6,8 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :component
   belongs_to :quantity
   belongs_to :task
+  
+  has_many :invoice_lines, :as => :cost
 
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
@@ -58,6 +60,25 @@ class UnitCostEstimate < ActiveRecord::Base
       self.task.blank? || self.task.send(sym).nil? || self.cost.nil? ? nil : self.task.send(sym) * self.cost / self.task.estimated_cost
     end
   end
+  
+  # percent_complete
+  
+  # invoiced
+  # retainage
+  # paid
+  # retained
+  
+  # labor_percent
+  # labor_invoiced
+  # labor_retainage
+  # labor_paid
+  # labor_retained
+  
+  # material_percent
+  # material_invoiced
+  # material_retainage
+  # material_paid
+  # material_retained
   
   protected
     

@@ -10,16 +10,11 @@ class CreateInvoiceLines < ActiveRecord::Migration
       t.float :material_retainage
       t.float :material_paid
       t.float :material_retained
-      
-      t.float :contract_invoiced
-      t.float :contract_retainage
-      t.float :contract_paid
-      t.float :contract_retained
 
       t.string :comment
       
       t.belongs_to :invoice
-      t.belongs_to :component
+      t.belongs_to :cost, :polymorphic => true
 
       t.timestamps
     end
