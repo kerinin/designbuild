@@ -16,6 +16,8 @@ class MaterialCostTest < ActiveSupport::TestCase
       
       @li1 = Factory :material_cost_line, :material_set => @obj
       @li2 = Factory :material_cost_line, :material_set => @obj
+      
+      [@obj, @proj1, @proj2, @task1, @task2].each {|i| i.reload}
     end
 
     teardown do

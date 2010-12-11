@@ -1,5 +1,5 @@
 class ContractsController < ApplicationController
-  before_filter :get_project, :except => :add_markup
+  before_filter :get_project_or_component, :except => :add_markup
   
   def sort
     @project.contracts.all.each do |sub|
@@ -49,6 +49,7 @@ class ContractsController < ApplicationController
   # GET /contracts/new.xml
   def new
     @contract = Contract.new
+    @contract.component = @component unless @component.nil?
 
     respond_to do |format|
       format.js
@@ -67,6 +68,7 @@ class ContractsController < ApplicationController
   def create
     @contract = Contract.new(params[:contract])
     @contract.project = @project
+    @contract.component ||= @component unless @component.nil?
 
     respond_to do |format|
       if @contract.save
@@ -87,8 +89,7 @@ class ContractsController < ApplicationController
   # PUT /contracts/1.xml
   def update
     @contract = Contract.find(params[:id])
-    puts "CONTRACT"
-    puts params[:contract]
+
     respond_to do |format|
       if @contract.update_attributes(params[:contract])
         format.js {

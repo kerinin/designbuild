@@ -14,6 +14,8 @@ class DeadlineTest < ActiveSupport::TestCase
       
       @m1 = Factory :milestone, :parent_date => @obj, :interval => 1
       @m2 = Factory :milestone, :parent_date => @obj, :interval => 1
+      
+      @obj.reload
     end
 
     teardown do

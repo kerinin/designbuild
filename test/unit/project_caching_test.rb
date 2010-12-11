@@ -13,6 +13,8 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @laborer = Factory :laborer, :bill_rate => 1
       @random_component = Factory :component
       @random_task = Factory :task
+      
+      [@project, @component, @subcomponent].each {|i| i.reload}
     end
 
     should "reflect root unit costs" do

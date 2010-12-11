@@ -8,6 +8,8 @@ class BidTest < ActiveSupport::TestCase
       @active = Factory :bid, :contract => @contract
       @contract.active_bid = @active
       @contract.save!
+      
+      @contract.reload
     end
 
     teardown do

@@ -13,6 +13,8 @@ class MilestoneTest < ActiveSupport::TestCase
       @rd1 = Factory :milestone, :parent_date => @obj, :interval => 10
       @rd2 = Factory :milestone, :parent_date => @obj, :interval => 10
       @rr_milestone = Factory :milestone, :parent_date => @r_milestone, :interval => 5
+      
+      [@obj, @project, @t1, @t2, @r_milestone].each {|i| i.reload}
     end
 
     teardown do

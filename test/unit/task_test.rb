@@ -27,7 +27,7 @@ class TaskTest < ActiveSupport::TestCase
       Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
       Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
       
-      @obj.reload
+      [@obj, @lc1, @lc2, @q, @ctr, @dl1, @laborer].each {|i| i.reload}
     end
 
     teardown do
@@ -42,7 +42,7 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     #-----------------------REQUIRED
-=begin  
+ 
     should "be valid" do
       assert @obj.valid?
     end
@@ -157,7 +157,7 @@ class TaskTest < ActiveSupport::TestCase
       assert_equal nil, @obj2.raw_labor_cost
       assert_equal nil, @obj2.raw_cost
     end
-=end       
+     
     should "project costs based on percent complete" do
       @l = Factory :laborer, :bill_rate => 1
       

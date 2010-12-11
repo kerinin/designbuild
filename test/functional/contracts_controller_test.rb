@@ -4,6 +4,11 @@ class ContractsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
     @contract = Factory :contract, :project => @project
+    @component = Factory :component, :project => @project
+    @c_contract = Factory :contract, :project => @project, :component => @component
+    
+    @project.reload
+    
     sign_in Factory :user
   end
 
@@ -19,12 +24,20 @@ class ContractsControllerTest < ActionController::TestCase
   end
 
   test "should xhr get new" do
-    xhr :get, :new,:project_id => @project.to_param
+    xhr :get, :new, :project_id => @project.to_param
     assert_response :success
     assert_template :new
     assert_equal 'text/javascript', response.content_type
   end
-  
+
+  test "should xhr get new from component" do
+    xhr :get, :new, :component_id => @component.to_param
+    assert_response :success
+    assert_template :new
+    assert_equal 'text/javascript', response.content_type
+    assert_equal @component, assigns[:contract].component
+  end
+    
   test "should create contract" do
     assert_difference('Contract.count') do
       post :create, :project_id => @project.to_param, :contract => {
@@ -60,7 +73,35 @@ class ContractsControllerTest < ActionController::TestCase
     assert_equal 'text/javascript', response.content_type
     assert response.body.include? '//Error'
   end
+
+  test "should xhr create contract from component" do
+    assert_difference('Contract.count') do
+      xhr :post, :create, :component_id => @component.to_param, :contract => {
+        :name => 'bob'
+      }
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
+    assert_equal @component, assigns[:contract].component
+  end
   
+  test "should fail to create xhr contract from component" do
+    assert_no_difference('Contract.count') do
+      xhr :post, :create, :component_id => @component.to_param, :contract => {
+        :name => nil
+      }
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+    assert_equal @component, assigns[:contract].component
+  end
+    
   test "should show contract" do
     get :show, :project_id => @project.to_param, :id => @contract.to_param
     assert_response :success
@@ -77,7 +118,14 @@ class ContractsControllerTest < ActionController::TestCase
     assert_template :edit
     assert_equal 'text/javascript', response.content_type
   end
-  
+
+  test "should xhr get edit from component" do
+    xhr :get, :edit, :component_id => @component.to_param, :id => @c_contract.to_param
+    assert_response :success
+    assert_template :edit
+    assert_equal 'text/javascript', response.content_type
+  end
+    
   test "should update contract" do
     put :update, :project_id => @project.to_param, :id => @contract.to_param, :contract => @contract.attributes
     assert_redirected_to project_contract_path(@project, assigns(:contract))
@@ -102,7 +150,27 @@ class ContractsControllerTest < ActionController::TestCase
     assert_equal 'text/javascript', response.content_type
     assert response.body.include? '//Error'
   end
-  
+
+  test "should xhr update contract from component" do
+    xhr :put, :update, :component_id => @component.to_param, :id => @c_contract.to_param, :contract => @c_contract.attributes
+    
+    assert_response :success
+    assert_template :update
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
+  end
+
+  test "should fail to xhr update contract from component" do
+    xhr :put, :update, :component_id => @component.to_param, :id => @c_contract.to_param, :contract => {
+        :name => nil
+      }
+    
+    assert_response :success
+    assert_template :update
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+    
   test "should destroy contract" do
     assert_difference('Contract.count', -1) do
       delete :destroy, :project_id => @project.to_param, :id => @contract.to_param
