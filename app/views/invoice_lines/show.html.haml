@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Amount requested:
+  = @invoice_line.amount_requested
+%p
+  %b Amount paid:
+  = @invoice_line.amount_paid
+%p
+  %b Retainage:
+  = @invoice_line.retainage
+%p
+  %b Retained:
+  = @invoice_line.retained
+%p
+  %b Comment:
+  = @invoice_line.comment
+
+= link_to 'Edit', edit_invoice_line_path(@invoice_line)
+\|
+= link_to 'Back', invoice_lines_path

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101210150015) do
+ActiveRecord::Schema.define(:version => 20101211155214) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -96,6 +96,35 @@ ActiveRecord::Schema.define(:version => 20101210150015) do
     t.timestamp "updated_at"
   end
 
+  create_table "invoice_lines", :force => true do |t|
+    t.float    "labor_invoiced"
+    t.float    "labor_retainage"
+    t.float    "labor_paid"
+    t.float    "labor_retained"
+    t.float    "material_invoiced"
+    t.float    "material_retainage"
+    t.float    "material_paid"
+    t.float    "material_retained"
+    t.float    "contract_invoiced"
+    t.float    "contract_retainage"
+    t.float    "contract_paid"
+    t.float    "contract_retained"
+    t.string   "comment"
+    t.integer  "invoice_id"
+    t.integer  "component_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "invoices", :force => true do |t|
+    t.date     "date"
+    t.string   "state"
+    t.string   "template"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "labor_cost_lines", :force => true do |t|
     t.float     "hours"
     t.integer   "labor_set_id"
@@ -115,11 +144,11 @@ ActiveRecord::Schema.define(:version => 20101210150015) do
   end
 
   create_table "laborers", :force => true do |t|
-    t.string    "name"
-    t.float     "bill_rate"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "pay_rate"
+    t.string   "name"
+    t.float    "bill_rate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "pay_rate"
   end
 
   create_table "markings", :force => true do |t|
@@ -189,6 +218,9 @@ ActiveRecord::Schema.define(:version => 20101210150015) do
     t.float     "raw_projected_cost"
     t.boolean   "show_planning",               :default => true
     t.boolean   "show_construction",           :default => false
+    t.float     "labor_percent_retainage"
+    t.float     "material_percent_retainage"
+    t.float     "contract_percent_retainage"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|

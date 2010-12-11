@@ -13,6 +13,8 @@ class Project < ActiveRecord::Base
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
   
+  has_many :invoices
+  
   has_and_belongs_to_many :users
   
   validates_presence_of :name

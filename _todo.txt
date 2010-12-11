@@ -37,6 +37,7 @@ Objectives
 - InvoiceLine, PaymentLine
 -- belongs_to parent, belongs_to component/contract, amount
 - project, component, contract caches invoiced, paid
+? retainage?  added to payment similar to markup?
 
 -- track costs back to estimate
 

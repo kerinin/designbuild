@@ -1,0 +1,27 @@
+%h1 Listing invoice_lines
+
+%table
+  %tr
+    %th Amount requested
+    %th Amount paid
+    %th Retainage
+    %th Retained
+    %th Comment
+    %th
+    %th
+    %th
+
+  - @invoice_lines.each do |invoice_line|
+    %tr
+      %td= invoice_line.amount_requested
+      %td= invoice_line.amount_paid
+      %td= invoice_line.retainage
+      %td= invoice_line.retained
+      %td= invoice_line.comment
+      %td= link_to 'Show', invoice_line
+      %td= link_to 'Edit', edit_invoice_line_path(invoice_line)
+      %td= link_to 'Destroy', invoice_line, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Invoice line', new_invoice_line_path
