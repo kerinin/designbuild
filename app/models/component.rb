@@ -123,6 +123,7 @@ class Component < ActiveRecord::Base
   
   
   def cache_values
+    logger.info "caching from #{self.id}"
     [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.markups].each {|a| a.reload}
     
     self.cache_estimated_fixed_cost
@@ -132,6 +133,7 @@ class Component < ActiveRecord::Base
   end
     
   def cascade_cache_values
+    logger.info "cascading from #{self.id}"
     if self.is_root?
       self.project.save!
     else

@@ -115,11 +115,11 @@ ActiveRecord::Schema.define(:version => 20101210150015) do
   end
 
   create_table "laborers", :force => true do |t|
-    t.string   "name"
-    t.float    "bill_rate"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "pay_rate"
+    t.string    "name"
+    t.float     "bill_rate"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.float     "pay_rate"
   end
 
   create_table "markings", :force => true do |t|
