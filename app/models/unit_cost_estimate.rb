@@ -69,7 +69,11 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   def percent_complete
-    0
+    self.task.percent_complete unless self.task.blank?
+  end
+  
+  def percent_complete_float
+    self.task.percent_complete_float unless self.task.blank?
   end
   
   protected

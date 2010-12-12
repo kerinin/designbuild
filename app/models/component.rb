@@ -146,7 +146,11 @@ class Component < ActiveRecord::Base
   [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained].each do |sym|
     self.send(:define_method, sym) do
       (self.fixed_cost_estimates + self.unit_cost_estimates + self.contracts).inject(nil) do |memo, obj|
-        add_or_nil memo, obj.send(sym)
+        if obj.respond_to?(sym)
+          add_or_nil memo, obj.send(sym)
+        else
+          add_or_nil memo, obj.send( sym.to_s.split('_').last )
+        end
       end
     end
   end
