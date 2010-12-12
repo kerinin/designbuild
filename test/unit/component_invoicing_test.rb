@@ -62,8 +62,6 @@ class ComponentTest < ActiveSupport::TestCase
     should "aggregate invoiced" do
       assert_equal 700, @c_inv.invoiced
       assert_contains @c.invoice_lines, @c_inv
-      #NOTE: this is conflicting with AR's invoiced table...
-      # rename cost -> estimated_cost, invoiced -> cost
       assert_equal 700, @c.invoiced
       
       assert_equal 222, @obj.labor_invoiced

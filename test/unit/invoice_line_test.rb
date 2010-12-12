@@ -89,7 +89,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
     
     should "require a component" do
       assert_raise ActiveRecord::RecordInvalid do
-        Factory :invoice_line, :component => nil
+        Factory :invoice_line, :cost => nil
       end
     end
       
