@@ -88,11 +88,11 @@ class Component < ActiveRecord::Base
   #estimated_raw_contract_cost
   
   def estimated_component_contract_cost
-    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.cost)}
+    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_cost)}
   end
   
   def estimated_raw_component_contract_cost
-    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_raw_cost)}
   end
   
   def estimated_subcomponent_contract_cost

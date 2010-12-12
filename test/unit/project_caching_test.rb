@@ -310,31 +310,31 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @contract.active_bid = @bid
       @contract.save
       
-      assert_equal 100, @project.reload.raw_contract_cost
-      assert_equal 200, @project.reload.contract_cost
+      assert_equal 100, @project.reload.estimated_raw_contract_cost
+      assert_equal 200, @project.reload.estimated_contract_cost
       assert_equal 100, @project.reload.estimated_raw_cost
       assert_equal 200, @project.reload.estimated_cost
       
       @contract.project = @random_component.project
       @contract.save
       
-      assert_equal nil, @project.reload.raw_contract_cost
-      assert_equal nil, @project.reload.contract_cost
+      assert_equal nil, @project.reload.estimated_raw_contract_cost
+      assert_equal nil, @project.reload.estimated_contract_cost
       assert_equal nil, @project.reload.estimated_raw_cost
       assert_equal nil, @project.reload.estimated_cost
 
       @contract.project = @project
       @contract.save
 
-      assert_equal 100, @project.reload.raw_contract_cost
-      assert_equal 200, @project.reload.contract_cost
+      assert_equal 100, @project.reload.estimated_raw_contract_cost
+      assert_equal 200, @project.reload.estimated_contract_cost
       assert_equal 100, @project.reload.estimated_raw_cost
       assert_equal 200, @project.reload.estimated_cost
       
       @bid.destroy
       
-      assert_equal nil, @project.reload.raw_contract_cost
-      assert_equal nil, @project.reload.contract_cost
+      assert_equal nil, @project.reload.estimated_raw_contract_cost
+      assert_equal nil, @project.reload.estimated_contract_cost
       assert_equal nil, @project.reload.estimated_raw_cost
       assert_equal nil, @project.reload.estimated_cost
     end
@@ -342,31 +342,31 @@ class ProjectCachingTest < ActiveSupport::TestCase
     should "reflect contract invoiced" do
       @inv = Factory :contract_cost, :contract => @contract, :raw_cost => 1000
       
-      assert_equal 1000, @project.reload.raw_contract_invoiced
-      assert_equal 2000, @project.reload.contract_invoiced
+      assert_equal 1000, @project.reload.raw_contract_cost
+      assert_equal 2000, @project.reload.contract_cost
       assert_equal 1000, @project.reload.raw_cost
       assert_equal 2000, @project.reload.cost
       
       @contract.project = @random_component.project
       @contract.save
       
-      assert_equal nil, @project.reload.raw_contract_invoiced
-      assert_equal nil, @project.reload.contract_invoiced
+      assert_equal nil, @project.reload.raw_contract_cost
+      assert_equal nil, @project.reload.contract_cost
       assert_equal nil, @project.reload.raw_cost
       assert_equal nil, @project.reload.cost
 
       @contract.project = @project
       @contract.save
 
-      assert_equal 1000, @project.reload.raw_contract_invoiced
-      assert_equal 2000, @project.reload.contract_invoiced
+      assert_equal 1000, @project.reload.raw_contract_cost
+      assert_equal 2000, @project.reload.contract_cost
       assert_equal 1000, @project.reload.raw_cost
       assert_equal 2000, @project.reload.cost
       
       @inv.destroy
       
-      assert_equal nil, @project.reload.raw_contract_invoiced
-      assert_equal nil, @project.reload.contract_invoiced
+      assert_equal nil, @project.reload.raw_contract_cost
+      assert_equal nil, @project.reload.contract_cost
       assert_equal nil, @project.reload.raw_cost
       assert_equal nil, @project.reload.cost
     end

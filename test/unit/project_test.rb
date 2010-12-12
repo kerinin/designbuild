@@ -48,16 +48,6 @@ class ProjectTest < ActiveSupport::TestCase
       [@obj, @task, @c1, @c2, @t1, @t2].each {|i| i.reload}
     end
 
-    teardown do
-      Project.delete_all
-      User.delete_all
-      Component.delete_all
-      Task.delete_all
-      Contract.delete_all
-      Deadline.delete_all
-      Quantity.delete_all
-    end
-
     should "be valid" do
       assert @obj.valid?
     end
@@ -137,7 +127,7 @@ class ProjectTest < ActiveSupport::TestCase
     end
     
     should "aggregate contract invoices" do
-      assert_equal 1110000, @obj.reload.raw_contract_invoiced
+      assert_equal 1110000, @obj.reload.raw_contract_cost
     end
     
     should "aggregate costs" do

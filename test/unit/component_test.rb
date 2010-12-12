@@ -26,14 +26,6 @@ class ComponentTest < ActiveSupport::TestCase
       
       [@obj, @sub1, @sub2].each {|i| i.reload}
     end
-
-    teardown do
-      Component.delete_all
-      Tag.delete_all
-      Quantity.delete_all
-      FixedCostEstimate.delete_all
-      UnitCostEstimate.delete_all
-    end
     
     #---------------REQUIRED
     

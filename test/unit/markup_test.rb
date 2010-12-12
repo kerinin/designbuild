@@ -166,8 +166,8 @@ class MarkupTest < ActiveSupport::TestCase
     should "apply to markupable" do
       assert_equal 150, @subcomponent.estimated_cost
       assert_equal 150, @task.cost
+      assert_equal 150, @contract.estimated_cost
       assert_equal 150, @contract.cost
-      assert_equal 150, @contract.invoiced
     end
   end
 end

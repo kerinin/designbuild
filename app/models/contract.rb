@@ -34,30 +34,23 @@ class Contract < ActiveRecord::Base
   def percent_invoiced
     multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
   end
+
   
-  def estimated_cost
-    self.cost
-  end
+  # estimated_cost
+  marks_up :estimated_raw_cost
   
-  def estimated_raw_cost
-    self.raw_cost
-  end
+  # estimated_raw_cost
   
   # cost
   marks_up :raw_cost
   
   # raw_cost
   
-  # invoiced
-  marks_up :raw_invoiced
-  
-  # raw_invoiced
-  
   def cache_values
     [self.bids, self.costs, self.markups].each {|r| r.reload}
     
+    self.cache_estimated_raw_cost
     self.cache_raw_cost
-    self.cache_raw_invoiced
     self.cache_total_markup
   end
     
@@ -92,12 +85,12 @@ class Contract < ActiveRecord::Base
     self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
   end
   
-  def cache_raw_cost
-    self.raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
+  def cache_estimated_raw_cost
+    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
   end
   
-  def cache_raw_invoiced
-    self.raw_invoiced = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  def cache_raw_cost
+    self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
   
   def cache_total_markup

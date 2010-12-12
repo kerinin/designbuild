@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101211155214) do
+ActiveRecord::Schema.define(:version => 20101212210843) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -60,8 +60,8 @@ ActiveRecord::Schema.define(:version => 20101211155214) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bid_id"
+    t.float    "estimated_raw_cost"
     t.float    "raw_cost"
-    t.float    "raw_invoiced"
     t.float    "total_markup"
     t.integer  "position"
     t.integer  "component_id"
@@ -200,8 +200,6 @@ ActiveRecord::Schema.define(:version => 20101211155214) do
     t.float    "raw_labor_cost"
     t.float    "contract_cost"
     t.float    "raw_contract_cost"
-    t.float    "contract_invoiced"
-    t.float    "raw_contract_invoiced"
     t.float    "projected_cost"
     t.float    "raw_projected_cost"
     t.boolean  "show_planning",               :default => true

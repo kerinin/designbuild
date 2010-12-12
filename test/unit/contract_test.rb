@@ -89,11 +89,11 @@ class ContractTest < ActiveSupport::TestCase
     #-------------------CALCULATIONS
  
     should "return current bid cost" do
-      assert_equal 100, @obj.raw_cost
+      assert_equal 100, @obj.estimated_raw_cost
     end
        
     should "aggregate invoiced costs" do
-      assert_equal 11, @obj.raw_invoiced
+      assert_equal 11, @obj.raw_cost
     end
     
     should "update total markup after add" do
