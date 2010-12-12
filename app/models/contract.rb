@@ -71,10 +71,20 @@ class Contract < ActiveRecord::Base
   
   
   # Invoicing
+  [:labor_cost, :material_cost].each do |sym|
+    self.send(:define_method, sym) do
+      divide_or_nil self.invoiced, 2
+    end
+  end
   
   def percent_complete
-    0
+    self.percent_complete_float * 100
   end
+  
+  def percent_complete_float
+    divide_or_nil( self.invoiced, self.cost) || 0
+  end
+
   
   protected  
   

@@ -52,12 +52,14 @@ class InvoiceLine < ActiveRecord::Base
     end
     
     # Sanity check - moves negative costs to other side if that would result in both being > 0
-    if self.labor_invoiced < 0 && self.material_invoiced > -self.labor_invoiced
-      self.material_invoiced += self.labor_invoiced
-      self.labor_invoiced = 0
-    elsif self.material_invoiced < 0 && self.labor_invoiced > -self.material_invoiced
-      self.labor_invoiced += self.material_invoiced
-      self.material_invoiced = 0
+    unless self.labor_invoiced.nil? || self.material_invoiced.nil?
+      if self.labor_invoiced < 0 && self.material_invoiced > -self.labor_invoiced
+        self.material_invoiced += self.labor_invoiced
+        self.labor_invoiced = 0
+      elsif self.material_invoiced < 0 && self.labor_invoiced > -self.material_invoiced
+        self.labor_invoiced += self.material_invoiced
+        self.material_invoiced = 0
+      end
     end
   
     # Check my math!

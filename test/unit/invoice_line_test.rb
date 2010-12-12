@@ -63,7 +63,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert @obj.valid?
     end
     
-    should_eventually "have values" do
+    should "have values" do
       assert_not_nil @obj.labor_invoiced
       assert_not_nil @obj.material_invoiced
       assert_not_nil @obj.invoiced
@@ -81,13 +81,13 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert_not_nil @obj.retained
     end
     
-    should_eventually "require an invoice" do
+    should "require an invoice" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :invoice_line, :invoice => nil
       end
     end
     
-    should_eventually "require a component" do
+    should "require a component" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :invoice_line, :component => nil
       end

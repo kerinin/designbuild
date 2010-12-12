@@ -102,7 +102,7 @@ class Project < ActiveRecord::Base
   # Invoicing
   [:labor_percent_retainage, :material_percent_retainage, :contract_percent_retainage].each do |sym|
     self.send(:define_method, "#{sym.to_s}_float") do
-      self.send(sym) / 100
+      divide_or_nil( self.send(sym), 100 ) || 0
     end
   end
   
