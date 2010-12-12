@@ -3,6 +3,7 @@ class Contract < ActiveRecord::Base
   include MarksUp
   
   has_paper_trail :ignore => [:position]
+  has_invoices
   
   belongs_to :project
   belongs_to :component
@@ -14,9 +15,7 @@ class Contract < ActiveRecord::Base
 
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => Proc.new{|c,m| c.save}, :after_remove => Proc.new{|c,m| c.save}
-  
-  has_many :invoice_lines, :as => :cost
-  
+    
   acts_as_list :scope => :project
   
   validates_presence_of :name, :project
@@ -73,24 +72,9 @@ class Contract < ActiveRecord::Base
   
   # Invoicing
   
-  # percent_complete
-  
-  # invoiced
-  # retainage
-  # paid
-  # retained
-  
-  # labor_percent
-  # labor_invoiced
-  # labor_retainage
-  # labor_paid
-  # labor_retained
-  
-  # material_percent
-  # material_invoiced
-  # material_retainage
-  # material_paid
-  # material_retained
+  def percent_complete
+    0
+  end
   
   protected  
   

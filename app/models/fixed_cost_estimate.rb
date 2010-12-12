@@ -2,11 +2,10 @@ class FixedCostEstimate < ActiveRecord::Base
   include MarksUp
   
   has_paper_trail
+  has_invoices
   
   belongs_to :component
   belongs_to :task
-  
-  has_many :invoice_lines, :as => :cost
   
   validates_presence_of :name, :raw_cost, :component
   
@@ -31,6 +30,14 @@ class FixedCostEstimate < ActiveRecord::Base
     self.component.total_markup unless self.component.blank?
   end
   
+  def estimated_cost
+    cost
+  end
+  
+  def estimated_raw_cost
+    raw_cost
+  end
+  
   # cost
   marks_up :raw_cost
   
@@ -44,24 +51,9 @@ class FixedCostEstimate < ActiveRecord::Base
     end
   end
   
-  # percent_complete
-  
-  # invoiced
-  # retainage
-  # paid
-  # retained
-  
-  # labor_percent
-  # labor_invoiced
-  # labor_retainage
-  # labor_paid
-  # labor_retained
-  
-  # material_percent
-  # material_invoiced
-  # material_retainage
-  # material_paid
-  # material_retained
+  def percent_complete
+    0
+  end
   
   protected
   
