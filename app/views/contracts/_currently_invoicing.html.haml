@@ -1,11 +1,11 @@
--contracts = @project.contracts.joins(:costs).where('contracts.raw_invoiced < contracts.raw_cost')
+-contracts = @project.contracts.joins(:costs).where('contracts.raw_cost < contracts.estimated_raw_cost')
 
 #currently_invoicing_contracts
   %table
     -contracts.each do |contract|
       %tr
         %td=link_to contract.name, [@project,contract]
-        %td="#{number_to_percentage contract.percent_invoiced, :precision => 0} of #{number_to_currency contract.raw_cost, :precision => 0} invoiced to date"
+        %td="#{number_to_percentage contract.percent_invoiced, :precision => 0} of #{number_to_currency contract.estimated_raw_cost, :precision => 0} invoiced to date"
         %td.control='Log Invoice'
     -if contracts.empty?
       %tr

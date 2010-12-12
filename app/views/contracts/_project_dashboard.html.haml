@@ -14,9 +14,9 @@
       %tr{:id => "contract_#{contract.id}"}
         %td.drag_handle= link_to contract.name, [@project, contract]
         %td= contract.active_bid.contractor unless contract.active_bid.blank?
+        %td.currency= number_to_currency contract.estimated_raw_cost
         %td.currency= number_to_currency contract.raw_cost
-        %td.currency= number_to_currency contract.raw_invoiced
-        %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
+        %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_cost, contract.estimated_raw_cost)), :precision => 1)
         %td.control.show= link_to 'Show', [@project, contract]
         %td.control= link_to 'Add Invoice', new_contract_contract_cost_path(contract)
         %td.control.destroy= link_to icon(:delete), [@project, contract], :confirm => 'Are you sure?', :method => :delete
@@ -25,9 +25,9 @@
     %td{:colspan => 2}
       %strong Total
     %td.currency
-      %strong= number_to_currency( @project.raw_contract_cost)
+      %strong= number_to_currency( @project.estimated_raw_contract_cost)
     %td.currency
-      %strong= number_to_currency @project.raw_contract_invoiced
+      %strong= number_to_currency @project.raw_contract_cost
     %td.number
-      %strong= number_to_percentage divide_or_nil(@project.raw_contract_invoiced, @project.contract_invoiced)
+      %strong= number_to_percentage divide_or_nil(@project.estimated_raw_contract_cost, @project.raw_contract_cost)
     %td{:colspan => 3}

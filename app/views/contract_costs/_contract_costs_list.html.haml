@@ -25,7 +25,7 @@
   =render :partial => 'markups/subtotal_lines', :locals => { |
     :parent => @contract, |
     :markups => @contract.markups, |
-    :raw_cost => @contract.raw_invoiced, |
+    :raw_cost => @contract.raw_cost, |
     :edit_helper => :edit_contract_markup_path, |
     :remove_helper => :remove_contract_markup_path} |
   %tr.totals

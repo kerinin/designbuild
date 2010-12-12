@@ -18,12 +18,12 @@
       %tr{:id => "contract_#{contract.id}"}
         %td.drag_handle= link_to contract.name, [@project, contract]
         %td= contract.active_bid.contractor unless contract.active_bid.blank?
-        %td.currency= number_to_currency contract.raw_cost
+        %td.currency= number_to_currency contract.estimated_raw_cost
         %td.number= number_to_percentage contract.total_markup, :precision => 0
-        %td.currency= number_to_currency contract.cost
+        %td.currency= number_to_currency contract.estimated_cost
         -if context == :contract
-          %td.currency= number_to_currency contract.raw_invoiced
-          %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_invoiced, contract.raw_cost)), :precision => 1)
+          %td.currency= number_to_currency contract.raw_cost
+          %td.number= number_to_percentage( multiply_or_nil(100, divide_or_nil(contract.raw_cost, contract.estimated_raw_cost)), :precision => 1)
           %td.control.edit= link_to 'Edit', edit_project_contract_path(@project, contract), :remote => true
         -else
           %td.control.edit= link_to 'Edit', edit_component_contract_path(@component, contract), :remote => true
@@ -43,13 +43,13 @@
     %td{:colspan => 2}
       %strong Total
     %td.currency
-      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.raw_cost})
+      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost})
     %td
     %td.currency
-      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.cost})
+      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_cost})
     -if context == :contract
       %td.currency
-        %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.raw_invoiced})
+        %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.raw_cost})
       %td.number
-        %strong= number_to_percentage( multiply_or_nil( 100, divide_or_nil( @project.contract_invoiced, @project.contract_cost ) ), :precision => 1 )
+        %strong= number_to_percentage( multiply_or_nil( 100, divide_or_nil( @project.contract_cost, @project.estimated_contract_cost ) ), :precision => 1 )
     %td{:colspan => 3}
