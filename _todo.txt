@@ -23,21 +23,11 @@
 ++ schedule
 
 - bank draws (invoice tracking)
-
-Objectives
-* request funds based on component % complete
-* keep track of available funds for each component
-- Invoice, Payment
--- single request/transfer of monies (indexed by date)
--- effective date: the time period through which the invoice is meant to cover
--- invoices have line items for each component representing the amount of estimated being requested
--- amount requested defaults to un-funded costs at effective date (cost at date - funded at date)
--- payments have same set of line items describing where the payment should be allocated - used purely to track remaining available
--- amount paid defaults to total requested for oldest tasks, fully funds tasks until gone (based on age)
-- InvoiceLine, PaymentLine
--- belongs_to parent, belongs_to component/contract, amount
-- project, component, contract caches invoiced, paid
-? retainage?  added to payment similar to markup?
+-- tasks not reflected in components
+-- invoicing when previous payments not distributed to components
+-- drawing retainage
+-- filtering costs by effective date
+-- clean up tests
 
 -- track costs back to estimate
 

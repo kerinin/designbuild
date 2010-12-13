@@ -2,7 +2,7 @@ module HasInvoices
   module InstanceMethods
     def labor_percent
       # portion of task's cost's to date which are for labor
-      unless self.task.nil? || self.task.blank? || self.task.cost.nil?
+      unless !self.respond_to?(:task) || self.task.nil? || self.task.blank? || self.task.cost.nil?
         pct = multiply_or_nil 100, divide_or_nil( self.task.labor_cost, self.task.cost )
         pct ||= 0
       end

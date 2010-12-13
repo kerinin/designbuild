@@ -1,184 +1,383 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceLineTest < ActiveSupport::TestCase
-  context "An Invoice Line" do
+  context "Given a T&M Project" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
-      @component = Factory :component, :project => @project
-      
-      # est: 100, cost: 50
-      @contract = Factory :contract, :project => @project, :component => @component
-      @bid = Factory :bid, :contract => @contract, :raw_cost => 100
-      @contract.update_attributes(:active_bid => @bid)
-      @contrat_invoice = Factory :contract_cost, :contract => @contract, :raw_cost => 50
-      
-      # est: 100, cost: 10, complete: 50
-      @task1 = Factory :task, :project => @project
-      @fce1 = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task1, :component => @component
-      @lc1 = Factory :labor_cost, :task => @task1, :percent_complete => 50
-      @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @l, :hours => 10
-      
-      # est: 1000, cost: 100, complete: 100
-      @task2 = Factory :task, :project => @project      
-      @fce2 = Factory :fixed_cost_estimate, :raw_cost => 1000, :task => @task2, :component => @component
-      @lc2 = Factory :labor_cost, :task => @task2, :percent_complete =>100
-      @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @l, :hours => 100
-      
-      # est: 10000, cost: 1000
-      @task3 = Factory :task, :project => @project
-      @fce3 = Factory :fixed_cost_estimate, :raw_cost => 10000, :task => @task3, :component => @component
-      @mc1 = Factory :material_cost, :task => @task3, :raw_cost => 1000
-      
-      @task4 = Factory :task, :project => @project
-      @fce4 = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task4, :component => @component
-      @lc3 = Factory :labor_cost, :task => @task4, :percent_complete => 50
-      @lcl3 = Factory :labor_cost_line, :labor_set => @lc3, :laborer => @l, :hours => 100
-      @mc2 = Factory :material_cost, :task => @task4, :raw_cost => 100
-      
-      # requested: 2, paid: 1
-      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10
-      @p_line = Factory( :invoice_line, 
-        :invoice => @p_invoice,
-        :cost => @fce4, 
-        :labor_invoiced => 5, 
-        :labor_retainage => 2, 
-        :material_invoiced => 50, 
-        :material_retainage => 20 
-      )
-  
-      [@project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice].each {|i| i.reload}
-
-      @invoice = Factory :invoice, :project => @project
-      @obj = Factory :invoice_line, :invoice => @invoice, :cost => @fce4
-      
-      [@obj, @project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice, @invoice].each {|i| i.reload}
-    end
-
-    should "be valid" do
-      assert @obj.valid?
-    end
-    
-    should "have values" do
-      assert_not_nil @obj.labor_invoiced
-      assert_not_nil @obj.material_invoiced
-      assert_not_nil @obj.invoiced
-      
-      assert_not_nil @obj.labor_retainage
-      assert_not_nil @obj.material_retainage
-      assert_not_nil @obj.retainage
-    end
-    
-    should "require an invoice" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :invoice_line, :invoice => nil
-      end
-    end
-    
-    should "require a component" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :invoice_line, :cost => nil
-      end
-    end
-      
-    should "default to cost - requested" do
-      assert_equal (@fce4.labor_cost*(1-@project.labor_percent_retainage_float)-@p_line.labor_invoiced), @obj.labor_invoiced
-      assert_equal (@fce4.material_cost*(1-@project.material_percent_retainage_float)-@p_line.material_invoiced), @obj.material_invoiced
-      
-      assert_equal ( @obj.labor_invoiced + @obj.material_invoiced ), @obj.invoiced
-
-      assert_equal (@fce4.labor_cost*(@project.labor_percent_retainage_float)-@p_line.labor_retainage), @obj.labor_retainage
-      assert_equal (@fce4.material_cost*(@project.material_percent_retainage_float)-@p_line.material_retainage), @obj.material_retainage
-      
-      assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
     end
  
-    should_eventually "determine outstanding balance" do
-      assert_equal (
-        @obj.cost.invoiced - @obj.cost.paid
-      ), @obj.outstanding
+    context "A Fixed Cost Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
+      
+        @task = Factory :task, :project => @project
+        @fce = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task, :component => @component
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
+        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100
+              
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @fce, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
+  
+        [@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
+
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @fce
+      
+        [@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
+
+      should "be valid" do
+        assert @obj.valid?
+      end
+    
+      should "have values" do
+        assert_not_nil @obj.labor_invoiced
+        assert_not_nil @obj.material_invoiced
+        assert_not_nil @obj.invoiced
+      
+        assert_not_nil @obj.labor_retainage
+        assert_not_nil @obj.material_retainage
+        assert_not_nil @obj.retainage
+      end
+    
+      should "require an invoice" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :invoice => nil
+        end
+      end
+    
+      should "require a cost" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :cost => nil
+        end
+      end
+      
+      should "default to cost - requested" do
+        assert_equal (@fce.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
+        assert_equal (@fce.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
+      
+        assert_equal ( @obj.labor_invoiced + @obj.material_invoiced ), @obj.invoiced
+
+        assert_equal (@fce.labor_cost*(@project.labor_percent_retainage_float)-@line.labor_retainage), @obj.labor_retainage
+        assert_equal (@fce.material_cost*(@project.material_percent_retainage_float)-@line.material_retainage), @obj.material_retainage
+      
+        assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
+      end
+    end
+    
+    context "A Unit Cost Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
+      
+        @task = Factory :task, :project => @project
+        @q = Factory :quantity, :component => @component, :value => 1
+        @uce = Factory :unit_cost_estimate, :quantity => @q, :unit_cost => 100, :task => @task, :component => @component
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
+        @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @uce, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
+  
+        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
+
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @uce
+      
+        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
+
+      should "be valid" do
+        assert @obj.valid?
+      end
+    
+      should "have values" do
+        assert_not_nil @obj.labor_invoiced
+        assert_not_nil @obj.material_invoiced
+        assert_not_nil @obj.invoiced
+      
+        assert_not_nil @obj.labor_retainage
+        assert_not_nil @obj.material_retainage
+        assert_not_nil @obj.retainage
+      end
+    
+      should "require an invoice" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :invoice => nil
+        end
+      end
+    
+      should "require a component" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :cost => nil
+        end
+      end
+      
+      should "default to cost - requested" do
+        assert_equal (@uce.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
+        assert_equal (@uce.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
+      
+        assert_equal ( @obj.labor_invoiced + @obj.material_invoiced ), @obj.invoiced
+
+        assert_equal (@uce.labor_cost*(@project.labor_percent_retainage_float)-@line.labor_retainage), @obj.labor_retainage
+        assert_equal (@uce.material_cost*(@project.material_percent_retainage_float)-@line.material_retainage), @obj.material_retainage
+      
+        assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
+      end
     end
 
+    context "A contract Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
+      
+        # est: 100, cost: 50
+        @contract = Factory :contract, :project => @project, :component => @component
+        @bid = Factory :bid, :contract => @contract, :raw_cost => 100
+        @contract.update_attributes(:active_bid => @bid)
+        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50
+
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @contract, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
+  
+        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
+
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @contract
+      
+        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
+
+      should "be valid" do
+        assert @obj.valid?
+      end
+    
+      should "have values" do
+        assert_not_nil @obj.labor_invoiced
+        assert_not_nil @obj.material_invoiced
+        assert_not_nil @obj.invoiced
+      
+        assert_not_nil @obj.labor_retainage
+        assert_not_nil @obj.material_retainage
+        assert_not_nil @obj.retainage
+      end
+    
+      should "require an invoice" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :invoice => nil
+        end
+      end
+    
+      should "require a component" do
+        assert_raise ActiveRecord::RecordInvalid do
+          Factory :invoice_line, :cost => nil
+        end
+      end
+      
+      should "default to cost - requested" do
+        assert_equal (@contract.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
+        assert_equal (@contract.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
+      
+        assert_equal ( @obj.labor_invoiced + @obj.material_invoiced ), @obj.invoiced
+
+        assert_equal (@contract.labor_cost*(@project.labor_percent_retainage_float)-@line.labor_retainage), @obj.labor_retainage
+        assert_equal (@contract.material_cost*(@project.material_percent_retainage_float)-@line.material_retainage), @obj.material_retainage
+      
+        assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
+      end
+    end
   end
-  context "A Fixed-Bid Invoice Line" do
+
+  context "Given a Fixed-Bid Project" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
       @project = Factory :project, :fixed_bid => true, :labor_percent_retainage => 10, :material_percent_retainage => 20
-      @component = Factory :component, :project => @project
+    end
+ 
+    context "A Fixed Cost Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
       
-      # est: 100, cost: 50
-      @contract = Factory :contract, :project => @project, :component => @component
-      @bid = Factory :bid, :contract => @contract, :raw_cost => 100
-      @contract.update_attributes(:active_bid => @bid)
-      @contrat_invoice = Factory :contract_cost, :contract => @contract, :raw_cost => 50
-      
-      # est: 100, cost: 10, complete: 50
-      @task1 = Factory :task, :project => @project
-      @fce1 = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task1, :component => @component
-      @lc1 = Factory :labor_cost, :task => @task1, :percent_complete => 50
-      @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @l, :hours => 10
-      
-      # est: 1000, cost: 100, complete: 100
-      @task2 = Factory :task, :project => @project      
-      @fce2 = Factory :fixed_cost_estimate, :raw_cost => 1000, :task => @task2, :component => @component
-      @lc2 = Factory :labor_cost, :task => @task2, :percent_complete =>100
-      @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @l, :hours => 100
-      
-      # est: 10000, cost: 1000
-      @task3 = Factory :task, :project => @project
-      @fce3 = Factory :fixed_cost_estimate, :raw_cost => 10000, :task => @task3, :component => @component
-      @mc1 = Factory :material_cost, :task => @task3, :raw_cost => 1000
-      
-      @task4 = Factory :task, :project => @project
-      @fce4 = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task4, :component => @component
-      @lc3 = Factory :labor_cost, :task => @task4, :percent_complete => 50
-      @lcl3 = Factory :labor_cost_line, :labor_set => @lc3, :laborer => @l, :hours => 100
-      @mc2 = Factory :material_cost, :task => @task4, :raw_cost => 100
-      
-      
-      # requested: 2, paid: 1
-      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10
-      
-      # NOTE: this needs to be distributed to costs
-      
-      @p_line = Factory( :invoice_line, 
-        :invoice => @p_invoice,
-        :cost => @fce4, 
-        :labor_invoiced => 5, 
-        :labor_retainage => 2, 
-        :material_invoiced => 50, 
-        :material_retainage => 20
-      )
+        @task = Factory :task, :project => @project
+        @fce = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task, :component => @component
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
+        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100
+              
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @fce, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
   
-      [@project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice].each {|i| i.reload}
+        [@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
 
-      @invoice = Factory :invoice, :project => @project
-      @obj = Factory :invoice_line, :invoice => @invoice, :cost => @fce4
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @fce
       
-      [@obj, @project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice, @invoice].each {|i| i.reload}
+        [@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
+
+      should "default to % complete * estimated - requested" do
+        # for now splitting based on task labor/material COSTS
+
+        # % complete * labor multiplier * estimated cost, minus retainage
+        assert_equal (
+          @fce.labor_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
+          (1-@project.labor_percent_retainage_float )
+        ) - @line.labor_invoiced, @obj.labor_invoiced
+        assert_equal (
+          @fce.material_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
+          (1-@project.material_percent_retainage_float )
+        ) - @line.material_invoiced, @obj.material_invoiced      
+
+        assert_equal (
+          @fce.labor_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
+          (@project.labor_percent_retainage_float )
+        ) - @line.labor_retainage, @obj.labor_retainage
+        assert_equal (
+          @fce.material_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
+          (@project.material_percent_retainage_float )
+        ) - @line.material_retainage, @obj.material_retainage    
+      end
     end
     
-    should "default to % complete * estimated - requested" do
-      # for now splitting based on task labor/material costs
+    context "A Unit Cost Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
+      
+        @task = Factory :task, :project => @project
+        @q = Factory :quantity, :component => @component, :value => 1
+        @uce = Factory :unit_cost_estimate, :quantity => @q, :unit_cost => 100, :task => @task, :component => @component
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
+        @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @uce, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
+  
+        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
 
-      # % complete * labor multiplier * estimated cost, minus retainage
-      assert_equal (
-        @fce4.labor_percent_float * @fce4.task.percent_complete_float * @fce4.estimated_cost *
-        (1-@project.labor_percent_retainage_float )
-      ) - @p_line.labor_invoiced, @obj.labor_invoiced
-      assert_equal (
-        @fce4.material_percent_float * @fce4.task.percent_complete_float * @fce4.estimated_cost *
-        (1-@project.material_percent_retainage_float )
-      ) - @p_line.material_invoiced, @obj.material_invoiced      
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @uce
+      
+        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
 
-      assert_equal (
-        @fce4.labor_percent_float * @fce4.task.percent_complete_float * @fce4.estimated_cost *
-        (@project.labor_percent_retainage_float )
-      ) - @p_line.labor_retainage, @obj.labor_retainage
-      assert_equal (
-        @fce4.material_percent_float * @fce4.task.percent_complete_float * @fce4.estimated_cost *
-        (@project.material_percent_retainage_float )
-      ) - @p_line.material_retainage, @obj.material_retainage    
+      should "default to % complete * estimated - requested" do
+        # for now splitting based on task labor/material COSTS
+
+        # % complete * labor multiplier * estimated cost, minus retainage
+        # Fun with Floats!
+        assert ( (
+          @uce.labor_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
+          (1-@project.labor_percent_retainage_float )
+        ) - @line.labor_invoiced - @obj.labor_invoiced  ).abs < 0.00001
+        assert ( (
+          @uce.material_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
+          (1-@project.material_percent_retainage_float )
+        ) - @line.material_invoiced - @obj.material_invoiced  ).abs < 0.00001  
+
+        assert ( (
+          @uce.labor_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
+          (@project.labor_percent_retainage_float )
+        ) - @line.labor_retainage - @obj.labor_retainage  ).abs < 0.00001
+        assert_equal (
+          @uce.material_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
+          (@project.material_percent_retainage_float )
+        ) - @line.material_retainage, @obj.material_retainage    
+      end
+    end
+
+    context "A contract Invoice Line" do
+      setup do
+        @component = Factory :component, :project => @project
+      
+        # est: 100, cost: 50
+        @contract = Factory :contract, :project => @project, :component => @component
+        @bid = Factory :bid, :contract => @contract, :raw_cost => 100
+        @contract.update_attributes(:active_bid => @bid)
+        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50
+
+        # requested: 2, paid: 1
+        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @line = Factory( :invoice_line, 
+          :invoice => @invoice,
+          :cost => @contract, 
+          :labor_invoiced => 5, 
+          :labor_retainage => 2, 
+          :material_invoiced => 50, 
+          :material_retainage => 20 
+        )
+  
+        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
+
+        @new_invoice = Factory :invoice, :project => @project
+        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @contract
+      
+        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+      end
+
+      should "default to % complete * estimated - requested" do
+        # for now splitting based on task labor/material COSTS
+
+        # % complete * labor multiplier * estimated cost, minus retainage
+        assert_equal (
+          @contract.labor_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          (1-@project.labor_percent_retainage_float )
+        ) - @line.labor_invoiced, @obj.labor_invoiced
+        assert_equal (
+          @contract.material_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          (1-@project.material_percent_retainage_float )
+        ) - @line.material_invoiced, @obj.material_invoiced      
+
+        assert_equal (
+          @contract.labor_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          (@project.labor_percent_retainage_float )
+        ) - @line.labor_retainage, @obj.labor_retainage
+        assert_equal (
+          @contract.material_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          (@project.material_percent_retainage_float )
+        ) - @line.material_retainage, @obj.material_retainage    
+      end
     end
   end
 end

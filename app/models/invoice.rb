@@ -16,6 +16,10 @@ class Invoice < ActiveRecord::Base
     state :costs_specified do
     end
     
+    state :retainage_unexpected do
+      # retainage isn't the expected % of invoiced
+    end
+    
     state :complete do
     end
     
@@ -25,11 +29,17 @@ class Invoice < ActiveRecord::Base
     end
     
     event :save_costs do
-      transition :date_set => :costs_specified
+      transition [:date_set, :retainage_unexpected] => :costs_specified, :if => :retainage_as_expected?
+      transition :date_set => :retainage_unexpected, :unless => :retainage_as_expected?
     end
     
     event :set_template do
-      transition :costs_specified => :complete
+      transition [:costs_specified, :retainage_unbalanced] => :complete
     end
+  end
+  
+  protected
+  
+  def retainage_as_expected?
   end
 end

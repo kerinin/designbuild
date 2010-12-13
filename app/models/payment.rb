@@ -9,8 +9,13 @@ class Payment < ActiveRecord::Base
     # States
     state :new do
     end
-    
+
     state :payment_recorded do
+      # Date, Payment amount set
+    end
+        
+    state :costs_unbalanced do
+      # Line items don't equal payment amount
     end
     
     state :complete do
@@ -22,7 +27,8 @@ class Payment < ActiveRecord::Base
     end
     
     event :save_costs do
-      transition :payment_recorded => :complete
+      transition [:payment_recorded, :payment_unbalanced] => :complete, :if => :balanced
+      transition :payment_recorded => :payment_unbalanced, :unless => :balanced
     end
   end
 end

@@ -66,7 +66,7 @@ class Contract < ActiveRecord::Base
   # Invoicing
   [:labor_cost, :material_cost].each do |sym|
     self.send(:define_method, sym) do
-      divide_or_nil self.invoiced, 2
+      divide_or_nil self.cost, 2
     end
   end
   
