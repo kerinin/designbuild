@@ -23,23 +23,33 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
+    before_transition :new => :date_set, :do => :populate_lines
+    
     # Events
-    event :save_date do
-      transition :new => :date_set
-    end
-    
-    event :save_costs do
+    event :advance do
+      transition :new => :date_set if :date
+      
       transition [:date_set, :retainage_unexpected] => :costs_specified, :if => :retainage_as_expected?
-      transition :date_set => :retainage_unexpected, :unless => :retainage_as_expected?
-    end
-    
-    event :set_template do
-      transition [:costs_specified, :retainage_unbalanced] => :complete
+      transition :date_set => :retainage_unexpected, :unless => :retainage_as_expected?    
+      
+      transition [:costs_specified, :retainage_unbalanced] => :complete if :template
     end
   end
   
   protected
   
   def retainage_as_expected?
+    self.lines.each {|l| return false unless l.retainage_as_expected? }
+    true
+  end
+  
+  def populate_lines
+    self.project.components.each do |component|
+      component.unit_cost_estimates.assigned.each {|uc| self.lines.create(:cost => uc) }
+      component.fixed_cost_estimates.assigned.each {|fc| self.lines.create(:cost => uc) }
+      component.contracts.each {|c| self.lines.create(:cost => c) }
+    end
+    
+    self.project.components.scoped.without_cost.each {|c| self.lines.create(:cost => c) }
   end
 end

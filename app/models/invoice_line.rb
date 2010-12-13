@@ -23,6 +23,13 @@ class InvoiceLine < ActiveRecord::Base
     self.material_invoiced = value / 2
   end
   
+  def retainage_as_expected?
+    expected_labor = subtract_or_nil( ( ( add_or_nil self.labor_invoiced, self.cost.labor_invoiced) * self.invoice.project.labor_percent_retainage_float / ( 1 - self.invoice.project.labor_percent_retainage_float ) ), self.cost.labor_retainage )
+    expected_material = subtract_or_nil( ( ( add_or_nil self.material_invoiced, self.cost.material_invoiced) * self.invoice.project.material_percent_retainage_float / ( 1 - self.invoice.project.material_percent_retainage_float ) ), self.cost.material_retainage )
+    return false unless expected_labor == self.labor_invoiced && expected_material == self.material_invoiced
+    true
+  end
+  
   protected
   
   def set_defaults
