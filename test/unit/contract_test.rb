@@ -101,5 +101,13 @@ class ContractTest < ActiveSupport::TestCase
       @obj.markups << @markup
       assert_equal 210, @obj.total_markup
     end
+    
+    
+    # ------------------Invoicing
+    should "determine labor_percent" do
+    end
+    
+    should "determine material_percent" do
+    end
   end
 end

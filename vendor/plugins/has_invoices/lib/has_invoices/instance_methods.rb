@@ -22,12 +22,6 @@ module HasInvoices
       end
     end
     
-    def invoiced=(value)
-      # allows quick setting of invoiced - divides evenly
-      self.labor_invoiced = value / 2
-      self.material_invoiced = value / 2
-    end
-    
     def labor_outstanding
       subtract_or_nil self.labor_invoiced, self.labor_paid
     end

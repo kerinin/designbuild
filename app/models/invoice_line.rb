@@ -17,6 +17,11 @@ class InvoiceLine < ActiveRecord::Base
     add_or_nil self.labor_retainage, self.material_retainage
   end
   
+  def invoiced=(value)
+    # allows quick setting of invoiced - divides evenly
+    self.labor_invoiced = value / 2
+    self.material_invoiced = value / 2
+  end
   
   protected
   

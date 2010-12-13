@@ -10,7 +10,13 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
 
       @obj = Factory :fixed_cost_estimate, :task => @t1, :component => @c1
       
-      @proj.reload
+      @task = Factory :task, :component => @c1
+      @l = Factory :laborer, :bill_rate => 1
+      @lc = Factory :labor_cost, :task => @task
+      @lcl = Factory :labor_cost_line, :laborer => @l, :labor_set => @lc, :hours => 100
+      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      
+      [@proj, @c1, @c2, @t1, @obj, @task, @l, @lc, @lcl, @mc].each {|i| i.reload}
     end
 
     teardown do
@@ -56,6 +62,13 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
     should "show up in project unassigned costs if no task" do
       cost = Factory :fixed_cost_estimate, :component => @c1
       assert_contains @proj.fixed_cost_estimates.unassigned.all, cost
+    end
+    
+    # Invoicing
+    should "determine labor_percent" do
+    end
+    
+    should "determine material_percent" do
     end
   end
 end

@@ -12,7 +12,12 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => nil
       @with_drop = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => 100
       
-      [@obj, @proj, @c1, @t1, @q].each {|i| i.reload}
+      @l = Factory :laborer, :bill_rate => 1
+      @lc = Factory :labor_cost, :task => @t1
+      @lcl = Factory :labor_cost_line, :laborer => @l, :labor_set => @lc, :hours => 100
+      @mc = Factory :material_cost, :task => @t1, :raw_cost => 100
+
+      [@obj, @proj, @c1, @t1, @q, @l, @lc, @lcl, @mc].each {|i| i.reload}
     end
 
     teardown do
@@ -67,6 +72,13 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
     should "generate cost" do
       assert_equal 50, @obj.raw_cost
       assert_equal 100, @with_drop.raw_cost
+    end
+    
+    # -----------------Invoicing
+    should "determine labor_percent" do
+    end
+    
+    should "determine material_percent" do
     end
   end
 end
