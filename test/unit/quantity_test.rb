@@ -7,6 +7,8 @@ class QuantityTest < ActiveSupport::TestCase
       
       @uc1 = Factory :unit_cost_estimate, :quantity => @obj
       @uc2 = Factory :unit_cost_estimate, :quantity => @obj
+      
+      @obj.reload
     end
 
     teardown do

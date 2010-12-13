@@ -9,6 +9,8 @@ class LaborCostTest < ActiveSupport::TestCase
       
       @li1 = Factory :labor_cost_line, :labor_set => @obj, :laborer => @laborer, :hours => 2
       @li2 = Factory :labor_cost_line, :labor_set => @obj, :laborer => @laborer, :hours => 20
+      
+      @obj.reload
     end
 
     teardown do

@@ -44,6 +44,8 @@ class ProjectTest < ActiveSupport::TestCase
       @dl2 = Factory :deadline, :project => @obj
       @rdl1 = Factory :deadline, :parent_deadline => @dl1, :interval => 10
       @rdl2 = Factory :deadline, :parent_deadline => @dl2, :interval => 20
+      
+      [@obj, @task, @c1, @c2, @t1, @t2].each {|i| i.reload}
     end
 
     teardown do

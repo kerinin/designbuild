@@ -38,6 +38,12 @@ class ApplicationController < ActionController::Base
     @project = Project.find(params[:project_id])
   end
   
+  def get_project_or_component
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @component = Component.find(params[:component_id]) if params.has_key? :component_id
+    @project ||= @component.project
+  end
+  
   def get_component
     @component = Component.find(params[:component_id])
     @project = @component.project

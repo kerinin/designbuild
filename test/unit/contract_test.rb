@@ -20,6 +20,8 @@ class ContractTest < ActiveSupport::TestCase
       @b2 = Factory :bid, :contract => @obj, :raw_cost => 100
       @obj.active_bid = @b2
       @obj.save
+      
+      [@project, @component, @obj].each {|i| i.reload}
     end
 
     teardown do

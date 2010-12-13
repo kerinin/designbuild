@@ -26,6 +26,8 @@ class MarkupTest < ActiveSupport::TestCase
       Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
       Factory :material_cost, :task => @task, :raw_cost => 100
       Factory :contract_cost, :contract => @contract, :raw_cost => 100
+      
+      [@project, @component, @subcomponent, @task, @contract, @bid, @obj].each {|i| i.reload}
     end
 
     teardown do
@@ -36,7 +38,7 @@ class MarkupTest < ActiveSupport::TestCase
       Contract.delete_all
       Marking.delete_all
     end
- 
+
     should "be valid" do
       assert @obj.valid?
     end
@@ -160,7 +162,7 @@ class MarkupTest < ActiveSupport::TestCase
     end
 
     # -----------------------CALCULATIONS
-   
+  
     should "apply to markupable" do
       assert_equal 150, @subcomponent.estimated_cost
       assert_equal 150, @task.cost

@@ -37,7 +37,9 @@ class LaborCost < ActiveRecord::Base
   end
   
   def cascade_cache_values
-    self.task.save!
+    self.task.reload.save!
+    
+    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
   end
 
   protected
@@ -52,6 +54,9 @@ class LaborCost < ActiveRecord::Base
   end
   
   def set_task_percent_complete
-    self.task.percent_complete = self.percent_complete
+    if self.task.labor_costs.order(:date).first == self
+      self.task.percent_complete = self.percent_complete 
+      self.task.save!
+    end
   end
 end

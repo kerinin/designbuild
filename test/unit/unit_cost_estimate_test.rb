@@ -11,6 +11,8 @@ class UnitCostEstimateTest < ActiveSupport::TestCase
       
       @obj = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => nil
       @with_drop = Factory :unit_cost_estimate, :task => @t1, :quantity => @q, :unit_cost => 5, :drop => 100
+      
+      [@obj, @proj, @c1, @t1, @q].each {|i| i.reload}
     end
 
     teardown do

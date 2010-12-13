@@ -6,14 +6,10 @@
     = f.text_field :name
   %td.field
     -unless @contract.bids.empty?
-      = form_for [@project, @contract] do |f|
-        = f.collection_select :bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();"
+      = f.collection_select :bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }
 
-  %td
-  %td
-  %td
-  %td
-  %td
+  %td{:colspan => @component.nil? ? 5 : 3}
   %td.actions.control{:colspan => 2}
+    = f.hidden_field :component_id
     = f.submit 'Save'
       

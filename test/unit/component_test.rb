@@ -23,6 +23,8 @@ class ComponentTest < ActiveSupport::TestCase
       @c2 = Factory :contract, :component => @obj, :active_bid => Factory(:bid, :raw_cost =>  10000000)
       @c3 = Factory :contract, :component => @sub1, :active_bid => Factory(:bid, :raw_cost => 100000000)
       @c4 = Factory :contract, :component => @sub2, :active_bid => Factory(:bid, :raw_cost => 1000000000)
+      
+      [@obj, @sub1, @sub2].each {|i| i.reload}
     end
 
     teardown do

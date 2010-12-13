@@ -36,6 +36,8 @@ to:
 =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates, :limit => 50, :context => :component}
 %h3 Fixed Costs
 =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50, :context => :component}
+%h2 Contracts
+=render :partial => 'contracts/contract_list', :locals => {:contracts => @component.contracts, :context => :component}
 
 %hr
 
@@ -53,6 +55,9 @@ to:
   %tr
     %td Estimated Fixed Costs
     %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
+  %tr
+    %td Contract Costs (Includes Markup)
+    %td.currency= number_to_currency(@component.estimated_component_cost)
   %tr
     %td Sub-Component Costs (Includes Markup)
     %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)

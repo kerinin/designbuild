@@ -9,6 +9,8 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
       @t1 = Factory :task, :project => @proj
 
       @obj = Factory :fixed_cost_estimate, :task => @t1, :component => @c1
+      
+      @proj.reload
     end
 
     teardown do

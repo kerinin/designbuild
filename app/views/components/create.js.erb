@@ -9,8 +9,8 @@
   $("#flash_notice").hide(300);
 
   //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.component_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+  $("table.components tr.error").remove();
+  $("table.components tr.component_fields").before("<%= escape_javascript( yield :error_tr ) %>");
 
 <% else %>
   //Success
