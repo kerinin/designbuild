@@ -19,9 +19,9 @@
   =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
     change end date:
     =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
-  =form_tag (nil, {:method => :get, :id => 'interval_select'} ) do
+
     change interval:
-    =select_tag :interval, options_for_select([['1 week', 'week'], ['1 month', 'month']], @interval), {:onchange => "$('#interval_select').submit();"}
+    =select_tag :interval, options_for_select([['1 week', 'week'], ['1 month', 'month']], @interval), {:onchange => "$('#date_select').submit();"}
 
 %h2
   Labor Summary for
