@@ -27,5 +27,17 @@ module HasInvoices
       self.labor_invoiced = value / 2
       self.material_invoiced = value / 2
     end
+    
+    def labor_outstanding
+      subtract_or_nil self.labor_invoiced, self.labor_paid
+    end
+    
+    def material_outstanding
+      subtract_or_nil self.material_invoiced, self.material_paid
+    end
+    
+    def outstanding
+      add_or_nil self.labor_outstanding, self.material_outstanding
+    end
   end
 end
