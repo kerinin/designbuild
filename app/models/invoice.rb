@@ -16,19 +16,7 @@ class Invoice < ActiveRecord::Base
     state :costs_specified do
     end
     
-    state :template_chosen do
-    end
-    
-    state :invoiced do
-    end
-    
-    state :partially_paid do
-    end
-    
-    state :fully_paid do
-    end
-    
-    state :cancelled do
+    state :complete do
     end
     
     # Events
@@ -40,17 +28,8 @@ class Invoice < ActiveRecord::Base
       transition :date_set => :costs_specified
     end
     
-    event :invoice do
-      transition :costs_specified => :invoiced
-    end
-    
-    event :record_payment do
-      #transition [:invoiced, :partially_paid] => :partially_paid, :if => self.outstanding == 0
-      #transition [:invoiced, :partially_paid] => :fully_paid, :unless => self.outstanding == 0
-    end
-    
-    event :cancel do
-      transition all => :cancelled
+    event :set_template do
+      transition :costs_specified => :complete
     end
   end
 end
