@@ -161,6 +161,21 @@ class InvoiceableTest < ActiveSupport::TestCase
         should "determine outstanding" do
           assert_equal @obj.labor_outstanding + @obj.material_outstanding, @obj.outstanding
         end
+        
+        should "determine labor cost" do
+          assert_equal 0.4 * @obj.estimated_cost, @obj.labor_cost unless @obj.instance_of? Contract
+          assert_equal 0.5 * @obj.estimated_cost, @obj.labor_cost if @obj.instance_of? Contract
+        end
+        
+        should "determine material cost" do
+          assert_equal 0.6 * @obj.estimated_cost, @obj.labor_cost unless @obj.instance_of? Contract
+          assert_equal 0.5 * @obj.estimated_cost, @obj.labor_cost if @obj.instance_of? Contract
+        end
+        
+        should "determine percent complete" do
+          assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
+          assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete if @obj.instance_of? Contract
+        end
       end
     end
   end
