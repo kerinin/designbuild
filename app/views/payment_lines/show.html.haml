@@ -1,0 +1,21 @@
+%p#notice= notice
+
+%p
+  %b Labor paid:
+  = @payment_line.labor_paid
+%p
+  %b Labor retained:
+  = @payment_line.labor_retained
+%p
+  %b Material paid:
+  = @payment_line.material_paid
+%p
+  %b Material retained:
+  = @payment_line.material_retained
+%p
+  %b Comment:
+  = @payment_line.comment
+
+= link_to 'Edit', edit_payment_line_path(@payment_line)
+\|
+= link_to 'Back', payment_lines_path

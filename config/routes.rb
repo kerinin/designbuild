@@ -1,5 +1,9 @@
 Designbuild::Application.routes.draw do
   
+  resources :payment_lines
+
+  resources :payments
+
   resources :invoice_lines
 
   resources :invoices

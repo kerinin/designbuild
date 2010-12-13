@@ -1,0 +1,25 @@
+= form_for @payment_line do |f|
+  -if @payment_line.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@payment_line.errors.count, "error")} prohibited this payment_line from being saved:"
+      %ul
+        - @payment_line.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+    = f.label :labor_paid
+    = f.text_field :labor_paid
+  .field
+    = f.label :labor_retained
+    = f.text_field :labor_retained
+  .field
+    = f.label :material_paid
+    = f.text_field :material_paid
+  .field
+    = f.label :material_retained
+    = f.text_field :material_retained
+  .field
+    = f.label :comment
+    = f.text_field :comment
+  .actions
+    = f.submit 'Save'
