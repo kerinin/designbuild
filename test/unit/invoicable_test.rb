@@ -39,6 +39,8 @@ class InvoiceableTest < ActiveSupport::TestCase
       @contract2 = Factory :contract, :project => project, :component => component2, :active_bid => Factory( :bid, :raw_cost => 30 )
       @contract3 = Factory :contract, :project => project, :active_bid => Factory( :bid, :raw_cost => 300 )
 
+      Factory :contract_cost, :contract => @contract1, :raw_cost => 1000
+      
       [@contract1, @contract2, @contract3]
     }
     
@@ -163,13 +165,13 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "determine labor cost" do
-          assert_equal 0.4 * @obj.estimated_cost, @obj.labor_cost unless @obj.instance_of? Contract
-          assert_equal 0.5 * @obj.estimated_cost, @obj.labor_cost if @obj.instance_of? Contract
+          assert_equal 0.4 * @obj.cost, @obj.labor_cost unless @obj.instance_of? Contract
+          assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
         
         should "determine material cost" do
-          assert_equal 0.6 * @obj.estimated_cost, @obj.labor_cost unless @obj.instance_of? Contract
-          assert_equal 0.5 * @obj.estimated_cost, @obj.labor_cost if @obj.instance_of? Contract
+          assert_equal 0.6 * @obj.cost, @obj.labor_cost unless @obj.instance_of? Contract
+          assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
         
         should "determine percent complete" do
