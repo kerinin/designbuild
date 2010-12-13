@@ -37,18 +37,14 @@ class InvoiceLineTest < ActiveSupport::TestCase
       @mc2 = Factory :material_cost, :task => @task4, :raw_cost => 100
       
       # requested: 2, paid: 1
-      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10, :state => 'paid'
+      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10
       @p_line = Factory( :invoice_line, 
         :invoice => @p_invoice,
         :cost => @fce4, 
         :labor_invoiced => 5, 
-        :labor_paid => 1, 
         :labor_retainage => 2, 
-        :labor_retained => 1, 
         :material_invoiced => 50, 
-        :material_paid => 10, 
-        :material_retainage => 20, 
-        :material_retained => 10
+        :material_retainage => 20 
       )
   
       [@project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice].each {|i| i.reload}
@@ -68,17 +64,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert_not_nil @obj.material_invoiced
       assert_not_nil @obj.invoiced
       
-      assert_not_nil @obj.labor_paid
-      assert_not_nil @obj.material_paid
-      assert_not_nil @obj.paid
-      
       assert_not_nil @obj.labor_retainage
       assert_not_nil @obj.material_retainage
       assert_not_nil @obj.retainage
-      
-      assert_not_nil @obj.labor_retained
-      assert_not_nil @obj.material_retained
-      assert_not_nil @obj.retained
     end
     
     should "require an invoice" do
@@ -105,7 +93,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
     end
  
-    should "determine outstanding balance" do
+    should_eventually "determine outstanding balance" do
       assert_equal (
         @obj.cost.invoiced - @obj.cost.paid
       ), @obj.outstanding
@@ -149,7 +137,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       
       
       # requested: 2, paid: 1
-      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10, :state => 'paid'
+      @p_invoice = Factory :invoice, :project => @project, :date => Date::today - 10
       
       # NOTE: this needs to be distributed to costs
       
@@ -157,13 +145,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
         :invoice => @p_invoice,
         :cost => @fce4, 
         :labor_invoiced => 5, 
-        :labor_paid => 1, 
         :labor_retainage => 2, 
-        :labor_retained => 1, 
         :material_invoiced => 50, 
-        :material_paid => 10, 
-        :material_retainage => 20, 
-        :material_retained => 10
+        :material_retainage => 20
       )
   
       [@project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_invoice].each {|i| i.reload}

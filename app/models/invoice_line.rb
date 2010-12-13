@@ -17,17 +17,6 @@ class InvoiceLine < ActiveRecord::Base
     add_or_nil self.labor_retainage, self.material_retainage
   end
   
-  def paid
-    add_or_nil self.labor_paid, self.material_paid
-  end
-  
-  def retained
-    add_or_nil self.labor_retained, self.material_retained
-  end
-  
-  def outstanding
-    subtract_or_nil self.cost.invoiced, self.cost.paid
-  end
   
   protected
   

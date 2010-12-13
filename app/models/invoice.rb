@@ -45,8 +45,8 @@ class Invoice < ActiveRecord::Base
     end
     
     event :record_payment do
-      transition [:invoiced, :partially_paid] => :partially_paid, :if => outstanding == 0
-      transition [:invoiced, :partially_paid] => :fully_paid, :unless => outstanding == 0
+      #transition [:invoiced, :partially_paid] => :partially_paid, :if => self.outstanding == 0
+      #transition [:invoiced, :partially_paid] => :fully_paid, :unless => self.outstanding == 0
     end
     
     event :cancel do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101212210843) do
+ActiveRecord::Schema.define(:version => 20101213141152) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -90,12 +90,8 @@ ActiveRecord::Schema.define(:version => 20101212210843) do
   create_table "invoice_lines", :force => true do |t|
     t.float    "labor_invoiced"
     t.float    "labor_retainage"
-    t.float    "labor_paid"
-    t.float    "labor_retained"
     t.float    "material_invoiced"
     t.float    "material_retainage"
-    t.float    "material_paid"
-    t.float    "material_retained"
     t.string   "comment"
     t.integer  "invoice_id"
     t.integer  "cost_id"
@@ -180,6 +176,28 @@ ActiveRecord::Schema.define(:version => 20101212210843) do
     t.integer  "project_id"
     t.integer  "parent_date_id"
     t.string   "parent_date_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "payment_lines", :force => true do |t|
+    t.float    "labor_paid"
+    t.float    "labor_retained"
+    t.float    "material_paid"
+    t.float    "material_retained"
+    t.string   "comment"
+    t.integer  "payment_id"
+    t.integer  "cost_id"
+    t.string   "cost_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "payments", :force => true do |t|
+    t.date     "date"
+    t.string   "state"
+    t.float    "paid"
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end

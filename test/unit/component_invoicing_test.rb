@@ -24,39 +24,52 @@ class ComponentTest < ActiveSupport::TestCase
         :invoice => @invoice,
         :cost => @fc, 
         :labor_invoiced => 2, 
-        :labor_paid => 1, 
         :labor_retainage => 2, 
-        :labor_retained => 1, 
         :material_invoiced => 5, 
-        :material_paid => 3, 
-        :material_retainage => 5, 
-        :material_retained => 3
+        :material_retainage => 5
       )
       @uc_inv = Factory( :invoice_line, 
         :invoice => @invoice,
         :cost => @uc, 
         :labor_invoiced => 20, 
-        :labor_paid => 10, 
         :labor_retainage => 20, 
-        :labor_retained => 10, 
         :material_invoiced => 50, 
-        :material_paid => 30, 
-        :material_retainage => 50, 
-        :material_retained => 30
+        :material_retainage => 50
       )
       @c_inv = Factory( :invoice_line, 
         :invoice => @invoice,
         :cost => @c, 
         :labor_invoiced => 200, 
-        :labor_paid => 100, 
         :labor_retainage => 200, 
-        :labor_retained => 100, 
         :material_invoiced => 500, 
-        :material_paid => 300, 
-        :material_retainage => 500, 
-        :material_retained => 300
+        :material_retainage => 500
       )      
-      [@obj, @project, @task, @fc, @q, @uc, @c, @b, @invoice, @fc_inv, @uc_inv, @c_inv].each {|i| i.reload}
+      @payment = Factory :payment, :project => @project
+      @fc_pay = Factory( :payment_line, 
+        :payment => @payment,
+        :cost => @fc, 
+        :labor_paid => 1, 
+        :labor_retained => 1, 
+        :material_paid => 3, 
+        :material_retained => 3
+      )
+      @uc_pay = Factory( :payment_line, 
+        :payment => @payment,
+        :cost => @uc, 
+        :labor_paid => 10, 
+        :labor_retained => 10, 
+        :material_paid => 30, 
+        :material_retained => 30
+      )
+      @c_pay = Factory( :payment_line, 
+        :payment => @payment,
+        :cost => @c, 
+        :labor_paid => 100, 
+        :labor_retained => 100, 
+        :material_paid => 300, 
+        :material_retained => 300
+      )    
+      [@obj, @project, @task, @fc, @q, @uc, @c, @b, @invoice, @fc_inv, @uc_inv, @c_inv, @payment, @fc_pay, @uc_inv, @c_inv, @payment].each {|i| i.reload}
     end
       
     should "aggregate invoiced" do
