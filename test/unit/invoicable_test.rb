@@ -97,49 +97,85 @@ class InvoiceableTest < ActiveSupport::TestCase
         should "aggregate labor_invoiced" do
           assert_equal 4004, @obj.labor_invoiced
         end
+        
+        should "aggregate labor_invoiced with date cutoff" do
+        end
       
         should "aggregate material_invoiced" do
           assert_equal 40040, @obj.material_invoiced
+        end
+        
+        should_eventually "aggregate material invoice  with date cutoff" do
         end
       
         should "aggregate invoiced" do
           assert_equal 44044, @obj.invoiced
         end
+        
+        should_eventually "aggregate invoiced  with date cutoff" do
+        end
     
         should "aggregate labor_retainage" do
           assert_equal 400400, @obj.labor_retainage
+        end
+        
+        should_eventually "aggregate labor_retainage  with date cutoff" do
         end
       
         should "aggregate material_retainage" do
           assert_equal 4004000, @obj.material_retainage
         end
+        
+        should_eventually "aggregate material_retainage  with date cutoff" do
+        end
       
         should "aggregate retainage" do
           assert_equal 4404400, @obj.retainage
+        end
+        
+        should_eventually "aggregate retainage with date cutoff" do
         end
       
         should "aggregate labor_paid" do
           assert_equal 5005, @obj.labor_paid
         end
+        
+        should_eventually "aggregate labor_paid with date cutoff" do
+        end
       
         should "aggregate material_paid" do
           assert_equal 50050, @obj.material_paid
+        end
+        
+        should_eventually "aggregate material_paid with date cutoff" do
         end
       
         should "aggregate paid" do
           assert_equal 55055, @obj.paid
         end
+        
+        should_eventually "aggregate paid with date cutoff" do
+        end
       
         should "aggregate labor_retained" do
           assert_equal 500500, @obj.labor_retained
+        end
+        
+        should_eventually "aggregate labor_retained with date cutoff" do
         end
       
         should "aggregate material_retained" do
           assert_equal 5005000, @obj.material_retained
         end
+        
+        should_eventually "aggregate material_retained with date cutoff" do
+        end
       
         should "aggregate retained" do
           assert_equal 5505500, @obj.retained
+        end
+        
+        should_eventually "aggregate retained with date cutoff" do
         end
       
         should "determine labor_percent" do
@@ -155,13 +191,22 @@ class InvoiceableTest < ActiveSupport::TestCase
         should "determine labor outstanding" do
           assert_equal 4004-5005, @obj.labor_outstanding
         end
+        
+        should_eventually "determine labor outstanding with date cutoff" do
+        end
       
         should "determine material_outstanding" do
           assert_equal 40040-50050, @obj.material_outstanding
         end
+        
+        should_eventually "determine material_outstanding with date cutoff" do
+        end
       
         should "determine outstanding" do
           assert_equal @obj.labor_outstanding + @obj.material_outstanding, @obj.outstanding
+        end
+        
+        should_eventually "determine outstanding with date cutoff" do
         end
         
         should "determine labor cost" do
@@ -169,9 +214,15 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
         
+        should_eventually "determine labor cost with date cutoff" do
+        end
+        
         should "determine material cost" do
           assert_equal 0.6 * @obj.cost, @obj.labor_cost unless @obj.instance_of? Contract
           assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
+        end
+        
+        should_eventually "determine material cost with date cutoff" do
         end
         
         should "determine percent complete" do

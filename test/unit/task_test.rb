@@ -142,13 +142,22 @@ class TaskTest < ActiveSupport::TestCase
     should "aggregate material costs" do
       assert_equal 22, @obj.raw_material_cost
     end
-    
+
+    should_eventually "aggregate material costs with date cutoff" do
+    end
+        
     should "aggregate labor costs" do
       assert_equal 222200, @obj.raw_labor_cost
     end
     
+    should_eventually "aggregate labor costs with date cutoff" do
+    end
+    
     should "aggregate costs" do
       assert_equal 222222, @obj.raw_cost
+    end
+    
+    should_eventually "aggregate costs with date cutoff" do
     end
     
     should "return cost nil if no costs" do

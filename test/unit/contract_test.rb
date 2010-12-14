@@ -92,8 +92,11 @@ class ContractTest < ActiveSupport::TestCase
       assert_equal 100, @obj.estimated_raw_cost
     end
        
-    should "aggregate invoiced costs" do
+    should "aggregate costs" do
       assert_equal 11, @obj.raw_cost
+    end
+    
+    should_eventually "aggregate costs with date cutoff" do
     end
     
     should "update total markup after add" do
