@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', @invoice_line
+= link_to 'Show', [@invoice, @invoice_line]
 \|
-= link_to 'Back', invoice_lines_path
+= link_to 'Back', invoice_line_items_path( @invoice )

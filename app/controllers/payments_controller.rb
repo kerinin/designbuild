@@ -1,4 +1,17 @@
 class PaymentsController < ApplicationController
+  def accept
+    @invoice = Invoice.find(params[:id])
+    @invoice.accept_costs
+    
+    respond_to do |format|
+      if @invoice.save
+        format.html { redirect_to(@invoice, :notice => 'Payment was successfully updated.') }
+      else
+        format.html { render :action => "show" }
+      end
+    end
+  end
+  
   # GET /payments
   # GET /payments.xml
   def index

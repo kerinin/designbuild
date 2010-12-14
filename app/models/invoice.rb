@@ -5,7 +5,7 @@ class Invoice < ActiveRecord::Base
   
   validates_presence_of :project
   
-  before_save Proc.new{|i| i.advance; true}
+  before_update Proc.new{|i| i.advance; true}
   
   state_machine :state, :initial => :new do
     # States

@@ -1,4 +1,6 @@
 class InvoiceLinesController < ApplicationController
+  before_filter :get_invoice
+
   # GET /invoice_lines
   # GET /invoice_lines.xml
   def index
@@ -44,7 +46,7 @@ class InvoiceLinesController < ApplicationController
 
     respond_to do |format|
       if @invoice_line.save
-        format.html { redirect_to(@invoice_line, :notice => 'Invoice line was successfully created.') }
+        format.html { redirect_to([@invoice, @invoice_line], :notice => 'Invoice line was successfully created.') }
         format.xml  { render :xml => @invoice_line, :status => :created, :location => @invoice_line }
       else
         format.html { render :action => "new" }
@@ -60,7 +62,7 @@ class InvoiceLinesController < ApplicationController
 
     respond_to do |format|
       if @invoice_line.update_attributes(params[:invoice_line])
-        format.html { redirect_to(@invoice_line, :notice => 'Invoice line was successfully updated.') }
+        format.html { redirect_to([@invoice, @invoice_line], :notice => 'Invoice line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -76,7 +78,7 @@ class InvoiceLinesController < ApplicationController
     @invoice_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(invoice_lines_url) }
+      format.html { redirect_to(invoice_url(@invoice)) }
       format.xml  { head :ok }
     end
   end

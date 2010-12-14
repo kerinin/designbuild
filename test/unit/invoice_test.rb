@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
       @project = Factory :project, :name => '1'
@@ -50,7 +49,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_contains @obj.lines, @line2
     end
   end
-=end
+
   context "and invoice state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20

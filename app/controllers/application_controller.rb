@@ -58,7 +58,12 @@ class ApplicationController < ActionController::Base
     @contract = Contract.find(params[:contract_id])
     @project = @contract.project
   end
-  
+
+  def get_invoice
+    @invoice = Invoice.find(params[:invoice_id])
+    @project = @invoice.project
+  end
+    
   def get_deadline
     @deadline = Deadline.find(params[:deadline_id])
     @project = @deadline.project

@@ -1,8 +1,10 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoicesControllerTest < ActionController::TestCase
   setup do
-    @invoice = invoices(:one)
+    @project = Factory :project
+    @invoice = Factory :invoice, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do

@@ -1,8 +1,10 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class PaymentsControllerTest < ActionController::TestCase
   setup do
-    @payment = payments(:one)
+    @project = Factory :project
+    @payment = Factory :payment, :project => @project
+    sign_in Factory :user
   end
 
   test "should get index" do

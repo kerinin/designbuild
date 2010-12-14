@@ -1,13 +1,22 @@
 Designbuild::Application.routes.draw do
   
-  resources :payment_lines
+  resources :invoices do
+    resources :invoice_lines
+    resources :invoice_lines, :as => :line_items
+    
+    member do
+      get :accept
+    end
+  end  
 
-  resources :payments
-
-  resources :invoice_lines
-
-  resources :invoices
-
+  resources :payments do
+    resources :payment_lines, :as => :line_items
+    
+    member do
+      get :accept
+    end
+  end
+    
   resources :milestones
 
   resources :suppliers
