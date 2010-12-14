@@ -18,6 +18,8 @@ class UnitCostEstimate < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
+  
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def task_name=(string)

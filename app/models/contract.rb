@@ -31,7 +31,7 @@ class Contract < ActiveRecord::Base
   
   default_scope :order => :position
   
-  scope :without_component, lambda { where( 'contract_id IS NOT NULL' ) }
+  scope :without_component, lambda { where( {:component_id => nil} ) }
   
   def percent_invoiced
     multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )

@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
       @project = Factory :project, :name => '1'
@@ -50,19 +49,29 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_contains @obj.lines, @line2
     end
   end
-=end  
+
   context "and invoice state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
       @component = Factory :component, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 1
+      @task = Factory :task, :project => @project
+      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 1, :task => @task
       @q = Factory :quantity, :component => @component, :value => 1
-      @uc = Factory :unit_cost_estimate, :component => @component, :unit_cost => 10
-      @c = Factory :contract, :component => @component, :project => @project, :active_bid => Factory(:bid, :raw_cost => 100)
+      @uc = Factory :unit_cost_estimate, :component => @component, :unit_cost => 10, :task => @task
+      @c = Factory :contract, :component => @component, :project => @project
+      @c.active_bid = Factory :bid, :raw_cost => 100, :contract => @c
       
-      @obj = Factory :invoice, :project => @project, :state => 'new'
+      @l = Factory :laborer, :bill_rate => 1
+      @lc = Factory :labor_cost, :task => @task
+      @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 10
+      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      @cc = Factory :contract_cost, :contract => @c, :raw_cost => 1000
+      
+      @obj = Factory :invoice, :project => @project, :state => 'new', :date => nil
+      
+      [@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
     end
-    
+ 
     should "start as new" do
       assert_equal 'new', @obj.state
     end
@@ -71,56 +80,65 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.date = Date::today
       @obj.advance
       
-      assert_equal 'date_specified', @obj.state
+      assert_equal 'date_set', @obj.reload.state
     end
     
     should "not -> date set if date not specified" do
       @obj.advance
       
-      assert_equal 'new', @obj.state
+      assert_equal 'new', @obj.reload.state
     end
-    
+   
     should "populate line items when -> date_specified" do
       @obj.date = Date::today
       @obj.advance
       
-      assert_equal 3, @obj.lines
+      costs = @obj.lines.map{|l| l.cost}
+      assert_contains costs, @fc
+      assert_contains costs, @uc
+      assert_contains costs, @c
+      
+      assert_equal 3, @obj.reload.lines.count
     end
-    
+   
     should "-> retainage unexpected if unexpected" do
       @obj.date = Date::today
+      
+      # auto-generates with correct retainage
       @obj.advance
       
-      @li = Factory :invoice_line, :invoice => @obj, :labor_invoiced => 10, :labor_retainage => 10
-      @mi = Factory :invoice_line, :invoice => @obj, :material_invoiced => 10, :material_retainage => 10
+      # screw them up
+      @obj.lines.each {|l| l.labor_retainage = 1000; l.material_retainage = 1000; l.save; }
       @obj.advance
-      
-      assert_equal 'retainage_unexpected', @obj.state
+
+      assert_equal 'retainage_unexpected', @obj.reload.state
     end
-    
+
     should "-> costs specified if retainage specified" do
       @obj.date = Date::today
-      @obj.advance
       
-      @li = Factory :invoice_line, :invoice => @obj, :labor_invoiced => 9, :labor_retainage => 1
-      @mi = Factory :invoice_line, :invoice => @obj, :material_invoiced => 8, :material_retainage => 2
+      # auto-generates with correct retainage
       @obj.advance
-      
-      assert_equal 'costs_specified', @obj.state
+
+      # finishes
+      @obj.advance
+
+      assert_equal 'costs_specified', @obj.reload.state
     end
-    
+      
     should "retainage unexpected -> complete if template specified" do
       @obj.date = Date::today
+      
+      # auto-generates with correct retainage
       @obj.advance
       
-      @li = Factory :invoice_line, :invoice => @obj, :labor_invoiced => 10, :labor_retainage => 10
-      @mi = Factory :invoice_line, :invoice => @obj, :material_invoiced => 10, :material_retainage => 10
+      @obj.lines.each {|l| l.labor_retainage = 1000; l.material_retainage = 1000; l.save; }
       @obj.advance
       
       @obj.template = 'blah'
       @obj.advance
       
-      assert_equal 'complete', @obj.state
+      assert_equal 'complete', @obj.reload.state
     end
     
     should "cost specified -> complete if template specified" do
@@ -134,7 +152,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.template = 'blah'
       @obj.advance
       
-      assert_not_equal 'complete', @obj.state
+      assert_equal 'complete', @obj.reload.state
     end
     
     should "not -> complete if template not specified" do
@@ -148,7 +166,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.template = nil
       @obj.advance
       
-      assert_not_equal 'complete', @obj.state
+      assert_not_equal 'complete', @obj.reload.state
     end
   end
 end

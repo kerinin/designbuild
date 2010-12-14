@@ -24,10 +24,30 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def retainage_as_expected?
-    expected_labor = subtract_or_nil( ( ( add_or_nil self.labor_invoiced, self.cost.labor_invoiced) * self.invoice.project.labor_percent_retainage_float / ( 1 - self.invoice.project.labor_percent_retainage_float ) ), self.cost.labor_retainage )
-    expected_material = subtract_or_nil( ( ( add_or_nil self.material_invoiced, self.cost.material_invoiced) * self.invoice.project.material_percent_retainage_float / ( 1 - self.invoice.project.material_percent_retainage_float ) ), self.cost.material_retainage )
-    return false unless expected_labor == self.labor_invoiced && expected_material == self.material_invoiced
-    true
+    if self.invoice.project.labor_percent_retainage == 0 || self.labor_invoiced == nil
+      expected_labor = nil
+    else self.labor_invoiced
+      expected_labor = subtract_or_nil( ( ( add_or_nil self.labor_invoiced, self.cost.labor_invoiced) * self.invoice.project.labor_percent_retainage_float / ( 1 - self.invoice.project.labor_percent_retainage_float ) ), self.cost.labor_retainage )
+    end
+
+    if self.invoice.project.material_percent_retainage == 0 || self.material_invoiced == nil
+      expected_material = nil
+    else self.material_invoiced
+      expected_material = subtract_or_nil( ( ( add_or_nil self.material_invoiced, self.cost.material_invoiced) * self.invoice.project.material_percent_retainage_float / ( 1 - self.invoice.project.material_percent_retainage_float ) ), self.cost.material_retainage )
+    end
+    
+    # all the same (including nil)
+    return true if expected_labor == self.labor_retainage && expected_material == self.material_retainage
+    # must be either different or similar floats
+    
+    # one nil, the other not
+    return false if expected_labor.nil? || self.labor_retainage.nil? || expected_material.nil? || self.material_retainage.nil?
+    # all values known to be non-nil
+    
+    # round to pennies & compare
+    return true if expected_labor.round(2) == self.labor_retainage.round(2) && expected_material.round(2) == self.material_retainage.round(2)
+    
+    false
   end
   
   protected
