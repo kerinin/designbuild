@@ -28,4 +28,15 @@
       %td.number= number_to_percentage 100 * component.invoiced / component.estimated_cost, :precision => 0
       %td.currency= number_to_currency component.estimated_cost - component.invoiced
       %td.currency= number_to_currency component.retainage
-
+  
+  %tr
+    %th.number
+    %th Grand Totals
+    %th.currency= number_to_currency @project.estimated_cost
+    %th.currency=# number_to_currency @project.labor_cost - @project.labor_invoiced
+    %th.currency=# number_to_currency @project.labor_invoiced
+    %th.currency=# number_to_currency @project.material_invoiced
+    %th.currency=# number_to_currency @project.invoiced
+    %th.number=# number_to_percentage 100 * @project.invoiced / @project.estimated_cost, :precision => 0
+    %th.currency=# number_to_currency @project.estimated_cost - @project.invoiced
+    %th.currency=# number_to_currency @project.retainage

@@ -1,3 +1,4 @@
 =render :partial => 'steps'
 
-=render :partial => 'invoice_lines/lines', :locals => {:lines => @invoice.lines}
+=form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice, :state => 'retainage_expected') do |invoice_form|
+  =render :partial => 'invoice_lines/lines', :locals => {:lines => @invoice.lines, :invoice_form => invoice_form}

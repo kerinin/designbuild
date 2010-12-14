@@ -14,12 +14,8 @@
       %th Retainage
       
 
-    -@project.components.roots.each do |component|
-      =render :partial => 'invoice_lines/lines_component', :locals => {:component => component, :lines => lines}
-              
-    -@project.contracts.without_component.each do |contract|
-      -(contract.invoice_lines & lines).each do |line|
-        =render :partial => 'invoice_lines/form_tr', :locals => {:line => line}      
+    -invoice_form.fields_for :lines do |f|
+      =render :partial => 'invoice_lines/form_tr', :locals => {:line => f.object, :f => f}    
 
   = f.submit 'Save Changes'
   

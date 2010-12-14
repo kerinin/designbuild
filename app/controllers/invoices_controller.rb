@@ -34,6 +34,10 @@ class InvoicesController < ApplicationController
     @state = params[:state]
     @state ||= @invoice.state
     
+    if ['retainage_expected', 'retainage_unexpected'].include? @state
+      @state = @invoice.retainage_as_expected? ? 'retainage_expected' : 'retainage_unexpected'
+    end
+    
     if @state == 'costs_specified'
       @templates =Dir.entries(File.join(Rails.root, 'app', 'views', 'invoices')).map{|s| s.include?('_template_') ? 
         {:name => File.basename(s, '.html.haml').split('_template_').last.gsub('_', ' '), :path => File.basename(s, '.html.haml')[1..-1]} : 
@@ -86,10 +90,10 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       if @invoice.update_attributes(params[:invoice])
-        format.html { redirect_to([@project,@invoice], :notice => 'Invoice was successfully updated.') }
+        format.html { redirect_to( project_invoice_path(@project,@invoice, :state => params[:state] ), :notice => 'Invoice was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { redirect_to([@project,@invoice]) }
+        format.html { redirect_to( project_invoice_path( @project,@invoice, :state => params[:state] ) ) }
         format.xml  { render :xml => @invoice.errors, :status => :unprocessable_entity }
       end
     end
