@@ -12,11 +12,8 @@ class Invoice < ActiveRecord::Base
     state :new do
     end
     
-    state :date_set do
-    end
-    
-    state :costs_specified do
-    end
+    #state :date_set do
+    #end
     
     state :retainage_expected do
     end
@@ -25,14 +22,17 @@ class Invoice < ActiveRecord::Base
       # retainage isn't the expected % of invoiced
     end
     
+    state :costs_specified do
+    end
+        
     state :complete do
     end
     
-    before_transition :new => :date_set, :do => :populate_lines
+    before_transition :new => :retainage_expected, :do => :populate_lines
     
     # Events
     event :advance do
-      transition :new => :date_set, :if => :date?
+      transition :new => :retainage_expected, :if => :date?
       
       transition [:date_set, :retainage_unexpected] => :retainage_expected, :if => :retainage_as_expected?
       transition [:date_set, :retainage_expected] => :retainage_unexpected, :unless => :retainage_as_expected?    
