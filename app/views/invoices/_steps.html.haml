@@ -16,7 +16,7 @@
       -if ['retainage_expected', 'retainage_unexpected'].include? @state
         %span.emphasize Set Invoice Amounts
       -elsif ['costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Set Invoice Amounts', project_invoice_path(@project, @invoice, :state => 'new')
+        =link_to 'Set Invoice Amounts', project_invoice_path(@project, @invoice, :state => @invoice.retainage_as_expected? ? 'retainage_expected' : 'retainage_unexpected')
       -else
         Set Invoice Amounts
       
@@ -26,7 +26,7 @@
       -if @state == 'costs_specified'
         %span.emphasize Select Template
       -elsif ['costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Select Template', project_invoice_path(@project, @invoice, :state => 'new')
+        =link_to 'Select Template', project_invoice_path(@project, @invoice, :state => 'costs_specified')
       -else
         Select Template
       
@@ -35,5 +35,7 @@
     %li.step
       -if @state == 'complete'
         %span.emphasize Print
+      -elsif @invoice.state == 'complete'
+        =link_to 'Print', project_invoice_path(@project, @invoice, :state => 'complete')
       -else
         Print

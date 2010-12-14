@@ -36,7 +36,7 @@ class InvoicesController < ApplicationController
     
     if @state == 'costs_specified'
       @templates =Dir.entries(File.join(Rails.root, 'app', 'views', 'invoices')).map{|s| s.include?('_template_') ? 
-        {:name => File.basename(s, '.html.haml').split('_template_').last.capitalize, :path => File.basename(s, '.html.haml')[1..-1]} : 
+        {:name => File.basename(s, '.html.haml').split('_template_').last.gsub('_', ' '), :path => File.basename(s, '.html.haml')[1..-1]} : 
         nil}.compact
     end
 

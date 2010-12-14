@@ -1,0 +1,31 @@
+=render :partial => 'steps'
+
+%table
+  %tr
+    %th.number{:rowspan => 2} Item No.
+    %th{:rowspan => 2} Description of Work
+    %th.currency{:rowspan => 2} Scheduled Value
+    %th{:colspan => 2} Work Completed
+    %th.currency{:rowspan => 2} Materials Presently Stored
+    %th.currency{:rowspan => 2} Total Completed and Stored
+    %th.number{:rowspan => 2} %
+    %th.currency{:rowspan => 2} Balance to Finish
+    %th.currency{:rowspan => 2} Retainage
+    
+  %tr
+    %th.currency From Previous Application
+    %th.currency This Period
+    
+  -@project.components.each do |component|
+    %tr
+      %td.number= component.position
+      %td= component.name
+      %td.currency= number_to_currency component.estimated_cost
+      %td.currency= number_to_currency component.labor_cost - component.labor_invoiced
+      %td.currency= number_to_currency component.labor_invoiced
+      %td.currency= number_to_currency component.material_invoiced
+      %td.currency= number_to_currency component.invoiced
+      %td.number= number_to_percentage 100 * component.invoiced / component.estimated_cost, :precision => 0
+      %td.currency= number_to_currency component.estimated_cost - component.invoiced
+      %td.currency= number_to_currency component.retainage
+
