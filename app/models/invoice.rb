@@ -5,6 +5,8 @@ class Invoice < ActiveRecord::Base
   
   validates_presence_of :project
   
+  before_save Proc.new{|i| i.advance; true}
+  
   state_machine :state, :initial => :new do
     # States
     state :new do
@@ -14,6 +16,9 @@ class Invoice < ActiveRecord::Base
     end
     
     state :costs_specified do
+    end
+    
+    state :retainage_expected do
     end
     
     state :retainage_unexpected do
@@ -29,10 +34,14 @@ class Invoice < ActiveRecord::Base
     event :advance do
       transition :new => :date_set, :if => :date?
       
-      transition [:date_set, :retainage_unexpected] => :costs_specified, :if => :retainage_as_expected?
-      transition :date_set => :retainage_unexpected, :unless => :retainage_as_expected?    
+      transition [:date_set, :retainage_unexpected] => :retainage_expected, :if => :retainage_as_expected?
+      transition [:date_set, :retainage_expected] => :retainage_unexpected, :unless => :retainage_as_expected?    
       
-      transition [:costs_specified, :retainage_unexpected] => :complete, :if => :template?
+      transition :costs_specified => :complete, :if => :template?
+    end
+    
+    event :accept_costs do
+      transition any - :new => :costs_specified
     end
   end
   
