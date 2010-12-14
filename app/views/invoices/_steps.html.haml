@@ -1,0 +1,39 @@
+%h2.steps
+  Steps:
+  
+  %ul
+    %li.step
+      -if @state == 'new'
+        %span.emphasize Set Date
+      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'complete'].include? @invoice.state
+        =link_to 'Set Date', project_invoice_path(@project, @invoice, :state => 'new')
+      -else
+        Set Date
+        
+    %li.step >
+    
+    %li.step
+      -if ['retainage_expected', 'retainage_unexpected'].include? @state
+        %span.emphasize Set Invoice Amounts
+      -elsif ['costs_specified', 'complete'].include? @invoice.state
+        =link_to 'Set Invoice Amounts', project_invoice_path(@project, @invoice, :state => 'new')
+      -else
+        Set Invoice Amounts
+      
+    %li.step >
+    
+    %li.step
+      -if @state == 'costs_specified'
+        %span.emphasize Select Template
+      -elsif ['costs_specified', 'complete'].include? @invoice.state
+        =link_to 'Select Template', project_invoice_path(@project, @invoice, :state => 'new')
+      -else
+        Select Template
+      
+    %li.step >
+    
+    %li.step
+      -if @state == 'complete'
+        %span.emphasize Print
+      -else
+        Print

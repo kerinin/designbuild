@@ -1,0 +1,27 @@
+=form_for [@project, @invoice] do |f|
+  %table.invoice_lines
+    %tr
+      %th{:colspan => 6} Information
+      %th{:colspan => 10} Invoice Amounts
+      
+    %tr
+      %th{:colspan => 2} Name
+      %th Cost
+      %th Invoiced
+      %th Retained
+      %th Paid
+      %th Invoice
+      %th Retainage
+      
+
+    -@project.components.roots.each do |component|
+      =render :partial => 'invoice_lines/lines_component', :locals => {:component => component, :lines => lines}
+              
+    -@project.contracts.without_component.each do |contract|
+      -(contract.invoice_lines & lines).each do |line|
+        =render :partial => 'invoice_lines/form_tr', :locals => {:line => line}      
+
+  = f.submit 'Save Changes'
+  
+=form_tag accept_invoice_path(@invoice), :method => :get do 
+  =submit_tag 'Next Step'

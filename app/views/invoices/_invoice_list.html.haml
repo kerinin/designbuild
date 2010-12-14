@@ -1,0 +1,15 @@
+%table
+  %tr
+    %th Date
+    %th State
+    %th
+    %th
+    %th
+
+  - invoices.each do |invoice|
+    %tr
+      %td= invoice.date
+      %td= invoice.state
+      %td= link_to 'Show', [@project, invoice]
+      %td= link_to 'Destroy', [@project, invoice], :confirm => 'Are you sure?', :method => :delete
+

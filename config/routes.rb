@@ -43,6 +43,8 @@ Designbuild::Application.routes.draw do
     
     resources :deadlines    # re-nested
     
+    resources :invoices     # re-nested
+    
     member do
       post :add_markup, :as => :add_markup_to
       get :autocomplete_task_name

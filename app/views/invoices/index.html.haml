@@ -1,21 +1,12 @@
-%h1 Listing invoices
+=render :partial => 'shared/project_nav'
 
-%table
-  %tr
-    %th Date
-    %th State
-    %th
-    %th
-    %th
+%h1 Invoices
 
-  - @invoices.each do |invoice|
-    %tr
-      %td= invoice.date
-      %td= invoice.state
-      %td= link_to 'Show', invoice
-      %td= link_to 'Edit', edit_invoice_path(invoice)
-      %td= link_to 'Destroy', invoice, :confirm => 'Are you sure?', :method => :delete
+%hr
+
+=render :partial => 'invoice_list', :locals => {:invoices => @invoices}
 
 %br
 
-= link_to 'New Invoice', new_invoice_path
+=form_for [@project, Invoice.new] do |f|
+  =f.submit 'New Invoice'

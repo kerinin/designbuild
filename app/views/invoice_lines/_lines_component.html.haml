@@ -1,0 +1,14 @@
+-component.unit_cost_estimates.each do |unit_cost|
+  -(unit_cost.invoice_lines & lines).each do |line|
+    =render :partial => 'invoice_lines/form_tr', :locals => {:line => line}
+      
+-component.fixed_cost_estimates.each do |fixed_cost|
+  -(fixed_cost.invoice_lines & lines).each do |line|
+    =render :partial => 'invoice_lines/form_tr', :locals => {:line => line}
+        
+-component.contracts.each do |contract|
+  -(contract.invoice_lines & lines).each do |line|
+    =render :partial => 'invoice_lines/form_tr', :locals => {:line => line}
+    
+-component.children.each do |child|
+  =render :partial => 'invoice_lines/lines_component', :locals => {:component => child, :lines => lines}

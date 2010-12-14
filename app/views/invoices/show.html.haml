@@ -1,12 +1,12 @@
-%p#notice= notice
+-content_for :head do
+  =javascript_include_tag "jquery.dimscreen.js"
 
-%p
-  %b Date:
-  = @invoice.date
-%p
-  %b State:
-  = @invoice.state
+=render :partial => 'shared/project_nav'
 
-= link_to 'Edit', edit_invoice_path(@invoice)
-\|
-= link_to 'Back', invoices_path
+%h1
+  Invoice:
+  =@invoice.date
+
+%hr
+
+=render :partial => "state_#{@state}"

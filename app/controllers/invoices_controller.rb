@@ -1,11 +1,15 @@
 class InvoicesController < ApplicationController
+  before_filter :get_project, :except => :accept
+  
+  
   def accept
     @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
     @invoice.accept_costs
     
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to(@invoice, :notice => 'Invoice was successfully updated.') }
+        format.html { redirect_to([@project, @invoice], :notice => 'Invoice was successfully updated.') }
       else
         format.html { render :action => "show" }
       end
@@ -27,6 +31,14 @@ class InvoicesController < ApplicationController
   # GET /invoices/1.xml
   def show
     @invoice = Invoice.find(params[:id])
+    @state = params[:state]
+    @state ||= @invoice.state
+    
+    if @state == 'costs_specified'
+      @templates =Dir.entries(File.join(Rails.root, 'app', 'views', 'invoices')).map{|s| s.include?('_template_') ? 
+        {:name => File.basename(s, '.html.haml').split('_template_').last.capitalize, :path => File.basename(s, '.html.haml')[1..-1]} : 
+        nil}.compact
+    end
 
     respond_to do |format|
       format.html # show.html.erb
@@ -54,10 +66,11 @@ class InvoicesController < ApplicationController
   # POST /invoices.xml
   def create
     @invoice = Invoice.new(params[:invoice])
+    @invoice.project = @project
 
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to(@invoice, :notice => 'Invoice was successfully created.') }
+        format.html { redirect_to([@project, @invoice], :notice => 'Invoice was successfully created.') }
         format.xml  { render :xml => @invoice, :status => :created, :location => @invoice }
       else
         format.html { render :action => "new" }
@@ -73,10 +86,10 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       if @invoice.update_attributes(params[:invoice])
-        format.html { redirect_to(@invoice, :notice => 'Invoice was successfully updated.') }
+        format.html { redirect_to([@project,@invoice], :notice => 'Invoice was successfully updated.') }
         format.xml  { head :ok }
       else
-        format.html { render :action => "edit" }
+        format.html { redirect_to([@project,@invoice]) }
         format.xml  { render :xml => @invoice.errors, :status => :unprocessable_entity }
       end
     end
@@ -89,7 +102,7 @@ class InvoicesController < ApplicationController
     @invoice.destroy
 
     respond_to do |format|
-      format.html { redirect_to(invoices_url) }
+      format.html { redirect_to(project_invoices_url(@project)) }
       format.xml  { head :ok }
     end
   end

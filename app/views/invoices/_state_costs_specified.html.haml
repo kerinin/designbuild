@@ -1,0 +1,9 @@
+=render :partial => 'steps'
+
+=form_for [@project, @invoice] do |f|
+  .field
+    =f.label :template
+    =f.select :template, @templates.map{|t| [t[:name], t[:path]]}, {:include_blank => '-- No Template Selected -- '}
+    
+  .field
+    =f.submit 'Next'

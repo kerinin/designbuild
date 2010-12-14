@@ -1,0 +1,17 @@
+%tr
+  %td{:rowspan => 2}= line.cost.name
+  %td Labor
+  %td.currency= number_to_currency line.cost.labor_cost
+  %td.currency= number_to_currency subtract_or_nil line.cost.labor_invoiced, line.labor_invoiced
+  %td.currency= number_to_currency line.cost.labor_retained
+  %td.currency= number_to_currency line.cost.labor_paid
+  %td.currency= number_to_currency line.labor_invoiced
+  %td.currency= number_to_currency line.labor_retainage
+%tr
+  %td Material
+  %td.currency= number_to_currency line.cost.material_cost
+  %td.currency= number_to_currency subtract_or_nil line.cost.material_invoiced, line.material_invoiced
+  %td.currency= number_to_currency line.cost.material_retained
+  %td.currency= number_to_currency line.cost.material_paid
+  %td.currency= number_to_currency line.material_invoiced
+  %td.currency= number_to_currency line.material_retainage 
