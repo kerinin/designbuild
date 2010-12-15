@@ -43,7 +43,6 @@ class FixedCostEstimate < ActiveRecord::Base
   
   # raw_cost
 
-
   # Invoicing
   [:labor_cost, :material_cost].each do |sym|
     self.send(:define_method, sym) do

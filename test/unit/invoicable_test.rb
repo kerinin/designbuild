@@ -242,20 +242,20 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 0.5 * 0.5 * @obj.cost, @obj.labor_cost_before(Date::today - 5) if @obj.instance_of? Contract
         end
         
-        should "determine material cost" do
-          assert_equal (0.6 * @obj.cost).round(2), @obj.material_cost.round(2) unless @obj.instance_of? Contract
-          assert_equal (0.5 * @obj.cost).round(2), @obj.material_cost.round(2) if @obj.instance_of? Contract
-        end
+        #should "determine material cost" do
+        #  assert_equal (0.6 * @obj.cost).round(2), @obj.material_cost.round(2) unless @obj.instance_of? Contract
+        #  assert_equal (0.5 * @obj.cost).round(2), @obj.material_cost.round(2) if @obj.instance_of? Contract
+        #end
         
         should "determine material cost with date cutoff" do
           assert_equal 0.5 * 0.6 * @obj.cost, @obj.material_cost_before(Date::today - 5) unless @obj.instance_of? Contract
           assert_equal 0.5 * 0.5 * @obj.cost, @obj.material_cost_before(Date::today - 5) if @obj.instance_of? Contract
         end
         
-        should "determine percent complete" do
-          assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
-          assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete_float if @obj.instance_of? Contract
-        end
+        #should "determine percent complete" do
+        #  assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
+        #  assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete_float if @obj.instance_of? Contract
+        #end
       end
     end
   end
