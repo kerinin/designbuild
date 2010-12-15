@@ -46,10 +46,13 @@ class FixedCostEstimate < ActiveRecord::Base
   # Invoicing
   [:labor_cost, :material_cost].each do |sym|
     self.send(:define_method, sym) do
-      if self.task.blank? || self.task.send(sym).nil? || self.cost.nil? 
+      if self.task.blank? || self.task.send(sym).nil? || self.estimated_cost.nil? 
         nil
       else
-        self.task.send(sym.to_s.gsub('cost', 'percent')) * self.cost / 100
+        task_cost = self.task.send(sym)
+        my_share = self.estimated_cost / self.task.estimated_cost
+        
+        return task_cost * my_share
       end
     end
   end
@@ -57,10 +60,13 @@ class FixedCostEstimate < ActiveRecord::Base
   [:labor_cost_before, :material_cost_before].each do |sym|
     self.send(:define_method, sym) do |date|
       date ||= Date::today
-      if self.task.blank? || self.task.send(sym, date).nil? || self.cost.nil?
+      if self.task.blank? || self.task.send(sym, date).nil? || self.estimated_cost.nil?
         nil
       else
-        self.task.send(sym.to_s.gsub('cost', 'percent'), date) * self.cost / 100
+        task_cost = self.task.send(sym, date)
+        my_share = self.estimated_cost / self.task.estimated_cost
+        
+        return task_cost * my_share
       end
     end
   end

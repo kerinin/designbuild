@@ -65,10 +65,10 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
     end
     
     # Invoicing
-    should "determine labor_percent" do
+    should_eventually "determine labor_percent" do
     end
     
-    should "determine material_percent" do
+    should_eventually "determine material_percent" do
     end
   end
 end

@@ -15,7 +15,7 @@ class InvoiceableTest < ActiveSupport::TestCase
       @mc = Factory :material_cost, :task => @task1, :raw_cost => 30, :date => Date::today
       
       @lc2 = Factory :labor_cost, :task => @task1, :percent_complete => 50, :date => Date::today - 10
-      @lcl2 = Factory :labor_cost_line, :laborer => @l, :hours => 20, :labor_set => @lc
+      @lcl2 = Factory :labor_cost_line, :laborer => @l, :hours => 20, :labor_set => @lc2
       @mc2 = Factory :material_cost, :task => @task1, :raw_cost => 30, :date => Date::today - 10
     end
     
@@ -30,11 +30,11 @@ class InvoiceableTest < ActiveSupport::TestCase
     }
     
     @unit = Proc.new { |project, component1, task1, component2, task2, l, lc, lcl, mc|
-      @q = Factory :quantity, :component => component1, :value => 2
-      @uce1 = Factory :unit_cost_estimate, :component => component1, :task => task1, :unit_cost => 1, :quantity => @q
-      @uce2 = Factory :unit_cost_estimate, :component => component1, :unit_cost => 10, :quantity => @q
-      @uce3 = Factory :unit_cost_estimate, :component => component2, :task => task2, :unit_cost => 100, :quantity => @q
-      @uce4 = Factory :unit_cost_estimate, :component => component1, :unit_cost => 1000, :quantity => @q
+      @q = Factory :quantity, :component => component1, :value => 1
+      @uce1 = Factory :unit_cost_estimate, :component => component1, :task => task1, :unit_cost => 2, :quantity => @q
+      @uce2 = Factory :unit_cost_estimate, :component => component1, :unit_cost => 20, :quantity => @q
+      @uce3 = Factory :unit_cost_estimate, :component => component2, :task => task2, :unit_cost => 200, :quantity => @q
+      @uce4 = Factory :unit_cost_estimate, :component => component1, :unit_cost => 2000, :quantity => @q
       
       [@uce1, @uce2, @uce3, @uce4].each {|i| i.reload}
       [@uce1, @uce2, @uce3, @uce4]
@@ -45,7 +45,8 @@ class InvoiceableTest < ActiveSupport::TestCase
       @contract2 = Factory :contract, :project => project, :component => component2, :active_bid => Factory( :bid, :raw_cost => 30 )
       @contract3 = Factory :contract, :project => project, :active_bid => Factory( :bid, :raw_cost => 300 )
 
-      Factory :contract_cost, :contract => @contract1, :raw_cost => 1000, :date => Date::today
+      Factory :contract_cost, :contract => @contract1, :raw_cost => 500, :date => Date::today
+      Factory :contract_cost, :contract => @contract1, :raw_cost => 500, :date => Date::today - 10
       
       [@contract1, @contract2, @contract3].each {|i| i.reload}
       [@contract1, @contract2, @contract3]
@@ -54,7 +55,7 @@ class InvoiceableTest < ActiveSupport::TestCase
     [[@fixed, 'fixed cost'], [@unit, 'unit cost'], [@contract, 'contract']].each do |proc, name|
       context "with #{name} invoices & payments" do
         setup do
-          @targets = proc.call( @project, @component1, @task1, @component2, @task2, @l, @lc, @lcl, @mc )
+          @targets = proc.call( @project, @component1, @task1, @component2, @task2, @l, @lc, @lcl, @lc2, @lcl2, @mc, @mc2)
 
           @invoice1 = Factory :invoice, :project => @project, :date => Date::today-10
           @invoice1.lines = @targets.map { |target|
@@ -101,7 +102,7 @@ class InvoiceableTest < ActiveSupport::TestCase
           [@project, @component1, @task1, @component2, @task2, @l, @lc, @lcl, @mc].each {|i| i.reload}
           @obj = @targets.first
         end
-=begin     
+     
         should "aggregate labor_invoiced" do
           assert_equal 4004, @obj.labor_invoiced
         end
@@ -236,26 +237,26 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 0.4 * @obj.cost, @obj.labor_cost unless @obj.instance_of? Contract
           assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
-=end         
+         
         should "determine labor cost with date cutoff" do
-          assert_equal 0.5 * 0.4 * @obj.cost, @obj.labor_cost_before(Date::today - 5) unless @obj.instance_of? Contract
+          assert_equal 0.5 * 0.4 * @task1.cost, @obj.labor_cost_before(Date::today - 5) unless @obj.instance_of? Contract
           assert_equal 0.5 * 0.5 * @obj.cost, @obj.labor_cost_before(Date::today - 5) if @obj.instance_of? Contract
         end
         
-        #should "determine material cost" do
-        #  assert_equal (0.6 * @obj.cost).round(2), @obj.material_cost.round(2) unless @obj.instance_of? Contract
-        #  assert_equal (0.5 * @obj.cost).round(2), @obj.material_cost.round(2) if @obj.instance_of? Contract
-        #end
+        should "determine material cost" do
+          assert_equal (0.6 * @obj.cost).round(2), @obj.material_cost.round(2) unless @obj.instance_of? Contract
+          assert_equal (0.5 * @obj.cost).round(2), @obj.material_cost.round(2) if @obj.instance_of? Contract
+        end
         
         should "determine material cost with date cutoff" do
           assert_equal 0.5 * 0.6 * @obj.cost, @obj.material_cost_before(Date::today - 5) unless @obj.instance_of? Contract
           assert_equal 0.5 * 0.5 * @obj.cost, @obj.material_cost_before(Date::today - 5) if @obj.instance_of? Contract
         end
         
-        #should "determine percent complete" do
-        #  assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
-        #  assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete_float if @obj.instance_of? Contract
-        #end
+        should "determine percent complete" do
+          assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
+          assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete_float if @obj.instance_of? Contract
+        end
       end
     end
   end
