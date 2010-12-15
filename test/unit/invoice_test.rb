@@ -29,16 +29,6 @@ class InvoiceTest < ActiveSupport::TestCase
       end
     end
     
-    should_eventually "allow a version" do
-      @i = Factory :invoice, :project_version => 3, :project => @project
-      assert_equal 3, @i.project_version
-      assert_equal '3', @i.versioned_project.name
-    end
-    
-    should_eventually "default to latest project version" do
-      assert_equal '4', @obj.versioned_project.name
-    end
-    
     should "allow a template" do
       @i = Factory :invoice, :template => 'blah'
       assert_equal 'blah', @i.template

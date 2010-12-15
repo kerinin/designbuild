@@ -13,9 +13,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
       
         @task = Factory :task, :project => @project
         @fce = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
         @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100
+        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
               
         # requested: 2, paid: 1
         @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
@@ -49,7 +49,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
         assert_not_nil @obj.material_retainage
         assert_not_nil @obj.retainage
       end
-    
+          
       should "require an invoice" do
         assert_raise ActiveRecord::RecordInvalid do
           Factory :invoice_line, :invoice => nil

@@ -37,7 +37,7 @@ class PaymentLineTest < ActiveSupport::TestCase
       @mc2 = Factory :material_cost, :task => @task4, :raw_cost => 100
       
       # requested: 2, paid: 1
-      @p_payment = Factory :payment, :project => @project, :date => Date::today - 10, :state => 'paid'
+      @p_payment = Factory :payment, :project => @project, :date => Date::today - 10, :state => 'complete'
       @p_line = Factory( :payment_line, 
         :payment => @p_payment,
         :cost => @fce4, 

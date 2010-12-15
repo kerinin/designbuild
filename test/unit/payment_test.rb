@@ -30,16 +30,6 @@ class PaymentTest < ActiveSupport::TestCase
       end
     end
     
-    should_eventually "allow a version" do
-      @i = Factory :payment, :project_version => 3, :project => @project
-      assert_equal 3, @i.project_version
-      assert_equal '3', @i.versioned_project.name
-    end
-    
-    should_eventually "default to latest project version" do
-      assert_equal '4', @obj.versioned_project.name
-    end
-    
     should "have multiple line items" do
       assert_contains @obj.lines, @line1
       assert_contains @obj.lines, @line2

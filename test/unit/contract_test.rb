@@ -95,8 +95,9 @@ class ContractTest < ActiveSupport::TestCase
     should "aggregate costs" do
       assert_equal 11, @obj.raw_cost
     end
-    
-    should_eventually "aggregate costs with date cutoff" do
+
+    should "aggregate costs with cutoff" do
+      assert_equal nil, @obj.raw_cost_before(Date::today - 5)
     end
     
     should "update total markup after add" do
@@ -107,10 +108,10 @@ class ContractTest < ActiveSupport::TestCase
     
     
     # ------------------Invoicing
-    should "determine labor_percent" do
+    should_eventually "determine labor_percent" do
     end
     
-    should "determine material_percent" do
+    should_eventually "determine material_percent" do
     end
   end
 end

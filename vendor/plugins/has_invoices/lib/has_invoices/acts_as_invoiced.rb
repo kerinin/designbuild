@@ -8,14 +8,16 @@ class << ActiveRecord::Base
     has_many :payment_lines, :as => :cost
 
     [:invoiced, :retainage, :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage].each do |sym|
-      self.send(:define_method, sym) do
-        self.invoice_lines.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
+      self.send(:define_method, sym) do |*date|
+        date ||= Date::today
+        self.invoice_lines.includes(:invoice).where('invoices.date <= ?', date).inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
       end
     end
 
     [:paid, :retained, :labor_paid, :labor_retained, :material_paid, :material_retained].each do |sym|
-      self.send(:define_method, sym) do
-        self.payment_lines.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
+      self.send(:define_method, sym) do |*date|
+        date ||= Date::today
+        self.payment_lines.includes(:payment).where('payments.date <= ?', date).inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
       end
     end
     
