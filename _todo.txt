@@ -1,10 +1,5 @@
-PaymentLineTest
 InvoiceableTest
-InvoiceTest
 InvoiceLineTest
-FixedCostEstimateTest
-ContractTest
-ComponentTest
 
 + projected costs
 + active tasks

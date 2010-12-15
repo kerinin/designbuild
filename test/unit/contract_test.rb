@@ -14,8 +14,8 @@ class ContractTest < ActiveSupport::TestCase
       @obj = Factory :contract, :component => @component
       @contract2 = Factory :contract, :project => @project
       
-      @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1
-      @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10
+      @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1, :date => Date::today
+      @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10, :date => Date::today
       @b1 = Factory :bid, :contract => @obj
       @b2 = Factory :bid, :contract => @obj, :raw_cost => 100
       @obj.active_bid = @b2

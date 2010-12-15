@@ -10,7 +10,7 @@ class FixedCostEstimateTest < ActiveSupport::TestCase
 
       @obj = Factory :fixed_cost_estimate, :task => @t1, :component => @c1
       
-      @task = Factory :task, :component => @c1
+      @task = Factory :task, :project => @proj
       @l = Factory :laborer, :bill_rate => 1
       @lc = Factory :labor_cost, :task => @task
       @lcl = Factory :labor_cost_line, :laborer => @l, :labor_set => @lc, :hours => 100

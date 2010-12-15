@@ -93,6 +93,11 @@ class Task < ActiveRecord::Base
   # labor_cost
   marks_up :raw_labor_cost
   
+  marks_up :raw_labor_cost_before
+  def raw_labor_cost_before(date = Date::today)
+    self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
+  
   # raw_labor_cost
   
   # material_cost
@@ -100,12 +105,22 @@ class Task < ActiveRecord::Base
   
   # raw_material_cost
   
+  marks_up :raw_material_cost_before
+  def raw_material_cost_before(date = Date::today)
+    self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+  end
+  
   def cost
     add_or_nil(labor_cost, material_cost)
   end
   
   def raw_cost
     add_or_nil(raw_labor_cost, raw_material_cost)
+  end
+  
+  marks_up :raw_cost_before
+  def raw_cost_before(date = Date::today)
+    add_or_nil raw_labor_cost_before(date), raw_material_cost_before(date)
   end
   
   # projected_cost

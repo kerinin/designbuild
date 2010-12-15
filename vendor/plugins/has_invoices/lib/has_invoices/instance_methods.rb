@@ -26,12 +26,24 @@ module HasInvoices
       subtract_or_nil self.labor_invoiced, self.labor_paid
     end
     
+    def labor_outstanding_before(date = Date::today)
+      subtract_or_nil self.labor_invoiced_before(date), self.labor_paid_before(date)
+    end
+    
     def material_outstanding
       subtract_or_nil self.material_invoiced, self.material_paid
     end
     
+    def material_outstanding_before(date = Date::today)
+      subtract_or_nil self.material_invoiced_before(date), self.material_paid_before(date)
+    end
+    
     def outstanding
       add_or_nil self.labor_outstanding, self.material_outstanding
+    end
+    
+    def outstanding_before(date = Date::today)
+      add_or_nil self.labor_outstanding_before(date), self.material_outstanding_before(date)
     end
   end
 end

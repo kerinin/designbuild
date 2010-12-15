@@ -49,7 +49,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         setup do
           @targets = proc.call( @project, @component1, @task1, @component2, @task2, @l, @lc, @lcl, @mc )
 
-          @invoice1 = Factory :invoice, :project => @project
+          @invoice1 = Factory :invoice, :project => @project, :date => Date::today-10
           @invoice1.lines = @targets.map { |target|
             Factory( :invoice_line, 
             :invoice => @invoice1,
@@ -59,7 +59,7 @@ class InvoiceableTest < ActiveSupport::TestCase
             :labor_retainage => 400,
             :material_retainage => 4000
           ) }
-          @invoice2 = Factory :invoice, :project => @project
+          @invoice2 = Factory :invoice, :project => @project, :date => Date::today
           @invoice2.lines = @targets.map { |target|
             Factory( :invoice_line, 
             :invoice => @invoice2,
@@ -70,7 +70,7 @@ class InvoiceableTest < ActiveSupport::TestCase
             :material_retainage => 4000000
           ) }
                     
-          @payment1 = Factory :payment, :project => @project
+          @payment1 = Factory :payment, :project => @project, :date => Date::today-10
           @payment1.lines = @targets.map { |target|
             Factory( :payment_line,
             :payment => @payment1,
@@ -80,7 +80,7 @@ class InvoiceableTest < ActiveSupport::TestCase
             :labor_retained => 500,
             :material_retained => 5000
           ) }
-          @payment2 = Factory :payment, :project => @project
+          @payment2 = Factory :payment, :project => @project, :date => Date::today
           @payment2.lines = @targets.map { |target|
             Factory( :payment_line,
             :payment => @payment2,
@@ -99,15 +99,15 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate labor_invoiced with date cutoff" do
-          assert_equal nil, @obj.labor_invoiced_before(Date::today - 5)
+          assert_equal 4, @obj.labor_invoiced_before(Date::today - 5)
         end
-      
+     
         should "aggregate material_invoiced" do
           assert_equal 40040, @obj.material_invoiced
         end
         
         should "aggregate material invoice  with date cutoff" do
-          assert_equal nil, @obj.material_invoiced_before(Date::today - 5)
+          assert_equal 40, @obj.material_invoiced_before(Date::today - 5)
         end
       
         should "aggregate invoiced" do
@@ -115,15 +115,15 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate invoiced  with date cutoff" do
-          assert_equal nil, @obj.invoiced_before(Date::today - 5)
+          assert_equal 44, @obj.invoiced_before(Date::today - 5)
         end
-    
+  
         should "aggregate labor_retainage" do
           assert_equal 400400, @obj.labor_retainage
         end
         
         should "aggregate labor_retainage  with date cutoff" do
-          assert_equal nil, @obj.labor_retainage_before(Date::today - 5)
+          assert_equal 400, @obj.labor_retainage_before(Date::today - 5)
         end
       
         should "aggregate material_retainage" do
@@ -131,7 +131,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate material_retainage  with date cutoff" do
-          assert_equal nil, @obj.material_retainage_before(Date::today - 5)
+          assert_equal 4000, @obj.material_retainage_before(Date::today - 5)
         end
       
         should "aggregate retainage" do
@@ -139,7 +139,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate retainage with date cutoff" do
-          assert_equal nil, @obj.retainage_before(Date::today - 5)
+          assert_equal 4400, @obj.retainage_before(Date::today - 5)
         end
       
         should "aggregate labor_paid" do
@@ -147,7 +147,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate labor_paid with date cutoff" do
-          assert_equal nil, @obj.labor_paid_before(Date::today - 5)
+          assert_equal 5, @obj.labor_paid_before(Date::today - 5)
         end
       
         should "aggregate material_paid" do
@@ -155,7 +155,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate material_paid with date cutoff" do
-          assert_equal nil, @obj.material_paid_before(Date::today - 5)
+          assert_equal 50, @obj.material_paid_before(Date::today - 5)
         end
       
         should "aggregate paid" do
@@ -163,7 +163,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate paid with date cutoff" do
-          assert_equal nil, @obj.paid_before(Date::today - 5)
+          assert_equal 55, @obj.paid_before(Date::today - 5)
         end
       
         should "aggregate labor_retained" do
@@ -171,7 +171,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate labor_retained with date cutoff" do
-          assert_equal nil, @obj.labor_retained_before(Date::today - 5)
+          assert_equal 500, @obj.labor_retained_before(Date::today - 5)
         end
       
         should "aggregate material_retained" do
@@ -179,7 +179,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate material_retained with date cutoff" do
-          assert_equal nil, @obj.material_retained_before(Date::today - 5)
+          assert_equal 5000, @obj.material_retained_before(Date::today - 5)
         end
       
         should "aggregate retained" do
@@ -187,7 +187,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "aggregate retained with date cutoff" do
-          assert_equal nil, @obj.retained_before(Date::today)
+          assert_equal 5500, @obj.retained_before(Date::today - 5)
         end
       
         should "determine labor_percent" do
@@ -205,7 +205,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "determine labor outstanding with date cutoff" do
-          assert_equal nil, @obj.labor_outstanding_before(Date::today - 5)
+          assert_equal 4-5, @obj.labor_outstanding_before(Date::today - 5)
         end
       
         should "determine material_outstanding" do
@@ -213,7 +213,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "determine material_outstanding with date cutoff" do
-          assert_equal nil, @obj.material_outstanding_before(Date::today - 5)
+          assert_equal 40-50, @obj.material_outstanding_before(Date::today - 5)
         end
       
         should "determine outstanding" do
@@ -221,7 +221,7 @@ class InvoiceableTest < ActiveSupport::TestCase
         end
         
         should "determine outstanding with date cutoff" do
-          assert_equal nil, @obj.outstanding_before(Date::today - 5)
+          assert_equal @obj.labor_outstanding_before(Date::today - 5) + @obj.material_outstanding_before(Date::today - 5), @obj.outstanding_before(Date::today - 5)
         end
         
         should "determine labor cost" do
@@ -229,8 +229,7 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
         
-        should "determine labor cost with date cutoff" do
-          assert_equal nil, @obj.labor_cost_before(Date::today - 5)
+        should_eventually "determine labor cost with date cutoff" do
         end
         
         should "determine material cost" do
@@ -238,8 +237,7 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 0.5 * @obj.cost, @obj.labor_cost if @obj.instance_of? Contract
         end
         
-        should "determine material cost with date cutoff" do
-          assert_equal nil, @obj.labor_cost_before(Date::today - 5)
+        should_eventually "determine material cost with date cutoff" do
         end
         
         should "determine percent complete" do

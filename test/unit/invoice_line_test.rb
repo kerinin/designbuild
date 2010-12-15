@@ -18,7 +18,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
               
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @fce, 
@@ -82,12 +82,12 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @task = Factory :task, :project => @project
         @q = Factory :quantity, :component => @component, :value => 1
         @uce = Factory :unit_cost_estimate, :quantity => @q, :unit_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
         @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+        @mc = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
       
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @uce, 
@@ -152,10 +152,10 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @contract = Factory :contract, :project => @project, :component => @component
         @bid = Factory :bid, :contract => @contract, :raw_cost => 100
         @contract.update_attributes(:active_bid => @bid)
-        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50
+        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50, :date => Date::today
 
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @contract, 
@@ -225,12 +225,12 @@ class InvoiceLineTest < ActiveSupport::TestCase
       
         @task = Factory :task, :project => @project
         @fce = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
         @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100
+        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
               
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @fce, 
@@ -279,12 +279,12 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @task = Factory :task, :project => @project
         @q = Factory :quantity, :component => @component, :value => 1
         @uce = Factory :unit_cost_estimate, :quantity => @q, :unit_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50
+        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
         @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+        @mc = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
       
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @uce, 
@@ -320,10 +320,10 @@ class InvoiceLineTest < ActiveSupport::TestCase
           @uce.labor_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
           (@project.labor_percent_retainage_float )
         ) - @line.labor_retainage - @obj.labor_retainage  ).abs < 0.00001
-        assert_equal (
+        assert ( (
           @uce.material_percent_float * @uce.task.percent_complete_float * @uce.estimated_cost *
           (@project.material_percent_retainage_float )
-        ) - @line.material_retainage, @obj.material_retainage    
+        ) - @line.material_retainage - @obj.material_retainage ).abs < 0.00001 
       end
     end
 
@@ -335,10 +335,10 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @contract = Factory :contract, :project => @project, :component => @component
         @bid = Factory :bid, :contract => @contract, :raw_cost => 100
         @contract.update_attributes(:active_bid => @bid)
-        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50
+        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50, :date => Date::today
 
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today - 10
+        @invoice = Factory :invoice, :project => @project, :date => Date::today
         @line = Factory( :invoice_line, 
           :invoice => @invoice,
           :cost => @contract, 
