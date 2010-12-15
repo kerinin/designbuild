@@ -173,8 +173,16 @@ class Task < ActiveRecord::Base
     100 * ( divide_or_nil( self.labor_cost, self.cost ) || 0 )
   end
   
+  def labor_percent_before(date=Date::today)
+    100 * ( divide_or_nil(self.labor_cost_before(date), self.cost_before(date) ) || 0)
+  end
+  
   def material_percent
     100 * ( divide_or_nil( self.material_cost, self.cost ) || 0 )
+  end
+  
+  def material_percent_before(date=Date::today)
+    100 * (divide_or_nil(self.labor_cost_before(date), self.cost_before(date) ) || 0)
   end
   
   protected

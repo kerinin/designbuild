@@ -77,12 +77,19 @@ class Contract < ActiveRecord::Base
     end
   end
   
+  [:labor_cost_before, :material_cost_before].each do |sym|
+    self.send(:define_method, sym) do |date|
+      date ||= Date::today
+      divide_or_nil self.cost_before(date), 2
+    end
+  end
+  
   def percent_complete
     self.percent_complete_float * 100
   end
   
   def percent_complete_float
-    divide_or_nil( self.invoiced, self.cost) || 0
+    divide_or_nil( self.cost, self.estimated_cost) || 0
   end
 
   
