@@ -1,18 +1,23 @@
 =form_for [@project, @invoice] do |f|
   %table.invoice_lines
     %tr
-      %th{:colspan => 6} Information
-      %th{:colspan => 10} Invoice Amounts
+      %th{:rowspan => 2} Name
+      %th{:colspan => 2} Cost
+      %th{:colspan => 2} Previous Invoices
+      %th{:colspan => 2} Previous Payments
+      %th{:colspan => 10} Current Invoice
+
       
     %tr
-      %th{:colspan => 2} Name
-      %th Cost
-      %th Invoiced
-      %th Retained
-      %th Paid
-      %th Invoice
-      %th Retainage
-      
+      %th.currency Estimated
+      %th.currency= "As of #{@invoice.date.strftime('%b %d')}"
+      %th.currency Invoiced
+      %th.currency Retainage
+      %th.currency Paid
+      %th.currency Retained
+      %th.currency Invoice
+      %th.currency Retainage
+      %th
 
     -invoice_form.fields_for :lines do |f|
       =render :partial => 'invoice_lines/form_tr', :locals => {:line => f.object, :f => f}    
