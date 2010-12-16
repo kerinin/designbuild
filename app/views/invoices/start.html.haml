@@ -1,4 +1,15 @@
-=render :partial => 'steps'
+-content_for :head do
+  =javascript_include_tag "jquery.dimscreen.js"
+
+=render :partial => 'shared/project_nav'
+
+%h1
+  Invoice:
+  =@invoice.date
+
+%hr
+
+=render :partial => 'steps', :locals => {:current => :start}
 
 =form_for [@project, @invoice] do |f|
   -if @invoice.errors.any?

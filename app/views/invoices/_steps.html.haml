@@ -3,39 +3,37 @@
   
   %ul
     %li.step
-      -if @state == 'new'
-        %span.emphasize Set Date
-      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Set Date', project_invoice_path(@project, @invoice, :state => 'new')
+      -if current == :start
+        %span.emphasize Start
       -else
-        Set Date
+        =link_to 'Start', start_invoice_path( @invoice)
         
     %li.step >
     
     %li.step
-      -if ['retainage_expected', 'retainage_unexpected'].include? @state
+      -if current == :set_amounts
         %span.emphasize Set Invoice Amounts
       -elsif ['costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Set Invoice Amounts', project_invoice_path(@project, @invoice, :state => @invoice.retainage_as_expected? ? 'retainage_expected' : 'retainage_unexpected')
+        =link_to 'Set Invoice Amounts', set_amounts_invoice_path(@invoice)
       -else
         Set Invoice Amounts
       
     %li.step >
     
     %li.step
-      -if @state == 'costs_specified'
+      -if current == :select_template
         %span.emphasize Select Template
       -elsif ['costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Select Template', project_invoice_path(@project, @invoice, :state => 'costs_specified')
+        =link_to 'Select Template', select_template_invoice_path(@invoice)
       -else
         Select Template
       
     %li.step >
     
     %li.step
-      -if @state == 'complete'
-        %span.emphasize Print
+      -if current == :finished
+        %span.emphasize Finished
       -elsif @invoice.state == 'complete'
-        =link_to 'Print', project_invoice_path(@project, @invoice, :state => 'complete')
+        =link_to 'Finished', finished_invoice_path(@invoice)
       -else
-        Print
+        Finished

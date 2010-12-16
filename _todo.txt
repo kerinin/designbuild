@@ -25,6 +25,7 @@
 - bank draws (invoice tracking)
 ++ clean up tests
 ++ filtering costs by effective date
+++ states for tasks w/o estimate
 -- drawing retainage
 -- estimates should be estimated_cost, cost
 -- tasks not reflected in components
@@ -32,7 +33,7 @@
 -- unexpected retainage UI
 -- round to cent
 -- refactor controller to be step-based
--- states for tasks w/o estimate, payments that don't balance
+-- states for payments that don't balance
 
 -- track costs back to estimate
 

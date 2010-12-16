@@ -1,6 +1,44 @@
 class InvoicesController < ApplicationController
-  before_filter :get_project, :except => :accept
+  before_filter :get_project, :except => [:start, :set_amounts, :select_template, :finished, :accept]
   
+  def start
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  def set_amounts
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  def select_template
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+    @templates =Dir.entries(File.join(Rails.root, 'app', 'views', 'invoices')).map{|s| s.include?('_template_') ? 
+      {:name => File.basename(s, '.html.haml').split('_template_').last.gsub('_', ' '), :path => File.basename(s, '.html.haml')[1..-1]} : 
+      nil}.compact
+
+    respond_to do |format|
+      format.html
+    end
+  end
+  
+  def finished
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+
+    respond_to do |format|
+      format.html
+    end
+  end
   
   def accept
     @invoice = Invoice.find(params[:id])
@@ -74,7 +112,7 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to([@project, @invoice], :notice => 'Invoice was successfully created.') }
+        format.html { redirect_to( start_invoice_path(@invoice), :notice => 'Invoice was successfully created.') }
         format.xml  { render :xml => @invoice, :status => :created, :location => @invoice }
       else
         format.html { render :action => "new" }
@@ -89,13 +127,19 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.find(params[:id])
 
     respond_to do |format|
-      if @invoice.update_attributes(params[:invoice])
-        format.html { redirect_to( project_invoice_path(@project,@invoice, :state => params[:state] ), :notice => 'Invoice was successfully updated.') }
-        format.xml  { head :ok }
-      else
-        format.html { redirect_to( project_invoice_path( @project,@invoice, :state => params[:state] ) ) }
-        format.xml  { render :xml => @invoice.errors, :status => :unprocessable_entity }
-      end
+      @invoice.update_attributes(params[:invoice])
+      format.html {
+        case @invoice.state
+        when 'new', 'missing_task', 'payments_unbalanced'
+          redirect_from_session_or start_invoice_path(@invoice)
+        when 'retainage_expected', 'retainage_unexpected'
+          redirect_from_session_or set_amounts_invoice_path(@invoice)
+        when 'costs_specified'
+          redirect_from_session_or select_template_invoice_path(@invoice)
+        when 'complete'
+          redirect_from_session_or finished_invoice_path(@invoice)
+        end 
+      }
     end
   end
 

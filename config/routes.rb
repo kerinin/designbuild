@@ -5,6 +5,11 @@ Designbuild::Application.routes.draw do
     resources :invoice_lines, :as => :line_items
     
     member do
+      get :start
+      get :set_amounts
+      get :select_template
+      get :finished
+      
       get :accept
     end
   end  
