@@ -53,14 +53,24 @@ class InvoiceLine < ActiveRecord::Base
   protected
   
   def set_defaults
-    if self.invoice.project.fixed_bid
-      # determine % of estimated
-      labor_cost = self.cost.labor_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost if self.labor_invoiced.nil?
-      material_cost = self.cost.material_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost if self.material_invoiced.nil?
+    if self.cost.instance_of? Contract
+      if self.invoice.project.fixed_bid
+        labor_cost = 0.5 * self.cost.percent_complete_float * self.cost.estimated_cost if self.labor_invoiced.nil?
+        material_cost = 0.5 * self.cost.percent_complete_float * self.cost.estimated_cost if self.material_invoiced.nil?
+      else
+        labor_cost = 0.5 * self.cost.cost if self.labor_invoiced.nil?
+        material_cost = 0.5 * self.cost.cost if self.labor_invoiced.nil?
+      end
     else
-      # determine costs
-      labor_cost = self.cost.labor_cost if self.labor_invoiced.nil?
-      material_cost = self.cost.material_cost if self.material_invoiced.nil?
+      if self.invoice.project.fixed_bid
+        # determine % of estimated
+        labor_cost = self.cost.labor_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost if self.labor_invoiced.nil?
+        material_cost = self.cost.material_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost if self.material_invoiced.nil?
+      else
+        # determine costs
+        labor_cost = self.cost.labor_cost if self.labor_invoiced.nil?
+        material_cost = self.cost.material_cost if self.material_invoiced.nil?
+      end
     end
 
     # remove retainage and previously invoiced

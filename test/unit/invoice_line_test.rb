@@ -200,13 +200,13 @@ class InvoiceLineTest < ActiveSupport::TestCase
       end
       
       should "default to cost - requested" do
-        assert_equal (@contract.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
-        assert_equal (@contract.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
+        assert_equal (0.5*@contract.cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
+        assert_equal (0.5*@contract.cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
       
         assert_equal ( @obj.labor_invoiced + @obj.material_invoiced ), @obj.invoiced
 
-        assert_equal (@contract.labor_cost*(@project.labor_percent_retainage_float)-@line.labor_retainage), @obj.labor_retainage
-        assert_equal (@contract.material_cost*(@project.material_percent_retainage_float)-@line.material_retainage), @obj.material_retainage
+        assert_equal (0.5*@contract.cost*(@project.labor_percent_retainage_float)-@line.labor_retainage), @obj.labor_retainage
+        assert_equal (0.5*@contract.cost*(@project.material_percent_retainage_float)-@line.material_retainage), @obj.material_retainage
       
         assert_equal ( @obj.labor_retainage + @obj.material_retainage ), @obj.retainage
       end
@@ -361,20 +361,20 @@ class InvoiceLineTest < ActiveSupport::TestCase
 
         # % complete * labor multiplier * estimated cost, minus retainage
         assert_equal (
-          @contract.labor_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          0.5 * @contract.percent_complete_float * @contract.estimated_cost *
           (1-@project.labor_percent_retainage_float )
         ) - @line.labor_invoiced, @obj.labor_invoiced
         assert_equal (
-          @contract.material_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          0.5 * @contract.percent_complete_float * @contract.estimated_cost *
           (1-@project.material_percent_retainage_float )
         ) - @line.material_invoiced, @obj.material_invoiced      
 
         assert_equal (
-          @contract.labor_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          0.5 * @contract.percent_complete_float * @contract.estimated_cost *
           (@project.labor_percent_retainage_float )
         ) - @line.labor_retainage, @obj.labor_retainage
         assert_equal (
-          @contract.material_percent_float * @contract.percent_complete_float * @contract.estimated_cost *
+          0.5 * @contract.percent_complete_float * @contract.estimated_cost *
           (@project.material_percent_retainage_float )
         ) - @line.material_retainage, @obj.material_retainage    
       end

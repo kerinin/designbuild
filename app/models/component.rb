@@ -149,7 +149,7 @@ class Component < ActiveRecord::Base
         if obj.respond_to?(sym)
           add_or_nil memo, obj.send(sym)
         else
-          add_or_nil memo, obj.send( sym.to_s.split('_').last )
+          memo
         end
       end
     end
@@ -162,7 +162,7 @@ class Component < ActiveRecord::Base
         if obj.respond_to?(sym)
           add_or_nil memo, obj.send(sym, date)
         else
-          add_or_nil memo, obj.send( sym.to_s.split('_')[-2], date )
+          memo
         end
       end
     end

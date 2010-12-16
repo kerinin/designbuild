@@ -26,16 +26,13 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
     end
     
     should "aggregate labor cost" do
-      # NOTE: projects split costs between labor, material and contract
-      # but invoices split only labor & material
-      # this is expecting the contract to be put in...
-      assert_equal 101101, @project.labor_cost
-      assert_equal 101101, @component.labor_cost
+      assert_equal 1001, @project.labor_cost
+      assert_equal 1001, @component.labor_cost
     end
     
     should "aggregate material cost" do
-      assert_equal 110110, @project.material_cost
-      assert_equal 110110, @component.material_cost
+      assert_equal 10010, @project.material_cost
+      assert_equal 10010, @component.material_cost
     end
     
     context "with invoices & payments" do
@@ -185,13 +182,13 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
     end
     
     should "aggregate labor cost" do
-      assert_equal 101000, @project.labor_cost_before(Date::today - 5)
-      assert_equal 101000, @component.labor_cost_before(Date::today - 5)
+      assert_equal 1000, @project.labor_cost_before(Date::today - 5)
+      assert_equal 1000, @component.labor_cost_before(Date::today - 5)
     end
     
     should "aggregate material cost" do
-      assert_equal 110000, @project.material_cost_before(Date::today - 5)
-      assert_equal 110000, @component.material_cost_before(Date::today - 5)
+      assert_equal 10000, @project.material_cost_before(Date::today - 5)
+      assert_equal 10000, @component.material_cost_before(Date::today - 5)
     end
     
     context "with invoices & payments" do
