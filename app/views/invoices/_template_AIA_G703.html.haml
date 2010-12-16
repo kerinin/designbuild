@@ -14,29 +14,63 @@
     %th.currency From Previous Application
     %th.currency This Period
     
+  -i = 1
   -@invoice.lines.each do |line|
     %tr
-      %td.number
+      %td.number=i
       %td= line.cost.name
+      
+      / Scheduled Value
       %td.currency= number_to_currency line.cost.estimated_cost
+      
+      / Work Completed - From previous applications
       %td.currency= number_to_currency line.cost.labor_invoiced_before(@invoice.date - 1)
+      
+      / Work Complete - This period
       %td.currency= number_to_currency line.labor_invoiced
+      
+      / Materials Presently Stored
       %td.currency= number_to_currency line.cost.material_invoiced_before(@invoice.date)
+      
+      / Total Completed and Stored
       %td.currency= number_to_currency line.cost.invoiced_before(@invoice.date)
+      
+      / %
       %td.number
         -if line.cost.estimated_cost && line.cost.estimated_cost > 0
           = number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
+          
+      / Balance to finish
       %td.currency= number_to_currency line.cost.estimated_cost - line.cost.invoiced_before(@invoice.date)
+      
+      / Retainage
       %td.currency= number_to_currency line.cost.retainage_before(@invoice.date)
+    -i += 1
   
   %tr
     %th.number
     %th Grand Totals
+    
+    / Scheduled Value
     %th.currency= number_to_currency @project.estimated_cost
+    
+    / Work Completed - From previous applications
     %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date - 1)
-    %th.currency= number_to_currency subtract_or_nil @project.labor_invoiced, @project.labor_invoiced_before(@invoice.date - 1)
+    
+    / Work Complete - This period
+    %th.currency= number_to_currency subtract_or_nil @project.labor_invoiced_before(@invoice.date), @project.labor_invoiced_before(@invoice.date - 1)
+    
+    / Materials Presently Stored
     %th.currency= number_to_currency @project.material_invoiced_before(@invoice.date)
+    
+    / Total Completed and Stored
     %th.currency= number_to_currency @project.invoiced_before(@invoice.date)
+    
+    / %
     %th.number= number_to_percentage 100 * @project.invoiced_before(@invoice.date) / @project.estimated_cost, :precision => 0
+    
+    / Balance to finish
     %th.currency= number_to_currency @project.estimated_cost - @project.invoiced_before(@invoice.date)
+    
+    / Retainage
     %th.currency= number_to_currency @project.retainage_before(@invoice.date)

@@ -191,7 +191,7 @@ class ProjectsController < ApplicationController
         format.js {
           @projects = Project.order( :name ).all
         }
-        format.html { redirect_to(@project, :notice => 'Project was successfully updated.') }
+        format.html { redirect_from_session_or(@project, :notice => 'Project was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js

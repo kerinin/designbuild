@@ -1,7 +1,7 @@
 =render :partial => 'shared/project_nav'
 
 %h1 Invoices
-
+  
 %hr
 
 =render :partial => 'invoice_list', :locals => {:invoices => @invoices}
@@ -10,3 +10,22 @@
 
 =form_for [@project, Invoice.new] do |f|
   =f.submit 'New Invoice'
+  
+%hr
+
+%h2 Settings
+
+=form_for @project do |f|
+  .field
+    =f.label :fixed_bid, "Fixed-Bid Project"
+    =f.check_box :fixed_bid
+    
+    =f.label :labor_percent_retainage, "Labor Retainage (%)"
+    =f.text_field :labor_percent_retainage
+    
+    =f.label :material_percent_retainage, "Material Retainage (%)"
+    =f.text_field :material_percent_retainage
+    
+  .field
+    =hidden_field_tag :redirect_to, project_invoices_path(@project)
+    =f.submit

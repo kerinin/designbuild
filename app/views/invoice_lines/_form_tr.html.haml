@@ -1,22 +1,56 @@
 %tr
+  / Name
   %td{:rowspan => 2}= line.cost.name
+  
+  / Cost - estimated
   %td.currency{:rowspan => 2}= number_to_currency line.cost.estimated_cost
-  %td.currency= number_to_currency line.cost.labor_cost_before(@invoice.date)
+  
+  / Cost - as of invoice date
+  -if line.cost.instance_of? Contract
+    %td.currency{:rowspan => 2}= number_to_currency line.cost.cost_before(@invoice.date)
+  -else
+    %td.currency= number_to_currency line.cost.labor_cost_before(@invoice.date)
+  
+  / Previous Invoices - Invoiced
   %td.currency= number_to_currency line.cost.labor_invoiced_before(@invoice.date - 1)
-  %td.currency= number_to_currency line.cost.labor_retainage_before(@invoice.date)
-  %td.currency= number_to_currency line.cost.labor_paid_before(@invoice.date)
-  %td.currency= number_to_currency line.cost.labor_retained_before(@invoice.date)
+  
+  / Previous Invoices - Retainage
+  %td.currency= number_to_currency line.cost.labor_retainage_before(@invoice.date - 1)
+  
+  / Previous Payments - Paid
+  %td.currency= number_to_currency line.cost.labor_paid_before(@invoice.date - 1)
+  
+  / Previous Payments - Retained
+  %td.currency= number_to_currency line.cost.labor_retained_before(@invoice.date - 1)
+  
+  / Current Invoice - Invoice
   %td.currency= f.text_field :labor_invoiced
+  
+  / Current invoice - Retainage
   %td.currency= f.text_field :labor_retainage
   %td
     %strong Labor
 %tr
-  %td.currency= number_to_currency line.cost.material_cost_before(@invoice.date)
+  -unless line.cost.instance_of? Contract
+    / Cost - as of invoice date
+    %td.currency= number_to_currency line.cost.material_cost_before(@invoice.date)
+  
+  / Previous Invoices - Invoiced
   %td.currency= number_to_currency line.cost.material_invoiced_before(@invoice.date - 1)
-  %td.currency= number_to_currency line.cost.material_retainage_before(@invoice.date)
-  %td.currency= number_to_currency line.cost.material_paid_before(@invoice.date)
-  %td.currency= number_to_currency line.cost.material_retained_before(@invoice.date)
+  
+  / Previous Invoices - Retainage
+  %td.currency= number_to_currency line.cost.material_retainage_before(@invoice.date - 1)
+  
+  / Previous Payments - Paid
+  %td.currency= number_to_currency line.cost.material_paid_before(@invoice.date - 1)
+  
+  / Previous Payments - Retained
+  %td.currency= number_to_currency line.cost.material_retained_before(@invoice.date - 1)
+  
+  / Current Invoice - Invoice
   %td.currency= f.text_field :material_invoiced
+  
+  / Current invoice - Retainage
   %td.currency= f.text_field :material_retainage
   %td
     %strong Material
