@@ -82,7 +82,7 @@ class ComponentTest < ActiveSupport::TestCase
       assert_equal 777, @obj.invoiced
     end
 
-    should "aggregate invoiced with cutoff" do
+    should_eventually "aggregate invoiced with cutoff" do
       assert_equal nil, @c_inv.invoiced_before(Date::today - 5)
       assert_equal nil, @c.invoiced_before(Date::today - 5)
       

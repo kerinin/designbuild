@@ -26,6 +26,9 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
     end
     
     should "aggregate labor cost" do
+      # NOTE: projects split costs between labor, material and contract
+      # but invoices split only labor & material
+      # this is expecting the contract to be put in...
       assert_equal 101101, @project.labor_cost
       assert_equal 101101, @component.labor_cost
     end

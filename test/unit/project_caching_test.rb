@@ -305,7 +305,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal nil, @project.reload.cost
     end
     
-    should "reflect contract cost" do
+    should "reflect contract estimated cost" do
       @bid = Factory :bid, :raw_cost => 100, :contract => @contract
       @contract.active_bid = @bid
       @contract.save
@@ -339,7 +339,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal nil, @project.reload.estimated_cost
     end
     
-    should "reflect contract invoiced" do
+    should "reflect contract cost" do
       @inv = Factory :contract_cost, :contract => @contract, :raw_cost => 1000
       
       assert_equal 1000, @project.reload.raw_contract_cost

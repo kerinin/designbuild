@@ -99,7 +99,8 @@ class Project < ActiveRecord::Base
     end
   end
   
-  [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
+  #:labor_cost, :material_cost, 
+  [:labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
     self.send(:define_method, sym) do
       (self.components + self.contracts.without_component).inject(nil) do |memo, obj|
         if obj.respond_to?(sym)

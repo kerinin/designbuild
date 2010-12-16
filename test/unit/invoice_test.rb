@@ -23,8 +23,8 @@ class InvoiceTest < ActiveSupport::TestCase
         :cost => @fc,
         :labor_invoiced => 10000,
         :material_invoiced => 100000,
-        :labor_retainage => 100000,
-        :material_retainage => 1000000
+        :labor_retainage => 1000000,
+        :material_retainage => 10000000
       )
 
     end
