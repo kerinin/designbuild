@@ -1,6 +1,3 @@
-ComponentTest
-InvoiceableTest
-
 + projected costs
 + active tasks
 + inherited quantities
@@ -26,12 +23,16 @@ InvoiceableTest
 ++ schedule
 
 - bank draws (invoice tracking)
+++ clean up tests
+++ filtering costs by effective date
+-- drawing retainage
 -- estimates should be estimated_cost, cost
 -- tasks not reflected in components
 -- invoicing when previous payments not distributed to components
--- drawing retainage
--- filtering costs by effective date
--- clean up tests
+-- unexpected retainage UI
+-- round to cent
+-- refactor controller to be step-based
+-- states for tasks w/o estimate, payments that don't balance
 
 -- track costs back to estimate
 
