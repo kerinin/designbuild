@@ -1,15 +1,44 @@
 %table
   %tr
+    %th Name
     %th Date
     %th State
-    %th
+    %th Cost to Date
+    %th Invoice
+    %th Total Invoiced
     %th
     %th
 
   - invoices.each do |invoice|
     %tr
-      %td= invoice.date
-      %td= invoice.state
-      %td= link_to 'Show', [@project, invoice]
-      %td= link_to 'Destroy', [@project, invoice], :confirm => 'Are you sure?', :method => :delete
+      %td= invoice.name
+      %td= invoice.date.to_s :long
+      %td
+        -case invoice.state
+        -when 'new', 'missing_task', 'payments_unbalanced'
+          =icon :wrench
+          New
+        -when 'retainage_expected', 'retainage_unexpected'
+          =icon :wrench
+          Started
+        -when 'costs_specified'
+          =icon :wrench
+          Costs Specified
+        -when 'complete'
+          =icon(:accept)
+          Complete
+      %td.currency= number_to_currency add_or_nil @project.labor_cost_before(invoice.date - 1), @project.labor_cost_before(invoice.date - 1)
+      %td.currency= number_to_currency invoice.invoiced
+      %td.currency= number_to_currency @project.invoiced_before(invoice.date)
+      %td.control.show
+        -case invoice.state
+        -when 'new', 'missing_task', 'payments_unbalanced'
+          =link_to 'Edit', start_invoice_path( invoice)
+        -when 'retainage_expected', 'retainage_unexpected'
+          =link_to 'Edit', set_amounts_invoice_path( invoice)
+        -when 'costs_specified'
+          =link_to 'Select Template', select_template_invoice_path( invoice)
+        -when 'complete'
+          =link_to 'Show', finished_invoice_path( invoice)
+      %td.control.destroy= link_to icon(:delete), [@project, invoice], :confirm => 'Are you sure?', :method => :delete
 

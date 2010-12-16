@@ -1,18 +1,32 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
-      @project = Factory :project, :name => '1'
-      @project.update_attributes(:name => '2')
-      @project.update_attributes(:name => '3')
-      @project.update_attributes(:name => '4')
+      @project = Factory :project
+      @component = Factory :component, :project => @project
+      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
       
-      @obj = Factory :invoice, :project => @project
+      @obj = Factory :invoice, :project => @project, :date => Date::today
       
-      @line1 = Factory :invoice_line, :invoice => @obj
-      @line2 = Factory :invoice_line, :invoice => @obj
+      @line1 = Factory( :invoice_line, 
+        :invoice => @obj, 
+        :cost => @fc,
+        :labor_invoiced => 1,
+        :material_invoiced => 10,
+        :labor_retainage => 100,
+        :material_retainage => 1000
+      )
+        
+      @line2 = Factory( :invoice_line, 
+        :invoice => @obj, 
+        :cost => @fc,
+        :labor_invoiced => 10000,
+        :material_invoiced => 100000,
+        :labor_retainage => 100000,
+        :material_retainage => 1000000
+      )
+
     end
     
     should "be valid" do
@@ -39,8 +53,32 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_contains @obj.lines, @line1
       assert_contains @obj.lines, @line2
     end
+    
+    should "aggregate labor invoiced" do
+      assert_equal 10001, @obj.labor_invoiced
+    end
+    
+    should "aggregate material invoiced" do
+      assert_equal 100010, @obj.material_invoiced
+    end
+    
+    should "aggregate invoiced" do
+      assert_equal 110011, @obj.invoiced
+    end
+    
+    should "aggregate labor retainage" do
+      assert_equal 1000100, @obj.labor_retainage
+    end
+    
+    should "aggregate material retainage" do
+      assert_equal 10001000, @obj.material_retainage
+    end
+    
+    should "aggregate retainage" do
+      assert_equal 11001100, @obj.retainage
+    end
   end
-=end
+
   context "state machine validation" do
     setup do
       @project = Factory :project
@@ -155,7 +193,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'retainage_expected', @obj.state
     end
   end
-=begin  
+ 
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
@@ -253,5 +291,4 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'complete', @obj.reload.state
     end
   end
-=end
 end

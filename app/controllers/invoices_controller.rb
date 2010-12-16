@@ -47,7 +47,7 @@ class InvoicesController < ApplicationController
     
     respond_to do |format|
       if @invoice.save
-        format.html { redirect_to([@project, @invoice], :notice => 'Invoice was successfully updated.') }
+        format.html { redirect_to( select_template_invoice_path( @invoice ), :notice => 'Invoice was successfully updated.') }
       else
         format.html { render :action => "show" }
       end
@@ -57,7 +57,7 @@ class InvoicesController < ApplicationController
   # GET /invoices
   # GET /invoices.xml
   def index
-    @invoices = Invoice.all
+    @invoices = @project.invoices
 
     respond_to do |format|
       format.html # index.html.erb
@@ -67,6 +67,7 @@ class InvoicesController < ApplicationController
 
   # GET /invoices/1
   # GET /invoices/1.xml
+=begin
   def show
     @invoice = Invoice.find(params[:id])
     @state = params[:state]
@@ -87,6 +88,7 @@ class InvoicesController < ApplicationController
       format.xml  { render :xml => @invoice }
     end
   end
+=end
 
   # GET /invoices/new
   # GET /invoices/new.xml

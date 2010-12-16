@@ -33,7 +33,7 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition :new => :retainage_expected, :do => :populate_lines
+    before_transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :do => :populate_lines
     
     # Events
     event :advance do
@@ -53,6 +53,12 @@ class Invoice < ActiveRecord::Base
     
     event :accept_costs do
       transition any - :new => :costs_specified
+    end
+  end
+  
+  [:labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage].each do |sym|
+    self.send(:define_method, sym) do
+      self.lines.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
     end
   end
   

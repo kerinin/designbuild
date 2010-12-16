@@ -50,7 +50,14 @@ class FixedCostEstimate < ActiveRecord::Base
         nil
       else
         task_cost = self.task.send(sym)
-        my_share = self.estimated_cost / self.task.estimated_cost
+        my_share = case
+        when task.unit_cost_estimates.count + task.fixed_cost_estimates.count == 1
+          1
+        when !self.estimated_cost.nil? && self.task.estimated_cost > 0
+          self.estimated_cost / self.task.estimated_cost
+        else
+          1 / (self.task.unit_cost_estimates.count + self.task.fixed_cost_estimates)
+        end
         
         return task_cost * my_share
       end
@@ -64,7 +71,14 @@ class FixedCostEstimate < ActiveRecord::Base
         nil
       else
         task_cost = self.task.send(sym, date)
-        my_share = self.estimated_cost / self.task.estimated_cost
+        my_share = case
+        when task.unit_cost_estimates.count + task.fixed_cost_estimates.count == 1
+          1
+        when !self.estimated_cost.nil? && self.task.estimated_cost > 0
+          self.estimated_cost / self.task.estimated_cost
+        else
+          1 / (self.task.unit_cost_estimates.count + self.task.fixed_cost_estimates)
+        end
         
         return task_cost * my_share
       end

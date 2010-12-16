@@ -23,7 +23,9 @@
       %td.currency= number_to_currency line.labor_invoiced
       %td.currency= number_to_currency line.cost.material_invoiced_before(@invoice.date)
       %td.currency= number_to_currency line.cost.invoiced_before(@invoice.date)
-      %td.number= number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
+      %td.number
+        -if line.cost.estimated_cost && line.cost.estimated_cost > 0
+          = number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
       %td.currency= number_to_currency line.cost.estimated_cost - line.cost.invoiced_before(@invoice.date)
       %td.currency= number_to_currency line.cost.retainage_before(@invoice.date)
   

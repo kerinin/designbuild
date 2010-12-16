@@ -5,9 +5,8 @@
 
 %h1
   Invoice:
+  =@invoice.name
   =@invoice.date
 
 %hr
 
-=render :partial => "state_#{@state}" unless @state == 'complete'
-=render :partial => @invoice.template if @state == 'complete'

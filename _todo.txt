@@ -28,12 +28,14 @@
 ++ states for tasks w/o estimate
 -- drawing retainage
 -- estimates should be estimated_cost, cost
--- tasks not reflected in components
+++ tasks not reflected in components
 -- invoicing when previous payments not distributed to components
 -- unexpected retainage UI
 -- round to cent
--- refactor controller to be step-based
+++ refactor controller to be step-based
 -- states for payments that don't balance
+-- controller tests
+-- validate uniqueness of invoice date in context of project
 
 -- track costs back to estimate
 
