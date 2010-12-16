@@ -13,6 +13,7 @@
 =render :partial => 'steps', :locals => {:current => :start}
 
 -if @invoice.state == 'missing_task'
+  / Missing Task
   .error
     %h2 Before you can set invoice amounts...
     
@@ -36,6 +37,7 @@
 
 
 -else
+  / Start
   =form_for [@project, @invoice] do |f|
     -if @invoice.errors.any?
       #error_explanation
