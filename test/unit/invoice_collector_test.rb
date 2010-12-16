@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceCollectorTest < ActiveSupport::TestCase
-=begin
   context "An invoice collector" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
@@ -157,7 +156,7 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
       end
     end
   end
-=end
+
   context "An invoice collector with cutoff date" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
