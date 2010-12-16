@@ -1,4 +1,11 @@
--start_day = @date-6
+-@interval = params[:interval]
+-@interval ||= 'week'
+
+-start_day = case @interval
+-when 'week'
+  -@date-6  
+-when 'month'
+  - @date.to_time.advance(:months => -1, :days => 1).to_date 
 -end_day = @date
 
 .control
@@ -10,8 +17,11 @@
 
 .control
   =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
-    change date:
+    change end date:
     =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
+
+    change interval:
+    =select_tag :interval, options_for_select([['1 week', 'week'], ['1 month', 'month']], @interval), {:onchange => "$('#date_select').submit();"}
 
 %h2
   Labor Summary for
@@ -58,7 +68,6 @@
       -labor_cost_lines = LaborCostLine.where('labor_costs.task_id = ?', task.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
       %td.number
         %strong
-          = labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.hours}
-          h
+          = number_to_currency labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.cost}
             
 
