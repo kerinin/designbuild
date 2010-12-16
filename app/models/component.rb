@@ -143,7 +143,7 @@ class Component < ActiveRecord::Base
   
   
   # Invoicing
-  [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained].each do |sym|
+  [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
     self.send(:define_method, sym) do
       (self.fixed_cost_estimates + self.unit_cost_estimates + self.contracts).inject(nil) do |memo, obj|
         if obj.respond_to?(sym)
@@ -154,8 +154,20 @@ class Component < ActiveRecord::Base
       end
     end
   end
-  
-  
+
+  [:labor_cost_before, :material_cost_before, :labor_invoiced_before, :material_invoiced_before, :invoiced_before, :labor_retainage_before, :material_retainage_before, :retainage_before, :labor_paid_before, :material_paid_before, :paid_before, :labor_retained_before, :material_retained_before, :retained_before, :labor_outstanding_before, :material_outstanding_before, :outstanding_before].each do |sym|
+    self.send(:define_method, sym) do |date|
+      date ||= Date::today
+      (self.fixed_cost_estimates + self.unit_cost_estimates + self.contracts).inject(nil) do |memo, obj|
+        if obj.respond_to?(sym)
+          add_or_nil memo, obj.send(sym, date)
+        else
+          add_or_nil memo, obj.send( sym.to_s.split('_')[-2], date )
+        end
+      end
+    end
+  end
+    
   protected
   
   def cache_estimated_fixed_cost
