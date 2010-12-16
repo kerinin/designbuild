@@ -14,8 +14,11 @@ class Invoice < ActiveRecord::Base
     state :new do
     end
     
-    #state :date_set do
-    #end
+    state :missing_task do
+    end
+    
+    state :payments_unbalanced do
+    end
     
     state :retainage_expected do
     end
@@ -34,7 +37,13 @@ class Invoice < ActiveRecord::Base
     
     # Events
     event :advance do
-      transition :new => :retainage_expected, :if => :date?
+      transition :new => :missing_task, :if => Proc.new{|inv| inv.date? && inv.missing_tasks? }
+      transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :missing_tasks?
+      
+      transition :missing_task => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :missing_tasks?
+      transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      
+      transition :new => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
       transition [:date_set, :retainage_unexpected] => :retainage_expected, :if => :retainage_as_expected?
       transition [:date_set, :retainage_expected] => :retainage_unexpected, :unless => :retainage_as_expected?    
@@ -50,6 +59,16 @@ class Invoice < ActiveRecord::Base
   def retainage_as_expected?
     self.lines.each {|l| return false unless l.retainage_as_expected? }
     true
+  end
+  
+  def missing_tasks?
+    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+      task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
+    }.include?( true ) 
+  end
+  
+  def unbalanced_payments?
+    !self.project.payments.where(:state => :costs_unbalanced).empty?
   end
   
   protected

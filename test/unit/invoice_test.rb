@@ -56,7 +56,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'missing_task', @obj.state
       assert_equal [], @obj.lines
     end
-    
+   
     should "missing_task -> retainage_expected after task assigned" do
       @task = Factory :task, :project => @project
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100
@@ -66,11 +66,11 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'missing_task', @obj.state
       
       @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
-      
-      assert_equal 'retainage_expected', @obj.state
+
+      assert_equal 'retainage_expected', @obj.reload.state
     end
-    
-    should "new -> payments_unbalanced if unbalanced payments" do
+   
+    should_eventually "new -> payments_unbalanced if unbalanced payments" do
       @task = Factory :task, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100
@@ -80,10 +80,13 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj = Factory :invoice
       @obj.update_attributes :date => Date::today
       
+      assert_equal false, @obj.reload.missing_tasks?
+      assert_equal true, @obj.reload.unbalanced_payments?
+      
       assert_equal 'payments_unbalanced', @obj.state
     end
     
-    should "payments_unbalanced -> retainage_expected after payments balanced" do
+    should_eventually "payments_unbalanced -> retainage_expected after payments balanced" do
       @task = Factory :task, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100
@@ -107,8 +110,8 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'retainage_expected', @obj.state
     end
-    
-    should "new -> missing_task if tasks missing and payments unbalanced" do
+     
+    should_eventually "new -> missing_task if tasks missing and payments unbalanced" do
       @task = Factory :task, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100
@@ -124,7 +127,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'payments_unbalanced', @obj.state
     end
     
-    should "missing_task -> payments_unbalanced after task assigned if payments unbalanced" do
+    should_eventually "missing_task -> payments_unbalanced after task assigned if payments unbalanced" do
       @task = Factory :task, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100

@@ -26,6 +26,8 @@ class Task < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  after_save :update_invoicing_state
+  
   scope :active, lambda {
     where(:active => true)
   }
@@ -207,6 +209,11 @@ class Task < ActiveRecord::Base
     self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
   end
   
+  
+  def update_invoicing_state
+    self.project.invoices.each {|i| i.save}
+  end
+     
         
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
