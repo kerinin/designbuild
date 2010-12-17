@@ -37,11 +37,11 @@
       
       / %
       %td.number
-        -if line.cost.estimated_cost && line.cost.estimated_cost > 0
+        -if !line.cost.estimated_cost.nil? && line.cost.estimated_cost > 0 && !line.cost.invoiced_before(@invoice.date).nil?
           = number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
           
       / Balance to finish
-      %td.currency= number_to_currency line.cost.estimated_cost - line.cost.invoiced_before(@invoice.date)
+      %td.currency= number_to_currency subtract_or_nil line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)
       
       / Retainage
       %td.currency= number_to_currency line.cost.retainage_before(@invoice.date)
@@ -67,10 +67,12 @@
     %th.currency= number_to_currency @project.invoiced_before(@invoice.date)
     
     / %
-    %th.number= number_to_percentage 100 * @project.invoiced_before(@invoice.date) / @project.estimated_cost, :precision => 0
+    %th.number
+      -if !@project.estimated_cost.nil? && @project.estimated_cost > 0 && !@project.invoiced_before(@invoice.date).nil?
+        = number_to_percentage 100 * @project.invoiced_before(@invoice.date) / @project.estimated_cost, :precision => 0
     
     / Balance to finish
-    %th.currency= number_to_currency @project.estimated_cost - @project.invoiced_before(@invoice.date)
+    %th.currency= number_to_currency subtract_or_nil @project.estimated_cost, @project.invoiced_before(@invoice.date)
     
     / Retainage
     %th.currency= number_to_currency @project.retainage_before(@invoice.date)

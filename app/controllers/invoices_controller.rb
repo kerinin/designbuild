@@ -15,7 +15,13 @@ class InvoicesController < ApplicationController
     @project = @invoice.project
 
     respond_to do |format|
-      format.html
+      format.html {
+        if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
+          redirect_to start_invoice_path(@invoice)
+        else
+          render
+        end
+      }
     end
   end
   
@@ -27,7 +33,15 @@ class InvoicesController < ApplicationController
       nil}.compact
 
     respond_to do |format|
-      format.html
+      format.html {
+        if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
+          redirect_to start_invoice_path(@invoice)
+        elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
+          redirect_to set_amounts_invoice_path(@invoice)
+        else
+          render
+        end
+      }
     end
   end
   
@@ -36,7 +50,17 @@ class InvoicesController < ApplicationController
     @project = @invoice.project
 
     respond_to do |format|
-      format.html
+      format.html {
+        if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
+          redirect_to start_invoice_path(@invoice)
+        elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
+          redirect_to set_amounts_invoice_path(@invoice)
+        elsif 'costs_specified' == @invoice.state
+          redirect_to select_template_invoice_path(@invoice)
+        else
+          render
+        end
+      }
     end
   end
   

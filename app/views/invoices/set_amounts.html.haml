@@ -12,5 +12,12 @@
 
 =render :partial => 'steps', :locals => {:current => :set_amounts}
 
-=form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice, :state => 'retainage_expected') do |invoice_form|
+=form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice) do |invoice_form|
   =render :partial => 'invoice_lines/lines', :locals => {:lines => @invoice.lines, :invoice_form => invoice_form}
+  
+-if @invoice.state == 'retainage_unexpected'
+  / Retainage Unexpected
+  .alert
+    %h2 Retainage doesn't match - make sure this is what you intended
+-else
+  / Retainage Expected

@@ -6,8 +6,13 @@ class InvoiceLine < ActiveRecord::Base
   
   validates_presence_of :invoice, :cost
   validates_associated :invoice
+  validates_numericality_of :labor_invoiced, :if => :labor_invoiced
+  validates_numericality_of :labor_retainage, :if => :labor_retainage
+  validates_numericality_of :material_invoiced, :if => :material_invoiced
+  validates_numericality_of :material_retainage, :if => :material_retainage
   
   before_save :set_defaults
+  after_update Proc.new {|invline| invline.invoice.save! }
   
   def invoiced
     add_or_nil self.labor_invoiced, self.material_invoiced
