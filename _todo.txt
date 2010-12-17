@@ -58,6 +58,7 @@ InvoiceCollectorTest
 ++ explanative text
 ++ table alignment
 
+- project as contract
 - task ordering / sorting
 - milestone / task percent complete UI
 - parametric components

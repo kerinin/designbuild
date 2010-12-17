@@ -19,7 +19,7 @@
       %th.currency Retainage
       %th
 
-    -invoice_form.fields_for :lines do |f|
+    =invoice_form.fields_for :lines do |f|
       =render :partial => 'invoice_lines/form_tr', :locals => {:line => f.object, :f => f}    
 
   = f.submit 'Save Changes'

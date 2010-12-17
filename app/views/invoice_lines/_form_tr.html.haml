@@ -27,7 +27,10 @@
   %td.currency= f.text_field :labor_invoiced
   
   / Current invoice - Retainage
-  %td.currency= f.text_field :labor_retainage
+  %td.currency
+    = f.text_field :labor_retainage
+    -unless line.retainage_as_expected?
+      =icon :error
   %td
     %strong Labor
 %tr
