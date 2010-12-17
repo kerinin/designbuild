@@ -1,4 +1,4 @@
--unless contract.cost.nil?
+-unless contract.estimated_cost.nil?
   %tr
     %td.control
     %td.control
@@ -8,15 +8,14 @@
       -else
         =contract.name
     -if session[:break_out_unit_costs]
-      %td= "Fixed Bid from #{contract.active_bid.contractor}"
-      %td.currency
+      %td{:colspan => 2}= "Fixed Bid from #{contract.active_bid.contractor}"
     -if session[:break_out_markup]
-      %td.currency= number_to_currency contract.raw_cost
+      %td.currency= number_to_currency contract.estimated_raw_cost
     %td.currency
       -if indent == 0
-        %strong= number_to_currency contract.cost
+        %strong= number_to_currency contract.estimated_cost
       -else
-        =number_to_currency contract.cost
+        =number_to_currency contract.estimated_cost
       
   -if session[:break_out_unit_costs]    
     -contract.bids.each do |alternate|
@@ -25,9 +24,8 @@
           %td.control
           %td.control
           %td
-          %td{:class => "indent_#{indent+1}"}
-            %i= "Alternate Bid from #{alternate.contractor}"
-          %td.currency
+          %td{:class => "indent_#{indent+1}", :colspan => 2}
+            %i= "Alternate Bid from #{alternate.contractor} (#{alternate.date.strftime('%b %d \'%y')})"
           -if session[:break_out_markup]
             %td.currency
               %i= number_to_currency alternate.raw_cost
