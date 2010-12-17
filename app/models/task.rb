@@ -2,7 +2,7 @@ class Task < ActiveRecord::Base
   include AddOrNil
   include MarksUp
   
-  has_paper_trail
+  has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :contract
   belongs_to :deadline

@@ -3,7 +3,7 @@ class ContractCost < ActiveRecord::Base
   
   belongs_to :contract
   
-  has_paper_trail
+  has_paper_trail :ignore => [:created_at, :updated_at]
   
   validates_presence_of :date, :raw_cost, :contract
   

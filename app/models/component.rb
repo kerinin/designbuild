@@ -2,7 +2,7 @@ class Component < ActiveRecord::Base
   include AddOrNil
   include MarksUp
   
-  has_paper_trail :ignore => [:position]
+  has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_ancestry
   
   belongs_to :project

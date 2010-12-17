@@ -1,7 +1,7 @@
 class Project < ActiveRecord::Base
   include AddOrNil
   
-  has_paper_trail
+  has_paper_trail :ignore => [:created_at, :updated_at]
   
   has_many :components, :order => :position, :dependent => :destroy
   has_many :tasks, :order => :name, :dependent => :destroy

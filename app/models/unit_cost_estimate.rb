@@ -1,7 +1,7 @@
 class UnitCostEstimate < ActiveRecord::Base
   include MarksUp
   
-  has_paper_trail
+  has_paper_trail :ignore => [:created_at, :updated_at]
   has_invoices
   
   belongs_to :component

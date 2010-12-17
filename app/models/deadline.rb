@@ -1,5 +1,5 @@
 class Deadline < ActiveRecord::Base
-  has_paper_trail
+  has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :project
   belongs_to :parent_deadline, :class_name => "Deadline"
