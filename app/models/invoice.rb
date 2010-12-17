@@ -74,7 +74,7 @@ class Invoice < ActiveRecord::Base
   end
   
   def unbalanced_payments?
-    !self.project.payments.where(:state => :costs_unbalanced).empty?
+    !self.project.payments.where(:state => 'unbalanced').empty?
   end
   
   protected

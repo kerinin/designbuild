@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
       @project = Factory :project
@@ -27,7 +26,6 @@ class InvoiceTest < ActiveSupport::TestCase
         :labor_retainage => 1000000,
         :material_retainage => 10000000
       )
-
     end
     
     should "be valid" do
@@ -194,7 +192,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'retainage_expected', @obj.state
     end
   end
-=end 
+
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
@@ -227,7 +225,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'new', @obj.reload.state
     end
    
-    should "populate line items when -> date_specified" do
+    should "populate line items when -> retainage_expected" do
       @obj.update_attributes :date => Date::today
       
       costs = @obj.lines.map{|l| l.cost}
