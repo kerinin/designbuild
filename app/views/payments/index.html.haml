@@ -1,20 +1,6 @@
 %h1 Listing payments
 
-%table
-  %tr
-    %th Date
-    %th Paid
-    %th
-    %th
-    %th
-
-  - @payments.each do |payment|
-    %tr
-      %td= payment.date
-      %td= payment.paid
-      %td= link_to 'Show', payment
-      %td= link_to 'Edit', edit_payment_path(payment)
-      %td= link_to 'Destroy', payment, :confirm => 'Are you sure?', :method => :delete
+=render :partial => 'payment_list'
 
 %br
 

@@ -74,6 +74,7 @@ Designbuild::Application.routes.draw do
       get :labor_summary, :as => :labor_summary_for
       get :payroll_summary, :as => :payroll_summary_for
       get :material_cost_summary, :as => :material_cost_summary_for
+      get :invoicing
     end
     
     collection do

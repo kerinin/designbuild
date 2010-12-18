@@ -43,17 +43,17 @@ class InvoiceLine < ActiveRecord::Base
   def set_defaults
     if self.cost.instance_of? Contract
       if self.invoice.project.fixed_bid
-        labor_cost = 0.5 * self.cost.percent_complete_float * self.cost.estimated_cost
-        material_cost = 0.5 * self.cost.percent_complete_float * self.cost.estimated_cost
+        labor_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
+        material_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
       else
-        labor_cost = 0.5 * self.cost.cost
-        material_cost = 0.5 * self.cost.cost
+        labor_cost = multiply_or_nil 0.5, self.cost.cost
+        material_cost = multiply_or_nil 0.5, self.cost.cost
       end
     else
       if self.invoice.project.fixed_bid
         # determine % of estimated
-        labor_cost = self.cost.labor_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost
-        material_cost = self.cost.material_percent_float * self.cost.percent_complete_float * self.cost.estimated_cost
+        labor_cost = multiply_or_nil self.cost.labor_percent_float * self.cost.percent_complete_float, self.cost.estimated_cost
+        material_cost = multiply_or_nil self.cost.material_percent_float * self.cost.percent_complete_float, self.cost.estimated_cost
       else
         # determine costs
         labor_cost = self.cost.labor_cost

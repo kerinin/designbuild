@@ -11,12 +11,16 @@
 
 =render :partial => 'steps', :locals => {:current => :balance}
 
-=form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
-  =render :partial => 'payment_lines/lines', :locals => {:lines => @payment.lines, :payment_form => payment_form}
-  
 -if @payment.state == 'unbalanced'
   / Unbalanced
-  .alert
+  .notice
     %h2 Your payment isn't balanced - make sure the line items add up to the total payment
 -else
   / Balanced
+  
+=form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
+  =render :partial => 'payment_lines/lines', :locals => {:lines => @payment.lines, :payment_form => payment_form}
+  = payment_form.submit 'Save Changes'
+
+=form_tag accept_payment_path(@payment), :method => :get do 
+  =submit_tag 'Next Step'
