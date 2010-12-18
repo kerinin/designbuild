@@ -1,0 +1,29 @@
+%h2.steps
+  Steps:
+  
+  %ul
+    %li.step
+      -if current == :start
+        %span.emphasize Start
+      -else
+        =link_to 'Start', start_payment_path( @payment)
+        
+    %li.step >
+    
+    %li.step
+      -if current == :balance
+        %span.emphasize Balance Line Items
+      -elsif @payment.state == 'complete'
+        =link_to 'Balance Line Items', balance_payment_path(@payment)
+      -else
+        Balance Line Items
+      
+    %li.step >
+    
+    %li.step
+      -if current == :finished
+        %span.emphasize Finished
+      -elsif @payment.state == 'complete'
+        =link_to 'Finished', finished_payment_path(@payment)
+      -else
+        Finished

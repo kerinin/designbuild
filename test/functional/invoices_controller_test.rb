@@ -187,8 +187,9 @@ class InvoicesControllerTest < ActionController::TestCase
     end
      
     # Finished
-    should "get finished" do
-      get :finished, :id => @invoice.to_param
+    should "get finished in state new" do
+      get :finished, :id => @new_invoice.to_param
+      assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
     should "get finished in state missing_task" do

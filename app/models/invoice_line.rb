@@ -8,7 +8,7 @@ class InvoiceLine < ActiveRecord::Base
   validates_associated :invoice
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
-  after_update Proc.new {|invline| invline.invoice.save! }
+  after_update Proc.new {|invline| invline.invoice.reload.save! }
   
   def invoiced
     self.labor_invoiced + self.material_invoiced

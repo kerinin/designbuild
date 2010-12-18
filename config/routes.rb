@@ -18,6 +18,10 @@ Designbuild::Application.routes.draw do
     resources :payment_lines, :as => :line_items
     
     member do
+      get :start
+      get :balance
+      get :finished
+      
       get :accept
     end
   end
@@ -49,6 +53,7 @@ Designbuild::Application.routes.draw do
     resources :deadlines    # re-nested
     
     resources :invoices     # re-nested
+    resources :payments     # re-nested
     
     member do
       post :add_markup, :as => :add_markup_to

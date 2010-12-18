@@ -112,7 +112,7 @@ class InvoicesController < ApplicationController
       format.xml  { render :xml => @invoice }
     end
   end
-=end
+
 
   # GET /invoices/new
   # GET /invoices/new.xml
@@ -124,6 +124,7 @@ class InvoicesController < ApplicationController
       format.xml  { render :xml => @invoice }
     end
   end
+=end
 
   # GET /invoices/1/edit
   def edit

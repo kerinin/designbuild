@@ -86,6 +86,6 @@ class Invoice < ActiveRecord::Base
       component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
     end
     
-    self.project.contracts.scoped.without_component.each {|c| self.lines.create!(:cost => c) }
+    self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
   end
 end
