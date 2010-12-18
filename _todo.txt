@@ -1,5 +1,3 @@
-InvoiceCollectorTest
-
 + projected costs
 + active tasks
 + inherited quantities

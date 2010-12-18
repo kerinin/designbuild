@@ -83,12 +83,12 @@ class ComponentTest < ActiveSupport::TestCase
     end
 
     should_eventually "aggregate invoiced with cutoff" do
-      assert_equal nil, @c_inv.invoiced_before(Date::today - 5)
-      assert_equal nil, @c.invoiced_before(Date::today - 5)
+      assert_equal 0, @c_inv.invoiced_before(Date::today - 5)
+      assert_equal 0, @c.invoiced_before(Date::today - 5)
       
-      assert_equal nil, @obj.labor_invoiced_before(Date::today - 5)
-      assert_equal nil, @obj.material_invoiced_before(Date::today - 5)
-      assert_equal nil, @obj.invoiced_before(Date::today - 5)
+      assert_equal 0, @obj.labor_invoiced_before(Date::today - 5)
+      assert_equal 0, @obj.material_invoiced_before(Date::today - 5)
+      assert_equal 0, @obj.invoiced_before(Date::today - 5)
     end
     
     should "aggregate retainage" do
@@ -98,9 +98,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
 
     should "aggregate retainage with cutoff" do
-      assert_equal nil, @obj.labor_retainage_before(Date::today - 5)
-      assert_equal nil, @obj.material_retainage_before(Date::today - 5)
-      assert_equal nil, @obj.retainage_before(Date::today - 5)
+      assert_equal 0, @obj.labor_retainage_before(Date::today - 5)
+      assert_equal 0, @obj.material_retainage_before(Date::today - 5)
+      assert_equal 0, @obj.retainage_before(Date::today - 5)
     end
             
     should "aggregate paid" do
@@ -110,9 +110,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
 
     should "aggregate paid with cutoff" do
-      assert_equal nil, @obj.labor_paid_before(Date::today - 5)
-      assert_equal nil, @obj.material_paid_before(Date::today - 5)
-      assert_equal nil, @obj.paid_before(Date::today - 5)
+      assert_equal 0, @obj.labor_paid_before(Date::today - 5)
+      assert_equal 0, @obj.material_paid_before(Date::today - 5)
+      assert_equal 0, @obj.paid_before(Date::today - 5)
     end
     
     should "aggregate retained" do
@@ -122,9 +122,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
     
     should "aggregate retained with cutoff" do
-      assert_equal nil, @obj.labor_retained_before(Date::today - 5)
-      assert_equal nil, @obj.material_retained_before(Date::today - 5)
-      assert_equal nil, @obj.retained_before(Date::today - 5)
+      assert_equal 0, @obj.labor_retained_before(Date::today - 5)
+      assert_equal 0, @obj.material_retained_before(Date::today - 5)
+      assert_equal 0, @obj.retained_before(Date::today - 5)
     end
   end
 end
