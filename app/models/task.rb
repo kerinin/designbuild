@@ -211,7 +211,8 @@ class Task < ActiveRecord::Base
   
   
   def update_invoicing_state
-    self.project.invoices.each {|i| i.save}
+    self.project.invoices.each {|i| i.save!}
+    self.project.payments.each {|i| i.save!}
   end
      
         

@@ -28,6 +28,8 @@ class PaymentTest < ActiveSupport::TestCase
         :labor_retained => 1000000,
         :material_retained => 10000000
       )
+      
+      [@project, @component, @fc, @obj, @line1, @line2].each {|i| i.reload}
     end
     
     should "be valid" do
@@ -59,20 +61,12 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal 100010, @obj.material_paid
     end
     
-    should "aggregate paid" do
-      assert_equal 110011, @obj.paid
-    end
-    
     should "aggregate labor retained" do
       assert_equal 1000100, @obj.labor_retained
     end
     
     should "aggregate material retained" do
       assert_equal 10001000, @obj.material_retained
-    end
-    
-    should "aggregate retained" do
-      assert_equal 11001100, @obj.retained
     end
     
     should_eventually "determine payment balanced" do
@@ -99,7 +93,7 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal [], @obj.lines
     end
    
-    should "missing_task -> balanced after task assigned" do
+    should "missing_task -> unbalanced after task assigned" do
       @task = Factory :task, :project => @project
       @mc = Factory :material_cost, :task => @task, :raw_cost => 100
       @obj = Factory :payment, :project => @project
@@ -109,7 +103,9 @@ class PaymentTest < ActiveSupport::TestCase
       
       @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
 
-      assert_equal 'balanced', @obj.reload.state
+      assert_equal false, @obj.reload.missing_tasks?
+      
+      assert_equal 'unbalanced', @obj.reload.state
     end
   end
 
@@ -158,7 +154,8 @@ class PaymentTest < ActiveSupport::TestCase
     end
            
     should "populate line items when -> balanced" do
-      @obj.update_attributes :date => Date::today, :paid => 100, :retained => 100
+      @obj.update_attributes :date => Date::today, :paid => 0, :retained => 0
+      assert_equal 'balanced', @obj.reload.state
       
       costs = @obj.lines.map{|l| l.cost}
       assert_contains costs, @fc
@@ -168,18 +165,33 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal 3, @obj.reload.lines.count
     end
 
-    should "new -> balanced" do
+    should "populate line items when -> unbalanced" do
       @obj.update_attributes :date => Date::today, :paid => 100, :retained => 100
+      assert_equal 'unbalanced', @obj.reload.state
       
-      # auto-generates with correct retainage
+      costs = @obj.lines.map{|l| l.cost}
+      assert_contains costs, @fc
+      assert_contains costs, @uc
+      assert_contains costs, @c
+      
+      assert_equal 3, @obj.reload.lines.count
+    end
+    
+    should "new -> balanced" do
+      @obj.update_attributes :date => Date::today, :paid => 0, :retained => 0
 
       assert_equal 'balanced', @obj.reload.state
     end
-       
-    should "balanced -> unbalanced if unbalanced" do
+
+    should "new -> unbalanced" do
       @obj.update_attributes :date => Date::today, :paid => 100, :retained => 100
+
+      assert_equal 'unbalanced', @obj.reload.state
+    end
+           
+    should "balanced -> unbalanced if unbalanced" do
+      @obj.update_attributes :date => Date::today, :paid => 0, :retained => 0
       
-      # auto-generates with correct retainage
       assert_equal 'balanced', @obj.reload.state
       
       # screw them up
@@ -189,9 +201,8 @@ class PaymentTest < ActiveSupport::TestCase
     end
 
     should "unbalanced -> balanced after balancing" do
-      @obj.update_attributes :date => Date::today, :paid => 900, :retained => 900
+      @obj.update_attributes :date => Date::today, :paid => 0, :retained => 0
       
-      # auto-generates with correct retainage
       assert_equal 'balanced', @obj.reload.state
       
       # screw them up
@@ -200,13 +211,13 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal 'unbalanced', @obj.reload.state
       
       # fix them 
-      @obj.reload.lines.each {|l| l.update_attributes :labor_paid => 150, :labor_retained => 150, :material_invoiced => 150, :material_retainage => 150 }
+      @obj.reload.lines.each {|l| l.update_attributes :labor_paid => 0, :labor_retained => 0, :material_paid => 0, :material_retained => 0 }
       
       assert_equal 'balanced', @obj.reload.state
     end
     
     should "balanced -> complete" do
-      @obj.update_attributes :date => Date::today, :paid => 900, :retained => 900
+      @obj.update_attributes :date => Date::today, :paid => 0, :retained => 0
 
       @obj.accept_payment
       
@@ -217,7 +228,7 @@ class PaymentTest < ActiveSupport::TestCase
       @obj.update_attributes :date => Date::today, :paid => 900, :retained => 900
       
       @obj.reload.lines.each {|l| l.update_attributes :labor_paid => 1230984}
-      @obj.accept_costs
+      @obj.accept_payment
       
       assert_equal 'unbalanced', @obj.reload.state
     end

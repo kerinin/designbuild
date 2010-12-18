@@ -47,7 +47,7 @@ class FixedCostEstimate < ActiveRecord::Base
   [:labor_cost, :material_cost].each do |sym|
     self.send(:define_method, sym) do
       if self.task.blank? || self.task.send(sym).nil? || self.estimated_cost.nil? 
-        nil
+        0
       else
         task_cost = self.task.send(sym)
         my_share = case
@@ -68,7 +68,7 @@ class FixedCostEstimate < ActiveRecord::Base
     self.send(:define_method, sym) do |date|
       date ||= Date::today
       if self.task.blank? || self.task.send(sym, date).nil? || self.estimated_cost.nil?
-        nil
+        0
       else
         task_cost = self.task.send(sym, date)
         my_share = case

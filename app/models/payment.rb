@@ -6,6 +6,8 @@ class Payment < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   validates_presence_of :project
+  validates_numericality_of :paid, :if => :paid?
+  validates_numericality_of :retained, :if => :retained?
   
   before_update Proc.new{|i| i.advance; true}
   
@@ -27,15 +29,16 @@ class Payment < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition [:new, :missing_task] => :retainage_expected, :do => :populate_lines
+    before_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
     
     # Events
     event :advance do
-      transition :new => :missing_task, :if => Proc.new{|p| p.date? && p.paid? && p.retained? && inv.missing_tasks? }
+      transition :new => :missing_task, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && p.missing_tasks? }
       
-      transition :missing_task => :balanced, :if => Proc.new{|p| p.date? && p.paid? && p.retained? && !p.missing_tasks? }
+      transition :missing_task => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? }
       
-      transition :new => :balanced, :if => Proc.new{|p| p.date? && p.paid? && p.retained? && !p.missing_tasks? }
+      transition :new => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && p.balances? }
+      transition :new => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && !p.balances?}
       
       transition :unbalanced => :balanced, :if => :balances?
       transition :balanced => :unbalanced, :unless => :balances?    
@@ -46,6 +49,12 @@ class Payment < ActiveRecord::Base
     end
   end
   
+  [:labor_paid, :material_paid, :labor_retained, :material_retained].each do |sym|
+    self.send(:define_method, sym) do
+      self.lines.inject(0) {|memo,obj| memo + obj.send(sym)}
+    end
+  end
+  
   def missing_tasks?
     self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
       task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
@@ -53,7 +62,12 @@ class Payment < ActiveRecord::Base
   end
   
   def balances?
-    false
+    return false if self.paid.nil? || self.retained.nil?
+    
+    paid_sum = self.labor_paid + self.material_paid
+    ret_sum = self.labor_retained + self.material_retained
+    
+    paid_sum.round_to(2) == self.paid.round_to(2) && ret_sum.round_to(2) == self.retained.round_to(2)
   end
   
   protected
