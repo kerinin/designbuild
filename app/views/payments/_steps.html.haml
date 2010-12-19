@@ -13,7 +13,7 @@
     %li.step
       -if current == :balance
         %span.emphasize Balance Line Items
-      -elsif @payment.state == 'complete'
+      -elsif ['balanced', 'unbalanced', 'complete'].include? @payment.state
         =link_to 'Balance Line Items', balance_payment_path(@payment)
       -else
         Balance Line Items

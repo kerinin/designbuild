@@ -13,7 +13,7 @@
     %li.step
       -if current == :set_amounts
         %span.emphasize Set Invoice Amounts
-      -elsif ['costs_specified', 'complete'].include? @invoice.state
+      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'complete'].include? @invoice.state
         =link_to 'Set Invoice Amounts', set_amounts_invoice_path(@invoice)
       -else
         Set Invoice Amounts
