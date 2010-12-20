@@ -10,7 +10,7 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :retained, :if => :retained?
   
   before_update Proc.new{|i| i.advance; true}
-  after_save :update_invoices
+  before_save :update_invoices
   
   state_machine :state, :initial => :new do
     # States
@@ -72,7 +72,7 @@ class Payment < ActiveRecord::Base
     paid_sum.round_to(2) == self.paid.round_to(2) && ret_sum.round_to(2) == self.retained.round_to(2)
   end
   
-  protected
+  #protected
   
   def populate_lines
     self.project.components.each do |component|
@@ -82,10 +82,12 @@ class Payment < ActiveRecord::Base
     end
     
     self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults }
+    true
   end
   
   def update_invoices
-    puts "updating #{self.project.reload.invoices.count} invoices"
-    self.project.invoices.each {|i| i.save!}
+    # Reload (probably) required
+    self.project.reload.invoices.each {|i| i.save!}
+    true
   end
 end

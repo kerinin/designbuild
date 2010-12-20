@@ -8,7 +8,7 @@ class PaymentLine < ActiveRecord::Base
   validates_associated :payment
   validates_numericality_of :labor_paid, :material_paid, :labor_retained, :material_retained
   
-  after_save Proc.new {|payline| payline.payment.reload.save! }
+  after_save Proc.new {|payline| payline.payment.save!; true }
   
   def paid
     self.labor_paid + self.material_paid

@@ -9,7 +9,7 @@ class << ActiveRecord::Base
 
     [:invoiced, :retainage, :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage].each do |sym|
       self.send(:define_method, sym) do
-        self.invoice_lines.includes(:invoice).inject(0) {|memo,obj| memo + obj.send(sym)}
+        self.invoice_lines.inject(0) {|memo,obj| memo + obj.send(sym)}
       end
     end
 

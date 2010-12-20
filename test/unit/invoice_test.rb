@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin 
+ 
   context "An Invoice" do
     setup do
       @project = Factory :project
@@ -78,7 +78,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 11001100, @obj.retainage
     end
   end
-=end
+
   context "state machine validation" do
     setup do
       @project = Factory :project
@@ -141,9 +141,8 @@ class InvoiceTest < ActiveSupport::TestCase
       #assert_equal false, @project.payments.empty?
       #assert_equal true, @obj.unbalanced_payments?
       
-      assert_equal 'payments_unbalanced', @obj.state    
+      assert_equal 'payments_unbalanced', @obj.reload.state    
     
-      puts "adding lines"
       @payment.lines = [
         Factory( :payment_line,
         :payment => @payment,
@@ -154,18 +153,24 @@ class InvoiceTest < ActiveSupport::TestCase
         :material_retained => 10
       ) ]
       
-      assert @payment.balances?
-      assert_equal 1, @obj.project.payments.count
-      assert_contains @obj.project.payments, @payment
-      assert_equal 1, @payment.lines.count
-      assert_equal false, @obj.unbalanced_payments?
+      #assert @payment.balances?
+      #assert_equal 1, @obj.project.payments.count
+      #assert_contains @obj.project.payments, @payment
+      #assert_equal 1, @payment.lines.count
+      #assert_equal false, @obj.unbalanced_payments?
+      #assert_contains @payment.project.reload.invoices, @obj
       #@obj.save
-      @payment.save
+      #@payment.project.reload.invoices.each {|i| i.save!}
+      #@payment.update_invoices
+      #@payment.save
+      #@payment.lines.first.save
+      
+      #@payment.save
       # NOTE: explicitly saving passes
       # invoice.save being called after line added (see puts)
       # Not sure why this isn't working
       
-      assert_equal 'retainage_expected', @obj.state
+      assert_equal 'retainage_expected', @obj.reload.state
     end
      
     should "new -> missing_task if tasks missing and payments unbalanced" do
@@ -189,12 +194,12 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj = Factory :invoice, :project => @project
       @obj.update_attributes :date => Date::today
       
-      assert_equal 'missing_task', @obj.state
+      assert_equal 'missing_task', @obj.reload.state
       
       @fc.task = @task
       @fc.save
       
-      assert_equal 'payments_unbalanced', @obj.state
+      assert_equal 'payments_unbalanced', @obj.reload.state
       
       @payment.lines = [
         Factory( :payment_line,
@@ -206,10 +211,10 @@ class InvoiceTest < ActiveSupport::TestCase
         :material_retained => 10
       ) ]
       
-      assert_equal 'retainage_expected', @obj.state
+      assert_equal 'retainage_expected', @obj.reload.state
     end
   end
-=begin
+
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
@@ -321,5 +326,4 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'complete', @obj.reload.state
     end
   end
-=end
 end
