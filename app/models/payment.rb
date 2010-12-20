@@ -10,6 +10,7 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :retained, :if => :retained?
   
   before_update Proc.new{|i| i.advance; true}
+  after_save :update_invoices
   
   state_machine :state, :initial => :new do
     # States
@@ -30,6 +31,7 @@ class Payment < ActiveRecord::Base
     end
     
     before_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
+    after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => Proc.new{|p| p.lines.each {|l| l.save!} }
     
     # Events
     event :advance do
@@ -74,11 +76,16 @@ class Payment < ActiveRecord::Base
   
   def populate_lines
     self.project.components.each do |component|
-      component.unit_cost_estimates.assigned.each {|uc| line = self.lines.build(:cost => uc); line.set_defaults; line.save! }
-      component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.build(:cost => fc); line.set_defaults; line.save! }
-      component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
+      component.unit_cost_estimates.assigned.each {|uc| line = self.lines.build(:cost => uc); line.set_defaults }
+      component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.build(:cost => fc); line.set_defaults }
+      component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults }
     end
     
-    self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
+    self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults }
+  end
+  
+  def update_invoices
+    puts "updating #{self.project.reload.invoices.count} invoices"
+    self.project.invoices.each {|i| i.save!}
   end
 end

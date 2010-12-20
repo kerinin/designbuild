@@ -41,12 +41,12 @@ class Invoice < ActiveRecord::Base
       transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :missing_tasks?
       
       transition :missing_task => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :missing_tasks?
-      transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      #transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
-      transition :new => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
-      transition [:date_set, :retainage_unexpected] => :retainage_expected, :if => :retainage_as_expected?
-      transition [:date_set, :retainage_expected] => :retainage_unexpected, :unless => :retainage_as_expected?    
+      transition :retainage_unexpected => :retainage_expected, :if => :retainage_as_expected?
+      transition :retainage_expected => :retainage_unexpected, :unless => :retainage_as_expected?    
       
       transition :costs_specified => :complete, :if => :template?
     end
@@ -74,7 +74,9 @@ class Invoice < ActiveRecord::Base
   end
   
   def unbalanced_payments?
-    !self.project.payments.where(:state => 'unbalanced').empty?
+    # Reload required!
+    return false if self.project.reload.payments.empty?
+    self.project.reload.payments.map{|p| p.balances?}.include?( false )
   end
   
   protected

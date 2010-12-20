@@ -27,17 +27,16 @@
 ++ filtering costs by effective date
 ++ states for tasks w/o estimate
 -- drawing retainage
--- estimates should be estimated_cost, cost
+++ estimates should be estimated_cost, cost
 ++ tasks not reflected in components
 -- invoicing when previous payments not distributed to components
 -- unexpected retainage UI
--- round to cent
+-- round to cent (decimal migration)
 ++ refactor controller to be step-based
--- states for payments that don't balance
--- controller tests
+++ states for payments that don't balance
+++ controller tests
 -- validate uniqueness of invoice date in context of project
-
--- track costs back to estimate
+++ track costs back to estimate
 
 - use awesome_nested_set instead of ancestry
 
@@ -55,6 +54,10 @@
 ++ icons
 ++ explanative text
 ++ table alignment
+
+- performance
+-- sum in DB, not inject
+-- alternate caching strategies (delete on change, generate on demand?)
 
 - project as contract
 - task ordering / sorting
