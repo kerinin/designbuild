@@ -5,8 +5,8 @@ class Contract < ActiveRecord::Base
   has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_invoices
   
-  belongs_to :project
-  belongs_to :component
+  belongs_to :project, :inverse_of => :contracts
+  belongs_to :component, :inverse_of => :contracts
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   
   has_many :tasks, :order => :name

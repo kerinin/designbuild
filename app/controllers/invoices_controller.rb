@@ -112,7 +112,7 @@ class InvoicesController < ApplicationController
       format.xml  { render :xml => @invoice }
     end
   end
-=end
+
 
   # GET /invoices/new
   # GET /invoices/new.xml
@@ -124,6 +124,7 @@ class InvoicesController < ApplicationController
       format.xml  { render :xml => @invoice }
     end
   end
+=end
 
   # GET /invoices/1/edit
   def edit
@@ -154,6 +155,7 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       @invoice.update_attributes(params[:invoice])
+      @invoice.save
       format.html {
         case @invoice.state
         when 'new', 'missing_task', 'payments_unbalanced'

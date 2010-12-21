@@ -1,0 +1,32 @@
+%table
+  %tr
+    %th Date
+    %th.currency Paid
+    %th.currency Retained
+    %th.control
+    %th.control
+
+  - @payments.each do |payment|
+    %tr
+      %td
+        -case payment.state
+        -when 'new'
+          =icon :wrench
+        -when 'missing_task'
+          =icon :error
+        -when 'balanced', 'balanced'
+          =icon :wrench
+        -when 'complete'
+          =icon(:accept)
+        = payment.date.to_s :long
+      %td.currency= number_to_currency payment.paid
+      %td.currency= number_to_currency payment.retained
+      %td.control.show
+        -case payment.state
+        -when 'new', 'missing_task'
+          =link_to 'Edit', start_payment_path( payment)
+        -when 'balanced', 'unbalanced'
+          =link_to 'Edit', balance_payment_path( payment)
+        -when 'complete'
+          =link_to 'Show', finished_payment_path( payment)
+      %td.control.destroy= link_to icon(:delete), payment, :confirm => 'Are you sure?', :method => :delete

@@ -1,6 +1,16 @@
 class ProjectsController < ApplicationController
   autocomplete :task, :name, :full => true
   
+  def invoicing
+    @project = Project.find(params[:id])
+    @invoices = @project.invoices
+    @payments = @project.payments
+    
+    respond_to do |format|
+      format.html
+    end    
+  end
+  
   def timeline
     @project = Project.find(params[:id])
     

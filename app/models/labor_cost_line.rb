@@ -3,8 +3,8 @@ class LaborCostLine < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  belongs_to :labor_set, :class_name => "LaborCost"
-  belongs_to :laborer
+  belongs_to :labor_set, :class_name => "LaborCost", :inverse_of => :line_items
+  belongs_to :laborer, :inverse_of => :labor_cost_lines
   
   has_one :task, :through => :labor_set
   

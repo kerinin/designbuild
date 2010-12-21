@@ -35,24 +35,47 @@
       -@project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{|task| task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty? ? task : nil}.compact.each do |task|
         =link_to task.name, [@project, task]
 
-
+-elsif @invoice.state == 'payments_unbalanced'
+  / Payments Unbalanced
+  .error
+    %h2 Before you can set invoice amounts...
+    
+    %p
+      This project has unbalanced payments.  In order to correctly show
+      the amount paid, these invoices need to be balanced first
+      
+    %p
+      To resolve this, simply edit the unbalanced payments to reflect
+      the correct distribution of the payment
+      
+    %p 
+      This invoice has been saved in its current state; once the payments
+      have been balanced you will be able to continue defining this invoice
+      
+    %h3 The following Payments are unblanced:
+    %p
+      -@project.payments.map{|p| p.balances? ? nil : p}.compact.each do |payment|
+        =link_to payment.date.to_s( :long ), balance_payment_path(payment)
+  
+  
 -else
   / Start
-  =form_for [@project, @invoice] do |f|
-    -if @invoice.errors.any?
-      #error_explanation
-        %h2= "#{pluralize(@invoice.errors.count, "error")} prohibited this labor_cost from being saved:"
-        %ul
-          - @invoice.errors.full_messages.each do |msg|
-            %li= msg
 
-    .field
-    = f.label :name
-    = f.text_field :name
-                
-    .field
-    = f.label :date
-    = f.date_select :date
-    
-    .field
-    = f.submit 'Next'
+=form_for [@project, @invoice] do |f|
+  -if @invoice.errors.any?
+    #error_explanation
+      %h2= "#{pluralize(@invoice.errors.count, "error")} prohibited this labor_cost from being saved:"
+      %ul
+        - @invoice.errors.full_messages.each do |msg|
+          %li= msg
+
+  .field
+  = f.label :name
+  = f.text_field :name
+              
+  .field
+  = f.label :date
+  = f.date_select :date
+  
+  .field
+  = f.submit 'Next'

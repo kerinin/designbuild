@@ -1,0 +1,26 @@
+-content_for :head do
+  =javascript_include_tag "jquery.dimscreen.js"
+
+=render :partial => 'shared/project_nav'
+
+%h1
+  Payment:
+  =@payment.date
+
+%hr
+
+=render :partial => 'steps', :locals => {:current => :balance}
+
+-if @payment.state == 'unbalanced'
+  / Unbalanced
+  .notice
+    %h2 Your payment isn't balanced - make sure the line items add up to the total payment
+-else
+  / Balanced
+  
+=form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
+  =render :partial => 'payment_lines/lines', :locals => {:lines => @payment.lines, :payment_form => payment_form}
+  = payment_form.submit 'Save Changes'
+
+=form_tag accept_payment_path(@payment), :method => :get do 
+  =submit_tag 'Next Step'

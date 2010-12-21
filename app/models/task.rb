@@ -4,9 +4,9 @@ class Task < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  belongs_to :contract
-  belongs_to :deadline
-  belongs_to :project
+  belongs_to :contract, :inverse_of => :tasks
+  belongs_to :deadline, :inverse_of => :tasks
+  belongs_to :project, :inverse_of => :tasks
   
   has_many :unit_cost_estimates, :order => :name
   has_many :fixed_cost_estimates, :order => :name
@@ -211,7 +211,8 @@ class Task < ActiveRecord::Base
   
   
   def update_invoicing_state
-    self.project.invoices.each {|i| i.save}
+    self.project.invoices.each {|i| i.save!}
+    self.project.payments.each {|i| i.save!}
   end
      
         
