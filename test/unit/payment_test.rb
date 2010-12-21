@@ -3,8 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 #NOTE:  add retained to factory calls
 
 class PaymentTest < ActiveSupport::TestCase
-=begin
-  context "An Payment" do
+  context "A Payment" do
     setup do  
       @project = Factory :project
       @component = Factory :component, :project => @project
@@ -109,7 +108,7 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal 'unbalanced', @obj.reload.state
     end
   end
-=end
+
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20

@@ -35,7 +35,7 @@ class PaymentsControllerTest < ActionController::TestCase
       @balanced_line = @balanced_payment.lines.first
       
       @complete_payment = Factory :payment, :project => @project1
-      @complete_payment.update_attributes(:date => Date::today, :paid => 110, :retained => 0)
+      @complete_payment.update_attributes(:date => Date::today, :paid => 0, :retained => 0)
       @complete_payment.accept_payment
 
       @unbalanced_payment = Factory :payment, :project => @project1
@@ -243,6 +243,7 @@ class PaymentsControllerTest < ActionController::TestCase
 
       assert_redirected_to project_payments_path(@project1)
     end
+
   end
 end
 
