@@ -28,7 +28,7 @@ class InvoiceTest < ActiveSupport::TestCase
         :material_retainage => 10000000
       )
     end
-   
+  
     should "be valid" do
       assert @obj.valid?
     end
@@ -123,7 +123,7 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'payments_unbalanced', @obj.state
     end
-    
+  
     should "payments_unbalanced -> retainage_expected after payments balanced" do
       @task = Factory :task, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
@@ -152,13 +152,14 @@ class InvoiceTest < ActiveSupport::TestCase
         :labor_retained => 90,
         :material_retained => 10
       ) ]
+      #@payment.save
       
-      #assert @payment.balances?
-      #assert_equal 1, @obj.project.payments.count
-      #assert_contains @obj.project.payments, @payment
-      #assert_equal 1, @payment.lines.count
-      #assert_equal false, @obj.unbalanced_payments?
-      #assert_contains @payment.project.reload.invoices, @obj
+      assert @payment.balances?
+      assert_equal 1, @obj.project.payments.count
+      assert_contains @obj.project.payments, @payment
+      assert_equal 1, @payment.lines.count
+      assert_equal false, @obj.unbalanced_payments?
+      assert_contains @payment.project.reload.invoices, @obj
       #@obj.save
       #@payment.project.reload.invoices.each {|i| i.save!}
       #@payment.update_invoices

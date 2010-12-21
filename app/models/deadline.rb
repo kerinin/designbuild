@@ -1,8 +1,8 @@
 class Deadline < ActiveRecord::Base
   has_paper_trail
   
-  belongs_to :project
-  belongs_to :parent_deadline, :class_name => "Deadline"
+  belongs_to :project, :inverse_of => :deadlines
+  belongs_to :parent_deadline, :class_name => "Deadline", :inverse_of => :relative_deadlines
   
   has_many :tasks
   has_many :relative_deadlines, :class_name => 'Deadline', :foreign_key => :parent_deadline_id, :dependent => :destroy

@@ -61,7 +61,7 @@ class PaymentLineTest < ActiveSupport::TestCase
       [@project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_payment].each {|i| i.reload}
 
       @payment = Factory :payment, :project => @project
-      @obj = Factory :payment_line, :payment => @payment, :cost => @fce4, :labor_paid => nil, :labor_retained => nil, :material_paid => nil, :material_retained => nil
+      @obj = Factory :payment_line, :payment => @payment, :cost => @fce4, :labor_paid => 0, :labor_retained => 0, :material_paid => 0, :material_retained => 0
       
       [@obj, @project, @component, @contract, @bid, @task1, @lc1, @task2, @lc2, @task3, @task4, @fce4, @lc3, @mc2, @p_line, @p_payment, @payment].each {|i| i.reload}
     end
@@ -83,12 +83,16 @@ class PaymentLineTest < ActiveSupport::TestCase
     end
       
     should "default to outstanding paid" do
+      @obj.set_defaults
+      
       assert_equal @fce4.labor_invoiced - @p_line.labor_paid, @obj.labor_paid
       assert_equal @fce4.material_invoiced - @p_line.material_paid, @obj.material_paid
       assert_equal @obj.labor_paid + @obj.material_paid, @obj.paid
     end
     
     should "default to outstanding retained" do
+      @obj.set_defaults
+      
       assert_equal @fce4.labor_retainage - @p_line.labor_retained, @obj.labor_retained
       assert_equal @fce4.material_retainage - @p_line.material_retained, @obj.material_retained
       assert_equal @obj.labor_retained + @obj.material_retained, @obj.retained

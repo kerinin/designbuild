@@ -1,7 +1,7 @@
 class Payment < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :project, :inverse_of => :payments
   
-  has_many :lines, :class_name => 'PaymentLine'
+  has_many :lines, :class_name => 'PaymentLine', :after_add => :update_invoices, :after_remove => :update_invoices
   
   accepts_nested_attributes_for :lines
   
@@ -10,7 +10,7 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :retained, :if => :retained?
   
   before_update Proc.new{|i| i.advance; true}
-  before_save :update_invoices
+  after_save :update_invoices
   
   state_machine :state, :initial => :new do
     # States
@@ -30,8 +30,8 @@ class Payment < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
-    after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => Proc.new{|p| p.lines.each {|l| l.save!} }
+    after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
+    #after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => Proc.new{|p| p.lines.each {|l| l.save!} }
     
     # Events
     event :advance do
@@ -53,12 +53,12 @@ class Payment < ActiveRecord::Base
   
   [:labor_paid, :material_paid, :labor_retained, :material_retained].each do |sym|
     self.send(:define_method, sym) do
-      self.lines.inject(0) {|memo,obj| memo + obj.send(sym)}
+      self.lines(true).inject(0) {|memo,obj| memo + obj.send(sym)}
     end
   end
   
   def missing_tasks?
-    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    self.project.tasks(true).where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
       task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
     }.include?( true ) 
   end
@@ -76,18 +76,23 @@ class Payment < ActiveRecord::Base
   
   def populate_lines
     self.project.components.each do |component|
-      component.unit_cost_estimates.assigned.each {|uc| line = self.lines.build(:cost => uc); line.set_defaults }
-      component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.build(:cost => fc); line.set_defaults }
-      component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults }
+      [component.unit_cost_estimates.assigned, component.fixed_cost_estimates.assigned, component.contracts].each do |association|
+        association.all.each do |c|
+          line = PaymentLine.new(:payment => self, :cost => c)
+          line.set_defaults
+          self.lines << line
+          #line = self.lines.build(:cost => c)
+        end
+      end
     end
     
-    self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults }
+    self.project.contracts.scoped.without_component.each {|c| line = PaymentLine(:payment => self, :cost => c); self.lines << line; line.set_defaults }
     true
   end
   
-  def update_invoices
+  def update_invoices(*args)
     # Reload (probably) required
-    self.project.reload.invoices.each {|i| i.save!}
+    self.project(true).invoices.each {|i| i.save! }
     true
   end
 end

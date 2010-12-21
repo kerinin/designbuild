@@ -4,8 +4,8 @@ require 'has_invoices/class_methods'
 class << ActiveRecord::Base
   def has_invoices options = {}
     
-    has_many :invoice_lines, :as => :cost
-    has_many :payment_lines, :as => :cost
+    has_many :invoice_lines, :as => :cost, :class_name => "InvoiceLine"
+    has_many :payment_lines, :as => :cost, :class_name => "PaymentLine"
 
     [:invoiced, :retainage, :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage].each do |sym|
       self.send(:define_method, sym) do

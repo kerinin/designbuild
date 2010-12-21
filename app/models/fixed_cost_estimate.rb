@@ -4,8 +4,8 @@ class FixedCostEstimate < ActiveRecord::Base
   has_paper_trail
   has_invoices
   
-  belongs_to :component
-  belongs_to :task
+  belongs_to :component, :inverse_of => :fixed_cost_estimates
+  belongs_to :task, :inverse_of => :fixed_cost_estimates
   
   validates_presence_of :name, :raw_cost, :component
   

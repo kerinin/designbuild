@@ -1,5 +1,5 @@
 class Invoice < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :project, :inverse_of => :invoices
   
   has_many :lines, :class_name => 'InvoiceLine'
   
@@ -63,26 +63,26 @@ class Invoice < ActiveRecord::Base
   end
   
   def retainage_as_expected?
-    self.lines.each {|l| return false unless l.retainage_as_expected? }
+    self.lines(true).each {|l| return false unless l.retainage_as_expected? }
     true
   end
   
   def missing_tasks?
-    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    self.project(true).tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
       task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
     }.include?( true ) 
   end
   
   def unbalanced_payments?
     # Reload required!
-    return false if self.project.reload.payments.empty?
-    self.project.reload.payments.map{|p| p.balances?}.include?( false )
+    return false if self.project(true).payments.empty?
+    self.project(true).payments.map{|p| p.balances?}.include?( false )
   end
   
   protected
   
   def populate_lines
-    self.project.components.each do |component|
+    self.project(true).components.each do |component|
       component.unit_cost_estimates.assigned.each {|uc| line = self.lines.build(:cost => uc); line.set_defaults; line.save! }
       component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.build(:cost => fc); line.set_defaults; line.save! }
       component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }

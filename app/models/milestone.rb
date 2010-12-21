@@ -2,7 +2,7 @@ class Milestone < ActiveRecord::Base
   has_paper_trail
   
   belongs_to :project
-  belongs_to :task
+  belongs_to :task, :inverse_of => :milestones
   belongs_to :parent_date, :polymorphic => true
   
   has_many :relative_milestones, :class_name => 'Milestone', :as => :parent_date, :dependent => :destroy

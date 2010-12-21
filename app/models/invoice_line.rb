@@ -1,7 +1,7 @@
 class InvoiceLine < ActiveRecord::Base
   include AddOrNil
   
-  belongs_to :invoice
+  belongs_to :invoice, :inverse_of => :lines
   belongs_to :cost, :polymorphic => true
   
   validates_presence_of :invoice, :cost

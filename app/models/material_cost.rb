@@ -3,8 +3,8 @@ class MaterialCost < ActiveRecord::Base
   
   has_paper_trail
   
-  belongs_to :task
-  belongs_to :supplier
+  belongs_to :task, :inverse_of => :material_costs
+  belongs_to :supplier, :inverse_of => :material_costs
   
   has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   

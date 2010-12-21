@@ -4,7 +4,7 @@ class LaborCost < ActiveRecord::Base
   
   has_paper_trail
   
-  belongs_to :task
+  belongs_to :task, :inverse_of => :labor_costs
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
   

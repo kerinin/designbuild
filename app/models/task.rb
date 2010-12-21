@@ -4,9 +4,9 @@ class Task < ActiveRecord::Base
   
   has_paper_trail
   
-  belongs_to :contract
-  belongs_to :deadline
-  belongs_to :project
+  belongs_to :contract, :inverse_of => :tasks
+  belongs_to :deadline, :inverse_of => :tasks
+  belongs_to :project, :inverse_of => :tasks
   
   has_many :unit_cost_estimates, :order => :name
   has_many :fixed_cost_estimates, :order => :name

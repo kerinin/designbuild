@@ -5,7 +5,7 @@ class Component < ActiveRecord::Base
   has_paper_trail :ignore => [:position]
   has_ancestry
   
-  belongs_to :project
+  belongs_to :project, :inverse_of => :components
   
   has_many :quantities, :order => :name, :dependent => :destroy
   has_many :fixed_cost_estimates, :order => :name, :dependent => :destroy

@@ -77,7 +77,9 @@ class InvoiceableTest < ActiveSupport::TestCase
             :labor_retainage => 400000,
             :material_retainage => 4000000
           ) }
-                    
+
+          @project.invoices.reset
+
           @payment1 = Factory :payment, :project => @project, :date => Date::today-10
           @payment1.lines = @targets.map { |target|
             Factory( :payment_line,
@@ -100,25 +102,18 @@ class InvoiceableTest < ActiveSupport::TestCase
           ) }
           
           [@project, @component1, @task1, @component2, @task2, @l, @lc, @lcl, @mc, @invoice1, @invoice2, @payment1, @payment2].each {|i| i.reload}
+          
           @obj = @targets.first
-        end
-     
-        teardown do
-          Invoice.delete_all
-          InvoiceLine.delete_all
         end
         
         should "aggregate labor_invoiced" do
-          # This is all fucked up
-          assert_equal 2, @obj.invoice_lines.count
-          
           assert_equal 4004, @obj.labor_invoiced
         end
-=begin        
+      
         should "aggregate labor_invoiced with date cutoff" do
           assert_equal 4, @obj.labor_invoiced_before(Date::today - 5)
         end
-     
+      
         should "aggregate material_invoiced" do
           assert_equal 40040, @obj.material_invoiced
         end
@@ -265,7 +260,7 @@ class InvoiceableTest < ActiveSupport::TestCase
           assert_equal 50, @obj.percent_complete unless @obj.instance_of? Contract
           assert_equal (@obj.cost / @obj.estimated_cost), @obj.percent_complete_float if @obj.instance_of? Contract
         end
-=end
+
       end
     end
   end

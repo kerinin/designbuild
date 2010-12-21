@@ -1,7 +1,7 @@
 class Quantity < ActiveRecord::Base
   has_paper_trail
   
-  belongs_to :component
+  belongs_to :component, :inverse_of => :quantities
   
   has_many :unit_cost_estimates, :dependent => :destroy
   
