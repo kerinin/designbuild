@@ -5,7 +5,7 @@ class InvoiceLine < ActiveRecord::Base
   belongs_to :cost, :polymorphic => true
   
   validates_presence_of :invoice, :cost
-  validates_associated :invoice
+  #validates_associated :invoice
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
   after_update Proc.new {|invline| invline.invoice.reload.save! }

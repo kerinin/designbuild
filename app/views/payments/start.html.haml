@@ -34,7 +34,6 @@
       -@project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{|task| task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty? ? task : nil}.compact.each do |task|
         =link_to task.name, [@project, task]
 
-
 -else
   / Start
 

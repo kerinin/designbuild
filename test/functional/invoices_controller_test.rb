@@ -80,7 +80,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert response.body.include? '<!-- Missing Task -->'
     end
     
-    should_eventually "get start in state payments_unbalanced" do
+    should "get start in state payments_unbalanced" do
       get :start, :id => @payments_unbalanced_invoice.to_param
       assert_response :success
       assert response.body.include? '<!-- Payments Unbalanced -->'
@@ -121,7 +121,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get set_amounts in state payments_unbalanced" do
+    should "get set_amounts in state payments_unbalanced" do
       get :set_amounts, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -161,7 +161,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get select_template in state payments_unbalanced" do
+    should "get select_template in state payments_unbalanced" do
       get :select_template, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -197,7 +197,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get finished in state payments_unbalanced" do
+    should "get finished in state payments_unbalanced" do
       get :finished, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -276,11 +276,11 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
     end
         
-    should_eventually "update payments_unbalanced invoice" do
+    should "update payments_unbalanced invoice" do
       put :update, :project_id => @project1.to_param, :id => @payments_unbalanced_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
     should "update retainage_expected invoice" do
@@ -292,7 +292,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
     end
     
-    should "fail to update retainage_expected invoice" do
+    should_eventually "fail to update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
         :id => @retainage_expected_line.to_param, :labor_invoiced => 'foo', :material_invoiced => 'foo', :labor_retainage => 'foo', :material_retainage => 'foo'
       } } }
