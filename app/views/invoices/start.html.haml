@@ -37,6 +37,25 @@
 
 -elsif @invoice.state == 'payments_unbalanced'
   / Payments Unbalanced
+  .error
+    %h2 Before you can set invoice amounts...
+    
+    %p
+      This project has unbalanced payments.  In order to correctly show
+      the amount paid, these invoices need to be balanced first
+      
+    %p
+      To resolve this, simply edit the unbalanced payments to reflect
+      the correct distribution of the payment
+      
+    %p 
+      This invoice has been saved in its current state; once the payments
+      have been balanced you will be able to continue defining this invoice
+      
+    %h3 The following Payments are unblanced:
+    %p
+      -@project.payments.map{|p| p.balances? ? nil : p}.compact.each do |payment|
+        =link_to payment.date.to_s( :long ), balance_payment_path(payment)
   
   
 -else

@@ -205,6 +205,10 @@ class PaymentsControllerTest < ActionController::TestCase
       
       # Redirects after accept_costs
       assert_redirected_to balance_payment_path(assigns(:payment))
+      assert_equal 1, @balanced_line.reload.labor_paid
+      assert_equal 10, @balanced_line.reload.material_paid
+      assert_equal 100, @balanced_line.reload.labor_retained
+      assert_equal 1000, @balanced_line.reload.material_retained
     end
     
     should "fail to update balanced payment" do
@@ -224,6 +228,10 @@ class PaymentsControllerTest < ActionController::TestCase
       
       # Redirects after accept_costs
       assert_redirected_to balance_payment_path(assigns(:payment))
+      assert_equal 1, @unbalanced_line.reload.labor_paid
+      assert_equal 10, @unbalanced_line.reload.material_paid
+      assert_equal 100, @unbalanced_line.reload.labor_retained
+      assert_equal 1000, @unbalanced_line.reload.material_retained
     end
     
     should "fail to update unbalanced payment" do
