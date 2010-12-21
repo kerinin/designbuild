@@ -37,6 +37,7 @@
 ++ controller tests
 -- validate uniqueness of invoice date in context of project
 ++ track costs back to estimate
+-- contract cost error on new invoice
 
 - use awesome_nested_set instead of ancestry
 

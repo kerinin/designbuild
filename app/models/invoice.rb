@@ -6,7 +6,7 @@ class Invoice < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   validates_presence_of :project
-  validates_associated :lines
+  #validates_associated :lines
   
   before_update Proc.new{|i| i.advance; true}
   

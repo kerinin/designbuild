@@ -66,7 +66,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_equal 'costs_specified', @costs_specified_invoice.state
       assert_equal 'complete', @complete_invoice.state
     end
- 
+=begin 
     # Start
     should "get start in state new" do
       get :start, :id => @new_invoice.to_param
@@ -282,14 +282,18 @@ class InvoicesControllerTest < ActionController::TestCase
       }
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
-    
+=end    
     should "update retainage_expected invoice" do
-      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
-        :id => @retainage_expected_line.to_param, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000
-      } } }
+      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {
+        :line => { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 }
+      } }
       
       # Redirects after accept_costs
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      assert_equal 1, @retainage_expected_line.reload.labor_invoiced
+      assert_equal 10, @retainage_expected_line.reload.material_invoiced
+      assert_equal 100, @retainage_expected_line.reload.labor_retainage
+      assert_equal 1000, @retainage_expected_line.reload.material_retainage
     end
     
     should_eventually "fail to update retainage_expected invoice" do
@@ -303,12 +307,16 @@ class InvoicesControllerTest < ActionController::TestCase
     end
     
     should "update retainage_unexpected invoice" do
-      put :update, :project_id => @project1.to_param, :id => @retainage_unexpected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
-        :id => @retainage_unexpected_line.to_param, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000
-      } } }
+      put :update, :project_id => @project1.to_param, :id => @retainage_unexpected_invoice.to_param, :invoice => { :lines_attributes => [
+        { :id => @retainage_unexpected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 }
+      ] }
       
       # Redirects after accept_costs
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      assert_equal 1, @retainage_unexpected_line.reload.labor_invoiced
+      assert_equal 10, @retainage_unexpected_line.reload.material_invoiced
+      assert_equal 100, @retainage_unexpected_line.reload.labor_retainage
+      assert_equal 1000, @retainage_unexpected_line.reload.material_retainage
     end
     
     should "fail to update retainage_unexpected invoice" do
