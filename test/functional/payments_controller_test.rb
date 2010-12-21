@@ -199,7 +199,7 @@ class PaymentsControllerTest < ActionController::TestCase
     end
     
     should "update balanced payment" do
-      put :update, :project_id => @project1.to_param, :id => @balanced_payment.to_param, :invoice => { :lines_attributes => {:line => {
+      put :update, :project_id => @project1.to_param, :id => @balanced_payment.to_param, :payment => { :lines_attributes => {:line => {
         :id => @balanced_line.to_param, :labor_paid => 1, :material_paid => 10, :labor_retained => 100, :material_retained => 1000
       } } }
       
