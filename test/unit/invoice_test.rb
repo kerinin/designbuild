@@ -7,8 +7,13 @@ class InvoiceTest < ActiveSupport::TestCase
       @project = Factory :project
       @component = Factory :component, :project => @project
       @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
+      @uc = Factory :unit_cost_estimate, :component => @component, :raw_cost => 0
+      @c = Factory :contract, :component => @component
       
-      @obj = Factory :invoice, :project => @project, :date => Date::today
+      @obj = Factory :invoice, :project => @project
+      @obj.update_attributes :date => Date::today
+      @obj.lines = []
+      @obj.save!
       
       @line1 = Factory( :invoice_line, 
         :invoice => @obj, 
@@ -27,8 +32,39 @@ class InvoiceTest < ActiveSupport::TestCase
         :labor_retainage => 1000000,
         :material_retainage => 10000000
       )
+      
+      [@project, @component, @fc, @uc, @c, @obj, @line1, @line2].each {|i| i.reload}
     end
-  
+
+    should "accept_nested_attributes" do
+      assert_equal 'retainage_unexpected', @obj.state
+      
+      assert_equal 2, @obj.lines.count
+      assert_contains @obj.lines, @line1
+      
+      puts 'start'
+      @obj.lines_attributes = [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
+      puts 'save'
+      @obj.save!
+      puts 'end'
+      
+      puts @line1.reload.labor_invoiced
+      
+      assert_equal 2, @obj.lines.count
+      assert_contains @obj.lines.map{|l| l.labor_invoiced}, 5
+      assert_equal @line1, @obj.reload.lines.first
+      
+      assert_equal 5, @obj.lines.first.labor_invoiced
+      assert_equal 5, @obj.lines.first.material_invoiced
+      assert_equal 5, @obj.lines.first.labor_retainage
+      assert_equal 5, @obj.lines.first.material_retainage
+      
+      assert_equal 5, @line1.reload.labor_invoiced
+      assert_equal 5, @line1.reload.material_invoiced
+      assert_equal 5, @line1.reload.labor_retainage
+      assert_equal 5, @line1.reload.material_retainage
+    end
+=begin    
     should "be valid" do
       assert @obj.valid?
     end
@@ -326,5 +362,6 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'complete', @obj.reload.state
     end
+=end
   end
 end

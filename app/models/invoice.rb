@@ -34,7 +34,7 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :do => :populate_lines
+    after_transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :do => :populate_lines
     
     # Events
     event :advance do

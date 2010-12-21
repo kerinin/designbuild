@@ -8,7 +8,7 @@ class InvoiceLine < ActiveRecord::Base
   #validates_associated :invoice
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
-  after_update Proc.new {|invline| invline.invoice.reload.save! }
+  after_create Proc.new {|invline| invline.invoice.reload.save! }
   
   def invoiced
     self.labor_invoiced + self.material_invoiced
@@ -41,6 +41,7 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def set_defaults
+    puts "setting defaults"
     if self.cost.instance_of? Contract
       if self.invoice.project.fixed_bid
         labor_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
@@ -60,16 +61,15 @@ class InvoiceLine < ActiveRecord::Base
         material_cost = self.cost.material_cost
       end
     end
-
+    labor_cost ||= 0
+    material_cost ||= 0
+    
     # remove retainage and previously invoiced
-    unless labor_cost.nil?
-      labor_cost *= (1-self.invoice.project.labor_percent_retainage_float) unless self.invoice.project.labor_percent_retainage_float.nil?
-      self.labor_invoiced = labor_cost - self.cost.labor_invoiced
-    end
-    unless material_cost.nil?
-      material_cost *= (1-self.invoice.project.material_percent_retainage_float) unless self.invoice.project.material_percent_retainage_float.nil?
-      self.material_invoiced = material_cost - self.cost.material_invoiced
-    end
+    labor_cost *= (1-self.invoice.project.labor_percent_retainage_float) unless self.invoice.project.labor_percent_retainage_float.nil?
+    self.labor_invoiced = labor_cost - (self.cost.labor_invoiced || 0)
+    
+    material_cost *= (1-self.invoice.project.material_percent_retainage_float) unless self.invoice.project.material_percent_retainage_float.nil?
+    self.material_invoiced = material_cost - (self.cost.material_invoiced || 0)
     
     # Sanity check - moves negative costs to other side if that would result in both being > 0
     if self.labor_invoiced < 0 && self.material_invoiced > -self.labor_invoiced
@@ -93,14 +93,14 @@ class InvoiceLine < ActiveRecord::Base
     # the math allows retainage to be calculated for arbitrary labor & material values
 
     self.labor_retainage = calculate_retainage( 
-      self.labor_invoiced + self.cost.labor_invoiced, 
+      add_or_nil( self.labor_invoiced, self.cost.labor_invoiced), 
       self.invoice.project.labor_percent_retainage_float, 
-      self.cost.labor_retainage 
+      self.cost.labor_retainage || 0
     )
     self.material_retainage = calculate_retainage( 
-      self.material_invoiced + self.cost.material_invoiced, 
+      add_or_nil( self.material_invoiced, self.cost.material_invoiced), 
       self.invoice.project.material_percent_retainage_float, 
-      self.cost.material_retainage 
+      self.cost.material_retainage || 0
     )
   end
   

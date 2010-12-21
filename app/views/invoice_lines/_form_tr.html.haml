@@ -54,6 +54,8 @@
   %td.currency= f.text_field :material_invoiced
   
   / Current invoice - Retainage
-  %td.currency= f.text_field :material_retainage
+  %td.currency
+    = f.text_field :material_retainage
+    = f.hidden_field :id
   %td
     %strong Material
