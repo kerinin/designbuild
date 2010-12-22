@@ -1,7 +1,7 @@
 class InvoiceLine < ActiveRecord::Base
   include AddOrNil
   
-  belongs_to :invoice, :inverse_of => :lines, :autosave => true
+  belongs_to :invoice, :inverse_of => :lines #, :autosave => true
   belongs_to :cost, :polymorphic => true
   
   validates_presence_of :invoice, :cost
@@ -104,9 +104,7 @@ class InvoiceLine < ActiveRecord::Base
       self.cost.material_retainage || 0
     )
   end
-  
-  protected
-    
+
   def calculate_retainage( invoiced, retainage_float, retainage)
     ( invoiced * retainage_float / ( 1 - retainage_float ) ) - retainage
   end

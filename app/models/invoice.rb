@@ -8,7 +8,7 @@ class Invoice < ActiveRecord::Base
   validates_presence_of :project
   #validates_associated :lines
   
-  before_update Proc.new{|i| i.advance; true}
+  #before_save Proc.new{|i| puts "advancing #{i.advance} #{i.state}"; true}
   
   state_machine :state, :initial => :new do
     # States
@@ -83,12 +83,15 @@ class Invoice < ActiveRecord::Base
   protected
   
   def populate_lines
+    #puts 'populating lines'
+    #puts self.project.components.count
     self.project.components.each do |component|
-      component.unit_cost_estimates.assigned.each {|uc| line = self.lines.create(:cost => uc) }
-      component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.create(:cost => fc) }
-      component.contracts.each {|c| line = self.lines.create(:cost => c) }
+      self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
+      self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
+      self.lines_attributes = component.contracts.map {|c| { :cost => c } }
     end
     
-    self.project.contracts.scoped.without_component.each {|c| line = self.lines.create(:cost => c) }
+    self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
+    self.save!
   end
 end
