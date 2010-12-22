@@ -69,27 +69,55 @@ class Task < ActiveRecord::Base
   end
   
   def projected_net
-    subtract_or_nil self.estimated_cost, self.raw_projected_cost
+    subtract_or_nil self.estimated_cost, self.raw_projected_cost unless self.estimated_cost.nil?
   end
-  
+
+  def component_projected_net
+    subtract_or_nil self.component_estimated_cost, self.raw_projected_cost unless self.component_estimated_cost.nil?
+  end
+    
   # -------------------CALCULATIONS
   
   # estimated_unit_cost
   marks_up :estimated_raw_unit_cost
-  
+    
   # estimated_raw_unit_cost
+  
+  def component_estimated_unit_cost
+    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_cost}
+  end
+    
+  def component_estimated_raw_unit_cost
+    self.unit_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost}
+  end
   
   # estimated_fixed_cost
   marks_up :estimated_raw_fixed_cost
   
   # estimated_raw_fixed_cost
-  
+
+  def component_estimated_fixed_cost
+    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_cost}
+  end
+    
+  def component_estimated_raw_fixed_cost
+    self.fixed_cost_estimates.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost}
+  end
+    
   def estimated_cost
     add_or_nil(estimated_fixed_cost, estimated_unit_cost)
   end
   
+  def component_estimated_cost
+    add_or_nil(component_estimated_fixed_cost, component_estimated_unit_cost)
+  end
+  
   def estimated_raw_cost
     add_or_nil(estimated_raw_fixed_cost, estimated_raw_unit_cost)
+  end
+  
+  def component_estimated_raw_cost
+    add_or_nil(component_estimated_raw_fixed_cost, component_estimated_raw_unit_cost)
   end
   
   # labor_cost

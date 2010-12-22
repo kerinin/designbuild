@@ -40,6 +40,7 @@
 -- contract cost error on new invoice
 
 - use awesome_nested_set instead of ancestry
+- unit tests for task.component_*_cost
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)

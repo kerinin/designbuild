@@ -2,10 +2,10 @@
   %tr
     %th Name
     %th.currency Est. Cost
-    %th.currency Markup
     %th.currency Cost-to-Date
     %th.currency.qtip_projected Projected Cost
-    %th.currency.qtip_net Net
+    %th.currency Est. Net
+    %th.currency.qtip_net Net to Date
     %th.number % Complete (Est./Act.)
     %th.check_box Active
     %th Deadline
@@ -15,19 +15,27 @@
   - tasks.each do |task|
     %tr{:id => "task_#{task.id}"}
       %td= link_to task.name, [@project, task]
+      / Est. Raw Cost
       %td.currency= number_to_currency(task.estimated_raw_cost)
-      %td.currency= number_to_currency( subtract_or_nil(task.estimated_cost, task.estimated_raw_cost ) )
+      / Cost-to-Date
       %td.currency= number_to_currency(task.cost)
-      %td.currency= number_to_currency(task.projected_cost)
-      %td.currency{:class => (!task.projected_net.nil? && task.projected_net < 0 ? 'negative' : nil)}= number_to_currency task.projected_net
+      / Projected Cost
+      %td.currency.de_emphasize= number_to_currency(task.projected_cost)
+      / Est. Net
+      / (Should be based on estimates)
+      %td.currency= number_to_currency( subtract_or_nil(task.component_estimated_cost, task.component_estimated_raw_cost ) )
+      / Net
+      %td.currency{:class => (!task.component_projected_net.nil? && task.component_projected_net < 0 ? 'negative' : nil)}= number_to_currency task.component_projected_net
+      / % Complete
       %td.number
         = number_to_percentage( task.percent_complete, :precision => 0 )
         ='/'
-        = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
-        
+        = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.component_estimated_raw_cost )), :precision => 0) || '--'
+      / Active
       %td.check_box
         =form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_active"} do |f|
           = f.check_box :active, :onchange => "$('#edit_task_#{task.id}_active').submit();"
+      / Deadline
       %td
         -if task.deadline.blank?
           Set Deadline:
@@ -60,17 +68,16 @@
     %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost })
     %td.currency
-      %strong= number_to_currency( tasks.inject(nil) {|memo,obj| add_or_nil memo, subtract_or_nil(obj.estimated_cost, obj.estimated_raw_cost) } )
-    %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
     %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_cost })
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_net })
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, subtract_or_nil(obj.component_estimated_cost, obj.component_estimated_raw_cost ) })
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.component_projected_net } )
     %td.number
       %strong
         ='--/'
-        = tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}), :precision => 1)
+        = tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost}), :precision => 1)
     %td{:colspan => 10}
-    
 
