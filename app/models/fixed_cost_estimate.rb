@@ -4,15 +4,15 @@ class FixedCostEstimate < ActiveRecord::Base
   has_paper_trail
   has_invoices
   
-  belongs_to :component, :inverse_of => :fixed_cost_estimates
-  belongs_to :task, :inverse_of => :fixed_cost_estimates
+  belongs_to :component, :inverse_of => :fixed_cost_estimates, :autosave => true
+  belongs_to :task, :inverse_of => :fixed_cost_estimates, :autosave => true
   
   validates_presence_of :name, :raw_cost, :component
   
   validates_numericality_of :raw_cost
   
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
+  #after_save :cascade_cache_values
+  #after_destroy :cascade_cache_values
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
@@ -96,8 +96,10 @@ class FixedCostEstimate < ActiveRecord::Base
   protected
   
   def cascade_cache_values
-    self.component.reload.save!
-    self.task.reload.save! unless self.task.blank?
+    #self.component.reload.save!
+    #self.task.reload.save! unless self.task.blank?
+    self.component.save!
+    self.task.save! unless self.task.blank?
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?

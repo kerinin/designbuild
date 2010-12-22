@@ -15,18 +15,16 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.lines = []
       @obj.save!
       
-      @line1 = @obj.lines.create( 
-        #:invoice => @obj, 
-        :cost => @fc,
+      @line1 = @obj.lines.create( :cost => @fc )
+      @line1.update_attributes(
         :labor_invoiced => 1,
         :material_invoiced => 10,
         :labor_retainage => 100,
         :material_retainage => 1000
       )
         
-      @line2 = @obj.lines.create(
-        #:invoice => @obj, 
-        :cost => @fc,
+      @line2 = @obj.lines.create( :cost => @fc )
+      @line2.update_attributes(
         :labor_invoiced => 10000,
         :material_invoiced => 100000,
         :labor_retainage => 1000000,
@@ -35,11 +33,11 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.save!
 
       # This is interesting - the second puts shows the correct value, but once it's saved it gets lost
-      puts @obj.lines.map{|l| l.labor_invoiced}
-      @obj.lines_attributes = [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
-      puts @obj.lines.map{|l| l.labor_invoiced}
-      @obj.save!
-      puts @obj.lines.map{|l| l.labor_invoiced}
+      #puts @obj.lines.map{|l| l.labor_invoiced}
+      #@obj.lines_attributes = [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
+      #puts @obj.lines.map{|l| l.labor_invoiced}
+      #@obj.save!
+      #puts @obj.lines.map{|l| l.labor_invoiced}
       
       [@project, @component, @fc, @uc, @c, @obj, @line1, @line2].each {|i| i.reload}
     end
@@ -47,32 +45,33 @@ class InvoiceTest < ActiveSupport::TestCase
     should "accept_nested_attributes" do
       #assert_equal 'retainage_unexpected', @obj.state
       
-      assert_equal 2, @obj.lines.count
-      assert_contains @obj.lines, @line1
+      #assert_equal 2, @obj.lines.count
+      #assert_contains @obj.lines, @line1
       
-      puts 'start'
+      #puts 'start'
       @obj.update_attributes :lines_attributes => [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
-      puts 'save'
+      #puts 'save'
       #@obj.save!
-      puts 'end'
+      #puts 'end'
       
-      puts @line1.reload.labor_invoiced
+      #puts @line1.reload.labor_invoiced
       
-      assert_equal 2, @obj.lines.count
-      assert_contains @obj.lines.map{|l| l.labor_invoiced}, 5
-      assert_equal @line1, @obj.reload.lines.first
+      #assert_equal 2, @obj.lines.count
+      #assert_contains @obj.lines.map{|l| l.labor_invoiced}, 5
+      #assert_equal @line1, @obj.reload.lines.first
       
-      assert_equal 5, @obj.lines[0].labor_invoiced
-      assert_equal 5, @obj.lines[0].material_invoiced
-      assert_equal 5, @obj.lines[0].labor_retainage
-      assert_equal 5, @obj.lines[0].material_retainage
+      #assert_equal 5, @obj.lines[0].labor_invoiced
+      #assert_equal 5, @obj.lines[0].material_invoiced
+      #assert_equal 5, @obj.lines[0].labor_retainage
+      #assert_equal 5, @obj.lines[0].material_retainage
+      @line1.reload
       
-      assert_equal 5, @line1.reload.labor_invoiced
-      assert_equal 5, @line1.reload.material_invoiced
-      assert_equal 5, @line1.reload.labor_retainage
-      assert_equal 5, @line1.reload.material_retainage
+      assert_equal 5, @line1.labor_invoiced
+      assert_equal 5, @line1.material_invoiced
+      assert_equal 5, @line1.labor_retainage
+      assert_equal 5, @line1.material_retainage
     end
-=begin    
+    
     should "be valid" do
       assert @obj.valid?
     end
@@ -126,7 +125,7 @@ class InvoiceTest < ActiveSupport::TestCase
   context "state machine validation" do
     setup do
       @project = Factory :project
-      @component = Factory :component, :project => @project
+      @component = @project.components.create Factory( :component, :project => @project ).attributes
     end
   
     should "new -> missing_task if tasks have costs without estimates" do
@@ -263,23 +262,24 @@ class InvoiceTest < ActiveSupport::TestCase
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
-      @component = Factory :component, :project => @project
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 1, :task => @task
-      @q = Factory :quantity, :component => @component, :value => 1
-      @uc = Factory :unit_cost_estimate, :component => @component, :unit_cost => 10, :task => @task
-      @c = Factory :contract, :component => @component, :project => @project
-      @c.active_bid = Factory :bid, :raw_cost => 100, :contract => @c
+      @component = @project.components.create Factory( :component ).attributes
+      @task = @project.tasks.create Factory( :task ).attributes
+      @fc = @component.fixed_cost_estimates.create Factory( :fixed_cost_estimate, :raw_cost => 1, :task => @task ).attributes
+      @q = @component.quantities.create Factory( :quantity, :value => 1 ).attributes
+      @uc = @component.unit_cost_estimates.create Factory( :unit_cost_estimate, :unit_cost => 10, :task => @task ).attributes
+      @c = @project.contracts.create Factory( :contract, :component => @component ).attributes
+      @c.update_attributes :active_bid => Factory( :bid, :raw_cost => 100, :contract => @c )
       
       @l = Factory :laborer, :bill_rate => 1
-      @lc = Factory :labor_cost, :task => @task
-      @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 10
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @cc = Factory :contract_cost, :contract => @c, :raw_cost => 1000
+      @lc = @task.labor_costs.create Factory( :labor_cost ).attributes
+      @lcl = @lc.line_items.create Factory( :labor_cost_line, :laborer => @l, :hours => 10 ).attributes
+      @mc = @task.material_costs.create Factory( :material_cost, :raw_cost => 100 ).attributes
+      @cc = @c.costs.create Factory( :contract_cost, :raw_cost => 1000 ).attributes
       
-      @obj = Factory :invoice, :project => @project, :state => 'new', :date => nil
+      @obj = @project.invoices.create Factory( :invoice ).attributes
       
-      [@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
+      [@task, @component].each {|i| i.reload}
+      #[@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
     end
 
     should "start as new" do
@@ -294,6 +294,7 @@ class InvoiceTest < ActiveSupport::TestCase
    
     should "populate line items when -> retainage_expected" do
       @obj.update_attributes :date => Date::today
+      assert_equal 'retainage_expected', @obj.state
       
       costs = @obj.lines.map{|l| l.cost}
       assert_contains costs, @fc
@@ -370,6 +371,5 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'complete', @obj.reload.state
     end
-=end
   end
 end

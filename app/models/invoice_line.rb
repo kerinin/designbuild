@@ -1,14 +1,15 @@
 class InvoiceLine < ActiveRecord::Base
   include AddOrNil
   
-  belongs_to :invoice, :inverse_of => :lines
+  belongs_to :invoice, :inverse_of => :lines, :autosave => true
   belongs_to :cost, :polymorphic => true
   
   validates_presence_of :invoice, :cost
   #validates_associated :invoice
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
-  after_create Proc.new {|invline| invline.invoice.reload.save! }
+  #after_create Proc.new {|invline| invline.invoice.reload.save! }
+  before_create :set_defaults
   
   def invoiced
     self.labor_invoiced + self.material_invoiced
@@ -41,7 +42,7 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def set_defaults
-    puts "setting defaults"
+    #puts "setting defaults"
     if self.cost.instance_of? Contract
       if self.invoice.project.fixed_bid
         labor_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
