@@ -34,13 +34,13 @@
 ++ controller tests
 ++ track costs back to estimate
 ++ contract cost error on new invoice
--- payment line functional tests
--- only show 'next step' on payments if balanced
--- drawing retainage
--- unexpected retainage UI
--- round to cent (decimal migration)
+++ only show 'next step' on payments if balanced
+++ drawing retainage
+++ unexpected retainage UI
+-- JS total for balanced
 -- validate uniqueness of invoice date in context of project
--- JS total for balanced, retainage expected
+-- round to cent (decimal migration)
+-- payment line functional tests
 
 
 - use awesome_nested_set instead of ancestry

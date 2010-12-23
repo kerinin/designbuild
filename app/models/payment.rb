@@ -68,13 +68,20 @@ class Payment < ActiveRecord::Base
     }.include?( true ) 
   end
   
-  def balances?
-    return false if self.paid.nil? || self.retained.nil?
-    
+  def paid_balances?
+    return false if self.paid.nil?
     paid_sum = self.labor_paid + self.material_paid
+    paid_sum.round_to(2) == self.paid.round_to(2)
+  end
+  
+  def retained_balances?
+    return false if self.retained.nil?
     ret_sum = self.labor_retained + self.material_retained
-    
-    paid_sum.round_to(2) == self.paid.round_to(2) && ret_sum.round_to(2) == self.retained.round_to(2)
+    ret_sum.round_to(2) == self.retained.round_to(2)
+  end
+  
+  def balances?
+    self.paid_balances? && self.retained_balances?
   end
   
   #protected

@@ -29,9 +29,10 @@
   / Current invoice - Retainage
   %td.currency
     = f.text_field :labor_retainage
+
+  %td
     -unless line.retainage_as_expected?
       =icon :error
-  %td
     %strong Labor
 %tr
   -unless line.cost.instance_of? Contract

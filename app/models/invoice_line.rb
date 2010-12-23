@@ -66,6 +66,7 @@ class InvoiceLine < ActiveRecord::Base
     # remove retainage and previously invoiced
     cost *= (1-self.invoice.project.send("#{sym.to_s}_percent_retainage_float")) unless self.invoice.project.send("#{sym.to_s}_percent_retainage_float").nil?
     self.send("#{sym.to_s}_invoiced=", cost - (self.cost.send("#{sym.to_s}_invoiced") || 0) )
+    self
   end
   
   def set_default_retainage(sym)
@@ -86,6 +87,7 @@ class InvoiceLine < ActiveRecord::Base
       self.invoice.project.send("#{sym.to_s}_percent_retainage_float"), 
       self.cost.send("#{sym.to_s}_retainage") || 0
     ) )
+    self
   end
   
   def set_defaults

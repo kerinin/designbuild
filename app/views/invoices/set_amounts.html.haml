@@ -12,17 +12,27 @@
 
 =render :partial => 'steps', :locals => {:current => :set_amounts}
 
+-if @invoice.state == 'retainage_unexpected'
+  / Retainage Unexpected
+  .notice
+    %h2 Retainage doesn't match - make sure this is what you intended
+    %p
+      Line items with unexpected retainage marked with
+      =icon :error
+    %p Delete retainage and save to automatically calculate retainage
+-else
+  / Retainage Expected
+  
 =form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice) do |invoice_form|
   =render :partial => 'invoice_lines/lines', :locals => {:lines => @invoice.lines, :invoice_form => invoice_form}
   
   = invoice_form.submit 'Save Changes'
-  
-=form_tag accept_invoice_path(@invoice), :method => :get do 
-  =submit_tag 'Next Step'
-  
--if @invoice.state == 'retainage_unexpected'
-  / Retainage Unexpected
-  .alert
-    %h2 Retainage doesn't match - make sure this is what you intended
--else
-  / Retainage Expected
+%p
+  =form_tag accept_invoice_path(@invoice), :method => :get do 
+    -unless @invoice.retainage_as_expected?
+      .notice
+        =submit_tag 'Next Step'
+        =icon :error
+        Unexpected Retainage
+    -else
+      =submit_tag 'Next Step'

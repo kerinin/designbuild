@@ -11,10 +11,28 @@
 
 =render :partial => 'steps', :locals => {:current => :balance}
 
+%h3
+  Payment Amount:
+  =number_to_currency @payment.paid
+%h3
+  Payment Retained:
+  =number_to_currency @payment.retained
+  
+
 -if @payment.state == 'unbalanced'
   / Unbalanced
   .notice
     %h2 Your payment isn't balanced - make sure the line items add up to the total payment
+    
+    %h3
+      Payment Balance:
+      .payment_balance{:class => @payment.paid_balances? ? 'green' : 'red'}
+        =number_to_currency  @payment.labor_paid + @payment.material_paid - @payment.paid
+    %h3
+      Retainage Balance:
+      .retainage_balance{:class => @payment.retained_balances? ? 'green' : 'red'}
+        =number_to_currency @payment.labor_retained + @payment.material_retained - @payment.retained
+
 -else
   / Balanced
   
@@ -23,4 +41,4 @@
   = payment_form.submit 'Save Changes'
 
 =form_tag accept_payment_path(@payment), :method => :get do 
-  =submit_tag 'Next Step'
+  =submit_tag 'Next Step', :disabled => !@payment.balances?

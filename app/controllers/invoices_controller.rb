@@ -154,9 +154,21 @@ class InvoicesController < ApplicationController
     @invoice = Invoice.find(params[:id])
 
     respond_to do |format|
-      @invoice.update_attributes(params[:invoice])
-      @invoice.advance!
-      #@invoice.save
+      
+      @invoice.attributes = params[:invoice]
+      @invoice.lines.each do |line|
+        if line.labor_retainage.nil?
+          line.update_attributes :labor_retainage => 0
+          line.set_default_retainage(:labor).save! 
+        end
+        if line.labor_retainage.nil?
+          line.update_attributes :labor_retainage => 0
+          line.set_default_retainage(:material).save! 
+        end
+      end
+      @invoice.advance
+      @invoice.save
+      
       format.html {
         case @invoice.state
         when 'new', 'missing_task', 'payments_unbalanced'
