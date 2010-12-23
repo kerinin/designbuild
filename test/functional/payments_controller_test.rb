@@ -23,28 +23,32 @@ class PaymentsControllerTest < ActionController::TestCase
       @complete_invoice.accept_costs
       @complete_invoice.update_attributes(:template => 'template_AIA_G703')
       
+      [@l, @project1, @component1, @task1, @fce1, @lc1, @lcl1, @mc1].each {|i| i.reload}
+      [@project2, @task2, @mc2].each {|i| i.reload}
+      
       @payment = Factory :payment, :project => @project1
       
       @new_payment = Factory :payment, :project => @project1
       
-      @missing_task_payment = Factory :payment, :project => @project2
-      @missing_task_payment.update_attributes(:date => Date::today, :paid => 110, :retained => 0)
+      @missing_task_payment = @project2.payments.create! :date => Date::today, :paid => 110, :retained => 0
+      @missing_task_payment.advance!
       
-      @balanced_payment = Factory :payment, :project => @project1
-      @balanced_payment.update_attributes(:date => Date::today, :paid => 110, :retained => 0)
+      @balanced_payment = @project1.payments.create! :date => Date::today, :paid => 110, :retained => 0
+      @balanced_payment.advance!
       @balanced_line = @balanced_payment.lines.first
+      @balanced_line.update_attributes(:labor_paid => 110, :labor_retained => 0, :material_paid => 0, :material_retained => 0)
+      @balanced_payment.advance!
       
-      @complete_payment = Factory :payment, :project => @project1
-      @complete_payment.update_attributes(:date => Date::today, :paid => 0, :retained => 0)
+      @complete_payment = @project1.payments.create! :date => Date::today, :paid => 0, :retained => 0
+      @complete_payment.advance!
       @complete_payment.accept_payment
 
-      @unbalanced_payment = Factory :payment, :project => @project1
-      @unbalanced_payment.update_attributes(:date => Date::today, :paid => 110, :retained => 0)
+      @unbalanced_payment = @project1.payments.create! :date => Date::today, :paid => 110, :retained => 0
+      @unbalanced_payment.advance!
       @unbalanced_line = @unbalanced_payment.lines.first
       @unbalanced_line.update_attributes(:labor_paid => 65486432184)
+      @unbalanced_payment.advance!
       
-      [@l, @project1, @component1, @task1, @fce1, @lc1, @lcl1, @mc1].each {|i| i.reload}
-      [@project2, @task2, @mc2].each {|i| i.reload}
       [@payment, @new_payment, @missing_task_payment, @balanced_payment, @balanced_line, @unbalanced_payment, @unbalanced_line, @complete_payment].each {|i| i.reload}
 
       sign_in Factory :user
@@ -53,11 +57,23 @@ class PaymentsControllerTest < ActionController::TestCase
     should "start in expected states" do
       assert_equal 'new', @new_payment.state
       assert_equal 'missing_task', @missing_task_payment.state
+      
+      #@balanced_payment.lines.each {|l| puts l.labor_paid; puts l.material_paid}
+      #puts @balanced_payment.labor_paid
+      #puts @balanced_payment.material_paid
+      #puts @balanced_payment.paid
+      
+      #puts @balanced_payment.labor_retained
+      #puts @balanced_payment.material_retained
+      #puts @balanced_payment.retained
+      
+      #assert @balanced_payment.reload.balances?
+      
       assert_equal 'balanced', @balanced_payment.state
       assert_equal 'unbalanced', @unbalanced_payment.state
       assert_equal 'complete', @complete_payment.state
     end
- 
+
     # Start
     should "get start in state new" do
       get :start, :id => @new_payment.to_param

@@ -128,6 +128,7 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
       @payment.update_attributes(params[:payment])
+      @payment.advance!
       format.html {
         case @payment.state
         when 'new', 'missing_task'
