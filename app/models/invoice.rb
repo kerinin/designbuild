@@ -8,7 +8,7 @@ class Invoice < ActiveRecord::Base
   validates_presence_of :project
   #validates_associated :lines
   
-  before_update Proc.new{|i| i.advance; true}
+  #before_save Proc.new{|i| puts "advancing #{i.advance} #{i.state}"; true}
   
   state_machine :state, :initial => :new do
     # States
@@ -34,7 +34,7 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :do => :populate_lines
+    after_transition [:new, :missing_task, :payments_unbalanced] => [:retainage_expected, :retainage_unexpected], :do => :populate_lines
     
     # Events
     event :advance do
@@ -64,31 +64,34 @@ class Invoice < ActiveRecord::Base
   end
   
   def retainage_as_expected?
-    self.lines(true).each {|l| return false unless l.retainage_as_expected? }
+    self.lines.each {|l| return false unless l.retainage_as_expected? }
     true
   end
   
   def missing_tasks?
-    self.project(true).tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
       task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
     }.include?( true ) 
   end
   
   def unbalanced_payments?
     # Reload required!
-    return false if self.project(true).payments.empty?
-    self.project(true).payments.map{|p| p.balances?}.include?( false )
+    return false if self.project.payments.empty?
+    self.project.payments.map{|p| p.balances?}.include?( false )
   end
   
   protected
   
   def populate_lines
-    self.project(true).components.each do |component|
-      component.unit_cost_estimates.assigned.each {|uc| line = self.lines.build(:cost => uc); line.set_defaults; line.save! }
-      component.fixed_cost_estimates.assigned.each {|fc| line = self.lines.build(:cost => fc); line.set_defaults; line.save! }
-      component.contracts.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
+    #puts 'populating lines'
+    #puts self.project.components.count
+    self.project.components.each do |component|
+      self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
+      self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
+      self.lines_attributes = component.contracts.map {|c| { :cost => c } }
     end
     
-    self.project.contracts.scoped.without_component.each {|c| line = self.lines.build(:cost => c); line.set_defaults; line.save! }
+    self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
+    self.save!
   end
 end

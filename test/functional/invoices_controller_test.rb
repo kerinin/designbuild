@@ -8,6 +8,10 @@ class InvoicesControllerTest < ActionController::TestCase
       @component1 = Factory :component, :project => @project1
       @task1 = Factory :task, :project => @project1
       @fce1 = Factory :fixed_cost_estimate, :component => @component1, :task => @task1
+      @uce1 = Factory :unit_cost_estimate, :component => @component1, :task => @task1
+      @c = Factory :contract, :component => @component1, :project => @project
+      @bid = Factory :bid, :raw_cost => 100, :contract => @c
+      @c.update_attributes :active_bid => @bid
       
       # For missing task
       @project2 = Factory :project
@@ -56,17 +60,17 @@ class InvoicesControllerTest < ActionController::TestCase
 
       sign_in Factory :user
     end
- 
+=begin 
     should "start in expected states" do
       assert_equal 'new', @new_invoice.state
       assert_equal 'missing_task', @missing_task_invoice.state
-      #assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
+      assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
       assert_equal 'retainage_expected', @retainage_expected_invoice.state
       assert_equal 'retainage_unexpected', @retainage_unexpected_invoice.state
       assert_equal 'costs_specified', @costs_specified_invoice.state
       assert_equal 'complete', @complete_invoice.state
     end
-=begin 
+
     # Start
     should "get start in state new" do
       get :start, :id => @new_invoice.to_param
@@ -273,29 +277,34 @@ class InvoicesControllerTest < ActionController::TestCase
       put :update, :project_id => @project1.to_param, :id => @new_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
+      assert_equal 'retainage_expected', assigns(:invoice).state
+      assert_contains assigns(:invoice).lines.map{|l| l.cost}, @c
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
     end
-        
+       
     should "update payments_unbalanced invoice" do
       put :update, :project_id => @project1.to_param, :id => @payments_unbalanced_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
-=end    
+=end   
     should "update retainage_expected invoice" do
-      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {
-        :line => { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 }
-      } }
+      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => 
+        [ { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 } ]
+      }
       
       # Redirects after accept_costs
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      
+      assert_contains assigns(:invoice).lines, @retainage_expected_line
+      
       assert_equal 1, @retainage_expected_line.reload.labor_invoiced
       assert_equal 10, @retainage_expected_line.reload.material_invoiced
       assert_equal 100, @retainage_expected_line.reload.labor_retainage
       assert_equal 1000, @retainage_expected_line.reload.material_retainage
     end
-    
+=begin    
     should_eventually "fail to update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
         :id => @retainage_expected_line.to_param, :labor_invoiced => 'foo', :material_invoiced => 'foo', :labor_retainage => 'foo', :material_retainage => 'foo'
@@ -351,5 +360,6 @@ class InvoicesControllerTest < ActionController::TestCase
 
       assert_redirected_to project_invoices_path(@project1)
     end
+=end
   end
 end
