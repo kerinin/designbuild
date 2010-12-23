@@ -23,6 +23,14 @@ class Project < ActiveRecord::Base
   
   before_save :cache_values
   
+  def fixed_bid?
+    self.fixed_bid
+  end
+  
+  def cost_plus?
+    !self.fixed_bid
+  end
+  
   def fixed_cost_estimates
     FixedCostEstimate.joins(:component => :project).where(:projects => {:id => self.id})
   end

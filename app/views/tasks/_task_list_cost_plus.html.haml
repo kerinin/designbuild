@@ -1,0 +1,72 @@
+%table.tasks
+  %tr
+    %th Name
+    %th.currency Est. Cost
+    %th.currency Cost-to-Date
+    %th.currency.qtip_projected Projected Cost
+    %th.number % Complete (Est./Act.)
+    %th.check_box Active
+    %th Deadline
+    %th.control
+    %th.control
+
+  - tasks.each do |task|
+    %tr{:id => "task_#{task.id}"}
+      %td= link_to task.name, [@project, task]
+      / Est. Cost
+      %td.currency= number_to_currency(task.estimated_cost)
+      / Cost-to-Date
+      %td.currency= number_to_currency(task.cost)
+      / Projected Cost
+      %td.currency= number_to_currency(task.projected_cost)
+      / % Complete
+      %td.number
+        = number_to_percentage( task.percent_complete, :precision => 0 )
+        ='/'
+        = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
+      / Active
+      %td.check_box
+        =form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_active"} do |f|
+          = f.check_box :active, :onchange => "$('#edit_task_#{task.id}_active').submit();"
+      / Deadline
+      %td
+        -if task.deadline.blank?
+          Set Deadline:
+          = link_to 'New', new_task_deadline_path(task, :context => 'tasks'), :remote => true
+          or
+          =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
+            =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
+        -else
+          = link_to( task.deadline.name, edit_task_deadline_path(task, :context => 'tasks'), :remote => true ) 
+          = date_relative_to_now(task.deadline.date)
+          = form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)) do |f|
+            = f.hidden_field :deadline_id, :value => nil
+            = f.submit 'Remove'
+      %td.control.edit= link_to 'Edit', edit_project_task_path(@project, task, :context => 'tasks'), :remote => true
+      %td.control.destroy= link_to icon(:delete), [@project, task], :confirm => 'Are you sure?', :method => :delete
+      
+  - if tasks.empty?
+    %tr
+      %td{:colspan => 12} (None)
+      
+  %tr.control.add_button
+    %td{:colspan => 12}
+      = link_to new_project_task_path(@project), :remote => true do
+        =icon :add
+        Add Task
+      
+  %tr.totals
+    %td
+      %strong Total
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost })
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+    %td.currency
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_cost })
+    %td.number
+      %strong
+        ='--/'
+        = tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost} == 0 ? nil : number_to_percentage(100 * (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost}) / (tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost}), :precision => 1)
+    %td{:colspan => 10}
+

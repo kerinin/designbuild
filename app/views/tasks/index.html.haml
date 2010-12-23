@@ -5,6 +5,18 @@
 
 %h1 Construction Tasks
 
+=form_for @project do |f|
+  .field
+    =f.radio_button :fixed_bid, true
+    =f.label :fixed_bid, "Fixed-Bid Project"
+    
+    =f.radio_button :fixed_bid, false
+    =f.label :fixed_bid, "Cost-Plus Project"
+    
+    =hidden_field_tag :redirect_to, project_tasks_path(@project)
+    =f.submit 'Save'
+
+
 %hr
 
-=render :partial => 'task_list', :locals => {:tasks => @tasks}
+=render :partial => @project.fixed_bid? ? 'task_list_fixed_bid' : 'task_list_cost_plus', :locals => {:tasks => @tasks}
