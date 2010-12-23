@@ -103,6 +103,7 @@ class InvoiceLine < ActiveRecord::Base
   
     self.set_default_retainage(:labor)
     self.set_default_retainage(:material) 
+    self
   end
 
   def calculate_retainage( invoiced, retainage_float, retainage)

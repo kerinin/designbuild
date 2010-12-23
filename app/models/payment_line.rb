@@ -24,5 +24,6 @@ class PaymentLine < ActiveRecord::Base
     
     self.labor_retained = self.cost.labor_retainage - self.cost.labor_retained
     self.material_retained = self.cost.material_retainage - self.cost.material_retained
+    self
   end
 end
