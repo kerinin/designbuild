@@ -31,6 +31,7 @@ class Payment < ActiveRecord::Base
     end
     
     after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
+    after_transition any => :balanced, :do => Proc.new{|p| p.project.invoices.each{|pr| pr.advance!}}
     #after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => Proc.new{|p| p.lines.each {|l| l.save!} }
     
     # Events
@@ -104,7 +105,7 @@ class Payment < ActiveRecord::Base
   
   def update_invoices(*args)
     # Reload (probably) required
-    self.project.invoices.each {|i| i.save! }
+    self.project.invoices.each {|i| i.advance; i.save! }
     true
   end
 end
