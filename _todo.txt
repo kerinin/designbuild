@@ -26,23 +26,26 @@
 ++ clean up tests
 ++ filtering costs by effective date
 ++ states for tasks w/o estimate
--- drawing retainage
 ++ estimates should be estimated_cost, cost
 ++ tasks not reflected in components
--- invoicing when previous payments not distributed to components
--- unexpected retainage UI
--- round to cent (decimal migration)
+++ invoicing when previous payments not distributed to components
 ++ refactor controller to be step-based
 ++ states for payments that don't balance
 ++ controller tests
--- validate uniqueness of invoice date in context of project
 ++ track costs back to estimate
--- contract cost error on new invoice
+++ contract cost error on new invoice
 -- payment line functional tests
 -- only show 'next step' on payments if balanced
+-- drawing retainage
+-- unexpected retainage UI
+-- round to cent (decimal migration)
+-- validate uniqueness of invoice date in context of project
+-- JS total for balanced, retainage expected
+
 
 - use awesome_nested_set instead of ancestry
 - unit tests for task.component_*_cost
+
 
 - usability tweaks
 ++ autocomplete supplier selection (and creation)
@@ -51,17 +54,20 @@
 ++ show which components not associated, quickly make new tasks
 ++ checkbox to show unit costs on estimate
 ++ click tr edits/shows
--- after adding employee, active the labor entry field and pre-select the new person
--- how to destroy markups?  (auto delete if no associated?)
--- ajax for PO#log_cost material#edit_cost
 ++ spinners
 ++ icons
 ++ explanative text
 ++ table alignment
+-- after adding employee, active the labor entry field and pre-select the new person
+-- how to destroy markups?  (auto delete if no associated?)
+-- ajax for PO#log_cost material#edit_cost
+-- integrate different cost types into single display
+-- modal cost creation dialog; unit/fixed/contract/etc
+
 
 - performance
--- sum in DB, not inject
--- alternate caching strategies (delete on change, generate on demand?)
+-- Model.association.sum(attribute)
+-- alternate caching strategies (delete on change, generate on demand?, eliminate completely?)
 
 - project as contract
 - task ordering / sorting
