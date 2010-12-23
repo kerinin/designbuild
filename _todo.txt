@@ -38,6 +38,8 @@
 -- validate uniqueness of invoice date in context of project
 ++ track costs back to estimate
 -- contract cost error on new invoice
+-- payment line functional tests
+-- only show 'next step' on payments if balanced
 
 - use awesome_nested_set instead of ancestry
 
