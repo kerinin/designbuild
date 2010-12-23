@@ -1,13 +1,14 @@
 class Invoice < ActiveRecord::Base
-  belongs_to :project
+  belongs_to :project, :inverse_of => :invoices
   
   has_many :lines, :class_name => 'InvoiceLine'
   
   accepts_nested_attributes_for :lines
   
   validates_presence_of :project
+  #validates_associated :lines
   
-  before_update Proc.new{|i| i.advance; true}
+  #before_save Proc.new{|i| puts "advancing #{i.advance} #{i.state}"; true}
   
   state_machine :state, :initial => :new do
     # States
@@ -33,7 +34,7 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
-    before_transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :do => :populate_lines
+    after_transition [:new, :missing_task, :payments_unbalanced] => [:retainage_expected, :retainage_unexpected], :do => :populate_lines
     
     # Events
     event :advance do
@@ -41,12 +42,12 @@ class Invoice < ActiveRecord::Base
       transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :missing_tasks?
       
       transition :missing_task => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :missing_tasks?
-      transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      #transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
-      transition :new => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
-      transition [:date_set, :retainage_unexpected] => :retainage_expected, :if => :retainage_as_expected?
-      transition [:date_set, :retainage_expected] => :retainage_unexpected, :unless => :retainage_as_expected?    
+      transition :retainage_unexpected => :retainage_expected, :if => :retainage_as_expected?
+      transition :retainage_expected => :retainage_unexpected, :unless => :retainage_as_expected?    
       
       transition :costs_specified => :complete, :if => :template?
     end
@@ -58,8 +59,12 @@ class Invoice < ActiveRecord::Base
   
   [:labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage].each do |sym|
     self.send(:define_method, sym) do
-      self.lines.inject(nil) {|memo,obj| add_or_nil memo, obj.send(sym)}
+      self.lines.inject(0) {|memo,obj| memo + obj.send(sym)}
     end
+  end
+  
+  def advance!
+    self.save! if self.advance
   end
   
   def retainage_as_expected?
@@ -74,18 +79,32 @@ class Invoice < ActiveRecord::Base
   end
   
   def unbalanced_payments?
-    !self.project.payments.where(:state => :costs_unbalanced).empty?
+    # Reload required!
+    return false if self.project.payments.empty?
+    self.project.payments.map{|p| p.balances?}.include?( false )
   end
   
   protected
   
   def populate_lines
-    self.project.components.each do |component|
-      component.unit_cost_estimates.assigned.each {|uc| self.lines.create!(:cost => uc) }
-      component.fixed_cost_estimates.assigned.each {|fc| self.lines.create!(:cost => fc) }
-      component.contracts.each {|c| self.lines.create!(:cost => c) }
-    end
+    #puts 'populating lines'
+    #puts self.project.components.count
+    #self.project.components.each do |component|
+    #  self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
+    #  self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
+    #  self.lines_attributes = component.contracts.map {|c| { :cost => c } }
+    #end
     
-    self.project.contracts.scoped.without_component.each {|c| self.lines.create!(:cost => c) }
+    #self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
+    
+    #self.lines.each {|l| l.set_defaults}
+    
+    #self.save!
+    self.project.components.each do |component|
+      component.unit_cost_estimates.assigned.each {|uc| self.lines.build(:cost => uc).set_defaults.save! }
+      component.fixed_cost_estimates.assigned.each {|fc| self.lines.build(:cost => fc).set_defaults.save! }
+      component.contracts.each {|c| self.lines.build(:cost => c).set_defaults.save! }
+    end
+    self.project.contracts.scoped.without_component.each {|c| self.lines.build(:cost => c).set_defaults.save! }
   end
 end

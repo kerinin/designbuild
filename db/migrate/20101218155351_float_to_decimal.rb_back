@@ -1,0 +1,121 @@
+class FloatToDecimal < ActiveRecord::Migration
+  def self.up
+    change_column :bids, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :components, :estimated_fixed_cost, :decimal, :precision => 12, :scale => 2
+    change_column :components, :estimated_unit_cost, :decimal, :precision => 12, :scale => 2
+    change_column :components, :estimated_raw_fixed_cost, :decimal, :precision => 12, :scale => 2
+    change_column :components, :estimated_raw_unit_cost, :decimal, :precision => 12, :scale => 2
+    change_column :components, :estimated_contract_cost, :decimal, :precision => 12, :scale => 2
+    change_column :components, :estimated_raw_contract_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :contract_costs, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :contracts, :estimated_raw_cost, :decimal, :precision => 12, :scale => 2
+    change_column :contracts, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :fixed_cost_estimates, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :invoice_lines, :labor_invoiced, :decimal, :precision => 12, :scale => 2
+    change_column :invoice_lines, :labor_retainage, :decimal, :precision => 12, :scale => 2
+    change_column :invoice_lines, :material_invoiced, :decimal, :precision => 12, :scale => 2
+    change_column :invoice_lines, :material_retainage, :decimal, :precision => 12, :scale => 2
+    
+    change_column :labor_costs, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :laborers, :bill_rate, :decimal, :precision => 12, :scale => 2
+    change_column :laborers, :pay_rate, :decimal, :precision => 12, :scale => 2
+    
+    change_column :material_costs, :raw_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :payment_lines, :labor_paid, :decimal, :precision => 12, :scale => 2
+    change_column :payment_lines, :labor_retained, :decimal, :precision => 12, :scale => 2
+    change_column :payment_lines, :material_paid, :decimal, :precision => 12, :scale => 2
+    change_column :payment_lines, :material_retained, :decimal, :precision => 12, :scale => 2
+    
+    change_column :payments, :paid, :decimal, :precision => 12, :scale => 2
+    change_column :payments, :retained, :decimal, :precision => 12, :scale => 2
+    
+    change_column :projects, :estimated_fixed_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :estimated_raw_fixed_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :estimated_unit_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :estimated_raw_unit_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :estimated_contract_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :estimated_raw_contract_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :material_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :raw_material_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :labor_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :raw_labor_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :contract_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :raw_contract_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :projected_cost, :decimal, :precision => 12, :scale => 2
+    change_column :projects, :raw_projected_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :tasks, :estimated_raw_unit_cost, :decimal, :precision => 12, :scale => 2
+    change_column :tasks, :estimated_raw_fixed_cost, :decimal, :precision => 12, :scale => 2
+    change_column :tasks, :raw_labor_cost, :decimal, :precision => 12, :scale => 2
+    change_column :tasks, :raw_material_cost, :decimal, :precision => 12, :scale => 2
+    
+    change_column :unit_cost_estimates, :raw_cost, :decimal, :precision => 12, :scale => 2
+  end
+  
+  def self.down
+    change_column :bids, :raw_cost, :float
+    
+    change_column :components, :estimated_fixed_cost, :float
+    change_column :components, :estimated_unit_cost, :float
+    change_column :components, :estimated_raw_fixed_cost, :float
+    change_column :components, :estimated_raw_unit_cost, :float
+    change_column :components, :estimated_contract_cost, :float
+    change_column :components, :estimated_raw_contract_cost, :float
+    
+    change_column :contract_costs, :raw_cost, :float
+    
+    change_column :contracts, :estimated_raw_cost, :float
+    change_column :contracts, :raw_cost, :float
+    
+    change_column :fixed_cost_estimates, :raw_cost, :float
+    
+    change_column :invoice_lines, :labor_invoiced, :float
+    change_column :invoice_lines, :labor_retainage, :float
+    change_column :invoice_lines, :material_invoiced, :float
+    change_column :invoice_lines, :material_retainage, :float
+    
+    change_column :labor_costs, :raw_cost, :float
+    
+    change_column :laborers, :bill_rate, :float
+    change_column :laborers, :pay_rate, :float
+    
+    change_column :material_costs, :raw_cost, :float
+    
+    change_column :payment_lines, :labor_paid, :float
+    change_column :payment_lines, :labor_retained, :float
+    change_column :payment_lines, :material_paid, :float
+    change_column :payment_lines, :material_retained, :float
+    
+    change_column :payments, :paid, :float
+    change_column :payments, :retained, :float
+    
+    change_column :projects, :estimated_fixed_cost, :float
+    change_column :projects, :estimated_raw_fixed_cost, :float
+    change_column :projects, :estimated_unit_cost, :float
+    change_column :projects, :estimated_raw_unit_cost, :float
+    change_column :projects, :estimated_contract_cost, :float
+    change_column :projects, :estimated_raw_contract_cost, :float
+    change_column :projects, :material_cost, :float
+    change_column :projects, :raw_material_cost, :float
+    change_column :projects, :labor_cost, :float
+    change_column :projects, :raw_labor_cost, :float
+    change_column :projects, :contract_cost, :float
+    change_column :projects, :raw_contract_cost, :float
+    change_column :projects, :projected_cost, :float
+    change_column :projects, :raw_projected_cost, :float
+    
+    change_column :tasks, :estimated_raw_unit_cost, :float
+    change_column :tasks, :estimated_raw_fixed_cost, :float
+    change_column :tasks, :raw_labor_cost, :decimal, :float
+    change_column :tasks, :raw_material_cost, :float
+    
+    change_column :unit_cost_estimates, :raw_cost, :float
+  end
+end

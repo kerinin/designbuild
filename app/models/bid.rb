@@ -3,7 +3,7 @@ class Bid < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
 
-  belongs_to :contract
+  belongs_to :contract, :inverse_of => :bids
   
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost

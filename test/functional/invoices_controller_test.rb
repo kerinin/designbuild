@@ -8,6 +8,10 @@ class InvoicesControllerTest < ActionController::TestCase
       @component1 = Factory :component, :project => @project1
       @task1 = Factory :task, :project => @project1
       @fce1 = Factory :fixed_cost_estimate, :component => @component1, :task => @task1
+      @uce1 = Factory :unit_cost_estimate, :component => @component1, :task => @task1
+      @c = Factory :contract, :component => @component1, :project => @project
+      @bid = Factory :bid, :raw_cost => 100, :contract => @c
+      @c.update_attributes :active_bid => @bid
       
       # For missing task
       @project2 = Factory :project
@@ -21,52 +25,56 @@ class InvoicesControllerTest < ActionController::TestCase
       @fce3 = Factory :fixed_cost_estimate, :component => @component3, :task => @task3
       @payment3 = Factory :payment, :project => @project3, :paid => 100
       
+      [@project1, @component1, @task1, @fce1].each {|i| i.reload}
+      [@project2, @task2, @mc2].each {|i| i.reload}
+      [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
+      
       @invoice = Factory :invoice, :project => @project1
       
       @new_invoice = Factory :invoice, :project => @project1
       
-      @missing_task_invoice = Factory :invoice, :project => @project2
-      @missing_task_invoice.update_attributes(:date => Date::today)
+      @missing_task_invoice = @project2.invoices.create! :date => Date::today
+      @missing_task_invoice.advance!
       
-      @payments_unbalanced_invoice = Factory :invoice, :project => @project3
-      @payments_unbalanced_invoice.update_attributes(:date => Date::today)
+      @payments_unbalanced_invoice = @project3.invoices.create! :date => Date::today
+      @payments_unbalanced_invoice.advance!
       
-      @retainage_expected_invoice = Factory :invoice, :project => @project1
-      @retainage_expected_invoice.update_attributes(:date => Date::today)
+      @retainage_expected_invoice = @project1.invoices.create! :date => Date::today
+      @retainage_expected_invoice.advance!
       @retainage_expected_line = @retainage_expected_invoice.lines.first
       
-      @retainage_unexpected_invoice = Factory :invoice, :project => @project1
-      @retainage_unexpected_invoice.update_attributes(:date => Date::today)
+      @retainage_unexpected_invoice = @project1.invoices.create! :date => Date::today
+      @retainage_unexpected_invoice.advance!
       @retainage_unexpected_line = @retainage_unexpected_invoice.lines.first
       @retainage_unexpected_line.update_attributes(:labor_retainage => 65486432184)
+      @retainage_unexpected_invoice.advance!
       
-      @costs_specified_invoice = Factory :invoice, :project => @project1
-      @costs_specified_invoice.update_attributes(:date => Date::today)
+      @costs_specified_invoice = @project1.invoices.create! :date => Date::today
+      @costs_specified_invoice.advance!
       @costs_specified_invoice.accept_costs
       
-      @complete_invoice = Factory :invoice, :project => @project1
-      @complete_invoice.update_attributes(:date => Date::today)
+      @complete_invoice = @project1.invoices.create! :date => Date::today
+      @complete_invoice.advance!
       @complete_invoice.accept_costs
       @complete_invoice.update_attributes(:template => 'template_AIA_G703')
+      @complete_invoice.advance!
       
-      [@project1, @component1, @task1, @fce1].each {|i| i.reload}
-      [@project2, @task2, @mc2].each {|i| i.reload}
-      [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
+
       [@invoice, @new_invoice, @missing_task_invoice, @payments_unbalanced_invoice, @retainage_expected_invoice, @retainage_unexpected_invoice, @costs_specified_invoice, @complete_invoice].each {|i| i.reload}
 
       sign_in Factory :user
     end
- 
+
     should "start in expected states" do
       assert_equal 'new', @new_invoice.state
       assert_equal 'missing_task', @missing_task_invoice.state
-      #assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
+      assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
       assert_equal 'retainage_expected', @retainage_expected_invoice.state
       assert_equal 'retainage_unexpected', @retainage_unexpected_invoice.state
       assert_equal 'costs_specified', @costs_specified_invoice.state
       assert_equal 'complete', @complete_invoice.state
     end
- 
+
     # Start
     should "get start in state new" do
       get :start, :id => @new_invoice.to_param
@@ -80,7 +88,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert response.body.include? '<!-- Missing Task -->'
     end
     
-    should_eventually "get start in state payments_unbalanced" do
+    should "get start in state payments_unbalanced" do
       get :start, :id => @payments_unbalanced_invoice.to_param
       assert_response :success
       assert response.body.include? '<!-- Payments Unbalanced -->'
@@ -121,7 +129,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get set_amounts in state payments_unbalanced" do
+    should "get set_amounts in state payments_unbalanced" do
       get :set_amounts, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -161,7 +169,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get select_template in state payments_unbalanced" do
+    should "get select_template in state payments_unbalanced" do
       get :select_template, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -187,8 +195,9 @@ class InvoicesControllerTest < ActionController::TestCase
     end
      
     # Finished
-    should "get finished" do
-      get :finished, :id => @invoice.to_param
+    should "get finished in state new" do
+      get :finished, :id => @new_invoice.to_param
+      assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
     should "get finished in state missing_task" do
@@ -196,7 +205,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should_eventually "get finished in state payments_unbalanced" do
+    should "get finished in state payments_unbalanced" do
       get :finished, :id => @payments_unbalanced_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
@@ -272,26 +281,35 @@ class InvoicesControllerTest < ActionController::TestCase
       put :update, :project_id => @project1.to_param, :id => @new_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
+      assert_equal 'retainage_expected', assigns(:invoice).state
+      assert_contains assigns(:invoice).lines.map{|l| l.cost}, @c
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
     end
-        
-    should_eventually "update payments_unbalanced invoice" do
+       
+    should "update payments_unbalanced invoice" do
       put :update, :project_id => @project1.to_param, :id => @payments_unbalanced_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      assert_redirected_to start_invoice_path(assigns(:invoice))
     end
-    
+  
     should "update retainage_expected invoice" do
-      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
-        :id => @retainage_expected_line.to_param, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000
-      } } }
+      put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => 
+        [ { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 } ]
+      }
       
       # Redirects after accept_costs
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      
+      assert_contains assigns(:invoice).lines, @retainage_expected_line
+      
+      assert_equal 1, @retainage_expected_line.reload.labor_invoiced
+      assert_equal 10, @retainage_expected_line.reload.material_invoiced
+      assert_equal 100, @retainage_expected_line.reload.labor_retainage
+      assert_equal 1000, @retainage_expected_line.reload.material_retainage
     end
-    
-    should "fail to update retainage_expected invoice" do
+  
+    should_eventually "fail to update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
         :id => @retainage_expected_line.to_param, :labor_invoiced => 'foo', :material_invoiced => 'foo', :labor_retainage => 'foo', :material_retainage => 'foo'
       } } }
@@ -302,12 +320,16 @@ class InvoicesControllerTest < ActionController::TestCase
     end
     
     should "update retainage_unexpected invoice" do
-      put :update, :project_id => @project1.to_param, :id => @retainage_unexpected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
-        :id => @retainage_unexpected_line.to_param, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000
-      } } }
+      put :update, :project_id => @project1.to_param, :id => @retainage_unexpected_invoice.to_param, :invoice => { :lines_attributes => [
+        { :id => @retainage_unexpected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 }
+      ] }
       
       # Redirects after accept_costs
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      assert_equal 1, @retainage_unexpected_line.reload.labor_invoiced
+      assert_equal 10, @retainage_unexpected_line.reload.material_invoiced
+      assert_equal 100, @retainage_unexpected_line.reload.labor_retainage
+      assert_equal 1000, @retainage_unexpected_line.reload.material_retainage
     end
     
     should "fail to update retainage_unexpected invoice" do

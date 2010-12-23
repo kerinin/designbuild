@@ -5,8 +5,8 @@ class Contract < ActiveRecord::Base
   has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_invoices
   
-  belongs_to :project
-  belongs_to :component
+  belongs_to :project, :inverse_of => :contracts
+  belongs_to :component, :inverse_of => :contracts
   belongs_to :active_bid, :class_name => "Bid", :foreign_key => :bid_id
   
   has_many :tasks, :order => :name
@@ -54,6 +54,7 @@ class Contract < ActiveRecord::Base
   # raw_cost
   
   def cache_values
+    #puts "caching from contract"
     [self.bids, self.costs, self.markups].each {|r| r.reload}
     
     self.cache_estimated_raw_cost
@@ -62,8 +63,8 @@ class Contract < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    self.component.reload.save! unless self.component.blank?
-    self.project.reload.save! unless self.project.blank?
+    self.component.save! unless self.component.blank?
+    self.project.save! unless self.project.blank?
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
     Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?

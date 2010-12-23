@@ -1,33 +1,74 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
+      @q = Factory :quantity, :value => 1
       @project = Factory :project
-      @component = Factory :component, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
+      @component = @project.components.create! :name => 'component'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+      @uc = @component.unit_cost_estimates.create! :name => 'unit cost', :quantity => @q, :unit_cost => 0
+      @c = @component.contracts.create! :name => 'contract'
       
-      @obj = Factory :invoice, :project => @project, :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.lines = []
+      @obj.save!
       
-      @line1 = Factory( :invoice_line, 
-        :invoice => @obj, 
-        :cost => @fc,
+      @line1 = @obj.lines.create!( :cost => @fc )
+      @line1.update_attributes(
         :labor_invoiced => 1,
         :material_invoiced => 10,
         :labor_retainage => 100,
         :material_retainage => 1000
       )
         
-      @line2 = Factory( :invoice_line, 
-        :invoice => @obj, 
-        :cost => @fc,
+      @line2 = @obj.lines.create!( :cost => @fc )
+      @line2.update_attributes(
         :labor_invoiced => 10000,
         :material_invoiced => 100000,
         :labor_retainage => 1000000,
         :material_retainage => 10000000
       )
+      @obj.advance
 
+      # This is interesting - the second puts shows the correct value, but once it's saved it gets lost
+      #puts @obj.lines.map{|l| l.labor_invoiced}
+      #@obj.lines_attributes = [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
+      #puts @obj.lines.map{|l| l.labor_invoiced}
+      #@obj.save!
+      #puts @obj.lines.map{|l| l.labor_invoiced}
+      
+      #[@project, @component, @fc, @uc, @c, @obj, @line1, @line2].each {|i| i.reload}
+    end
+
+    should "accept_nested_attributes" do
+      #assert_equal 'retainage_unexpected', @obj.state
+      
+      #assert_equal 2, @obj.lines.count
+      #assert_contains @obj.lines, @line1
+      
+      #puts 'start'
+      @obj.update_attributes :lines_attributes => [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
+      #puts 'save'
+      #@obj.save!
+      #puts 'end'
+      
+      #puts @line1.reload.labor_invoiced
+      
+      #assert_equal 2, @obj.lines.count
+      #assert_contains @obj.lines.map{|l| l.labor_invoiced}, 5
+      #assert_equal @line1, @obj.reload.lines.first
+      
+      #assert_equal 5, @obj.lines[0].labor_invoiced
+      #assert_equal 5, @obj.lines[0].material_invoiced
+      #assert_equal 5, @obj.lines[0].labor_retainage
+      #assert_equal 5, @obj.lines[0].material_retainage
+      @line1.reload
+      
+      assert_equal 5, @line1.labor_invoiced
+      assert_equal 5, @line1.material_invoiced
+      assert_equal 5, @line1.labor_retainage
+      assert_equal 5, @line1.material_retainage
     end
     
     should "be valid" do
@@ -78,106 +119,152 @@ class InvoiceTest < ActiveSupport::TestCase
     should "aggregate retainage" do
       assert_equal 11001100, @obj.retainage
     end
+
   end
 
   context "state machine validation" do
     setup do
       @project = Factory :project
-      @component = Factory :component, :project => @project
+      @component = @project.components.create! :name => 'component'
     end
   
     should "new -> missing_task if tasks have costs without estimates" do
-      @task = Factory :task, :project => @project
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @obj = Factory :invoice, :project => @project
-      @obj.update_attributes :date => Date::today
+      @task = @project.tasks.create! :name => 'task'
+      #puts 'start'
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
+      #puts 'end'
+      @obj = @project.invoices.create! :date => Date::today
+      #@task.reload
+
+      #assert_equal 100, @task.reload.raw_material_cost
+      #assert_equal 100, @task.raw_material_cost
+      
+      #puts @obj.missing_tasks?
+      
+      #assert_contains @task.material_costs, @mc
+      #assert_contains @project.tasks, @task
+      #assert_equal 0, @task.unit_cost_estimates.count
+      #assert_equal 0, @task.fixed_cost_estimates.count
+      #assert_equal 100, @task.raw_material_cost
+      #assert_contains @obj.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0'), @task
+      
+      @obj.advance
+      
+      #puts @obj.missing_tasks?
       
       assert_equal 'missing_task', @obj.state
       assert_equal [], @obj.lines
     end
-   
+  
     should "missing_task -> retainage_expected after task assigned" do
-      @task = Factory :task, :project => @project
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @obj = Factory :invoice, :project => @project
-      @obj.update_attributes :date => Date::today
+      @task = @project.tasks.create! :name => 'task'
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.advance
       
       assert_equal 'missing_task', @obj.state
       
-      @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
+      @fc = @component.fixed_cost_estimates.create! :raw_cost => 100, :name => 'fixed cost'
+      @task.fixed_cost_estimates << @fc
+      @obj.advance
 
-      assert_equal 'retainage_expected', @obj.reload.state
+      assert_equal 'retainage_expected', @obj.state
     end
    
-    should_eventually "new -> payments_unbalanced if unbalanced payments" do
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+    should "new -> payments_unbalanced if unbalanced payments" do
+      @task = @project.tasks.create! :name => 'task'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+      @task.fixed_cost_estimates << @fc
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
       
-      @payment = Factory :payment, :project => @project, :date => Date::today-10, :paid => 100
+      @payment = @project.payments.create! :date => Date::today-10, :paid => 100, :retained => 100
       
-      @obj = Factory :invoice
-      @obj.update_attributes :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.advance
       
-      assert_equal false, @obj.reload.missing_tasks?
-      assert_equal true, @obj.reload.unbalanced_payments?
+      assert_equal false, @obj.missing_tasks?
+      assert_equal true, @obj.unbalanced_payments?
       
       assert_equal 'payments_unbalanced', @obj.state
     end
-    
-    should_eventually "payments_unbalanced -> retainage_expected after payments balanced" do
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :task => @task
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+  
+    should "payments_unbalanced -> retainage_expected after payments balanced" do
+      @task = @project.tasks.create! :name => 'task'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+      @task.fixed_cost_estimates << @fc
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
       
-      @payment = Factory :payment, :project => @project, :date => Date::today-10, :paid => 100
+      @payment = @project.payments.create! :date => Date::today-10, :paid => 100, :retained => 100
       
-      @obj = Factory :invoice
-      @obj.update_attributes :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.advance
+      
+      #[@project, @component, @payment, @task, @fc, @mc, @obj].each {|i| i.reload}
+      #assert_equal false, @payment.balances?
+      #assert_contains @obj.project.payments, @payment
+      #assert @project.payments.map{|p| p.balances?}.include?( false )
+      #assert_equal false, @project.payments.empty?
+      #assert_equal true, @obj.unbalanced_payments?
       
       assert_equal 'payments_unbalanced', @obj.state    
     
-       @payment.lines = [
+      @payment.lines = [
         Factory( :payment_line,
         :payment => @payment,
         :cost => @fc,
-        :labor_paid => 45,
-        :material_paid => 5,
-        :labor_retained => 45,
-        :material_retained => 5
+        :labor_paid => 90,
+        :material_paid => 10,
+        :labor_retained => 90,
+        :material_retained => 10
       ) ]
+      @obj.advance
+      #@payment.save
+      
+      #assert @payment.balances?
+      #assert_equal 1, @obj.project.payments.count
+      #assert_contains @obj.project.payments, @payment
+      #assert_equal 1, @payment.lines.count
+      #assert_equal false, @obj.unbalanced_payments?
+      #assert_contains @payment.project.reload.invoices, @obj
+      #@obj.save
+      #@payment.project.reload.invoices.each {|i| i.save!}
+      #@payment.update_invoices
+      #@payment.save
+      #@payment.lines.first.save
+      
+      #@payment.save
+      # NOTE: explicitly saving passes
+      # invoice.save being called after line added (see puts)
+      # Not sure why this isn't working
       
       assert_equal 'retainage_expected', @obj.state
     end
-     
-    should_eventually "new -> missing_task if tasks missing and payments unbalanced" do
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @payment = Factory :payment, :project => @project, :date => Date::today-10, :paid => 100
+   
+    should "new -> missing_task if tasks missing and payments unbalanced" do
+      @task = @project.tasks.create! :name => 'task'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
+      @payment = @project.payments.create! :date => Date::today-10, :paid => 100, :retained => 100
       
-      @obj = Factory :invoice, :project => @project
-      @obj.update_attributes :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.advance
       
       assert_equal 'missing_task', @obj.state
-      
-      @fc.task = @task
-      
-      assert_equal 'payments_unbalanced', @obj.state
     end
     
-    should_eventually "missing_task -> payments_unbalanced after task assigned if payments unbalanced" do
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @payment = Factory :payment, :project => @project, :date => Date::today-10, :paid => 100
+    should "missing_task -> payments_unbalanced after task assigned if payments unbalanced" do
+      @task = @project.tasks.create! :name => 'task'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+      @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
+      @payment = @project.payments.create! :date => Date::today-10, :paid => 100, :retained => 100
       
-      @obj = Factory :invoice, :project => @project
-      @obj.update_attributes :date => Date::today
+      @obj = @project.invoices.create! :date => Date::today
+      @obj.advance
       
       assert_equal 'missing_task', @obj.state
       
-      @fc.task = @task
+      @task.fixed_cost_estimates << @fc
+      @obj.advance
       
       assert_equal 'payments_unbalanced', @obj.state
       
@@ -185,36 +272,44 @@ class InvoiceTest < ActiveSupport::TestCase
         Factory( :payment_line,
         :payment => @payment,
         :cost => @fc,
-        :labor_paid => 45,
-        :material_paid => 5,
-        :labor_retained => 45,
-        :material_retained => 5
+        :labor_paid => 90,
+        :material_paid => 10,
+        :labor_retained => 90,
+        :material_retained => 10
       ) ]
+      @obj.advance
       
-      assert_equal 'retainage_expected', @obj.state
+      assert_equal 'retainage_expected', @obj.reload.state
     end
+
   end
-=end 
+
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20
-      @component = Factory :component, :project => @project
-      @task = Factory :task, :project => @project
-      @fc = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 1, :task => @task
-      @q = Factory :quantity, :component => @component, :value => 1
-      @uc = Factory :unit_cost_estimate, :component => @component, :unit_cost => 10, :task => @task
-      @c = Factory :contract, :component => @component, :project => @project
-      @c.active_bid = Factory :bid, :raw_cost => 100, :contract => @c
+      @component = @project.components.create! :name => 'test component' 
+      @task = @project.tasks.create! :name => 'test task'
+      @fc = @component.fixed_cost_estimates.create! :name => 'test fc', :raw_cost => 1
+      @task.fixed_cost_estimates << @fc
+      
+      @q = @component.quantities.create! :name => 'test quantity', :value => 1
+      @uc = @component.unit_cost_estimates.create! :name => 'test uc', :unit_cost => 10, :quantity => @q
+      @task.unit_cost_estimates << @uc
+      
+      @c = @project.contracts.create! :name => 'test contract'
+      @component.contracts << @c
+      
+      @c.update_attributes :active_bid => Factory( :bid, :raw_cost => 100, :contract => @c )
       
       @l = Factory :laborer, :bill_rate => 1
-      @lc = Factory :labor_cost, :task => @task
-      @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 10
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
-      @cc = Factory :contract_cost, :contract => @c, :raw_cost => 1000
+      @lc = @task.labor_costs.create! :date => Date::today, :percent_complete => 100
+      @lcl = @lc.line_items.create! :laborer => @l, :hours => 10
+      @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 100, :supplier => Factory(:supplier)
+      @cc = @c.costs.create! :date => Date::today, :raw_cost => 1000
       
-      @obj = Factory :invoice, :project => @project, :state => 'new', :date => nil
+      @obj = @project.invoices.create!
       
-      [@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
+      #[@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
     end
 
     should "start as new" do
@@ -224,60 +319,113 @@ class InvoiceTest < ActiveSupport::TestCase
     should "not -> date set if date not specified" do
       @obj.advance
       
-      assert_equal 'new', @obj.reload.state
+      assert_equal 'new', @obj.state
     end
    
-    should "populate line items when -> date_specified" do
+    should "populate line items when -> retainage_expected" do
+      #assert_equal 1, @project.components.count
+      #assert_equal 1, @project.invoices.count
+      #assert_equal @project, @obj.project
+      #assert_equal 1, @component.unit_cost_estimates.assigned.count
+      #assert_equal 1, @component.fixed_cost_estimates.assigned.count
+      #assert_equal 1, @component.contracts.count
+    
+      #assert_equal 0, @obj.lines.count
+      
+      #puts 'start'
       @obj.update_attributes :date => Date::today
+      @obj.advance
+      
+      assert_equal 'retainage_expected', @obj.state
+      #puts 'end'
+      
+      #assert_equal 3, @obj.lines.count
       
       costs = @obj.lines.map{|l| l.cost}
       assert_contains costs, @fc
       assert_contains costs, @uc
       assert_contains costs, @c
       
-      assert_equal 3, @obj.reload.lines.count
+      #assert_equal 3, @obj.lines.count
     end
 
     should "new -> retainage expected if retainage specified" do
       @obj.update_attributes :date => Date::today
+      @obj.advance
       
       # auto-generates with correct retainage
 
-      assert_equal 'retainage_expected', @obj.reload.state
+      assert_equal 'retainage_expected', @obj.state
     end
-       
+    
     should "retainage expected -> retainage unexpected if unexpected" do
       @obj.update_attributes :date => Date::today
+      @obj.advance
       
       # auto-generates with correct retainage
-      assert_equal 'retainage_expected', @obj.reload.state
+      assert_equal 'retainage_expected', @obj.state
       
       # screw them up
-      @obj.lines.each {|l| l.update_attributes :labor_retainage => 1000, :material_retainage => 1000 }
+      @obj.lines.each do |l|
+        l.update_attributes :labor_retainage => 5648976, :material_retainage => 21354 
+        #puts l.labor_retainage
+        #puts l.retainage_as_expected?
+        #puts l.calculate_retainage( 
+        #  l.labor_invoiced + l.cost.labor_invoiced, 
+        #  l.invoice.project.labor_percent_retainage_float, 
+        #  l.cost.labor_retainage 
+        #)
+      end
+      #puts @obj.reload.retainage_as_expected?
+      @obj.advance
 
-      assert_equal 'retainage_unexpected', @obj.reload.state
+      assert_equal 'retainage_unexpected', @obj.state
     end
 
     should "retainage unexpected -> retainage expected if expected" do
       @obj.update_attributes :date => Date::today
+      @obj.advance!
       
       # auto-generates with correct retainage
-      assert_equal 'retainage_expected', @obj.reload.state
+      assert_equal 'retainage_expected', @obj.state
       
       # screw them up
-      @obj.reload.lines.each {|l| l.update_attributes :labor_retainage => 1230984, :material_retainage => 985328374}
+      @obj.lines.each {|l| l.update_attributes :labor_retainage => 1230984, :material_retainage => 985328374}
+      @obj.advance!
       
-      assert_equal 'retainage_unexpected', @obj.reload.state
+      assert_equal 'retainage_unexpected', @obj.state
       
+      #puts 'start'
       # fix them 
-      @obj.reload.lines.each {|l| l.update_attributes :labor_invoiced => 9, :labor_retainage => 1, :material_invoiced => 8, :material_retainage => 2 }
+      @obj.lines.each {|l| l.update_attributes :labor_invoiced => 9, :labor_retainage => 1, :material_invoiced => 8, :material_retainage => 2 }
+      #puts 'end'
+      @obj.advance!
+          
+      #assert_equal 9, @obj.lines[0].labor_invoiced 
+      #assert_equal 1, @obj.lines[0].labor_retainage 
+      #assert_equal 8, @obj.lines[0].material_invoiced 
+      #assert_equal 2, @obj.lines[0].material_retainage 
       
-      assert_equal 'retainage_expected', @obj.reload.state
+      #puts @obj.lines.map{|l| l.retainage_as_expected?}
+      
+      #puts @obj.lines[0].calculate_retainage( 
+      #  @obj.lines[0].labor_invoiced + @obj.lines[0].cost.labor_invoiced, 
+      #  @obj.lines[0].invoice.project.labor_percent_retainage_float, 
+      #  @obj.lines[0].cost.labor_retainage 
+      #)
+      #puts @obj.lines[0].labor_invoiced
+      #puts @obj.lines[0].cost.labor_invoiced
+      
+      # this is the problem.  the line has a cached version of the parent cost
+      #puts @obj.lines[0].cost.labor_retainage #<---
+      #puts @obj.labor_retainage #<---
+      
+      #assert @obj.lines[0].retainage_as_expected?
+      #assert @obj.retainage_as_expected?
+         
+      assert_equal 'retainage_expected', @obj.state
     end
-    
-    should_eventually "determine expected retainage when set to nil" do
-    end
-    
+  
     should "retainage unexpected -> costs_specified" do
       @obj.update_attributes :date => Date::today
       
@@ -286,7 +434,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.advance
       @obj.accept_costs
       
-      assert_equal 'costs_specified', @obj.reload.state
+      assert_equal 'costs_specified', @obj.state
     end
 
     should "retainage expected -> costs_specified" do
@@ -295,7 +443,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.advance
       @obj.accept_costs
       
-      assert_equal 'costs_specified', @obj.reload.state
+      assert_equal 'costs_specified', @obj.state
     end
               
     should "costs_specified -> complete if template specified" do
@@ -305,8 +453,10 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.accept_costs
       
       @obj.update_attributes :template => 'blah'
+      @obj.advance
       
-      assert_equal 'complete', @obj.reload.state
+      assert_equal 'complete', @obj.state
     end
+    
   end
 end

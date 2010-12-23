@@ -1,28 +1,23 @@
-=form_for [@project, @invoice] do |f|
-  %table.invoice_lines
-    %tr
-      %th{:rowspan => 2} Name
-      %th{:colspan => 2} Cost
-      %th{:colspan => 2} Previous Invoices
-      %th{:colspan => 2} Previous Payments
-      %th{:colspan => 10} Current Invoice
+%table.invoice_lines
+  %tr
+    %th{:rowspan => 2} Name
+    %th{:colspan => 2} Cost
+    %th{:colspan => 2} Previous Invoices
+    %th{:colspan => 2} Previous Payments
+    %th{:colspan => 10} Current Invoice
 
-      
-    %tr
-      %th.currency Estimated
-      %th.currency= "As of #{@invoice.date.strftime('%b %d')}"
-      %th.currency Invoiced
-      %th.currency Retainage
-      %th.currency Paid
-      %th.currency Retained
-      %th.currency Invoice
-      %th.currency Retainage
-      %th
+    
+  %tr
+    %th.currency Estimated
+    %th.currency= "As of #{@invoice.date.strftime('%b %d')}"
+    %th.currency Invoiced
+    %th.currency Retainage
+    %th.currency Paid
+    %th.currency Retained
+    %th.currency Invoice
+    %th.currency Retainage
+    %th
 
-    =invoice_form.fields_for :lines do |f|
-      =render :partial => 'invoice_lines/form_tr', :locals => {:line => f.object, :f => f}    
+  =invoice_form.fields_for :lines do |f|
+    =render :partial => 'invoice_lines/form_tr', :locals => {:line => f.object, :f => f}    
 
-  = f.submit 'Save Changes'
-  
-=form_tag accept_invoice_path(@invoice), :method => :get do 
-  =submit_tag 'Next Step'

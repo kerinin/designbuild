@@ -1,0 +1,20 @@
+%table.invoice_lines
+  %tr
+    %th{:rowspan => 2} Name
+    %th{:colspan => 2} Invoiced
+    %th{:colspan => 2} Previous Payments
+    %th{:colspan => 10} Current Payment
+
+    
+  %tr
+    %th.currency Invoiced
+    %th.currency Retainage
+    %th.currency Paid
+    %th.currency Retained
+    %th.currency Paid
+    %th.currency Retained
+    %th
+
+  =payment_form.fields_for :lines do |f|
+    =render :partial => 'payment_lines/form_tr', :locals => {:line => f.object, :f => f}    
+

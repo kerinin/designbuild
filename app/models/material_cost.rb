@@ -3,8 +3,8 @@ class MaterialCost < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  belongs_to :task
-  belongs_to :supplier
+  belongs_to :task, :inverse_of => :material_costs
+  belongs_to :supplier, :inverse_of => :material_costs
   
   has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   
@@ -42,7 +42,8 @@ class MaterialCost < ActiveRecord::Base
   # raw_cost
 
   def cascade_cache_values
-    self.task.reload.save!
+    #puts "cascading from mc"
+    self.task.save!
     
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
   end

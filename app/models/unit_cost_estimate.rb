@@ -4,9 +4,9 @@ class UnitCostEstimate < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   has_invoices
   
-  belongs_to :component
-  belongs_to :quantity
-  belongs_to :task
+  belongs_to :component, :inverse_of => :unit_cost_estimates
+  belongs_to :quantity, :inverse_of => :unit_cost_estimates
+  belongs_to :task, :inverse_of => :unit_cost_estimates
   
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
@@ -67,7 +67,7 @@ class UnitCostEstimate < ActiveRecord::Base
   [:labor_cost, :material_cost].each do |sym|
     self.send(:define_method, sym) do
       if self.task.blank? || self.task.send(sym).nil? || self.estimated_cost.nil? 
-        nil
+        0
       else
         task_cost = self.task.send(sym)
         my_share = case
@@ -88,7 +88,7 @@ class UnitCostEstimate < ActiveRecord::Base
     self.send(:define_method, sym) do |date|
       date ||= Date::today
       if self.task.blank? || self.task.send(sym, date).nil? || self.estimated_cost.nil?
-        nil
+        0
       else
         task_cost = self.task.send(sym, date)
         my_share = case
