@@ -9,7 +9,7 @@ class Payment < ActiveRecord::Base
   validates_numericality_of :paid, :if => :paid?
   validates_numericality_of :retained, :if => :retained?
   
-  before_update Proc.new{|i| i.advance; true}
+  #before_update Proc.new{|i| i.advance; true}
   after_save :update_invoices
   
   state_machine :state, :initial => :new do
@@ -37,8 +37,9 @@ class Payment < ActiveRecord::Base
     event :advance do
       transition :new => :missing_task, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && p.missing_tasks? }
       
-      transition :missing_task => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? }
-      
+      transition :missing_task => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && p.balances? }
+      transition :missing_task => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && !p.balances? }
+            
       transition :new => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && p.balances? }
       transition :new => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && !p.balances?}
       
@@ -53,12 +54,16 @@ class Payment < ActiveRecord::Base
   
   [:labor_paid, :material_paid, :labor_retained, :material_retained].each do |sym|
     self.send(:define_method, sym) do
-      self.lines(true).inject(0) {|memo,obj| memo + obj.send(sym)}
+      self.lines.inject(0) {|memo,obj| memo + obj.send(sym)}
     end
   end
   
+  def advance!
+    self.save! if self.advance
+  end
+  
   def missing_tasks?
-    self.project.tasks(true).where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
       task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
     }.include?( true ) 
   end
@@ -78,9 +83,9 @@ class Payment < ActiveRecord::Base
     self.project.components.each do |component|
       [component.unit_cost_estimates.assigned, component.fixed_cost_estimates.assigned, component.contracts].each do |association|
         association.all.each do |c|
-          line = PaymentLine.new(:payment => self, :cost => c)
+          line = self.lines.build :cost => c
           line.set_defaults
-          self.lines << line
+          line.save
           #line = self.lines.build(:cost => c)
         end
       end
@@ -92,7 +97,7 @@ class Payment < ActiveRecord::Base
   
   def update_invoices(*args)
     # Reload (probably) required
-    self.project(true).invoices.each {|i| i.save! }
+    self.project.invoices.each {|i| i.save! }
     true
   end
 end

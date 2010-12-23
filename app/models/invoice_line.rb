@@ -9,7 +9,7 @@ class InvoiceLine < ActiveRecord::Base
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
   #after_create Proc.new {|invline| invline.invoice.reload.save! }
-  before_create :set_defaults
+  #before_create :set_defaults
   
   def invoiced
     self.labor_invoiced + self.material_invoiced
@@ -26,6 +26,10 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def retainage_as_expected?
+    # I think this is required because we can't do polymorphic inverse_of
+    # As such, the cost's labor_retainage doesn't get updated (on self's cached version)
+    # if another invoice line is changed
+    self.cost.reload
     expected_labor = calculate_retainage( 
       self.labor_invoiced + self.cost.labor_invoiced, 
       self.invoice.project.labor_percent_retainage_float, 
@@ -41,46 +45,30 @@ class InvoiceLine < ActiveRecord::Base
     expected_labor.round(2) == self.labor_retainage.round(2) && expected_material.round(2) == self.material_retainage.round(2)
   end
   
-  def set_defaults
-    #puts "setting defaults"
+  def set_default_invoiced(sym)
     if self.cost.instance_of? Contract
       if self.invoice.project.fixed_bid
-        labor_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
-        material_cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
+        cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
       else
-        labor_cost = multiply_or_nil 0.5, self.cost.cost
-        material_cost = multiply_or_nil 0.5, self.cost.cost
+        cost = multiply_or_nil 0.5, self.cost.cost
       end
     else
       if self.invoice.project.fixed_bid
         # determine % of estimated
-        labor_cost = multiply_or_nil self.cost.labor_percent_float * self.cost.percent_complete_float, self.cost.estimated_cost
-        material_cost = multiply_or_nil self.cost.material_percent_float * self.cost.percent_complete_float, self.cost.estimated_cost
+        cost = multiply_or_nil self.cost.send("#{sym.to_s}_percent_float") * self.cost.percent_complete_float, self.cost.estimated_cost
       else
         # determine costs
-        labor_cost = self.cost.labor_cost
-        material_cost = self.cost.material_cost
+        cost = self.cost.send("#{sym.to_s}_cost")
       end
     end
-    labor_cost ||= 0
-    material_cost ||= 0
+    cost ||= 0
     
     # remove retainage and previously invoiced
-    labor_cost *= (1-self.invoice.project.labor_percent_retainage_float) unless self.invoice.project.labor_percent_retainage_float.nil?
-    self.labor_invoiced = labor_cost - (self.cost.labor_invoiced || 0)
-    
-    material_cost *= (1-self.invoice.project.material_percent_retainage_float) unless self.invoice.project.material_percent_retainage_float.nil?
-    self.material_invoiced = material_cost - (self.cost.material_invoiced || 0)
-    
-    # Sanity check - moves negative costs to other side if that would result in both being > 0
-    if self.labor_invoiced < 0 && self.material_invoiced > -self.labor_invoiced
-      self.material_invoiced += self.labor_invoiced
-      self.labor_invoiced = 0
-    elsif self.material_invoiced < 0 && self.labor_invoiced > -self.material_invoiced
-      self.labor_invoiced += self.material_invoiced
-      self.material_invoiced = 0
-    end
+    cost *= (1-self.invoice.project.send("#{sym.to_s}_percent_retainage_float")) unless self.invoice.project.send("#{sym.to_s}_percent_retainage_float").nil?
+    self.send("#{sym.to_s}_invoiced=", cost - (self.cost.send("#{sym.to_s}_invoiced") || 0) )
+  end
   
+  def set_default_retainage(sym)
     # Check my math!
     # cost * (1-%) - prev = invoiced
     # cost = ( invoiced + prev ) / (1-%)
@@ -93,16 +81,29 @@ class InvoiceLine < ActiveRecord::Base
     # calculate retainage based on material costs
     # the math allows retainage to be calculated for arbitrary labor & material values
 
-    self.labor_retainage = calculate_retainage( 
-      add_or_nil( self.labor_invoiced, self.cost.labor_invoiced), 
-      self.invoice.project.labor_percent_retainage_float, 
-      self.cost.labor_retainage || 0
-    )
-    self.material_retainage = calculate_retainage( 
-      add_or_nil( self.material_invoiced, self.cost.material_invoiced), 
-      self.invoice.project.material_percent_retainage_float, 
-      self.cost.material_retainage || 0
-    )
+    self.send("#{sym.to_s}_retainage=", calculate_retainage( 
+      add_or_nil( self.send("#{sym.to_s}_invoiced"), self.cost.send("#{sym.to_s}_invoiced")), 
+      self.invoice.project.send("#{sym.to_s}_percent_retainage_float"), 
+      self.cost.send("#{sym.to_s}_retainage") || 0
+    ) )
+  end
+  
+  def set_defaults
+    self.set_default_invoiced(:labor)
+    self.set_default_invoiced(:material) 
+    
+    # Sanity check - moves negative costs to other side if that would result in both being > 0
+    if self.labor_invoiced < 0 && self.material_invoiced > -self.labor_invoiced
+      self.material_invoiced += self.labor_invoiced
+      self.labor_invoiced = 0
+    elsif self.material_invoiced < 0 && self.labor_invoiced > -self.material_invoiced
+      self.labor_invoiced += self.material_invoiced
+      self.material_invoiced = 0
+    end
+  
+    self.set_default_retainage(:labor)
+    self.set_default_retainage(:material) 
+    self
   end
 
   def calculate_retainage( invoiced, retainage_float, retainage)

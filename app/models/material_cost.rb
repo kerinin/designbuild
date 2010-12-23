@@ -42,7 +42,8 @@ class MaterialCost < ActiveRecord::Base
   # raw_cost
 
   def cascade_cache_values
-    self.task.reload.save!
+    #puts "cascading from mc"
+    self.task.save!
     
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
   end

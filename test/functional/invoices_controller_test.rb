@@ -25,42 +25,46 @@ class InvoicesControllerTest < ActionController::TestCase
       @fce3 = Factory :fixed_cost_estimate, :component => @component3, :task => @task3
       @payment3 = Factory :payment, :project => @project3, :paid => 100
       
+      [@project1, @component1, @task1, @fce1].each {|i| i.reload}
+      [@project2, @task2, @mc2].each {|i| i.reload}
+      [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
+      
       @invoice = Factory :invoice, :project => @project1
       
       @new_invoice = Factory :invoice, :project => @project1
       
-      @missing_task_invoice = Factory :invoice, :project => @project2
-      @missing_task_invoice.update_attributes(:date => Date::today)
+      @missing_task_invoice = @project2.invoices.create! :date => Date::today
+      @missing_task_invoice.advance!
       
-      @payments_unbalanced_invoice = Factory :invoice, :project => @project3
-      @payments_unbalanced_invoice.update_attributes(:date => Date::today)
+      @payments_unbalanced_invoice = @project3.invoices.create! :date => Date::today
+      @payments_unbalanced_invoice.advance!
       
-      @retainage_expected_invoice = Factory :invoice, :project => @project1
-      @retainage_expected_invoice.update_attributes(:date => Date::today)
+      @retainage_expected_invoice = @project1.invoices.create! :date => Date::today
+      @retainage_expected_invoice.advance!
       @retainage_expected_line = @retainage_expected_invoice.lines.first
       
-      @retainage_unexpected_invoice = Factory :invoice, :project => @project1
-      @retainage_unexpected_invoice.update_attributes(:date => Date::today)
+      @retainage_unexpected_invoice = @project1.invoices.create! :date => Date::today
+      @retainage_unexpected_invoice.advance!
       @retainage_unexpected_line = @retainage_unexpected_invoice.lines.first
       @retainage_unexpected_line.update_attributes(:labor_retainage => 65486432184)
+      @retainage_unexpected_invoice.advance!
       
-      @costs_specified_invoice = Factory :invoice, :project => @project1
-      @costs_specified_invoice.update_attributes(:date => Date::today)
+      @costs_specified_invoice = @project1.invoices.create! :date => Date::today
+      @costs_specified_invoice.advance!
       @costs_specified_invoice.accept_costs
       
-      @complete_invoice = Factory :invoice, :project => @project1
-      @complete_invoice.update_attributes(:date => Date::today)
+      @complete_invoice = @project1.invoices.create! :date => Date::today
+      @complete_invoice.advance!
       @complete_invoice.accept_costs
       @complete_invoice.update_attributes(:template => 'template_AIA_G703')
+      @complete_invoice.advance!
       
-      [@project1, @component1, @task1, @fce1].each {|i| i.reload}
-      [@project2, @task2, @mc2].each {|i| i.reload}
-      [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
+
       [@invoice, @new_invoice, @missing_task_invoice, @payments_unbalanced_invoice, @retainage_expected_invoice, @retainage_unexpected_invoice, @costs_specified_invoice, @complete_invoice].each {|i| i.reload}
 
       sign_in Factory :user
     end
-=begin 
+
     should "start in expected states" do
       assert_equal 'new', @new_invoice.state
       assert_equal 'missing_task', @missing_task_invoice.state
@@ -288,7 +292,7 @@ class InvoicesControllerTest < ActionController::TestCase
       }
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
-=end   
+  
     should "update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => 
         [ { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 } ]
@@ -304,7 +308,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_equal 100, @retainage_expected_line.reload.labor_retainage
       assert_equal 1000, @retainage_expected_line.reload.material_retainage
     end
-=begin    
+  
     should_eventually "fail to update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => {:line => {
         :id => @retainage_expected_line.to_param, :labor_invoiced => 'foo', :material_invoiced => 'foo', :labor_retainage => 'foo', :material_retainage => 'foo'
@@ -360,6 +364,5 @@ class InvoicesControllerTest < ActionController::TestCase
 
       assert_redirected_to project_invoices_path(@project1)
     end
-=end
   end
 end
