@@ -384,14 +384,14 @@ class InvoiceTest < ActiveSupport::TestCase
 
     should "retainage unexpected -> retainage expected if expected" do
       @obj.update_attributes :date => Date::today
-      @obj.advance
+      @obj.advance!
       
       # auto-generates with correct retainage
       assert_equal 'retainage_expected', @obj.state
       
       # screw them up
       @obj.lines.each {|l| l.update_attributes :labor_retainage => 1230984, :material_retainage => 985328374}
-      @obj.advance
+      @obj.advance!
       
       assert_equal 'retainage_unexpected', @obj.state
       
@@ -399,8 +399,30 @@ class InvoiceTest < ActiveSupport::TestCase
       # fix them 
       @obj.lines.each {|l| l.update_attributes :labor_invoiced => 9, :labor_retainage => 1, :material_invoiced => 8, :material_retainage => 2 }
       #puts 'end'
-      @obj.advance
+      @obj.advance!
           
+      #assert_equal 9, @obj.lines[0].labor_invoiced 
+      #assert_equal 1, @obj.lines[0].labor_retainage 
+      #assert_equal 8, @obj.lines[0].material_invoiced 
+      #assert_equal 2, @obj.lines[0].material_retainage 
+      
+      #puts @obj.lines.map{|l| l.retainage_as_expected?}
+      
+      #puts @obj.lines[0].calculate_retainage( 
+      #  @obj.lines[0].labor_invoiced + @obj.lines[0].cost.labor_invoiced, 
+      #  @obj.lines[0].invoice.project.labor_percent_retainage_float, 
+      #  @obj.lines[0].cost.labor_retainage 
+      #)
+      #puts @obj.lines[0].labor_invoiced
+      #puts @obj.lines[0].cost.labor_invoiced
+      
+      # this is the problem.  the line has a cached version of the parent cost
+      #puts @obj.lines[0].cost.labor_retainage #<---
+      #puts @obj.labor_retainage #<---
+      
+      #assert @obj.lines[0].retainage_as_expected?
+      #assert @obj.retainage_as_expected?
+         
       assert_equal 'retainage_expected', @obj.state
     end
   

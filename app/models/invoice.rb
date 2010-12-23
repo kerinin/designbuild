@@ -63,6 +63,10 @@ class Invoice < ActiveRecord::Base
     end
   end
   
+  def advance!
+    self.save! if self.advance
+  end
+  
   def retainage_as_expected?
     self.lines.each {|l| return false unless l.retainage_as_expected? }
     true
@@ -85,13 +89,22 @@ class Invoice < ActiveRecord::Base
   def populate_lines
     #puts 'populating lines'
     #puts self.project.components.count
-    self.project.components.each do |component|
-      self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
-      self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
-      self.lines_attributes = component.contracts.map {|c| { :cost => c } }
-    end
+    #self.project.components.each do |component|
+    #  self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
+    #  self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
+    #  self.lines_attributes = component.contracts.map {|c| { :cost => c } }
+    #end
     
-    self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
-    self.save!
+    #self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
+    
+    #self.lines.each {|l| l.set_defaults}
+    
+    #self.save!
+    self.project.components.each do |component|
+      component.unit_cost_estimates.assigned.each {|uc| self.lines.build(:cost => uc).set_defaults.save! }
+      component.fixed_cost_estimates.assigned.each {|fc| self.lines.build(:cost => fc).set_defaults.save! }
+      component.contracts.each {|c| self.lines.build(:cost => c).set_defaults.save! }
+    end
+    self.project.contracts.scoped.without_component.each {|c| self.lines.build(:cost => c).set_defaults.save! }
   end
 end

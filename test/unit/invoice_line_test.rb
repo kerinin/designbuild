@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceLineTest < ActiveSupport::TestCase
+
   context "Given a T&M Project" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
@@ -64,7 +65,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       end
       
       should "default to cost - requested" do
-        #@obj.set_defaults
+        @obj.set_defaults
         
         assert_equal (@fce.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
         assert_equal (@fce.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
@@ -135,7 +136,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       end
       
       should "default to cost - requested" do
-        #@obj.set_defaults
+        @obj.set_defaults
         
         assert_equal (@uce.labor_cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
         assert_equal (@uce.material_cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
@@ -209,10 +210,10 @@ class InvoiceLineTest < ActiveSupport::TestCase
       end
       
       should "default to cost - requested" do
-        #@obj.set_defaults
-        assert_equal 50, @contract_cost.raw_cost
-        assert_contains @contract.costs, @contract_cost
-        assert_not_nil @contract.cost
+        @obj.set_defaults
+        #assert_equal 50, @contract_cost.raw_cost
+        #assert_contains @contract.costs, @contract_cost
+        #assert_not_nil @contract.cost
         
         
         assert_equal (0.5*@contract.cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
@@ -267,7 +268,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       should "default to % complete * estimated - requested" do
         # for now splitting based on task labor/material COSTS
 
-        #@obj.set_defaults
+        @obj.set_defaults
         
         # % complete * labor multiplier * estimated cost, minus retainage
         assert_equal (
@@ -323,7 +324,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       should "default to % complete * estimated - requested" do
         # for now splitting based on task labor/material COSTS
 
-        #@obj.set_defaults
+        @obj.set_defaults
         
         # % complete * labor multiplier * estimated cost, minus retainage
         # Fun with Floats!
@@ -378,7 +379,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       should "default to % complete * estimated - requested" do
         # for now splitting based on task labor/material COSTS
         
-        #@obj.set_defaults
+        @obj.set_defaults
 
         # % complete * labor multiplier * estimated cost, minus retainage
         assert_equal (
