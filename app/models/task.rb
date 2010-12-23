@@ -154,6 +154,7 @@ class Task < ActiveRecord::Base
   
   
   def cache_values
+    #puts "caching from task"
     [self.unit_cost_estimates, self.fixed_cost_estimates, self.labor_costs, self.material_costs, self.markups].each {|a| a.reload}
   
     self.cache_estimated_unit_cost
@@ -161,6 +162,8 @@ class Task < ActiveRecord::Base
     self.cache_labor_cost
     self.cache_material_cost
     self.cache_total_markup
+    #puts self.material_costs(true).count
+    #puts self.raw_material_cost
   end
     
   def cascade_cache_values
