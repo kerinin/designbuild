@@ -20,7 +20,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
               
         # requested: 2, paid: 1
         @invoice = @project.invoices.create! :date => Date::today
-        @line = @invoice.lines.create( 
+        @line = @invoice.lines.create!( 
           :cost => @fce, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
@@ -28,6 +28,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
           :material_retainage => 20 
         )
   
+        @fce.reload
         #[@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
@@ -91,7 +92,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
               
         # requested: 2, paid: 1
         @invoice = @project.invoices.create! :date => Date::today
-        @line = @invoice.lines.create( 
+        @line = @invoice.lines.create!( 
           :cost => @uce, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
@@ -156,18 +157,23 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @component.contracts << @contract
         @bid = @contract.bids.create! :raw_cost => 100, :contractor => 'contractor', :date => Date::today
         @contract.update_attributes :active_bid => @bid
+        #puts "start"
         @contract_cost = @contract.costs.create! :raw_cost => 50, :date => Date::today
+        #puts "end"
+        #puts @contract.raw_cost
+        #puts @contract.cost
         
         # requested: 2, paid: 1
         @invoice = @project.invoices.create! :date => Date::today
-        @line = @invoice.lines.create( 
+        @line = @invoice.lines.create!( 
           :cost => @contract, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
           :material_invoiced => 50, 
           :material_retainage => 20 
         )     
-  
+        
+        @contract.reload
         #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
@@ -204,6 +210,10 @@ class InvoiceLineTest < ActiveSupport::TestCase
       
       should "default to cost - requested" do
         #@obj.set_defaults
+        assert_equal 50, @contract_cost.raw_cost
+        assert_contains @contract.costs, @contract_cost
+        assert_not_nil @contract.cost
+        
         
         assert_equal (0.5*@contract.cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
         assert_equal (0.5*@contract.cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
@@ -226,18 +236,18 @@ class InvoiceLineTest < ActiveSupport::TestCase
  
     context "A Fixed Cost Invoice Line" do
       setup do
-        @component = Factory :component, :project => @project
+        @component = @project.components.create! :name => 'component'
       
-        @task = Factory :task, :project => @project
-        @fce = Factory :fixed_cost_estimate, :raw_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
-        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc2 = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
+        @task = @project.tasks.create! :name => 'task'
+        @fce = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+        @task.fixed_cost_estimates << @fce
+        @lc = @task.labor_costs.create! :percent_complete => 50, :date => Date::today
+        @lcl = @lc.line_items.create! :laborer => @l, :hours => 100
+        @mc2 = @task.material_costs.create! :raw_cost => 100, :date => Date::today, :supplier => Factory(:supplier)
               
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today
-        @line = Factory( :invoice_line, 
-          :invoice => @invoice,
+        @invoice = @project.invoices.create! :date => Date::today
+        @line = @invoice.lines.create!( 
           :cost => @fce, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
@@ -245,12 +255,13 @@ class InvoiceLineTest < ActiveSupport::TestCase
           :material_retainage => 20 
         )
   
-        [@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
+        @fce.reload
+        #[@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
 
-        @new_invoice = Factory :invoice, :project => @project
-        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @fce
+        @new_invoice = @project.invoices.create!
+        @obj = @new_invoice.lines.create! :cost => @fce
       
-        [@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+        #[@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
@@ -281,32 +292,32 @@ class InvoiceLineTest < ActiveSupport::TestCase
     
     context "A Unit Cost Invoice Line" do
       setup do
-        @component = Factory :component, :project => @project
+        @component = @project.components.create! :name => 'component'
       
-        @task = Factory :task, :project => @project
-        @q = Factory :quantity, :component => @component, :value => 1
-        @uce = Factory :unit_cost_estimate, :quantity => @q, :unit_cost => 100, :task => @task, :component => @component
-        @lc = Factory :labor_cost, :task => @task, :percent_complete => 50, :date => Date::today
-        @lcl = Factory :labor_cost_line, :labor_set => @lc, :laborer => @l, :hours => 100
-        @mc = Factory :material_cost, :task => @task, :raw_cost => 100, :date => Date::today
-      
+        @task = @project.tasks.create! :name => 'task'
+        @q = @component.quantities.create! :name => 'quantity', :value => 1
+        @uce = @component.unit_cost_estimates.create! :name => 'unit cost', :quantity => @q, :unit_cost => 100
+        @task.unit_cost_estimates << @uce
+        @lc = @task.labor_costs.create! :percent_complete => 50, :date => Date::today
+        @lcl = @lc.line_items.create! :laborer => @l, :hours => 100
+        @mc2 = @task.material_costs.create! :raw_cost => 100, :date => Date::today, :supplier => Factory(:supplier)
+              
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today
-        @line = Factory( :invoice_line, 
-          :invoice => @invoice,
+        @invoice = @project.invoices.create! :date => Date::today
+        @line = @invoice.lines.create!( 
           :cost => @uce, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
           :material_invoiced => 50, 
           :material_retainage => 20 
-        )
+        )     
   
-        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
+        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
 
-        @new_invoice = Factory :invoice, :project => @project
-        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @uce
+        @new_invoice = @project.invoices.create!
+        @obj = @new_invoice.lines.create! :cost => @uce
       
-        [@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
@@ -338,31 +349,30 @@ class InvoiceLineTest < ActiveSupport::TestCase
 
     context "A contract Invoice Line" do
       setup do
-        @component = Factory :component, :project => @project
+        @component = @project.components.create! :name => 'component'
       
-        # est: 100, cost: 50
-        @contract = Factory :contract, :project => @project, :component => @component
-        @bid = Factory :bid, :contract => @contract, :raw_cost => 100
-        @contract.update_attributes(:active_bid => @bid)
-        @contract_cost = Factory :contract_cost, :contract => @contract, :raw_cost => 50, :date => Date::today
-
+        @contract = @project.contracts.create! :name => 'contract'
+        @component.contracts << @contract
+        @bid = @contract.bids.create! :raw_cost => 100, :contractor => 'contractor', :date => Date::today
+        @contract.update_attributes :active_bid => @bid
+        @contract_cost = @contract.costs.create! :raw_cost => 50, :date => Date::today
+        
         # requested: 2, paid: 1
-        @invoice = Factory :invoice, :project => @project, :date => Date::today
-        @line = Factory( :invoice_line, 
-          :invoice => @invoice,
+        @invoice = @project.invoices.create! :date => Date::today
+        @line = @invoice.lines.create!( 
           :cost => @contract, 
           :labor_invoiced => 5, 
           :labor_retainage => 2, 
           :material_invoiced => 50, 
           :material_retainage => 20 
-        )
+        )     
   
-        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
+        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
 
-        @new_invoice = Factory :invoice, :project => @project
-        @obj = Factory :invoice_line, :invoice => @new_invoice, :cost => @contract
+        @new_invoice = @project.invoices.create!
+        @obj = @new_invoice.lines.create! :cost => @contract
       
-        [@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
+        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
