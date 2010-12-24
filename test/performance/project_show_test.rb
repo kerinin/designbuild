@@ -4,16 +4,13 @@ require File.dirname(__FILE__) + '/../performance_test_helper'
 
 
 
-class PayrollSummaryTest < ActionDispatch::PerformanceTest
+class ProjectShowTest < ActionDispatch::PerformanceTest
   setup do
     post '/users/sign_in', :user => {:email => 'ryan@bcarc.com', :password => 'kundera'}
   end
   
   def test_payroll_summary
-    get '/projects/payroll_summary'
-  end
-  
-  def test_project_payroll_summary
-    get '/projects/2/payroll_summary'
+    get '/projects/2'
+    get '/projects/1'
   end
 end
