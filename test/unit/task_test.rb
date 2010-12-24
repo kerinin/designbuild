@@ -134,9 +134,9 @@ class TaskTest < ActiveSupport::TestCase
       assert_equal 1111, @obj.estimated_raw_cost
     end
         
-    should "return estimated cost nil if no estimates" do
+    should "return estimated cost 0 if no estimates" do
       @obj2 = Factory :task
-      assert_equal nil, @obj2.estimated_raw_cost
+      assert_equal 0, @obj2.estimated_raw_cost
     end
     
     should "aggregate material costs" do
@@ -160,11 +160,11 @@ class TaskTest < ActiveSupport::TestCase
     should_eventually "aggregate costs with date cutoff" do
     end
     
-    should "return cost nil if no costs" do
+    should "return cost 0 if no costs" do
       @obj2 = Factory :task
-      assert_equal nil, @obj2.raw_material_cost
-      assert_equal nil, @obj2.raw_labor_cost
-      assert_equal nil, @obj2.raw_cost
+      assert_equal 0, @obj2.raw_material_cost
+      assert_equal 0, @obj2.raw_labor_cost
+      assert_equal 0, @obj2.raw_cost
     end
      
     should "project costs based on percent complete" do

@@ -1,3 +1,11 @@
+invoice_collector_test
+invoice_test
+invoicable_test
+markup_test
+project_caching_test
+task_test
+
+
 + projected costs
 + active tasks
 + inherited quantities
