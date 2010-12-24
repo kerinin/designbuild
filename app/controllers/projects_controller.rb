@@ -59,10 +59,10 @@ class ProjectsController < ApplicationController
   def labor_summary
     if params.has_key?(:id)
       @project = Project.find(params[:id])
-      @tasks = @project.tasks.scoped
+      @tasks = @project.tasks
     else
       @projects = Project.scoped
-      @tasks = Task.joins(:project) & @projects
+      @tasks = Task.scoped
     end
     
     if params.has_key? :date

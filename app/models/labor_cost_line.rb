@@ -12,20 +12,22 @@ class LaborCostLine < ActiveRecord::Base
   
   validates_numericality_of :hours
   
+  before_validation :set_costs
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  scope :by_project, lambda {|project| joins(:labor_set => :task).where('tasks.project_id = ?', project.id) } 
+  scope :by_project, lambda {|project| includes(:labor_set => :task).where('tasks.project_id = ?', project.id) } 
   
   def total_markup
     self.labor_set.total_markup unless self.labor_set.blank?
   end
   
-  # cost
-  marks_up :raw_cost
   
-  def raw_cost
-    self.hours * self.laborer.bill_rate unless ( self.laborer.blank? || self.laborer.destroyed? )
+  def set_costs
+    self.raw_cost = self.hours * self.laborer.bill_rate unless ( self.laborer.blank? || self.laborer.destroyed? )
+    
+    self.cost = mark_up :raw_cost
   end
 
   def cascade_cache_values

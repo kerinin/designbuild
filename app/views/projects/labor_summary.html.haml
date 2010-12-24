@@ -29,8 +29,10 @@
   ='-'
   =end_day.strftime('%A %b %d')
 
--@laborers = Laborer.scoped
--tasks = @tasks.joins(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day).uniq
+-laborers = Laborer.scoped
+-tasks = @tasks.includes(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+-tasks = tasks.includes(:project) unless @projects.nil?
+-time_scope = LaborCostLine.includes(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
 
 %table
   %tr
@@ -42,32 +44,32 @@
         = task.name
     %th Total Hours
 
-  -@laborers.each do |laborer|
+  -laborers.each do |laborer|
   
-    -labor_cost_lines = LaborCostLine.where(:laborer_id => laborer.id).includes(:labor_set => :task).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day) 
-    -unless labor_cost_lines.empty?
+    -scope = time_scope.where(:laborer_id => laborer.id)
+    -total_hours = scope.sum(:hours)
+    -grouped_hours = scope.group('labor_costs.task_id').sum(:hours)
+    -unless grouped_hours.empty?
       %tr
         %td
           %strong= laborer.name
           
         -tasks.each do |task|
-          -lines = labor_cost_lines.where('labor_costs.task_id = ?', task.id)
           %td.number
-            -hours = lines.inject(nil) {|memo,obj| add_or_nil memo, obj.hours }
+            -hours = grouped_hours[task.id]
             -if hours
               =hours
               h
         %td.number
           %strong
-            = labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.hours}
+            =total_hours
             h
   %tr
     %td.right
       %strong Total Hours
     -tasks.each do |task|
-      -labor_cost_lines = LaborCostLine.where('labor_costs.task_id = ?', task.id).joins(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+      -grouped_costs = time_scope.group('labor_costs.task_id').sum(:cost)
       %td.number
         %strong
-          = number_to_currency labor_cost_lines.inject(nil) {|memo, obj| add_or_nil memo, obj.cost}
-            
+          = number_to_currency grouped_costs[task.id]
 

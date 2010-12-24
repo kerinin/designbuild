@@ -33,7 +33,7 @@ class Task < ActiveRecord::Base
   }
   
   scope :completed, lambda {
-    where( 'percent_complete >= 100' )
+    where( "#{table_name}.percent_complete >= 100" )
   }
   
   scope :future, lambda {

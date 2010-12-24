@@ -1,9 +1,9 @@
 # START : HAX HAX HAX
 # Load Rails environment in 'test' mode
-ENV["RAILS_ENV"] = "test"
-require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
+#ENV["RAILS_ENV"] = "test"
+#require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 # Re-establish db connection for 'performance' mode
-silence_warnings { ENV["RAILS_ENV"] = "performance" }
+silence_warnings { Rails.env = 'performance' } #ENV["RAILS_ENV"] = "performance" }
 ActiveRecord::Base.establish_connection
 # STOP : HAX HAX HAX
 

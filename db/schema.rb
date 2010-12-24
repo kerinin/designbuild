@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101218150330) do
+ActiveRecord::Schema.define(:version => 20101224163942) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -97,16 +97,16 @@ ActiveRecord::Schema.define(:version => 20101218150330) do
   end
 
   create_table "invoice_lines", :force => true do |t|
-    t.float    "labor_invoiced",     :default => 0.0, :null => false
-    t.float    "labor_retainage",    :default => 0.0, :null => false
-    t.float    "material_invoiced",  :default => 0.0, :null => false
-    t.float    "material_retainage", :default => 0.0, :null => false
-    t.string   "comment"
-    t.integer  "invoice_id"
-    t.integer  "cost_id"
-    t.string   "cost_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.float     "labor_invoiced",     :default => 0.0, :null => false
+    t.float     "labor_retainage",    :default => 0.0, :null => false
+    t.float     "material_invoiced",  :default => 0.0, :null => false
+    t.float     "material_retainage", :default => 0.0, :null => false
+    t.string    "comment"
+    t.integer   "invoice_id"
+    t.integer   "cost_id"
+    t.string    "cost_type"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "invoices", :force => true do |t|
@@ -120,11 +120,13 @@ ActiveRecord::Schema.define(:version => 20101218150330) do
   end
 
   create_table "labor_cost_lines", :force => true do |t|
-    t.float     "hours"
-    t.integer   "labor_set_id"
-    t.integer   "laborer_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.float    "hours"
+    t.integer  "labor_set_id"
+    t.integer  "laborer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "cost"
+    t.float    "raw_cost"
   end
 
   create_table "labor_costs", :force => true do |t|
@@ -191,16 +193,16 @@ ActiveRecord::Schema.define(:version => 20101218150330) do
   end
 
   create_table "payment_lines", :force => true do |t|
-    t.float    "labor_paid",        :default => 0.0, :null => false
-    t.float    "labor_retained",    :default => 0.0, :null => false
-    t.float    "material_paid",     :default => 0.0, :null => false
-    t.float    "material_retained", :default => 0.0, :null => false
-    t.string   "comment"
-    t.integer  "payment_id"
-    t.integer  "cost_id"
-    t.string   "cost_type"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.float     "labor_paid",        :default => 0.0, :null => false
+    t.float     "labor_retained",    :default => 0.0, :null => false
+    t.float     "material_paid",     :default => 0.0, :null => false
+    t.float     "material_retained", :default => 0.0, :null => false
+    t.string    "comment"
+    t.integer   "payment_id"
+    t.integer   "cost_id"
+    t.string    "cost_type"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "payments", :force => true do |t|
@@ -214,28 +216,28 @@ ActiveRecord::Schema.define(:version => 20101218150330) do
   end
 
   create_table "projects", :force => true do |t|
-    t.string   "name"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "estimated_fixed_cost"
-    t.float    "estimated_raw_fixed_cost"
-    t.float    "estimated_unit_cost"
-    t.float    "estimated_raw_unit_cost"
-    t.float    "estimated_contract_cost"
-    t.float    "estimated_raw_contract_cost"
-    t.float    "material_cost"
-    t.float    "raw_material_cost"
-    t.float    "labor_cost"
-    t.float    "raw_labor_cost"
-    t.float    "contract_cost"
-    t.float    "raw_contract_cost"
-    t.float    "projected_cost"
-    t.float    "raw_projected_cost"
-    t.boolean  "show_planning",               :default => true
-    t.boolean  "show_construction",           :default => false
-    t.float    "labor_percent_retainage",     :default => 0.0,   :null => false
-    t.float    "material_percent_retainage",  :default => 0.0,   :null => false
-    t.boolean  "fixed_bid",                   :default => false
+    t.string    "name"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.float     "estimated_fixed_cost"
+    t.float     "estimated_raw_fixed_cost"
+    t.float     "estimated_unit_cost"
+    t.float     "estimated_raw_unit_cost"
+    t.float     "estimated_contract_cost"
+    t.float     "estimated_raw_contract_cost"
+    t.float     "material_cost"
+    t.float     "raw_material_cost"
+    t.float     "labor_cost"
+    t.float     "raw_labor_cost"
+    t.float     "contract_cost"
+    t.float     "raw_contract_cost"
+    t.float     "projected_cost"
+    t.float     "raw_projected_cost"
+    t.boolean   "show_planning",               :default => true
+    t.boolean   "show_construction",           :default => false
+    t.float     "labor_percent_retainage",     :default => 0.0,   :null => false
+    t.float     "material_percent_retainage",  :default => 0.0,   :null => false
+    t.boolean   "fixed_bid",                   :default => false
   end
 
   create_table "projects_users", :id => false, :force => true do |t|

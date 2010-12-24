@@ -3,18 +3,18 @@ class Project < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  has_many :components, :order => :position, :dependent => :destroy
-  has_many :tasks, :order => :name, :dependent => :destroy
-  has_many :contracts, :order => :position, :dependent => :destroy
-  has_many :deadlines, :order => :date, :dependent => :destroy
+  has_many :components, :order => "components.position", :dependent => :destroy
+  has_many :tasks, :order => "tasks.name", :dependent => :destroy
+  has_many :contracts, :order => "contracts.position", :dependent => :destroy
+  has_many :deadlines, :order => "deadlines.date", :dependent => :destroy
   #has_many :laborers, :order => :name, :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
   
-  has_many :invoices, :order => 'date DESC'
-  has_many :payments
+  has_many :invoices, :order => 'invoices.date DESC'
+  has_many :payments, :order => 'payments.date DESC'
   
   has_and_belongs_to_many :users
   
