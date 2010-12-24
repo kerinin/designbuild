@@ -40,6 +40,8 @@ gem 'paper_trail'
 gem 'state_machine'
 
 group :test, :development do
+  gem "yaml_db"
+  gem "ruby-prof"
   gem "shoulda"
   gem "rspec-rails", "2.0.0.beta.12"
   gem 'factory_girl_rails'
