@@ -4,7 +4,6 @@ require 'performance_test_helper'
 
 
 class LaborSummaryTest < ActionDispatch::PerformanceTest
-  # Replace this with your real tests.
   setup do
     post '/users/sign_in', :user => {:email => 'ryan@bcarc.com', :password => 'kundera'}
   end
