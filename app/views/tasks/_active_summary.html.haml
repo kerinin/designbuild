@@ -11,7 +11,7 @@
       %th.control
       %th.control
 
-    - @project.tasks.active.each do |task|
+    - @project.tasks.active.all.each do |task|
       %tr{:id => "task_#{task.id}"}
         %td=link_to task.name, [@project, task]
         %td.currency= number_to_currency(task.estimated_raw_cost)

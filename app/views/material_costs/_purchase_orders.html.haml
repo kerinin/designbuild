@@ -2,7 +2,7 @@
 
 #current_purchase_orders
   %table
-    -costs.purchase_order.each do |po|
+    -costs.purchase_order.all.each do |po|
       %tr{:id => "purchase_order_#{po.id}"}
         %td= link_to po.task.name, [@project, po.task]
         %td= link_to "#{po.supplier.name}, #{po.date.strftime('%A %b %d')}", [po.task, po]

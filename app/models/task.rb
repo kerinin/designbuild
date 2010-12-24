@@ -125,7 +125,8 @@ class Task < ActiveRecord::Base
   
   marks_up :raw_labor_cost_before
   def raw_labor_cost_before(date = Date::today)
-    self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.labor_costs.where('date <= ?', date).sum(:raw_cost)
   end
   
   # raw_labor_cost
@@ -137,7 +138,8 @@ class Task < ActiveRecord::Base
   
   marks_up :raw_material_cost_before
   def raw_material_cost_before(date = Date::today)
-    self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.material_costs.where('date <= ?', date).sum(:raw_cost)
   end
   
   def cost
@@ -221,23 +223,28 @@ class Task < ActiveRecord::Base
   protected
 
   def cache_estimated_unit_cost
-    self.estimated_raw_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.estimated_raw_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
   end
   
   def cache_estimated_fixed_cost
-    self.estimated_raw_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.raw_cost)}
+    #self.estimated_raw_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.raw_cost)}
+    self.estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
   end
 
   def cache_labor_cost
-    self.raw_labor_cost = self.labor_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.raw_labor_cost = self.labor_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_labor_cost = self.labor_costs.sum(:raw_cost)
   end
 
   def cache_material_cost
-    self.raw_material_cost = self.material_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.raw_material_cost = self.material_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_material_cost = self.material_costs.sum(:raw_cost)
   end 
   
   def cache_total_markup
-    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    #self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.sum(:percent)
   end
   
   

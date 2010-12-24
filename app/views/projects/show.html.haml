@@ -85,7 +85,7 @@
       =link_to material_cost_summary_for_project_path(@project, 'date[year]' => thursday.year, 'date[month]' => thursday.month, 'date[day]' => thursday.day) do
         %button This Week's Material Cost Summary
     
-    -unless LaborCost.includes(:task).where('tasks.project_id = ?', @project.id).empty?
+    -unless LaborCost.where('project_id = ?', @project.id).empty?
       .full_width
         %h3 Labor Allocation Timeline
         %script{:type => 'text/javascript+protovis'}
@@ -124,42 +124,3 @@
           %button Project Purchase Orders
         =link_to purchase_order_list_projects_path do
           %button All Purchase Orders
-
-
-/
-  %h2 Overview
-
-  %p
-    Estimated Cost:
-    %strong=number_to_currency @project.estimated_cost
-    %br
-    Cost to Date:
-    %strong=number_to_currency @project.cost
-    %br
-    Projected Cost:
-    %strong=number_to_currency @project.projected_cost
-    
-  -unless @project.tasks.empty?
-    %h3 Tasks
-    =# render :partial => 'tasks/project_dashboard', :locals => {:tasks => @project.tasks}
-
-  -unless @project.contracts.empty?
-    %h3 Fixed-Bid Contracts
-    =render :partial => 'contracts/project_dashboard'
-    
-  -unless @project.unit_cost_estimates.unassigned.count == 0 && @project.fixed_cost_estimates.unassigned == 0
-    %h2 Costs Without a Task
-    
-    -unless @project.unit_cost_estimates.unassigned.count == 0
-      %h3 Unit Costs
-        
-      =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned, :context => :project}
-      
-    -unless @project.fixed_cost_estimates.unassigned.count == 0
-      %h3 Fixed Costs
-        
-      =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @project.fixed_cost_estimates.unassigned, :context => :project}
-
-  -unless @project.labor_cost.nil?
-    %h3 Timeline
-    =#render :partial => 'timeline'
