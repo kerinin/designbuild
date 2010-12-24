@@ -22,6 +22,6 @@ class ActionController::TestCase
 end
 
 class ActionController::PerformanceTest
-  fixtures :all
+  #include Devise::TestHelpers
 end
 
