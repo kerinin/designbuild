@@ -127,16 +127,19 @@ ActiveRecord::Schema.define(:version => 20101224163942) do
     t.datetime "updated_at"
     t.float    "cost"
     t.float    "raw_cost"
+    t.float    "laborer_pay"
+    t.integer  "project_id"
   end
 
   create_table "labor_costs", :force => true do |t|
-    t.date      "date"
-    t.float     "percent_complete"
-    t.integer   "task_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "raw_cost"
-    t.string    "note"
+    t.date     "date"
+    t.float    "percent_complete"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "raw_cost"
+    t.string   "note"
+    t.integer  "project_id"
   end
 
   create_table "laborers", :force => true do |t|

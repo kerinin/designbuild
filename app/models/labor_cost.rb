@@ -4,6 +4,7 @@ class LaborCost < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
+  belongs_to :project
   belongs_to :task, :inverse_of => :labor_costs
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
@@ -11,7 +12,7 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task, :percent_complete
   validates_numericality_of :percent_complete
   
-  before_save :cache_values
+  before_save :set_project, :cache_values
   
   after_save :deactivate_task_if_done
   after_save :set_task_percent_complete
@@ -19,7 +20,7 @@ class LaborCost < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  scope :by_project, lambda {|project| includes(:task).where('tasks.project_id = ?', project.id) } 
+  scope :by_project, lambda {|project| where(:project_id => project.id ) } 
   
   def total_markup
     self.task.total_markup unless self.task.blank?
@@ -44,6 +45,10 @@ class LaborCost < ActiveRecord::Base
 
   protected
     
+  def set_project
+    self.project = self.task.project
+  end
+  
   def cache_raw_cost
     self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
   end
