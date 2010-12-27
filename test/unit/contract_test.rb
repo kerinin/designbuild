@@ -97,7 +97,7 @@ class ContractTest < ActiveSupport::TestCase
     end
 
     should "aggregate costs with cutoff" do
-      assert_equal nil, @obj.raw_cost_before(Date::today - 5)
+      assert_equal 0, @obj.raw_cost_before(Date::today - 5)
     end
     
     should "update total markup after add" do

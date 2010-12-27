@@ -4,12 +4,21 @@ class ProjectCachingTest < ActiveSupport::TestCase
   context "A project w/ caching" do
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
-      @component = Factory :component, :project => @project, :name => 'component'
-      @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
-      @task = Factory :task, :project => @project
-      @contract = Factory :contract, :project => @project
-      @contract1 = Factory :contract, :component => @component, :project => @project
-      @contract2 = Factory :contract, :component => @subcomponent, :project => @project
+      #@component = Factory :component, :project => @project, :name => 'component'
+      @component = @project.components.create! :name => 'component'
+      #@subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
+      @subcomponent = @project.components.create! :name => 'subcomponent'
+      @component.children << @subcomponent
+      #@task = Factory :task, :project => @project
+      @task = @project.tasks.create! :name => 'task'
+      #@contract = Factory :contract, :project => @project
+      @contract = @project.contracts.create! :name => 'contract'
+      #@contract1 = Factory :contract, :component => @component, :project => @project
+      @contract1 = @project.contracts.create! :name => 'contract1'
+      @component.contracts << @contract1
+      #@contract2 = Factory :contract, :component => @subcomponent, :project => @project
+      @contract2 = @project.contracts.create! :name => 'contract2'
+      @subcomponent.contracts << @contract2
       @laborer = Factory :laborer, :bill_rate => 1
       @random_component = Factory :component
       @random_task = Factory :task
@@ -29,10 +38,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @uc.component = @random_component
       @uc.save
 
-      assert_equal nil, @project.reload.estimated_raw_unit_cost
-      assert_equal nil, @project.reload.estimated_unit_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_unit_cost
+      assert_equal 0, @project.reload.estimated_unit_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @uc.component = @component
       @uc.save
@@ -44,10 +53,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
                         
       @uc.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_unit_cost
-      assert_equal nil, @project.reload.estimated_unit_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_unit_cost
+      assert_equal 0, @project.reload.estimated_unit_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
    
     should "reflect subcomponent unit costs" do
@@ -62,10 +71,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @uc.component = @random_component
       @uc.save
       
-      assert_equal nil, @project.reload.estimated_raw_unit_cost
-      assert_equal nil, @project.reload.estimated_unit_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_unit_cost
+      assert_equal 0, @project.reload.estimated_unit_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @uc.component = @subcomponent
       @uc.save
@@ -77,10 +86,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
             
       @uc.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_unit_cost
-      assert_equal nil, @project.reload.estimated_unit_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_unit_cost
+      assert_equal 0, @project.reload.estimated_unit_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
     
     should "reflect root fixed costs" do
@@ -94,10 +103,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @fc.component = @random_component
       @fc.save
       
-      assert_equal nil, @project.reload.estimated_raw_fixed_cost
-      assert_equal nil, @project.reload.estimated_fixed_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_fixed_cost
+      assert_equal 0, @project.reload.estimated_fixed_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @fc.component = @component
       @fc.save
@@ -109,10 +118,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       @fc.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_fixed_cost
-      assert_equal nil, @project.reload.estimated_fixed_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_fixed_cost
+      assert_equal 0, @project.reload.estimated_fixed_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
   
     should "reflect subcomponent fixed costs" do
@@ -126,10 +135,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @fc.component = @random_component
       @fc.save
       
-      assert_equal nil, @project.reload.estimated_raw_fixed_cost
-      assert_equal nil, @project.reload.estimated_fixed_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_fixed_cost
+      assert_equal 0, @project.reload.estimated_fixed_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @fc.component = @subcomponent
       @fc.save
@@ -141,60 +150,76 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       @fc.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_fixed_cost
-      assert_equal nil, @project.reload.estimated_fixed_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_fixed_cost
+      assert_equal 0, @project.reload.estimated_fixed_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
- 
+
     should "reflect root contract costs" do
-      @bid = Factory :bid, :contract => @contract1, :raw_cost => 100
+      #@bid = Factory :bid, :contract => @contract1, :raw_cost => 100
+      @bid = @contract1.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
       @contract1.active_bid = @bid
       @contract1.save
       
-      assert_equal @contract1.component, @component
-      assert_equal @contract1.project, @project
+      #assert_equal @contract1.component, @component
+      #assert_equal @contract1.project, @project
       
+      # Caching forces the reload
+      @project.reload
       
-      assert_equal 100, @project.reload.estimated_raw_contract_cost
-      assert_equal 200, @project.reload.estimated_contract_cost
-      assert_equal 100, @project.reload.estimated_raw_cost
-      assert_equal 200, @project.reload.estimated_cost
+      assert_equal 100, @project.estimated_raw_contract_cost
+      assert_equal 200, @project.estimated_contract_cost
+      assert_equal 100, @project.estimated_raw_cost
+      assert_equal 200, @project.estimated_cost
 
       @bid.raw_cost = 200
       @bid.save
+      @project.reload
       
-      assert_equal 200, @project.reload.estimated_raw_contract_cost
-      assert_equal 400, @project.reload.estimated_contract_cost
-      assert_equal 200, @project.reload.estimated_raw_cost
-      assert_equal 400, @project.reload.estimated_cost
+      assert_equal 200, @project.estimated_raw_contract_cost
+      assert_equal 400, @project.estimated_contract_cost
+      assert_equal 200, @project.estimated_raw_cost
+      assert_equal 400, @project.estimated_cost
       
       @contract1.component = @random_component
       @contract1.project = @random_component.project
       @contract1.save
+      @project.reload
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.estimated_raw_contract_cost
+      assert_equal 0, @project.estimated_contract_cost
+      assert_equal 0, @project.estimated_raw_cost
+      assert_equal 0, @project.estimated_cost
 
       @contract1.component = @component
       @contract1.project = @project
-      @contract1.save
+      
+      #puts 'begin'
+      @contract1.save!
+      #puts 'end'
+      @project.reload
 
-      assert_equal 200, @project.reload.estimated_raw_contract_cost
-      assert_equal 400, @project.reload.estimated_contract_cost
-      assert_equal 200, @project.reload.estimated_raw_cost
-      assert_equal 400, @project.reload.estimated_cost
+      #assert_equal 0, @project.contracts.without_component.sum(:estimated_raw_cost)
+      #assert_equal 200, @component.estimated_raw_contract_cost
+      #assert_contains @project.components.roots, @component
+      #assert_equal 200, @project.components.roots.sum(:estimated_raw_contract_cost)
+      #assert_equal 200, @project.components.roots.sum(:estimated_raw_cost)
+
+      assert_equal 200, @project.estimated_raw_contract_cost
+      assert_equal 400, @project.estimated_contract_cost
+      assert_equal 200, @project.estimated_raw_cost
+      assert_equal 400, @project.estimated_cost
       
       @bid.destroy
+      @project.reload
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.estimated_raw_contract_cost
+      assert_equal 0, @project.estimated_contract_cost
+      assert_equal 0, @project.estimated_raw_cost
+      assert_equal 0, @project.estimated_cost
     end
-  
+   
     should "reflect subcomponent contract costs" do
       @bid = Factory :bid, :contract => @contract2, :raw_cost => 100
       @contract2.active_bid = @bid
@@ -218,10 +243,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @contract2.project = @random_component.project
       @contract2.save
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_contract_cost
+      assert_equal 0, @project.reload.estimated_contract_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @contract2.component = @component
       @contract2.project = @project
@@ -234,10 +259,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
           
       @bid.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_contract_cost
+      assert_equal 0, @project.reload.estimated_contract_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
        
     should "reflect task labor costs" do
@@ -252,10 +277,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @lc.task = @random_task
       @lc.save
       
-      assert_equal nil, @project.reload.raw_labor_cost
-      assert_equal nil, @project.reload.labor_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.reload.raw_labor_cost
+      assert_equal 0, @project.reload.labor_cost
+      assert_equal 0, @project.reload.raw_cost
+      assert_equal 0, @project.reload.cost
 
       @lc.task = @task
       @lc.save
@@ -267,44 +292,49 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       @lc.destroy
       
-      assert_equal nil, @project.reload.raw_labor_cost
-      assert_equal nil, @project.reload.labor_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.reload.raw_labor_cost
+      assert_equal 0, @project.reload.labor_cost
+      assert_equal 0, @project.reload.raw_cost
+      assert_equal 0, @project.reload.cost
     end
     
     should "reflect task material costs" do
-      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      #@mc = Factory :material_cost, :task => @task, :raw_cost => 100
+      @mc = @task.material_costs.create! :raw_cost => 100, :date => Date::today, :supplier => Factory(:supplier)
+      @project.reload
       
-      assert_equal 100, @project.reload.raw_material_cost
-      assert_equal 200, @project.reload.material_cost
-      assert_equal 100, @project.reload.raw_cost
-      assert_equal 200, @project.reload.cost
+      assert_equal 100, @project.raw_material_cost
+      assert_equal 200, @project.material_cost
+      assert_equal 100, @project.raw_cost
+      assert_equal 200, @project.cost
       
       @mc.task = @random_task
       @mc.save
+      @project.reload
       
-      assert_equal nil, @project.reload.raw_material_cost
-      assert_equal nil, @project.reload.material_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.raw_material_cost
+      assert_equal 0, @project.material_cost
+      assert_equal 0, @project.raw_cost
+      assert_equal 0, @project.cost
 
       @mc.task = @task
       @mc.save
+      @project.reload
 
-      assert_equal 100, @project.reload.raw_material_cost
-      assert_equal 200, @project.reload.material_cost
-      assert_equal 100, @project.reload.raw_cost
-      assert_equal 200, @project.reload.cost
+      assert_equal 100, @project.raw_material_cost
+      assert_equal 200, @project.material_cost
+      assert_equal 100, @project.raw_cost
+      assert_equal 200, @project.cost
       
       @mc.destroy
+      @project.reload
       
-      assert_equal nil, @project.reload.raw_material_cost
-      assert_equal nil, @project.reload.material_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.raw_material_cost
+      assert_equal 0, @project.material_cost
+      assert_equal 0, @project.raw_cost
+      assert_equal 0, @project.cost
     end
-    
+
     should "reflect contract estimated cost" do
       @bid = Factory :bid, :raw_cost => 100, :contract => @contract
       @contract.active_bid = @bid
@@ -318,10 +348,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @contract.project = @random_component.project
       @contract.save
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_contract_cost
+      assert_equal 0, @project.reload.estimated_contract_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
 
       @contract.project = @project
       @contract.save
@@ -333,10 +363,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       @bid.destroy
       
-      assert_equal nil, @project.reload.estimated_raw_contract_cost
-      assert_equal nil, @project.reload.estimated_contract_cost
-      assert_equal nil, @project.reload.estimated_raw_cost
-      assert_equal nil, @project.reload.estimated_cost
+      assert_equal 0, @project.reload.estimated_raw_contract_cost
+      assert_equal 0, @project.reload.estimated_contract_cost
+      assert_equal 0, @project.reload.estimated_raw_cost
+      assert_equal 0, @project.reload.estimated_cost
     end
     
     should "reflect contract cost" do
@@ -350,10 +380,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @contract.project = @random_component.project
       @contract.save
       
-      assert_equal nil, @project.reload.raw_contract_cost
-      assert_equal nil, @project.reload.contract_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.reload.raw_contract_cost
+      assert_equal 0, @project.reload.contract_cost
+      assert_equal 0, @project.reload.raw_cost
+      assert_equal 0, @project.reload.cost
 
       @contract.project = @project
       @contract.save
@@ -365,10 +395,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       @inv.destroy
       
-      assert_equal nil, @project.reload.raw_contract_cost
-      assert_equal nil, @project.reload.contract_cost
-      assert_equal nil, @project.reload.raw_cost
-      assert_equal nil, @project.reload.cost
+      assert_equal 0, @project.reload.raw_contract_cost
+      assert_equal 0, @project.reload.contract_cost
+      assert_equal 0, @project.reload.raw_cost
+      assert_equal 0, @project.reload.cost
     end
     
     should "update total markup after add" do
@@ -408,5 +438,6 @@ class ProjectCachingTest < ActiveSupport::TestCase
       
       assert_equal 600, @task.reload.estimated_raw_cost
     end
+
   end
 end

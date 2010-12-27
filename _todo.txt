@@ -1,10 +1,6 @@
-invoice_collector_test
-invoice_test
-invoicable_test
-markup_test
-project_caching_test
-task_test
-
+invoice collector
+invoice line
+invoicable
 
 + projected costs
 + active tasks
@@ -31,6 +27,8 @@ task_test
 ++ schedule
 
 - update caching
+-- project
+-- project_caching
 
 
 - bank draws (invoice tracking)

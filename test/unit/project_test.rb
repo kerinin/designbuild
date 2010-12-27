@@ -133,13 +133,13 @@ class ProjectTest < ActiveSupport::TestCase
     should "aggregate costs" do
       assert_equal 1111111, @obj.reload.raw_cost
     end
-    
+
     should "determine projected net" do
       # estimated - projected raw
       @markup = Factory :markup, :percent => 100
       @obj.markups << @markup
       
-      assert_equal (2220062.26-1111111.13), @obj.reload.projected_net
+      assert_equal (@obj.estimated_cost - @obj.raw_projected_cost), @obj.projected_net
     end
   end
 end

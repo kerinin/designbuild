@@ -43,12 +43,12 @@ class Bid < ActiveRecord::Base
   # raw cost
   
   def cascade_cache_values
-    self.contract.save!
+    self.contract.reload.save!
   end
   
   protected
   
   def cache_values
-    self.cost = mark_up self.cost
+    self.cost = mark_up :cost
   end
 end

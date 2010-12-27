@@ -112,7 +112,7 @@ class ComponentTest < ActiveSupport::TestCase
         
     should "return estimated cost nil if no estimates" do
       @obj2 = Factory :component
-      assert_equal nil, @obj2.estimated_raw_cost
+      assert_equal 0, @obj2.estimated_raw_cost
     end
     
     should "update total markup after add" do
