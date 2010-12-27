@@ -34,7 +34,7 @@ class LaborCost < ActiveRecord::Base
   def cache_values
     self.line_items.reload
     
-    self.cache_raw_cost
+    self.cache_cost
   end
   
   def cascade_cache_values
@@ -52,7 +52,7 @@ class LaborCost < ActiveRecord::Base
   def cache_cost
     #self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_cost = self.line_items.sum(:raw_cost)
-    self.cost = mark_up self.raw_cost
+    self.cost = mark_up :raw_cost
   end
   
   def deactivate_task_if_done

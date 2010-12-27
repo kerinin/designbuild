@@ -232,17 +232,17 @@ class Task < ActiveRecord::Base
   def cache_estimated_unit_cost
     #self.estimated_raw_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_unit_cost = mark_up self.estimated_raw_unit_cost
-    self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:estimated_raw_cost)
-    self.component_estimated_unit_cost = self.unit_cost_estimates.sum(:estimated_cost)
+    self.estimated_unit_cost = mark_up :estimated_raw_unit_cost
+    self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
+    self.component_estimated_unit_cost = self.unit_cost_estimates.sum(:cost)
   end
   
   def cache_estimated_fixed_cost
     #self.estimated_raw_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.raw_cost)}
     self.estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_fixed_cost = mark_up self.estimated_raw_fixed_cost
-    self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:estimated_raw_cost)
-    self.component_estimated_fixed_cost = self.fixed_cost_estimates.sum(:estimated_cost)
+    self.estimated_fixed_cost = mark_up :estimated_raw_fixed_cost
+    self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
+    self.component_estimated_fixed_cost = self.fixed_cost_estimates.sum(:cost)
   end
 
   def cache_estimated_cost
@@ -255,13 +255,13 @@ class Task < ActiveRecord::Base
   def cache_labor_cost
     #self.raw_labor_cost = self.labor_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_labor_cost = self.labor_costs.sum(:raw_cost)
-    self.labor_cost = mark_up self.raw_labor_cost
+    self.labor_cost = mark_up :raw_labor_cost
   end
 
   def cache_material_cost
     #self.raw_material_cost = self.material_costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_material_cost = self.material_costs.sum(:raw_cost)
-    self.material_cost = mark_up self.raw_material_cost
+    self.material_cost = mark_up :raw_material_cost
   end 
   
   def cache_cost
@@ -288,7 +288,7 @@ class Task < ActiveRecord::Base
       end 
     end
     
-    self.projected_cost = mark_up self.raw_projected_cost
+    self.projected_cost = mark_up :raw_projected_cost
   end
   
   def cache_total_markup

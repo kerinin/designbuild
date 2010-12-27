@@ -174,12 +174,12 @@ class Component < ActiveRecord::Base
   def cache_estimated_fixed_cost
     #self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_component_fixed_cost = mark_up raw_component_fixed_cost
+    self.estimated_component_fixed_cost = mark_up :estimated_raw_component_fixed_cost
 
     #self.estimated_raw_subcomponent_fixed = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_fixed_cost)}
-    self.estimated_raw_subcomponent_fixed = self.children.sum(:estimated_raw_fixed_cost)
+    self.estimated_raw_subcomponent_fixed_cost = self.children.sum(:estimated_raw_fixed_cost)
     #self.estimated_subcomponent_fixed = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
-    self.estimated_subcomponent_fixed = self.children.sum(:estimated_fixed_cost)
+    self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
     
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
     self.estimated_raw_fixed_cost = add_or_nil( self.estimated_raw_component_fixed_cost, self.estimated_raw_subcomponent_fixed_cost )
@@ -188,7 +188,7 @@ class Component < ActiveRecord::Base
   def cache_estimated_unit_cost
     #self.estimated_raw_component_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_component_unit_cost = mark_up self.estimated_raw_component_unit_cost
+    self.estimated_component_unit_cost = mark_up :estimated_raw_component_unit_cost
     
     #self.estimated_raw_subcomponent_unit_cost = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
     self.estimated_raw_subcomponent_unit_cost = self.children.sum(:estimated_raw_unit_cost)
