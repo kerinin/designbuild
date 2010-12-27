@@ -8,6 +8,9 @@ class Bid < ActiveRecord::Base
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost
   
+  before_save :cache_values, :if => :id
+  after_create :cache_values
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -35,11 +38,17 @@ class Bid < ActiveRecord::Base
     self.contract.total_markup unless self.contract.blank?
   end
   
-  marks_up :raw_cost
+  # marks_up :raw_cost
   
   # raw cost
   
   def cascade_cache_values
     self.contract.save!
+  end
+  
+  protected
+  
+  def cache_values
+    self.cost = mark_up self.cost
   end
 end

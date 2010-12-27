@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101224184841) do
+ActiveRecord::Schema.define(:version => 20101227171224) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -19,6 +19,7 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.integer   "contract_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.float     "cost"
   end
 
   add_index "bids", ["contract_id"], :name => "index_bids_on_contract_id"
@@ -39,6 +40,16 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.integer   "position"
     t.float     "estimated_contract_cost"
     t.float     "estimated_raw_contract_cost"
+    t.float     "estimated_component_fixed_cost"
+    t.float     "estimated_raw_component_fixed_cost"
+    t.float     "estimated_component_unit_cost"
+    t.float     "estimated_raw_component_unit_cost"
+    t.float     "estimated_component_contract_cost"
+    t.float     "estimated_raw_component_contract_cost"
+    t.float     "estimated_component_cost"
+    t.float     "estimated_raw_component_cost"
+    t.float     "estimated_cost"
+    t.float     "estimated_raw_cost"
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -58,6 +69,7 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.integer   "contract_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.float     "cost"
   end
 
   add_index "contract_costs", ["contract_id"], :name => "index_contract_costs_on_contract_id"
@@ -73,6 +85,8 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.float     "total_markup"
     t.integer   "position"
     t.integer   "component_id"
+    t.float     "estimated_cost"
+    t.float     "cost"
   end
 
   add_index "contracts", ["component_id"], :name => "index_contracts_on_component_id"
@@ -108,6 +122,7 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.integer   "task_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.float     "cost"
   end
 
   add_index "fixed_cost_estimates", ["component_id"], :name => "index_fixed_cost_estimates_on_component_id"
@@ -141,29 +156,30 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
   add_index "invoices", ["project_id"], :name => "index_invoices_on_project_id"
 
   create_table "labor_cost_lines", :force => true do |t|
-    t.float    "hours"
-    t.integer  "labor_set_id"
-    t.integer  "laborer_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "cost"
-    t.float    "raw_cost"
-    t.float    "laborer_pay"
-    t.integer  "project_id"
+    t.float     "hours"
+    t.integer   "labor_set_id"
+    t.integer   "laborer_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.float     "cost"
+    t.float     "raw_cost"
+    t.float     "laborer_pay"
+    t.integer   "project_id"
   end
 
   add_index "labor_cost_lines", ["labor_set_id"], :name => "index_labor_cost_lines_on_labor_set_id"
   add_index "labor_cost_lines", ["project_id"], :name => "index_labor_cost_lines_on_project_id"
 
   create_table "labor_costs", :force => true do |t|
-    t.date     "date"
-    t.float    "percent_complete"
-    t.integer  "task_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.float    "raw_cost"
-    t.string   "note"
-    t.integer  "project_id"
+    t.date      "date"
+    t.float     "percent_complete"
+    t.integer   "task_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.float     "raw_cost"
+    t.string    "note"
+    t.integer   "project_id"
+    t.float     "cost"
   end
 
   add_index "labor_costs", ["project_id"], :name => "index_labor_costs_on_project_id"
@@ -212,6 +228,7 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.integer   "supplier_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.float     "cost"
   end
 
   add_index "material_costs", ["supplier_id"], :name => "index_material_costs_on_supplier_id"
@@ -286,6 +303,10 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.float     "labor_percent_retainage",     :default => 0.0,   :null => false
     t.float     "material_percent_retainage",  :default => 0.0,   :null => false
     t.boolean   "fixed_bid",                   :default => false
+    t.float     "estimated_cost"
+    t.float     "estimated_raw_cost"
+    t.float     "cost"
+    t.float     "raw_cost"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
@@ -341,7 +362,21 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.float     "raw_labor_cost"
     t.float     "raw_material_cost"
     t.float     "total_markup"
-    t.float     "percent_complete",         :default => 0.0, :null => false
+    t.float     "percent_complete",                  :default => 0.0, :null => false
+    t.float     "estimated_unit_cost"
+    t.float     "estimated_fixed_cost"
+    t.float     "estimated_cost"
+    t.float     "estimated_raw_cost"
+    t.float     "component_estimated_unit_cost"
+    t.float     "component_estimated_raw_unit_cost"
+    t.float     "component_estimated_cost"
+    t.float     "component_estimated_raw_cost"
+    t.float     "labor_cost"
+    t.float     "material_cost"
+    t.float     "cost"
+    t.float     "raw_cost"
+    t.float     "projected_cost"
+    t.float     "raw_projected_cost"
   end
 
   add_index "tasks", ["contract_id"], :name => "index_tasks_on_contract_id"
@@ -358,6 +393,7 @@ ActiveRecord::Schema.define(:version => 20101224184841) do
     t.timestamp "updated_at"
     t.float     "drop"
     t.float     "raw_cost"
+    t.float     "cost"
   end
 
   add_index "unit_cost_estimates", ["component_id"], :name => "index_unit_cost_estimates_on_component_id"

@@ -30,6 +30,9 @@ task_test
 ++ print purchase orders
 ++ schedule
 
+- update caching
+
+
 - bank draws (invoice tracking)
 ++ clean up tests
 ++ filtering costs by effective date

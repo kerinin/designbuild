@@ -11,8 +11,11 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
-  #after_save :cascade_cache_values
-  #after_destroy :cascade_cache_values
+  before_save :cache_values, :if => :id
+  after_create :cache_values
+  
+  after_save :cascade_cache_values
+  after_destroy :cascade_cache_values
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
@@ -39,7 +42,7 @@ class FixedCostEstimate < ActiveRecord::Base
   end
   
   # cost
-  marks_up :raw_cost
+  #marks_up :raw_cost
   
   # raw_cost
 
@@ -94,6 +97,10 @@ class FixedCostEstimate < ActiveRecord::Base
   end
   
   protected
+  
+  def cache_values
+    self.cost = mark_up self.raw_cost
+  end
   
   def cascade_cache_values
     #self.component.reload.save!

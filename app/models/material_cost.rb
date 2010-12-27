@@ -11,6 +11,9 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
+  before_save :cache_values, :if => :id
+  after_create :cache_values
+  
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
@@ -41,6 +44,10 @@ class MaterialCost < ActiveRecord::Base
   
   # raw_cost
 
+  def cache_values
+    self.cost = mark_up self.raw_cost
+  end
+  
   def cascade_cache_values
     #puts "cascading from mc"
     self.task.save!

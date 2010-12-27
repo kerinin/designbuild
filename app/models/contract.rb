@@ -39,7 +39,7 @@ class Contract < ActiveRecord::Base
 
   
   # estimated_cost
-  marks_up :estimated_raw_cost
+  # marks_up :estimated_raw_cost
   
   # estimated_raw_cost
   
@@ -49,7 +49,7 @@ class Contract < ActiveRecord::Base
   end
   
   # cost
-  marks_up :raw_cost
+  #marks_up :raw_cost
   
   # raw_cost
   
@@ -57,8 +57,8 @@ class Contract < ActiveRecord::Base
     #puts "caching from contract"
     [self.bids, self.costs, self.markups].each {|r| r.reload}
     
-    self.cache_estimated_raw_cost
-    self.cache_raw_cost
+    self.cache_estimated_cost
+    self.cache_cost
     self.cache_total_markup
   end
     
@@ -101,12 +101,14 @@ class Contract < ActiveRecord::Base
     self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
   end
   
-  def cache_estimated_raw_cost
+  def cache_estimated_cost
     self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
+    self.estimated_cost = mark_up self.estimated_raw_cost
   end
   
-  def cache_raw_cost
+  def cache_cost
     self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.cost = mark_up self.raw_cost
   end
   
   def cache_total_markup
