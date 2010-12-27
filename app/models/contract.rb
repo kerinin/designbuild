@@ -45,7 +45,8 @@ class Contract < ActiveRecord::Base
   
   marks_up :raw_cost_before
   def raw_cost_before(date = Date::today)
-    self.costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.costs.where('date <= ?', date).sum(:raw_cost)
   end
   
   # cost
@@ -107,12 +108,14 @@ class Contract < ActiveRecord::Base
   end
   
   def cache_cost
-    self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_cost = self.costs.sum(:raw_cost)
     self.cost = mark_up self.raw_cost
   end
   
   def cache_total_markup
-    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    #self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.sum(:percent)
   end
   
   

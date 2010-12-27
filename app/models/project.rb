@@ -139,38 +139,52 @@ class Project < ActiveRecord::Base
   protected
     
   def cache_estimated_fixed_cost
-    self.estimated_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
-    self.estimated_raw_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_fixed_cost)}
+    #self.estimated_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
+    self.estimated_fixed_cost = self.components.roots.sum(:estimated_fixed_cost)
+    #self.estimated_raw_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_fixed_cost)}
+    self.estimated_raw_fixed_cost = self.components.roots.sum(:estimated_raw_fixed_cost)
   end
   
   def cache_estimated_unit_cost
-    self.estimated_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
-    self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
+    #self.estimated_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
+    self.estimated_unit_cost = self.components.roots.sum(:estimated_unit_cost)
+    #self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
+    self.estimated_raw_unit_cost = self.components.roots.sum(:estimated_raw_unit_cost)
   end
     
   def cache_estimated_contract_cost
-    self.estimated_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost )}
-    self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost )}
+    #self.estimated_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost )}
+    self.estimated_contract_cost = self.contracts.sum(:estimated_cost )
+    #self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost )}
+    self.estimated_raw_contract_cost = self.contracts.sum(:estimated_raw_cost )
   end
 
   def cache_estimated_cost
-    self.estimated_cost = add_or_nil( self.estimated_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
-    self.estimated_raw_cost = add_or_nil( self.estimated_raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
+    #self.estimated_cost = add_or_nil( self.estimated_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
+    self.estimated_cost = add_or_nil self.contracts.without_component.sum(:estimated_cost), self.components.roots.sum(:estimated_cost)
+    #self.estimated_raw_cost = add_or_nil( self.estimated_raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
+    self.estimated_raw_cost = add_or_nil self.contracts.without_component.sum(:estimated_raw_cost), self.components.roots.sum(:estimated_raw_cost)
   end
   
   def cache_material_cost
-    self.material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.material_cost)}
-    self.raw_material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_material_cost)}
+    #self.material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.material_cost)}
+    self.material_cost = self.tasks.sum(:material_cost)
+    #self.raw_material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_material_cost)}
+    self.raw_material_cost = self.tasks.sum(:raw_material_cost)
   end
   
   def cache_labor_cost
-    self.labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.labor_cost)}
-    self.raw_labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_labor_cost)}
+    #self.labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.labor_cost)}
+    self.labor_cost = self.tasks.sum(:labor_cost)
+    #self.raw_labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_labor_cost)}
+    self.raw_labor_cost = self.tasks.sum(:raw_labor_cost)
   end
   
   def cache_contract_cost
-    self.contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost)}
-    self.raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost)}
+    self.contract_cost = self.contracts.sum(:cost)
+    #self.raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_contract_cost = self.contracts.sum(:raw_cost)
   end
     
   def cache_cost

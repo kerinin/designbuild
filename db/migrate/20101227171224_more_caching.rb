@@ -46,6 +46,8 @@ class MoreCaching < ActiveRecord::Migration
     add_column :tasks, :estimated_raw_cost, :float
     add_column :tasks, :component_estimated_unit_cost, :float
     add_column :tasks, :component_estimated_raw_unit_cost, :float
+    add_column :tasks, :component_estimated_fixed_cost, :float
+    add_column :tasks, :component_estimated_raw_fixed_cost, :float
     add_column :tasks, :component_estimated_cost, :float
     add_column :tasks, :component_estimated_raw_cost, :float
     add_column :tasks, :labor_cost, :float

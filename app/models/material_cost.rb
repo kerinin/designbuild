@@ -40,7 +40,7 @@ class MaterialCost < ActiveRecord::Base
   end
   
   # cost
-  marks_up :raw_cost
+  #marks_up :raw_cost
   
   # raw_cost
 

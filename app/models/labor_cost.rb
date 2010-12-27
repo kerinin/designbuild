@@ -50,7 +50,8 @@ class LaborCost < ActiveRecord::Base
   end
   
   def cache_cost
-    self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    #self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
+    self.raw_cost = self.line_items.sum(:raw_cost)
     self.cost = mark_up self.raw_cost
   end
   
