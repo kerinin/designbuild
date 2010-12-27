@@ -46,7 +46,7 @@ class LaborCostTest < ActiveSupport::TestCase
     
     should "return cost nil if no line items" do
       @obj2 = Factory :labor_cost
-      assert_equal nil, @obj2.raw_cost
+      assert_equal 0, @obj2.raw_cost
     end
   end
 end

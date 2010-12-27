@@ -104,13 +104,13 @@ class Contract < ActiveRecord::Base
   
   def cache_estimated_cost
     self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
-    self.estimated_cost = mark_up self.estimated_raw_cost
+    self.estimated_cost = mark_up :estimated_raw_cost
   end
   
   def cache_cost
     #self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_cost = self.costs.sum(:raw_cost)
-    self.cost = mark_up self.raw_cost
+    self.cost = mark_up :raw_cost
   end
   
   def cache_total_markup

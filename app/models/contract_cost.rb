@@ -28,6 +28,6 @@ class ContractCost < ActiveRecord::Base
   protected
   
   def cache_values
-    self.cost = mark_up self.raw_cost
+    self.cost = mark_up :raw_cost
   end
 end
