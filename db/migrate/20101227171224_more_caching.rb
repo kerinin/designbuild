@@ -4,12 +4,23 @@ class MoreCaching < ActiveRecord::Migration
     
     add_column :components, :estimated_component_fixed_cost, :float
     add_column :components, :estimated_raw_component_fixed_cost, :float
+    add_column :components, :estimated_subcomponent_fixed_cost, :float
+    add_column :components, :estimated_raw_subcomponent_fixed_cost, :float
+    
     add_column :components, :estimated_component_unit_cost, :float
     add_column :components, :estimated_raw_component_unit_cost, :float
+    add_column :components, :estimated_subcomponent_unit_cost, :float
+    add_column :components, :estimated_raw_subcomponent_unit_cost, :float
+    
     add_column :components, :estimated_component_contract_cost, :float
     add_column :components, :estimated_raw_component_contract_cost, :float
+    add_column :components, :estimated_subcomponent_contract_cost, :float
+    add_column :components, :estimated_raw_subcomponent_contract_cost, :float
+    
     add_column :components, :estimated_component_cost, :float
     add_column :components, :estimated_raw_component_cost, :float
+    add_column :components, :estimated_subcomponent_cost, :float
+    add_column :components, :estimated_raw_subcomponent_cost, :float
     add_column :components, :estimated_cost, :float
     add_column :components, :estimated_raw_cost, :float
     
@@ -50,14 +61,14 @@ class MoreCaching < ActiveRecord::Migration
   def self.down
     remove_column :bids, :cost
     
-    remove_column :components, :estimated_component_fixed_cost
-    remove_column :components, :estimated_raw_component_fixed_cost
-    remove_column :components, :estimated_component_unit_cost
-    remove_column :components, :estimated_raw_component_unit_cost
-    remove_column :components, :estimated_component_contract_cost
-    remove_column :components, :estimated_raw_component_contract_cost
-    remove_column :components, :estimated_component_cost
-    remove_column :components, :estimated_raw_component_cost
+    remove_column :components, :estimated_subcomponent_fixed_cost
+    remove_column :components, :estimated_raw_subcomponent_fixed_cost
+    remove_column :components, :estimated_subcomponent_unit_cost
+    remove_column :components, :estimated_raw_subcomponent_unit_cost
+    remove_column :components, :estimated_subcomponent_contract_cost
+    remove_column :components, :estimated_raw_subcomponent_contract_cost
+    remove_column :components, :estimated_subcomponent_cost
+    remove_column :components, :estimated_raw_subcomponent_cost
     remove_column :components, :estimated_cost
     remove_column :components, :estimated_raw_cost
     
