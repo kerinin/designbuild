@@ -43,13 +43,13 @@
     %td{:colspan => 2}
       %strong Total
     %td.currency
-      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_raw_cost})
+      %strong= number_to_currency( contracts.sum(:estimated_raw_cost))
     %td
     %td.currency
-      %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.estimated_cost})
+      %strong= number_to_currency( contracts.sum(:estimated_cost))
     -if context == :contract
       %td.currency
-        %strong= number_to_currency( contracts.inject(nil) {|memo,obj| add_or_nil memo, obj.raw_cost})
+        %strong= number_to_currency( contracts.sum(:raw_cost))
       %td.number
         %strong= number_to_percentage( multiply_or_nil( 100, divide_or_nil( @project.contract_cost, @project.estimated_contract_cost ) ), :precision => 1 )
     %td{:colspan => 3}

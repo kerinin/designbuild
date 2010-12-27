@@ -30,9 +30,9 @@
     %td.right
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( components.inject(nil) {|memo,obj| add_or_nil( memo, obj.estimated_raw_cost ) })
+      %strong= number_to_currency( components.sum(:estimated_raw_cost ) )
     %td.number
     %td.currency
-      %strong= number_to_currency( components.inject(nil) {|memo,obj| add_or_nil( memo, obj.estimated_cost ) } )
+      %strong= number_to_currency( components.sum(:estimated_cost ) )
     %td{:colspan => 2}
     

@@ -32,5 +32,5 @@
     %td.right{:colspan => 3}
       %strong Total
     %td.currency
-      %strong= number_to_currency( labor_cost_lines.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
+      %strong= number_to_currency( labor_cost_lines.sum(:raw_cost))
     %td{:colspan => 3}

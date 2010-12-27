@@ -1,4 +1,3 @@
-invoice collector
 invoicable
 
 + projected costs

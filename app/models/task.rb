@@ -128,9 +128,9 @@ class Task < ActiveRecord::Base
   #marks_up :raw_labor_cost
   
   marks_up :raw_labor_cost_before
-  def raw_labor_cost_before(date = Date::today)
+  def raw_labor_cost_before(date)
     #self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-    self.labor_costs.where('date <= ?', date).sum(:raw_cost)
+    self.labor_costs.where('labor_costs.date <= ?', date).sum(:raw_cost)
   end
   
   # raw_labor_cost
@@ -141,9 +141,9 @@ class Task < ActiveRecord::Base
   # raw_material_cost
   
   marks_up :raw_material_cost_before
-  def raw_material_cost_before(date = Date::today)
+  def raw_material_cost_before(date)
     #self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-    self.material_costs.where('date <= ?', date).sum(:raw_cost)
+    self.material_costs.where('material_costs.date <= ?', date).sum(:raw_cost)
   end
   
   #def cost
@@ -155,7 +155,7 @@ class Task < ActiveRecord::Base
   #end
   
   marks_up :raw_cost_before
-  def raw_cost_before(date = Date::today)
+  def raw_cost_before(date)
     add_or_nil raw_labor_cost_before(date), raw_material_cost_before(date)
   end
   
@@ -215,7 +215,7 @@ class Task < ActiveRecord::Base
     100 * ( divide_or_nil( self.labor_cost, self.cost ) || 0 )
   end
   
-  def labor_percent_before(date=Date::today)
+  def labor_percent_before(date)
     100 * ( divide_or_nil(self.labor_cost_before(date), self.cost_before(date) ) || 0)
   end
   
@@ -223,7 +223,7 @@ class Task < ActiveRecord::Base
     100 * ( divide_or_nil( self.material_cost, self.cost ) || 0 )
   end
   
-  def material_percent_before(date=Date::today)
+  def material_percent_before(date)
     100 * (divide_or_nil(self.labor_cost_before(date), self.cost_before(date) ) || 0)
   end
   

@@ -59,11 +59,11 @@
     %td
       %strong Total
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.estimated_cost })
+      %strong= number_to_currency( tasks.sum(:estimated_cost))
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %strong= number_to_currency( tasks.sum(:cost))
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_cost })
+      %strong= number_to_currency( tasks.sum(:projected_cost))
     %td.number
       %strong
         ='--/'

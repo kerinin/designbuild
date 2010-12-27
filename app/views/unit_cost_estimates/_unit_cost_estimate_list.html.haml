@@ -60,8 +60,8 @@
     %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
+      %strong= number_to_currency( unit_cost_estimates.sum(:raw_cost))
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.inject(0) {|memo,obj| add_or_nil memo, obj.cost })
+      %strong= number_to_currency( unit_cost_estimates.sum(:cost))
     %td{:colspan => 2}
     

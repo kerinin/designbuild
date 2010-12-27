@@ -43,5 +43,5 @@
       %td.right
         %strong Subtotal
       %td.currency
-        %strong= number_to_currency( material_costs.inject(0) {|memo,obj| add_or_nil memo, obj.raw_cost })
+        %strong= number_to_currency( material_costs.sum(:raw_cost) )
       %td{:colspan => 3}

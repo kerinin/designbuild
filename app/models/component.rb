@@ -226,7 +226,8 @@ class Component < ActiveRecord::Base
   end
   
   def cache_total_markup
-    self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    #self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
+    self.total_markup = self.markups.sum(:percent)
   end
       
       

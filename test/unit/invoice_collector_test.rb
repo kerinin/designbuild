@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceCollectorTest < ActiveSupport::TestCase
+
   context "An invoice collector" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
@@ -182,6 +183,11 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
     end
     
     should "aggregate labor cost" do
+      #date = Date::today - 5
+      #assert_not_nil date
+      #assert_does_not_contain @task.labor_costs.where('labor_costs.date <= ?', Date::today - 5), @lc1
+      #assert_equal 1000, @task.labor_costs.where('labor_costs.date <= ?', Date::today - 5).sum(:raw_cost)
+      #assert_equal 1000, @task.labor_cost_before( date )
       assert_equal 1000, @project.labor_cost_before(Date::today - 5)
       assert_equal 1000, @component.labor_cost_before(Date::today - 5)
     end
@@ -190,7 +196,7 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
       assert_equal 10000, @project.material_cost_before(Date::today - 5)
       assert_equal 10000, @component.material_cost_before(Date::today - 5)
     end
-    
+   
     context "with invoices & payments" do
       setup do
         @targets = [@fce, @contract]
@@ -311,5 +317,6 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
         assert_equal (4000-6000) + (40000-60000), @component.outstanding_before(Date::today - 5)
       end
     end
+
   end  
 end

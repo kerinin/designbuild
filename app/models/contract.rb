@@ -44,7 +44,7 @@ class Contract < ActiveRecord::Base
   # estimated_raw_cost
   
   marks_up :raw_cost_before
-  def raw_cost_before(date = Date::today)
+  def raw_cost_before(date)
     #self.costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.costs.where('date <= ?', date).sum(:raw_cost)
   end
