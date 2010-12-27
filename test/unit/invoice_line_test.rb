@@ -270,7 +270,18 @@ class InvoiceLineTest < ActiveSupport::TestCase
 
         @obj.set_defaults
         
+        #assert_equal 0, @fce.total_markup
+        #assert_equal 100, @fce.raw_cost
+        #assert_equal 100, @fce.cost
+        #assert_equal 100, @fce.estimated_raw_cost
+        #assert_equal 100, @fce.estimated_cost
+        
         # % complete * labor multiplier * estimated cost, minus retainage
+        #assert_not_nil @fce.labor_percent_float
+        #assert_not_nil @fce.task.percent_complete_float
+        #assert_not_nil @fce.estimated_cost
+        #assert_not_nil @project.labor_percent_retainage_float
+        #assert_not_nil @line.labor_invoiced
         assert_equal (
           @fce.labor_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
           (1-@project.labor_percent_retainage_float )

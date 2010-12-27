@@ -11,8 +11,8 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
-  before_save :cache_values, :if => :id
-  after_create :cache_values
+  before_save :cache_values #, :if => :id
+  #after_create [:cache_values, Proc.new{|c| c.save!}]
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values

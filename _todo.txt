@@ -1,5 +1,4 @@
 invoice collector
-invoice line
 invoicable
 
 + projected costs

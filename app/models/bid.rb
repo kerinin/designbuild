@@ -8,8 +8,8 @@ class Bid < ActiveRecord::Base
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost
   
-  before_save :cache_values, :if => :id
-  after_create :cache_values
+  before_save :cache_values #, :if => :id
+  #after_create [:cache_values, Proc.new{|fc| fc.save!}]
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values

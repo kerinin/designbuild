@@ -26,7 +26,7 @@ class Component < ActiveRecord::Base
   after_create :add_parent_markups
   
   before_save :cache_values, :if => :id
-  after_create :cache_values
+  after_create [:cache_values, Proc.new{|c| c.save!}]
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values

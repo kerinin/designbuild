@@ -11,8 +11,8 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
-  before_save :cache_values, :if => :id
-  after_create :cache_values
+  before_save :cache_values #, :if => :id
+  #after_create [:cache_values, Proc.new{|fc| fc.save!}]
   
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
@@ -30,15 +30,19 @@ class FixedCostEstimate < ActiveRecord::Base
   end
   
   def total_markup
-    self.component.total_markup unless self.component.blank?
+    if self.component.blank?
+      0
+    else
+      self.component.total_markup
+    end
   end
   
   def estimated_cost
-    cost
+    self.cost
   end
   
   def estimated_raw_cost
-    raw_cost
+    self.raw_cost
   end
   
   # cost
@@ -99,7 +103,10 @@ class FixedCostEstimate < ActiveRecord::Base
   protected
   
   def cache_values
+    #puts self.raw_cost
     self.cost = mark_up :raw_cost
+    #puts mark_up :raw_cost
+    #puts self.cost
   end
   
   def cascade_cache_values
