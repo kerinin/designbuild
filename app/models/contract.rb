@@ -13,16 +13,10 @@ class Contract < ActiveRecord::Base
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => Proc.new{|c,m| c.save}, :after_remove => Proc.new{|c,m| c.save}
-    
   acts_as_list :scope => :project
   
   validates_presence_of :name, :project, :component
 
-  after_create :add_project_markups, :unless => :component_id
-  after_create :add_component_markups, :if => :component_id
-  
   before_validation :check_project
   before_save :cache_values
   
@@ -85,14 +79,5 @@ class Contract < ActiveRecord::Base
   
   def cache_total_markup
     self.total_markup = self.markups.sum(:percent)
-  end
-  
-  
-  def add_project_markups
-    self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
-  end
-  
-  def add_component_markups
-    self.component.markups.all.each {|m| self.markups << m unless self.markups.include? m }
   end
 end
