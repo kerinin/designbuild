@@ -5,16 +5,16 @@ class CreateDatePoints < ActiveRecord::Migration
       t.date :date
       t.float :value
       
-      t.belongs_to :source, :polymorhpic => true
+      t.belongs_to :source, :polymorphic => true
 
       t.timestamps
     end
     
-    create_index :date_points, :value
-    create_index :date_points, :date
-    create_index :date_points, :series
-    create_index :date_points, :source_id
-    create_index :date_points, :source_type
+    add_index :date_points, :value
+    add_index :date_points, :date
+    add_index :date_points, :series
+    add_index :date_points, :source_id
+    add_index :date_points, :source_type
   end
 
   def self.down

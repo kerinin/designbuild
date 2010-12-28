@@ -15,6 +15,10 @@ class Project < ActiveRecord::Base
   has_many :invoices, :order => 'invoices.date DESC'
   has_many :payments, :order => 'payments.date DESC'
   
+  has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}
+  has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}
+  has_many :cost_to_date_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :cost_to_date}
+  
   has_and_belongs_to_many :users
   
   validates_presence_of :name

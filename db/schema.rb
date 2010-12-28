@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101227171224) do
+ActiveRecord::Schema.define(:version => 20101228145919) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -99,6 +99,22 @@ ActiveRecord::Schema.define(:version => 20101227171224) do
 
   add_index "contracts", ["component_id"], :name => "index_contracts_on_component_id"
   add_index "contracts", ["project_id"], :name => "index_contracts_on_project_id"
+
+  create_table "date_points", :force => true do |t|
+    t.string   "series"
+    t.date     "date"
+    t.float    "value"
+    t.integer  "source_id"
+    t.string   "source_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "date_points", ["date"], :name => "index_date_points_on_date"
+  add_index "date_points", ["series"], :name => "index_date_points_on_series"
+  add_index "date_points", ["source_id"], :name => "index_date_points_on_source_id"
+  add_index "date_points", ["source_type"], :name => "index_date_points_on_source_type"
+  add_index "date_points", ["value"], :name => "index_date_points_on_value"
 
   create_table "deadlines", :force => true do |t|
     t.string   "name"
