@@ -18,31 +18,11 @@ class Markup < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  def apply_to(value, scope = :estimated)
-    case
-    when value.instance_of?( Float ) || value.instance_of?( Integer )
+  def apply_to(value, method = nil, *args)
+    if value.instance_of?( Float ) || value.instance_of?( Integer )
       multiply_or_nil( value, divide_or_nil(self.percent, 100) )
-      
-    # Distribute to project associations
-    when value.instance_of?( Project ) && scope == :estimated
-      (value.components.scoped & self.components.scoped).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + 
-      (value.contracts.without_component.scoped & self.contracts.scoped).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)}
-
-    # Estimated cost
-    when value.instance_of?( Component ) && scope == :estimated
-      if value.markups.include? self
-        self.apply_to value.estimated_raw_component_cost
-      else
-        0
-      end
-    when value.instance_of?( Contract ) && scope == :estimated
-      if value.markups.include? self
-        self.apply_to value.estimated_raw_cost
-      end
-
-    # Default
     else
-      0
+      multiply_or_nil( value.send(method, *args), divide_or_nil(self.percent, 100))
     end
   end
   
@@ -60,7 +40,6 @@ class Markup < ActiveRecord::Base
 
   def cascade_cache_values
     self.tasks.all.each {|t| t.save!}
-    self.contracts.all.each {|c| c.save!}
     self.components.all.each {|c| c.save!}
   end
 end

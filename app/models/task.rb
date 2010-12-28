@@ -1,6 +1,5 @@
 class Task < ActiveRecord::Base
   include AddOrNil
-  include MarksUp
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
@@ -76,19 +75,28 @@ class Task < ActiveRecord::Base
     subtract_or_nil self.component_estimated_cost, self.raw_projected_cost unless self.component_estimated_cost.nil?
   end
 
-  marks_up :raw_labor_cost_before
+  def labor_cost_before
+    self.raw_labor_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_labor_cost_before, date)}
+  end
+  
   def raw_labor_cost_before(date)
     #self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.labor_costs.where('labor_costs.date <= ?', date).sum(:raw_cost)
   end
   
-  marks_up :raw_material_cost_before
+  def material_cost_before(date)
+    self.raw_material_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_material_cost_before, date)}
+  end
+  
   def raw_material_cost_before(date)
     #self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.material_costs.where('material_costs.date <= ?', date).sum(:raw_cost)
   end
   
-  marks_up :raw_cost_before
+  def cost_before(date)
+    add_or_nil labor_cost_before(date), material_cost_before(date)
+  end
+  
   def raw_cost_before(date)
     add_or_nil raw_labor_cost_before(date), raw_material_cost_before(date)
   end
@@ -96,7 +104,6 @@ class Task < ActiveRecord::Base
   def cache_values
     [self.unit_cost_estimates, self.fixed_cost_estimates, self.labor_costs, self.material_costs, self.markups].each {|a| a.reload}
   
-    self.cache_total_markup
     self.cache_estimated_unit_cost
     self.cache_estimated_fixed_cost
     self.cache_estimated_cost
@@ -133,14 +140,14 @@ class Task < ActiveRecord::Base
     
   def cache_estimated_unit_cost
     self.estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_unit_cost = mark_up :estimated_raw_unit_cost
+    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_unit_cost) }
     self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
     self.component_estimated_unit_cost = self.unit_cost_estimates.sum(:cost)
   end
   
   def cache_estimated_fixed_cost
     self.estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_fixed_cost = mark_up :estimated_raw_fixed_cost
+    self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_fixed_cost) }
     self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
     self.component_estimated_fixed_cost = self.fixed_cost_estimates.sum(:cost)
   end
@@ -154,12 +161,12 @@ class Task < ActiveRecord::Base
   
   def cache_labor_cost
     self.raw_labor_cost = self.labor_costs.sum(:raw_cost)
-    self.labor_cost = mark_up :raw_labor_cost
+    self.labor_cost = self.raw_labor_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_labor_cost) }
   end
 
   def cache_material_cost
     self.raw_material_cost = self.material_costs.sum(:raw_cost)
-    self.material_cost = mark_up :raw_material_cost
+    self.material_cost = self.raw_material_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_material_cost) }
   end 
   
   def cache_cost
@@ -186,11 +193,7 @@ class Task < ActiveRecord::Base
       end 
     end
     
-    self.projected_cost = mark_up :raw_projected_cost
-  end
-  
-  def cache_total_markup
-    self.total_markup = self.markups.sum(:percent)
+    self.projected_cost = self.raw_projected_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_projected_cost) }
   end
   
   

@@ -1,7 +1,6 @@
 class Component < ActiveRecord::Base
   include AddOrNil
-  include MarksUp
-  
+
   has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_ancestry
   
@@ -48,7 +47,6 @@ class Component < ActiveRecord::Base
     self.cache_estimated_unit_cost
     self.cache_estimated_contract_cost
     self.cache_estimated_cost
-    self.cache_total_markup
   end
     
   def cascade_cache_values
@@ -92,7 +90,7 @@ class Component < ActiveRecord::Base
   
   def cache_estimated_fixed_cost
     self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_component_fixed_cost = mark_up :estimated_raw_component_fixed_cost
+    self.estimated_component_fixed_cost = self.estimated_raw_component_fixed_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_component_fixed_cost ) }
 
     self.estimated_raw_subcomponent_fixed_cost = self.children.sum(:estimated_raw_fixed_cost)
     self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
@@ -103,7 +101,7 @@ class Component < ActiveRecord::Base
 
   def cache_estimated_unit_cost
     self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_component_unit_cost = mark_up :estimated_raw_component_unit_cost
+    self.estimated_component_unit_cost = self.estimated_raw_component_unit_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_component_unit_cost ) }
     
     self.estimated_raw_subcomponent_unit_cost = self.children.sum(:estimated_raw_unit_cost)
     self.estimated_subcomponent_unit_cost = self.children.sum(:estimated_unit_cost)
@@ -133,10 +131,6 @@ class Component < ActiveRecord::Base
     self.estimated_cost = add_or_nil( add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost ), self.estimated_contract_cost )
     self.estimated_raw_cost = add_or_nil( add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost ), self.estimated_raw_contract_cost )
   end
-  
-  def cache_total_markup
-    self.total_markup = self.markups.sum(:percent)
-  end
       
       
   def check_project
@@ -152,13 +146,11 @@ class Component < ActiveRecord::Base
   end
   
   def cascade_add_markup(markup)
-    self.contracts.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.save
   end
   
   def cascade_remove_markup(markup)
-    self.contracts.all.each {|c| c.makrups.delete( markup ) }
     self.children.all.each {|c| c.markups.delete( markup ) }
     self.save
   end

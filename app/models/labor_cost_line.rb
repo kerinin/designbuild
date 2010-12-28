@@ -1,6 +1,4 @@
-class LaborCostLine < ActiveRecord::Base
-  include MarksUp
-  
+class LaborCostLine < ActiveRecord::Base  
   has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :project
@@ -21,8 +19,8 @@ class LaborCostLine < ActiveRecord::Base
   
   scope :by_project, lambda {|project| where(:project_id => project.id )  } 
   
-  def total_markup
-    self.labor_set.total_markup unless self.labor_set.blank?
+  def markups
+    self.labor_set.markups
   end
   
   def set_project
@@ -33,7 +31,7 @@ class LaborCostLine < ActiveRecord::Base
     self.raw_cost = self.hours * self.laborer.bill_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.bill_rate.nil? || self.laborer.destroyed? )
     self.laborer_pay = self.hours * self.laborer.pay_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.pay_rate.nil? || self.laborer.destroyed? )
     
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
 
   def cascade_cache_values

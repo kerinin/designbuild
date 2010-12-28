@@ -29,7 +29,7 @@ class MarkupTest < ActiveSupport::TestCase
       
       [@project, @component, @subcomponent, @task, @contract, @bid, @obj].each {|i| i.reload}
     end
-=begin
+
     teardown do
       Markup.delete_all
       Project.delete_all
@@ -162,7 +162,7 @@ class MarkupTest < ActiveSupport::TestCase
     end
 
     # -----------------------CALCULATIONS
-=end  
+
     should "apply to markupable" do
       assert_equal 150, @subcomponent.estimated_cost
       assert_equal 150, @task.cost

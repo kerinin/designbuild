@@ -1,6 +1,5 @@
 class Contract < ActiveRecord::Base
   include AddOrNil
-  include MarksUp
   
   has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_invoices
@@ -27,11 +26,18 @@ class Contract < ActiveRecord::Base
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
   
+  def markups
+    self.component.markups
+  end
+  
   def percent_invoiced
     multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
   end
   
-  marks_up :raw_cost_before
+  def cost_before(date)
+    self.raw_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost_before, date) }
+  end
+  
   def raw_cost_before(date)
     self.costs.where('date <= ?', date).sum(:raw_cost)
   end
@@ -41,7 +47,6 @@ class Contract < ActiveRecord::Base
     
     self.cache_estimated_cost
     self.cache_cost
-    self.cache_total_markup
   end
     
   def cascade_cache_values
@@ -68,16 +73,12 @@ class Contract < ActiveRecord::Base
   end
   
   def cache_estimated_cost
-    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
-    self.estimated_cost = mark_up :estimated_raw_cost
+    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? 0 : self.active_bid.raw_cost )
+    self.estimated_cost = self.estimated_raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_cost) }
   end
   
   def cache_cost
     self.raw_cost = self.costs.sum(:raw_cost)
-    self.cost = mark_up :raw_cost
-  end
-  
-  def cache_total_markup
-    self.total_markup = self.markups.sum(:percent)
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
 end

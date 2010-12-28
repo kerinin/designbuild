@@ -1,6 +1,5 @@
 class LaborCost < ActiveRecord::Base
   include AddOrNil
-  include MarksUp
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
@@ -21,9 +20,9 @@ class LaborCost < ActiveRecord::Base
   after_destroy :cascade_cache_values
   
   scope :by_project, lambda {|project| where(:project_id => project.id ) } 
-  
-  def total_markup
-    self.task.total_markup unless self.task.blank?
+
+  def markups
+    self.task.markups
   end
   
   def cache_values
@@ -46,7 +45,7 @@ class LaborCost < ActiveRecord::Base
   
   def cache_cost
     self.raw_cost = self.line_items.sum(:raw_cost)
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def deactivate_task_if_done

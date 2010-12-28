@@ -1,6 +1,4 @@
 class MaterialCost < ActiveRecord::Base
-  include MarksUp
-  
   has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :task, :inverse_of => :material_costs
@@ -26,6 +24,10 @@ class MaterialCost < ActiveRecord::Base
     
   scope :by_project, lambda {|project| joins(:task).where('tasks.project_id = ?', project.id) } 
   
+  def markups
+    self.task.markups
+  end
+  
   def supplier_name=(string)
     self.supplier = (string == '' || string.nil?) ? nil : Supplier.find_or_create_by_name(string)
   end
@@ -33,13 +35,9 @@ class MaterialCost < ActiveRecord::Base
   def supplier_name
     self.supplier.blank? ? nil : self.supplier.name
   end
-  
-  def total_markup
-    self.task.total_markup unless self.task.blank?
-  end
 
   def cache_values
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def cascade_cache_values
