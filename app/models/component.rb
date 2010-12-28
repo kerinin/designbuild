@@ -41,87 +41,6 @@ class Component < ActiveRecord::Base
     (self.ancestors.all + [self]).map {|c| c.name}.join(' > ')
   end
   
-  
-  # Fixed Costs
-  # estimated_fixed_cost
-  
-  # estimated_raw_fixed_cost
-  
-  # This could also happen on the fixed cost and be requested - fc.cost
-  # I like it better here because it doesn't require looking up another object's markup
-  #marks_up :estimated_raw_component_fixed_cost
-  
-  #def estimated_raw_component_fixed_cost
-  #  self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-  #end
-  
-  # This is happening remotely because the markup is component-specific
-  #def estimated_subcomponent_fixed_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
-  #end
-  
-  #def estimated_raw_subcomponent_fixed_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_fixed_cost)}
-  #end
-  
-  # Unit Costs
-  # estimated_unit_cost
-  
-  # estimated_raw_unit_cost
-  #marks_up :estimated_raw_component_unit_cost
-  
-  #def estimated_raw_component_unit_cost
-  #  self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-  #end
-  
-  #def estimated_subcomponent_unit_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
-  #end
-  
-  #def estimated_raw_subcomponent_unit_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
-  #end
-  
-  # Contract Costs
-  #estimated_contract_cost
-  
-  #estimated_raw_contract_cost
-  
-  #def estimated_component_contract_cost
-  #  self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_cost)}
-  #end
-  
-  #def estimated_raw_component_contract_cost
-  #  self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_raw_cost)}
-  #end
-  
-  #def estimated_subcomponent_contract_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_contract_cost)}
-  #end
-  
-  #def estimated_raw_subcomponent_contract_cost
-  #  self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_contract_cost)}
-  #end
-  
-  
-  # Total Cost
-  #def estimated_component_cost
-  #  add_or_nil( add_or_nil( self.estimated_component_unit_cost, self.estimated_component_fixed_cost ), self.estimated_component_contract_cost )
-  #end
-  
-  #def estimated_raw_component_cost
-  #  add_or_nil( add_or_nil( self.estimated_raw_component_unit_cost, self.estimated_raw_component_fixed_cost ), self.estimated_raw_component_contract_cost )
-  #end
-  
-  #def estimated_cost
-  #  add_or_nil( add_or_nil( self.estimated_unit_cost, self.estimated_fixed_cost ), self.estimated_contract_cost )
-  #end
-  
-  #def estimated_raw_cost
-  #  add_or_nil( add_or_nil( self.estimated_raw_unit_cost, self.estimated_raw_fixed_cost ), self.estimated_raw_contract_cost )
-  #end
-  
-  
   def cache_values
     [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.contracts, self.markups].each {|a| a.reload}
     
@@ -172,13 +91,10 @@ class Component < ActiveRecord::Base
   protected
   
   def cache_estimated_fixed_cost
-    #self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
     self.estimated_component_fixed_cost = mark_up :estimated_raw_component_fixed_cost
 
-    #self.estimated_raw_subcomponent_fixed = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_fixed_cost)}
     self.estimated_raw_subcomponent_fixed_cost = self.children.sum(:estimated_raw_fixed_cost)
-    #self.estimated_subcomponent_fixed = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_fixed_cost)}
     self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
     
     self.estimated_fixed_cost = add_or_nil( self.estimated_component_fixed_cost, self.estimated_subcomponent_fixed_cost )
@@ -186,13 +102,10 @@ class Component < ActiveRecord::Base
   end
 
   def cache_estimated_unit_cost
-    #self.estimated_raw_component_unit_cost = self.unit_cost_estimates.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
     self.estimated_component_unit_cost = mark_up :estimated_raw_component_unit_cost
     
-    #self.estimated_raw_subcomponent_unit_cost = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_unit_cost)}
     self.estimated_raw_subcomponent_unit_cost = self.children.sum(:estimated_raw_unit_cost)
-    #self.estimated_subcomponent_unit_cost = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_unit_cost)}
     self.estimated_subcomponent_unit_cost = self.children.sum(:estimated_unit_cost)
     
     self.estimated_unit_cost = add_or_nil( self.estimated_component_unit_cost, self.estimated_subcomponent_unit_cost )
@@ -200,14 +113,10 @@ class Component < ActiveRecord::Base
   end
 
   def cache_estimated_contract_cost
-    #self.estimated_raw_component_contract_cost = self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_raw_cost)}
     self.estimated_raw_component_contract_cost = self.contracts.sum(:estimated_raw_cost)
-    #self.estimated_component_contract_cost = self.contracts.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.estimated_cost)}
     self.estimated_component_contract_cost = self.contracts.sum(:estimated_cost)
         
-    #self.estimated_raw_subcomponent_contract_cost = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_raw_contract_cost)}
     self.estimated_raw_subcomponent_contract_cost = self.children.sum(:estimated_raw_contract_cost)
-    #self.estimated_subcomponent_contract_cost = self.children.all.inject(nil) {|memo,obj| add_or_nil(memo,obj.estimated_contract_cost)}
     self.estimated_subcomponent_contract_cost = self.children.sum(:estimated_contract_cost)
     
     self.estimated_contract_cost = add_or_nil( self.estimated_component_contract_cost, self.estimated_subcomponent_contract_cost )
@@ -226,7 +135,6 @@ class Component < ActiveRecord::Base
   end
   
   def cache_total_markup
-    #self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
     self.total_markup = self.markups.sum(:percent)
   end
       

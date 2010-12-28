@@ -35,17 +35,12 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   def estimated_cost
-    cost
+    self.cost
   end
   
   def estimated_raw_cost
-    raw_cost
+    self.raw_cost
   end
-  
-  # cost
-  marks_up :raw_cost
-  
-  # raw_cost
   
   
   def cache_values

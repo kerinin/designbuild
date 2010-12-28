@@ -58,17 +58,6 @@ class PaymentsControllerTest < ActionController::TestCase
       assert_equal 'new', @new_payment.state
       assert_equal 'missing_task', @missing_task_payment.state
       
-      #@balanced_payment.lines.each {|l| puts l.labor_paid; puts l.material_paid}
-      #puts @balanced_payment.labor_paid
-      #puts @balanced_payment.material_paid
-      #puts @balanced_payment.paid
-      
-      #puts @balanced_payment.labor_retained
-      #puts @balanced_payment.material_retained
-      #puts @balanced_payment.retained
-      
-      #assert @balanced_payment.reload.balances?
-      
       assert_equal 'balanced', @balanced_payment.state
       assert_equal 'unbalanced', @unbalanced_payment.state
       assert_equal 'complete', @complete_payment.state

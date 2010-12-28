@@ -4,19 +4,13 @@ class ProjectCachingTest < ActiveSupport::TestCase
   context "A project w/ caching" do
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
-      #@component = Factory :component, :project => @project, :name => 'component'
       @component = @project.components.create! :name => 'component'
-      #@subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
       @subcomponent = @project.components.create! :name => 'subcomponent'
       @component.children << @subcomponent
-      #@task = Factory :task, :project => @project
       @task = @project.tasks.create! :name => 'task'
-      #@contract = Factory :contract, :project => @project
       @contract = @project.contracts.create! :name => 'contract'
-      #@contract1 = Factory :contract, :component => @component, :project => @project
       @contract1 = @project.contracts.create! :name => 'contract1'
       @component.contracts << @contract1
-      #@contract2 = Factory :contract, :component => @subcomponent, :project => @project
       @contract2 = @project.contracts.create! :name => 'contract2'
       @subcomponent.contracts << @contract2
       @laborer = Factory :laborer, :bill_rate => 1
@@ -157,14 +151,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
     end
 
     should "reflect root contract costs" do
-      #@bid = Factory :bid, :contract => @contract1, :raw_cost => 100
       @bid = @contract1.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
       @contract1.active_bid = @bid
       @contract1.save
-      
-      #assert_equal @contract1.component, @component
-      #assert_equal @contract1.project, @project
-      
+
       # Caching forces the reload
       @project.reload
       
@@ -195,16 +185,8 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @contract1.component = @component
       @contract1.project = @project
       
-      #puts 'begin'
       @contract1.save!
-      #puts 'end'
       @project.reload
-
-      #assert_equal 0, @project.contracts.without_component.sum(:estimated_raw_cost)
-      #assert_equal 200, @component.estimated_raw_contract_cost
-      #assert_contains @project.components.roots, @component
-      #assert_equal 200, @project.components.roots.sum(:estimated_raw_contract_cost)
-      #assert_equal 200, @project.components.roots.sum(:estimated_raw_cost)
 
       assert_equal 200, @project.estimated_raw_contract_cost
       assert_equal 400, @project.estimated_contract_cost
@@ -299,7 +281,6 @@ class ProjectCachingTest < ActiveSupport::TestCase
     end
     
     should "reflect task material costs" do
-      #@mc = Factory :material_cost, :task => @task, :raw_cost => 100
       @mc = @task.material_costs.create! :raw_cost => 100, :date => Date::today, :supplier => Factory(:supplier)
       @project.reload
       

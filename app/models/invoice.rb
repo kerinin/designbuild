@@ -6,9 +6,6 @@ class Invoice < ActiveRecord::Base
   accepts_nested_attributes_for :lines
   
   validates_presence_of :project
-  #validates_associated :lines
-  
-  #before_save Proc.new{|i| puts "advancing #{i.advance} #{i.state}"; true}
   
   state_machine :state, :initial => :new do
     # States
@@ -42,7 +39,6 @@ class Invoice < ActiveRecord::Base
       transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :missing_tasks?
       
       transition :missing_task => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :missing_tasks?
-      #transition :missing_task => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
       transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
       
@@ -88,19 +84,6 @@ class Invoice < ActiveRecord::Base
   protected
   
   def populate_lines
-    #puts 'populating lines'
-    #puts self.project.components.count
-    #self.project.components.each do |component|
-    #  self.lines_attributes = component.unit_cost_estimates.assigned.map {|uc| { :cost => uc } }
-    #  self.lines_attributes = component.fixed_cost_estimates.assigned.map {|fc| { :cost => fc } }
-    #  self.lines_attributes = component.contracts.map {|c| { :cost => c } }
-    #end
-    
-    #self.lines_attributes = self.project.contracts.scoped.without_component.map {|c| { :cost => c } }
-    
-    #self.lines.each {|l| l.set_defaults}
-    
-    #self.save!
     self.project.components.each do |component|
       component.unit_cost_estimates.assigned.each {|uc| self.lines.build(:cost => uc).set_defaults.save! }
       component.fixed_cost_estimates.assigned.each {|fc| self.lines.build(:cost => fc).set_defaults.save! }

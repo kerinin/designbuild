@@ -2,6 +2,4 @@
 
 Factory.define :supplier do |f|
   f.name { Forgery::DesignBuild.supplier_name }
-  
-  #f.project {|p| p.association(:project)}
 end

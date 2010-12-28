@@ -31,39 +31,11 @@ class InvoiceTest < ActiveSupport::TestCase
         :material_retainage => 10000000
       )
       @obj.advance
-
-      # This is interesting - the second puts shows the correct value, but once it's saved it gets lost
-      #puts @obj.lines.map{|l| l.labor_invoiced}
-      #@obj.lines_attributes = [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
-      #puts @obj.lines.map{|l| l.labor_invoiced}
-      #@obj.save!
-      #puts @obj.lines.map{|l| l.labor_invoiced}
-      
-      #[@project, @component, @fc, @uc, @c, @obj, @line1, @line2].each {|i| i.reload}
     end
 
     should "accept_nested_attributes" do
-      #assert_equal 'retainage_unexpected', @obj.state
-      
-      #assert_equal 2, @obj.lines.count
-      #assert_contains @obj.lines, @line1
-      
-      #puts 'start'
       @obj.update_attributes :lines_attributes => [{:id => @line1.id, :labor_invoiced => 5, :material_invoiced => 5, :labor_retainage => 5, :material_retainage => 5}]
-      #puts 'save'
-      #@obj.save!
-      #puts 'end'
-      
-      #puts @line1.reload.labor_invoiced
-      
-      #assert_equal 2, @obj.lines.count
-      #assert_contains @obj.lines.map{|l| l.labor_invoiced}, 5
-      #assert_equal @line1, @obj.reload.lines.first
-      
-      #assert_equal 5, @obj.lines[0].labor_invoiced
-      #assert_equal 5, @obj.lines[0].material_invoiced
-      #assert_equal 5, @obj.lines[0].labor_retainage
-      #assert_equal 5, @obj.lines[0].material_retainage
+
       @line1.reload
       
       assert_equal 5, @line1.labor_invoiced
@@ -131,27 +103,10 @@ class InvoiceTest < ActiveSupport::TestCase
 
     should "new -> missing_task if tasks have costs without estimates" do
       @task = @project.tasks.create! :name => 'task'
-      #puts 'start'
       @mc = @task.material_costs.create! :raw_cost => 100, :supplier => Factory(:supplier), :date => Date::today
-      #puts 'end'
       @obj = @project.invoices.create! :date => Date::today
-      #@task.reload
 
-      #assert_equal 100, @task.reload.raw_material_cost
-      #assert_equal 100, @task.raw_material_cost
-      
-      #puts @obj.missing_tasks?
-      
-      #assert_contains @task.material_costs, @mc
-      #assert_contains @project.tasks, @task
-      #assert_equal 0, @task.unit_cost_estimates.count
-      #assert_equal 0, @task.fixed_cost_estimates.count
-      #assert_equal 100, @task.raw_material_cost
-      #assert_contains @obj.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0'), @task
-      
       @obj.advance
-      
-      #puts @obj.missing_tasks?
       
       assert_equal 'missing_task', @obj.state
       assert_equal [], @obj.lines
@@ -199,14 +154,6 @@ class InvoiceTest < ActiveSupport::TestCase
       
       @obj = @project.invoices.create! :date => Date::today
       @obj.advance!
-      #@obj.reload
-      
-      #[@project, @component, @payment, @task, @fc, @mc, @obj].each {|i| i.reload}
-      #assert_equal false, @payment.balances?
-      #assert_contains @obj.project.payments, @payment
-      #assert @project.payments.map{|p| p.balances?}.include?( false )
-      #assert_equal false, @project.payments.empty?
-      #assert_equal true, @obj.unbalanced_payments?
       
       assert_equal 'payments_unbalanced', @obj.state    
     
@@ -220,25 +167,7 @@ class InvoiceTest < ActiveSupport::TestCase
         :material_retained => 10
       ) ]
       @obj.advance!
-      #@payment.save
-      
-      #assert @payment.balances?
-      #assert_equal 1, @obj.project.payments.count
-      #assert_contains @obj.project.payments, @payment
-      #assert_equal 1, @payment.lines.count
-      #assert_equal false, @obj.unbalanced_payments?
-      #assert_contains @payment.project.reload.invoices, @obj
-      #@obj.save
-      #@payment.project.reload.invoices.each {|i| i.save!}
-      #@payment.update_invoices
-      #@payment.save
-      #@payment.lines.first.save
-      
-      #@payment.save
-      # NOTE: explicitly saving passes
-      # invoice.save being called after line added (see puts)
-      # Not sure why this isn't working
-      
+
       assert_equal 'retainage_expected', @obj.state
     end
    
@@ -310,8 +239,6 @@ class InvoiceTest < ActiveSupport::TestCase
       @cc = @c.costs.create! :date => Date::today, :raw_cost => 1000
       
       @obj = @project.invoices.create!
-      
-      #[@project, @component, @task, @fc, @q, @uc, @c, @l, @lc, @lcl, @mc, @cc].each {|i| i.reload}
     end
 
     should "start as new" do
@@ -325,37 +252,20 @@ class InvoiceTest < ActiveSupport::TestCase
     end
    
     should "populate line items when -> retainage_expected" do
-      #assert_equal 1, @project.components.count
-      #assert_equal 1, @project.invoices.count
-      #assert_equal @project, @obj.project
-      #assert_equal 1, @component.unit_cost_estimates.assigned.count
-      #assert_equal 1, @component.fixed_cost_estimates.assigned.count
-      #assert_equal 1, @component.contracts.count
-    
-      #assert_equal 0, @obj.lines.count
-      
-      #puts 'start'
       @obj.update_attributes :date => Date::today
       @obj.advance
       
       assert_equal 'retainage_expected', @obj.state
-      #puts 'end'
-      
-      #assert_equal 3, @obj.lines.count
       
       costs = @obj.lines.map{|l| l.cost}
       assert_contains costs, @fc
       assert_contains costs, @uc
       assert_contains costs, @c
-      
-      #assert_equal 3, @obj.lines.count
     end
 
     should "new -> retainage expected if retainage specified" do
       @obj.update_attributes :date => Date::today
       @obj.advance
-      
-      # auto-generates with correct retainage
 
       assert_equal 'retainage_expected', @obj.state
     end
@@ -364,21 +274,13 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.update_attributes :date => Date::today
       @obj.advance
       
-      # auto-generates with correct retainage
       assert_equal 'retainage_expected', @obj.state
       
       # screw them up
       @obj.lines.each do |l|
         l.update_attributes :labor_retainage => 5648976, :material_retainage => 21354 
-        #puts l.labor_retainage
-        #puts l.retainage_as_expected?
-        #puts l.calculate_retainage( 
-        #  l.labor_invoiced + l.cost.labor_invoiced, 
-        #  l.invoice.project.labor_percent_retainage_float, 
-        #  l.cost.labor_retainage 
-        #)
       end
-      #puts @obj.reload.retainage_as_expected?
+
       @obj.advance
 
       assert_equal 'retainage_unexpected', @obj.state
@@ -388,7 +290,6 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.update_attributes :date => Date::today
       @obj.advance!
       
-      # auto-generates with correct retainage
       assert_equal 'retainage_expected', @obj.state
       
       # screw them up
@@ -396,35 +297,10 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.advance!
       
       assert_equal 'retainage_unexpected', @obj.state
-      
-      #puts 'start'
-      # fix them 
+
       @obj.lines.each {|l| l.update_attributes :labor_invoiced => 9, :labor_retainage => 1, :material_invoiced => 8, :material_retainage => 2 }
-      #puts 'end'
       @obj.advance!
-          
-      #assert_equal 9, @obj.lines[0].labor_invoiced 
-      #assert_equal 1, @obj.lines[0].labor_retainage 
-      #assert_equal 8, @obj.lines[0].material_invoiced 
-      #assert_equal 2, @obj.lines[0].material_retainage 
-      
-      #puts @obj.lines.map{|l| l.retainage_as_expected?}
-      
-      #puts @obj.lines[0].calculate_retainage( 
-      #  @obj.lines[0].labor_invoiced + @obj.lines[0].cost.labor_invoiced, 
-      #  @obj.lines[0].invoice.project.labor_percent_retainage_float, 
-      #  @obj.lines[0].cost.labor_retainage 
-      #)
-      #puts @obj.lines[0].labor_invoiced
-      #puts @obj.lines[0].cost.labor_invoiced
-      
-      # this is the problem.  the line has a cached version of the parent cost
-      #puts @obj.lines[0].cost.labor_retainage #<---
-      #puts @obj.labor_retainage #<---
-      
-      #assert @obj.lines[0].retainage_as_expected?
-      #assert @obj.retainage_as_expected?
-         
+
       assert_equal 'retainage_expected', @obj.state
     end
   

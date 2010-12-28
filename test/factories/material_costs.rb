@@ -6,5 +6,4 @@ Factory.define :material_cost do |f|
   
   f.task {|p| p.association(:task)}
   f.supplier {|p| p.association(:supplier)}
-  # ???  Can materials be associated with components instead?
 end

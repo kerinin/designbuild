@@ -12,7 +12,6 @@ class ProjectTest < ActiveSupport::TestCase
       @task = Factory :task, :project => @obj
       
       @u1 = Factory :user, :projects => [@obj]
-      #@u2 = Factory :user, :projects => [@obj]
       @c1 = Factory :component, :name => 'c1', :project => @obj
         @sc1 = Factory :component, :name => 'sc1', :parent => @c1, :project => @obj
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :raw_cost => 0.1, :task => @task
@@ -60,7 +59,6 @@ class ProjectTest < ActiveSupport::TestCase
     
     should "allow multiple users" do
       assert_contains @obj.users, @u1
-      #assert_contains @obj.users, @u2
     end
     
     should "allow multiple components" do

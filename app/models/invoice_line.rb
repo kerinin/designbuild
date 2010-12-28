@@ -5,11 +5,7 @@ class InvoiceLine < ActiveRecord::Base
   belongs_to :cost, :polymorphic => true
   
   validates_presence_of :invoice, :cost
-  #validates_associated :invoice
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
-  
-  #after_create Proc.new {|invline| invline.invoice.reload.save! }
-  #before_create :set_defaults
   
   def invoiced
     self.labor_invoiced + self.material_invoiced
@@ -81,7 +77,6 @@ class InvoiceLine < ActiveRecord::Base
   
     # calculate retainage based on material costs
     # the math allows retainage to be calculated for arbitrary labor & material values
-
     self.send("#{sym.to_s}_retainage=", calculate_retainage( 
       add_or_nil( self.send("#{sym.to_s}_invoiced"), self.cost.send("#{sym.to_s}_invoiced")), 
       self.invoice.project.send("#{sym.to_s}_percent_retainage_float"), 

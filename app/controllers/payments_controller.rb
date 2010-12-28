@@ -73,31 +73,6 @@ class PaymentsController < ApplicationController
       format.xml  { render :xml => @payments }
     end
   end
-  
-=begin
-  # GET /payments/1
-  # GET /payments/1.xml
-  def show
-    @payment = Payment.find(params[:id])
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @payment }
-    end
-  end
-
-
-  # GET /payments/new
-  # GET /payments/new.xml
-  def new
-    @payment = Payment.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @payment }
-    end
-  end
-=end
 
   # GET /payments/1/edit
   def edit

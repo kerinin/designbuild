@@ -36,26 +36,13 @@ class Contract < ActiveRecord::Base
   def percent_invoiced
     multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
   end
-
-  
-  # estimated_cost
-  # marks_up :estimated_raw_cost
-  
-  # estimated_raw_cost
   
   marks_up :raw_cost_before
   def raw_cost_before(date)
-    #self.costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.costs.where('date <= ?', date).sum(:raw_cost)
   end
   
-  # cost
-  #marks_up :raw_cost
-  
-  # raw_cost
-  
   def cache_values
-    #puts "caching from contract"
     [self.bids, self.costs, self.markups].each {|r| r.reload}
     
     self.cache_estimated_cost
@@ -71,22 +58,6 @@ class Contract < ActiveRecord::Base
     Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?
   end
   
-  
-  # Invoicing
-=begin
-  [:labor_cost, :material_cost].each do |sym|
-    self.send(:define_method, sym) do
-      divide_or_nil self.cost, 2
-    end
-  end
-  
-  [:labor_cost_before, :material_cost_before].each do |sym|
-    self.send(:define_method, sym) do |date|
-      date ||= Date::today
-      divide_or_nil self.cost_before(date), 2
-    end
-  end
-=end  
   def percent_complete
     self.percent_complete_float * 100
   end
@@ -108,13 +79,11 @@ class Contract < ActiveRecord::Base
   end
   
   def cache_cost
-    #self.raw_cost = self.costs.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_cost = self.costs.sum(:raw_cost)
     self.cost = mark_up :raw_cost
   end
   
   def cache_total_markup
-    #self.total_markup = self.markups.all.inject(0) {|memo,obj| memo + obj.percent }
     self.total_markup = self.markups.sum(:percent)
   end
   

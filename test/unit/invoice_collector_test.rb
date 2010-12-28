@@ -183,11 +183,6 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
     end
     
     should "aggregate labor cost" do
-      #date = Date::today - 5
-      #assert_not_nil date
-      #assert_does_not_contain @task.labor_costs.where('labor_costs.date <= ?', Date::today - 5), @lc1
-      #assert_equal 1000, @task.labor_costs.where('labor_costs.date <= ?', Date::today - 5).sum(:raw_cost)
-      #assert_equal 1000, @task.labor_cost_before( date )
       assert_equal 1000, @project.labor_cost_before(Date::today - 5)
       assert_equal 1000, @component.labor_cost_before(Date::today - 5)
     end

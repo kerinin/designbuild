@@ -26,11 +26,6 @@ class LaborCost < ActiveRecord::Base
     self.task.total_markup unless self.task.blank?
   end
   
-  # cost
-  #marks_up :raw_cost
-  
-  # raw_cost
-  
   def cache_values
     self.line_items.reload
     
@@ -50,7 +45,6 @@ class LaborCost < ActiveRecord::Base
   end
   
   def cache_cost
-    #self.raw_cost = self.line_items.all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_cost = self.line_items.sum(:raw_cost)
     self.cost = mark_up :raw_cost
   end

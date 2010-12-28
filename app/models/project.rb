@@ -7,7 +7,6 @@ class Project < ActiveRecord::Base
   has_many :tasks, :order => "tasks.name", :dependent => :destroy
   has_many :contracts, :order => "contracts.position", :dependent => :destroy
   has_many :deadlines, :order => "deadlines.date", :dependent => :destroy
-  #has_many :laborers, :order => :name, :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
@@ -42,51 +41,6 @@ class Project < ActiveRecord::Base
   def projected_net
     subtract_or_nil self.estimated_cost, self.raw_projected_cost
   end
-  
-  # estimated_fixed_cost
-  
-  # estimated_raw_fixed_cost
-  
-  # estimated_unit_cost
-  
-  # estimated_raw_unit_cost
-  
-  # estimated_contract_cost
-  
-  # estimated_raw_contract_cost
-  
-  #def estimated_cost
-  #  add_or_nil( self.estimated_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
-  #end
-  
-  #def estimated_raw_cost
-  #  add_or_nil( self.estimated_raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
-  #end
-  
-  # labor_cost
-  
-  # raw_labor_cost
-  
-  # material_cost
-  
-  # raw_material_cost
-  
-  # contract_cost
-  
-  # raw_contract_cost
-  
-  #def cost
-  #  add_or_nil(self.labor_cost, add_or_nil( self.material_cost, self.contract_cost) )
-  #end
-  
-  #def raw_cost
-  #  add_or_nil(self.raw_labor_cost, add_or_nil( self.raw_material_cost, self.raw_contract_cost) )
-  #end
-  
-  # projected_cost
-  
-  # raw_projected_cost
-
   
   def cache_values
     [self.components, self.contracts, self.tasks].each {|a| a.reload}
@@ -139,51 +93,37 @@ class Project < ActiveRecord::Base
   protected
     
   def cache_estimated_fixed_cost
-    #self.estimated_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_fixed_cost)}
     self.estimated_fixed_cost = self.components.roots.sum(:estimated_fixed_cost)
-    #self.estimated_raw_fixed_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_fixed_cost)}
     self.estimated_raw_fixed_cost = self.components.roots.sum(:estimated_raw_fixed_cost)
   end
   
   def cache_estimated_unit_cost
-    #self.estimated_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_unit_cost)}
     self.estimated_unit_cost = self.components.roots.sum(:estimated_unit_cost)
-    #self.estimated_raw_unit_cost = self.components.roots.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_unit_cost)}
     self.estimated_raw_unit_cost = self.components.roots.sum(:estimated_raw_unit_cost)
   end
     
   def cache_estimated_contract_cost
-    #self.estimated_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_cost )}
     self.estimated_contract_cost = self.contracts.sum(:estimated_cost )
-    #self.estimated_raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.estimated_raw_cost )}
     self.estimated_raw_contract_cost = self.contracts.sum(:estimated_raw_cost )
   end
 
   def cache_estimated_cost
-    #self.estimated_cost = add_or_nil( self.estimated_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil(obj.estimated_unit_cost, obj.estimated_fixed_cost))} )
     self.estimated_cost = add_or_nil self.contracts.without_component.sum(:estimated_cost), self.components.roots.sum(:estimated_cost)
-    #self.estimated_raw_cost = add_or_nil( self.estimated_raw_contract_cost, self.components.roots.all.inject(nil){|memo,obj| add_or_nil(memo, add_or_nil( obj.estimated_raw_unit_cost, obj.estimated_raw_fixed_cost))} )
     self.estimated_raw_cost = add_or_nil self.contracts.without_component.sum(:estimated_raw_cost), self.components.roots.sum(:estimated_raw_cost)
   end
   
   def cache_material_cost
-    #self.material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.material_cost)}
     self.material_cost = self.tasks.sum(:material_cost)
-    #self.raw_material_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_material_cost)}
     self.raw_material_cost = self.tasks.sum(:raw_material_cost)
   end
   
   def cache_labor_cost
-    #self.labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.labor_cost)}
     self.labor_cost = self.tasks.sum(:labor_cost)
-    #self.raw_labor_cost = self.tasks.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_labor_cost)}
     self.raw_labor_cost = self.tasks.sum(:raw_labor_cost)
   end
   
   def cache_contract_cost
-    #self.contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.cost)}
     self.contract_cost = self.contracts.sum(:cost)
-    #self.raw_contract_cost = self.contracts.inject(nil){|memo,obj| add_or_nil(memo, obj.raw_cost)}
     self.raw_contract_cost = self.contracts.sum(:raw_cost)
   end
     
@@ -201,7 +141,7 @@ class Project < ActiveRecord::Base
   def cascade_add_markup(markup)
     # Ancestry doesn't seem to like working with other associations...
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups << markup unless c.markups.include? markup }
-    #self.components.roots.all.each {|c| c.markups << markup unless c.markups.include? markup }
+
     self.tasks.all.each {|t| t.markups << markup unless t.markups.include? markup }
     self.contracts.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.save
@@ -210,7 +150,7 @@ class Project < ActiveRecord::Base
   def cascade_remove_markup(markup)
     # Ancestry doesn't seem to like working with other associations...
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups.delete( markup ) }
-    #self.components.roots.all.each {|c| c.markups.delete( markup ) }
+
     self.tasks.all.each {|t| t.markups.delete( markup ) }
     self.contracts.all.each {|c| c.markups.delete( markup ) }
     self.save

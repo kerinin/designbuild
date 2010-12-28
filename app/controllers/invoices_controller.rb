@@ -89,43 +89,6 @@ class InvoicesController < ApplicationController
     end
   end
 
-  # GET /invoices/1
-  # GET /invoices/1.xml
-=begin
-  def show
-    @invoice = Invoice.find(params[:id])
-    @state = params[:state]
-    @state ||= @invoice.state
-    
-    if ['retainage_expected', 'retainage_unexpected'].include? @state
-      @state = @invoice.retainage_as_expected? ? 'retainage_expected' : 'retainage_unexpected'
-    end
-    
-    if @state == 'costs_specified'
-      @templates =Dir.entries(File.join(Rails.root, 'app', 'views', 'invoices')).map{|s| s.include?('_template_') ? 
-        {:name => File.basename(s, '.html.haml').split('_template_').last.gsub('_', ' '), :path => File.basename(s, '.html.haml')[1..-1]} : 
-        nil}.compact
-    end
-
-    respond_to do |format|
-      format.html # show.html.erb
-      format.xml  { render :xml => @invoice }
-    end
-  end
-
-
-  # GET /invoices/new
-  # GET /invoices/new.xml
-  def new
-    @invoice = Invoice.new
-
-    respond_to do |format|
-      format.html # new.html.erb
-      format.xml  { render :xml => @invoice }
-    end
-  end
-=end
-
   # GET /invoices/1/edit
   def edit
     @invoice = Invoice.find(params[:id])

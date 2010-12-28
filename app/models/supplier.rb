@@ -1,8 +1,6 @@
 class Supplier < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  #belongs_to :project
-  
   has_many :material_costs, :dependent => :destroy
   
   validates_presence_of :name #, :project

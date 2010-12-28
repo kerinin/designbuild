@@ -30,12 +30,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
         )
   
         @fce.reload
-        #[@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @fce
-      
-        #[@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "be valid" do
@@ -100,13 +97,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
           :material_invoiced => 50, 
           :material_retainage => 20 
         )     
-  
-        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @uce
-      
-        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "be valid" do
@@ -158,12 +151,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
         @component.contracts << @contract
         @bid = @contract.bids.create! :raw_cost => 100, :contractor => 'contractor', :date => Date::today
         @contract.update_attributes :active_bid => @bid
-        #puts "start"
-        @contract_cost = @contract.costs.create! :raw_cost => 50, :date => Date::today
-        #puts "end"
-        #puts @contract.raw_cost
-        #puts @contract.cost
-        
+
         # requested: 2, paid: 1
         @invoice = @project.invoices.create! :date => Date::today
         @line = @invoice.lines.create!( 
@@ -175,12 +163,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
         )     
         
         @contract.reload
-        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @contract
-      
-        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "be valid" do
@@ -211,11 +196,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       
       should "default to cost - requested" do
         @obj.set_defaults
-        #assert_equal 50, @contract_cost.raw_cost
-        #assert_contains @contract.costs, @contract_cost
-        #assert_not_nil @contract.cost
-        
-        
+             
         assert_equal (0.5*@contract.cost*(1-@project.labor_percent_retainage_float)-@line.labor_invoiced), @obj.labor_invoiced
         assert_equal (0.5*@contract.cost*(1-@project.material_percent_retainage_float)-@line.material_invoiced), @obj.material_invoiced
       
@@ -257,31 +238,16 @@ class InvoiceLineTest < ActiveSupport::TestCase
         )
   
         @fce.reload
-        #[@project, @component, @task, @fce, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @fce
-      
-        #[@project, @component, @task, @fce, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
         # for now splitting based on task labor/material COSTS
 
         @obj.set_defaults
-        
-        #assert_equal 0, @fce.total_markup
-        #assert_equal 100, @fce.raw_cost
-        #assert_equal 100, @fce.cost
-        #assert_equal 100, @fce.estimated_raw_cost
-        #assert_equal 100, @fce.estimated_cost
-        
-        # % complete * labor multiplier * estimated cost, minus retainage
-        #assert_not_nil @fce.labor_percent_float
-        #assert_not_nil @fce.task.percent_complete_float
-        #assert_not_nil @fce.estimated_cost
-        #assert_not_nil @project.labor_percent_retainage_float
-        #assert_not_nil @line.labor_invoiced
+
         assert_equal (
           @fce.labor_percent_float * @fce.task.percent_complete_float * @fce.estimated_cost *
           (1-@project.labor_percent_retainage_float )
@@ -323,13 +289,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
           :material_invoiced => 50, 
           :material_retainage => 20 
         )     
-  
-        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @uce
-      
-        #[@project, @component, @q, @uce, @lc, @lcl, @mc, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
@@ -378,13 +340,9 @@ class InvoiceLineTest < ActiveSupport::TestCase
           :material_invoiced => 50, 
           :material_retainage => 20 
         )     
-  
-        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line].each {|i| i.reload}
 
         @new_invoice = @project.invoices.create!
         @obj = @new_invoice.lines.create! :cost => @contract
-      
-        #[@project, @component, @bid, @contract, @contract_cost, @invoice, @line, @new_invoice, @obj].each {|i| i.reload}
       end
 
       should "default to % complete * estimated - requested" do
