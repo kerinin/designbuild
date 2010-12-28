@@ -38,7 +38,7 @@ gem "abstract"
 gem 'rails3-jquery-autocomplete'
 gem 'paper_trail'
 gem 'state_machine'
-gem 'pg'
+#gem 'pg'
 
 group :test, :development do
   gem "yaml_db"

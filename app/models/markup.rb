@@ -21,21 +21,22 @@ class Markup < ActiveRecord::Base
   
   def apply_to(value, scope = :estimated)
     case
-    when value.instance_of? float || value.instance_of? integer
+    when value.instance_of?( Float ) || value.instance_of?( Integer )
       multiply_or_nil( value, divide_or_nil(self.percent, 100) )
       
     # Distribute to project associations
-    when value.instance_of? Project
-      (self.components & value.components).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + (self.contracts & value.contracts).without_component.inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + (self.tasks & value.tasks).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)}
+    when value.instance_of?( Project ) && scope == :estimated
+      (value.components.scoped & self.components.scoped).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + 
+      (value.contracts.without_component.scoped & self.contracts.scoped).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)}
 
     # Estimated cost
-    when value.instance_of? Component && scope == :estimated
+    when value.instance_of?( Component ) && scope == :estimated
       if value.markups.include? self
-        value.fixed_cost_estimates.inject(0) {|memo,obj| memo + self.apply_to(obj.estimated_raw_cost) } + value.unit_cost_estimates.inject(0) {|memo,obj| memo + obj.estimated_raw_cost} + obj.contracts.inject(0) {|memo,obj| memo + obj.estimated_raw_cost}
+        self.apply_to value.estimated_raw_component_cost
       else
         0
       end
-    when value.instance_of? Contract && scope == :estimated
+    when value.instance_of?( Contract ) && scope == :estimated
       if value.markups.include? self
         self.apply_to value.estimated_raw_cost
       end
@@ -60,7 +61,7 @@ class Markup < ActiveRecord::Base
 
   def cascade_cache_values
     self.tasks.all.each {|t| t.save!}
-    self.components.all.each {|c| c.save!}
     self.contracts.all.each {|c| c.save!}
+    self.components.all.each {|c| c.save!}
   end
 end
