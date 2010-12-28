@@ -27,6 +27,7 @@ class Bid < ActiveRecord::Base
   def is_active_bid=(bool)
     if bool
       self.contract.active_bid = self
+      self.contract.save!
     end
   end
   

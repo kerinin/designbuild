@@ -80,6 +80,7 @@ class Invoice < ActiveRecord::Base
   
   def unbalanced_payments?
     # Reload required!
+    self.project.reload
     return false if self.project.payments.empty?
     self.project.payments.map{|p| p.balances?}.include?( false )
   end

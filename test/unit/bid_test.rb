@@ -9,7 +9,7 @@ class BidTest < ActiveSupport::TestCase
       @contract.active_bid = @active
       @contract.save!
       
-      @contract.reload
+      [@contract, @bid, @active].each {|i| i.reload }
     end
 
     teardown do

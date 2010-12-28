@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
+
   context "An Invoice" do
     setup do
       @q = Factory :quantity, :value => 1
@@ -127,7 +128,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @project = Factory :project
       @component = @project.components.create! :name => 'component'
     end
-  
+
     should "new -> missing_task if tasks have costs without estimates" do
       @task = @project.tasks.create! :name => 'task'
       #puts 'start'
@@ -187,7 +188,7 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'payments_unbalanced', @obj.state
     end
-  
+ 
     should "payments_unbalanced -> retainage_expected after payments balanced" do
       @task = @project.tasks.create! :name => 'task'
       @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
@@ -197,7 +198,8 @@ class InvoiceTest < ActiveSupport::TestCase
       @payment = @project.payments.create! :date => Date::today-10, :paid => 100, :retained => 100
       
       @obj = @project.invoices.create! :date => Date::today
-      @obj.advance
+      @obj.advance!
+      #@obj.reload
       
       #[@project, @component, @payment, @task, @fc, @mc, @obj].each {|i| i.reload}
       #assert_equal false, @payment.balances?
@@ -217,7 +219,7 @@ class InvoiceTest < ActiveSupport::TestCase
         :labor_retained => 90,
         :material_retained => 10
       ) ]
-      @obj.advance
+      @obj.advance!
       #@payment.save
       
       #assert @payment.balances?
@@ -457,6 +459,6 @@ class InvoiceTest < ActiveSupport::TestCase
       
       assert_equal 'complete', @obj.state
     end
-    
+   
   end
 end
