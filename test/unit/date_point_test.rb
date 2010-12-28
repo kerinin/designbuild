@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DatePointTest < ActiveSupport::TestCase
-=begin
+
   context "A Date Point assigned to a project" do
     setup do
       @source = Factory :project
@@ -104,14 +104,14 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
     
-    should "create points on update" do
-      @component = @source.components.create! :name => 'component'
-      @task = @source.tasks.create! :name => 'task'
-      
+    should "create points on update" do 
       assert_equal 3, @source.estimated_cost_points.count
       assert_equal 3, @source.projected_cost_points.count
       assert_equal 3, @source.cost_to_date_points.count
-      
+
+      @component = @source.components.create! :name => 'component'
+      @task = @source.tasks.create! :name => 'task'
+            
       @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
       @task.fixed_cost_estimates << @fc
       @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
@@ -328,7 +328,7 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 200, @source.cost_to_date_points.last.value
     end
   end
-=end
+
   context "A Date Point assigned to a contract" do
     setup do
       @project = Factory :project
@@ -421,14 +421,15 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 3, @source.estimated_cost_points.count
       assert_equal 3, @source.cost_to_date_points.count
       
-      @component.contracts << @source
+      @bid = @source.bids.create! :contractor => 'foo', :raw_cost => 200, :date => Date::today
+      @source.update_attributes :active_bid => @bid
       @source.costs.create! :date => Date::today, :raw_cost => 200
       
-      assert_equal 4, @source.estimated_cost_points.count
-      assert_equal 4, @source.cost_to_date_points.count
+      assert_equal 4, @source.estimated_cost_points(true).count
+      assert_equal 4, @source.cost_to_date_points(true).count
       
       assert_equal 200, @source.estimated_cost_points.last.value
-      assert_equal 200, @source.cost_to_date_points.last.value
+      assert_equal 200, @source.cost_to_date_points(true).last.value
     end
   end
 

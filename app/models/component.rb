@@ -168,6 +168,9 @@ class Component < ActiveRecord::Base
   end
   
   def create_points
-    self.estimated_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.estimated_cost) if self.estimated_cost_changed?
+    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+    p.series = :estimated_cost
+    p.value = self.estimated_cost || 0
+    p.save!
   end
 end

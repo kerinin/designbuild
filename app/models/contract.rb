@@ -32,6 +32,8 @@ class Contract < ActiveRecord::Base
   after_save :cascade_cache_values  
   after_destroy :cascade_cache_values
   
+  before_update :create_points
+    
   default_scope :order => :position
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
@@ -97,5 +99,12 @@ class Contract < ActiveRecord::Base
   
   def add_component_markups
     self.component.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  end
+  
+  def create_points
+    p = self.estimated_cost_points.find_or_initialize_by_date(:date => Date::today)
+    p.series = :estimated_cost
+    p.value = self.estimated_cost || 0
+    p.save!
   end
 end
