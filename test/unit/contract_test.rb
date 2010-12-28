@@ -12,7 +12,7 @@ class ContractTest < ActiveSupport::TestCase
       @component.markups << @cm
       
       @obj = Factory :contract, :component => @component
-      @contract2 = Factory :contract, :project => @project
+      @contract2 = Factory :contract, :project => @project, :component => @component
       
       @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1, :date => Date::today
       @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10, :date => Date::today
@@ -22,10 +22,6 @@ class ContractTest < ActiveSupport::TestCase
       @obj.save
       
       [@project, @component, @obj].each {|i| i.reload}
-    end
-
-    teardown do
-      Contract.delete_all
     end
     
     should "be valid" do
@@ -41,7 +37,13 @@ class ContractTest < ActiveSupport::TestCase
         Factory :contract, :project => nil
       end
     end
-    
+
+    should "require a component" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :contract, :component => nil
+      end
+    end
+        
     should "allow multiple costs" do
       assert_contains @obj.costs, @c1
       assert_contains @obj.costs, @c2

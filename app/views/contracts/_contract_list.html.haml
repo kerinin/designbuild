@@ -33,11 +33,12 @@
     %tr
       %td{:colspan => 10} (None)
       
-  %tr.control.add_button
-    %td{:colspan => 10}
-      = link_to context == :contract ? new_project_contract_path(@project) : new_component_contract_path(@component), :remote => true do
-        =icon :add
-        Add Contract
+  -unless context == :contract
+    %tr.control.add_button
+      %td{:colspan => 10}
+        = link_to new_component_contract_path(@component), :remote => true do
+          =icon :add
+          Add Contract
           
   %tr.totals
     %td{:colspan => 2}

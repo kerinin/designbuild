@@ -18,7 +18,7 @@ class Contract < ActiveRecord::Base
     
   acts_as_list :scope => :project
   
-  validates_presence_of :name, :project
+  validates_presence_of :name, :project, :component
 
   after_create :add_project_markups, :unless => :component_id
   after_create :add_component_markups, :if => :component_id
