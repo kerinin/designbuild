@@ -24,8 +24,7 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_numericality_of :labor_percent_retainage, :material_percent_retainage
   
-  before_save :cache_values
-  before_update :create_points
+  before_save :cache_values, :create_points
   
   def fixed_bid?
     self.fixed_bid
@@ -162,15 +161,18 @@ class Project < ActiveRecord::Base
   end
   
   def create_points
-    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-    p.series = :estimated_cost
-    p.value = self.estimated_cost || 0
-    p.save!
-  
-    p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
-    p.series = :projected_cost
-    p.value = self.projected_cost || 0
-    p.save!
+    if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
+      p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
+    end
+    if self.projected_cost_changed? && ( !self.new_record? || ( !self.projected_cost.nil? && self.projected_cost > 0 ) )
+      p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
+      p.series = :projected_cost
+      p.value = self.projected_cost || 0
+      p.save!
+    end
     
     # cost-to-date being created by costs
     # This is important to get the timeline right - labor costs could

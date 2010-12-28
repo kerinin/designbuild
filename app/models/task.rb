@@ -30,7 +30,7 @@ class Task < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  after_update :create_points
+  before_save :create_points
   
   after_save :update_invoicing_state
   
@@ -211,8 +211,20 @@ class Task < ActiveRecord::Base
   end
   
   def create_points
-    self.estimated_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.estimated_cost) if self.estimated_cost_changed?
-    self.projected_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.projected_cost) if self.projected_cost_changed?
+    if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
+      p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
+    end
+
+    if self.projected_cost_changed? && ( !self.new_record? || ( !self.projected_cost.nil? && self.projected_cost > 0 ) )
+      p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
+      p.series = :projected_cost
+      p.value = self.projected_cost || 0
+      p.save!
+    end
+
     # cost-to-date being created by costs
     # This is important to get the timeline right - labor costs could
     # be created today for a date a month ago - we want to take the

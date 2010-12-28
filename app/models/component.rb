@@ -33,7 +33,7 @@ class Component < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  before_update :create_points
+  before_save :create_points
   
   default_scope :order => :position
   
@@ -168,9 +168,11 @@ class Component < ActiveRecord::Base
   end
   
   def create_points
-    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-    p.series = :estimated_cost
-    p.value = self.estimated_cost || 0
-    p.save!
+    if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
+      p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
+    end
   end
 end
