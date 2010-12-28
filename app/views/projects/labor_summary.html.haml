@@ -56,7 +56,7 @@
           
         -tasks.each do |task|
           %td.number
-            -hours = grouped_hours[task.id]
+            -hours = grouped_hours[task.id.to_s]
             -if hours
               =hours
               h
@@ -71,5 +71,5 @@
       -grouped_costs = time_scope.group('labor_costs.task_id').sum(:cost)
       %td.number
         %strong
-          = number_to_currency grouped_costs[task.id]
+          = number_to_currency grouped_costs[task.id.to_s]
 

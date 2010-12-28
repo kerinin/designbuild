@@ -5,7 +5,16 @@ development:
   database: db/development.sqlite3
   pool: 5
   timeout: 5000
-
+  #adapter: postgresql
+  #host: localhost
+  #port: 5432
+  #username: designbuild
+  #password: designbuild
+  #database: designbuild
+  #schema_search_path: public
+  #encoding: utf8
+  #template: template0
+    
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
 # Do not set this db to the same as development or production.
