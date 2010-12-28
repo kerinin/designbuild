@@ -36,13 +36,27 @@
   -@project.contracts.where(:component_id => nil).each do |contract|
     =render :partial => 'estimate_report_contract', :locals => {:contract => contract, :indent => 0}
 
-          
+  %tr
+    %td.control
+    %td.control
+    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+      Subtotal
+    %td{:colspan => session[:break_out_unit_costs] ? 2 : 1}
+      =number_to_currency @project.estimated_raw_cost
+    
+  -@project.markups.each do |markup|
+    %tr
+      %td.control
+      %td.control
+      %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+        =markup.name
+      %td{:colspan => session[:break_out_unit_costs] ? 2 : 1}
+        =number_to_currency markups.apply_to( @project )
+        
   %tr.totals
     %td.control
     %td.control
     %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
       %strong Total
-    -if session[:break_out_markup]
-      %td.currency= number_to_currency @project.estimated_raw_cost
-    %td.currency
+    %td{:colspan => session[:break_out_unit_costs] ? 3 : 1}
       %strong= number_to_currency @project.estimated_cost

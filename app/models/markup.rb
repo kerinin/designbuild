@@ -19,8 +19,31 @@ class Markup < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  def apply_to(value)
-    multiply_or_nil( value, divide_or_nil(self.percent, 100) )
+  def apply_to(value, scope = :estimated)
+    case
+    when value.instance_of? float || value.instance_of? integer
+      multiply_or_nil( value, divide_or_nil(self.percent, 100) )
+      
+    # Distribute to project associations
+    when value.instance_of? Project
+      (self.components & value.components).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + (self.contracts & value.contracts).without_component.inject(0) {|memo,obj| memo + self.apply_to(obj,scope)} + (self.tasks & value.tasks).inject(0) {|memo,obj| memo + self.apply_to(obj,scope)}
+
+    # Estimated cost
+    when value.instance_of? Component && scope == :estimated
+      if value.markups.include? self
+        value.fixed_cost_estimates.inject(0) {|memo,obj| memo + self.apply_to(obj.estimated_raw_cost) } + value.unit_cost_estimates.inject(0) {|memo,obj| memo + obj.estimated_raw_cost} + obj.contracts.inject(0) {|memo,obj| memo + obj.estimated_raw_cost}
+      else
+        0
+      end
+    when value.instance_of? Contract && scope == :estimated
+      if value.markups.include? self
+        self.apply_to value.estimated_raw_cost
+      end
+
+    # Default
+    else
+      0
+    end
   end
   
   def cascade_add(obj)
