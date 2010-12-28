@@ -1,6 +1,11 @@
 payment lines controller
 milestones controller
 
+- contract should require a component
+- markups should be applied only to components and tasks
+- markup application should be via the model (not via total_markup)
+- verify sums match
+
 
 + projected costs
 + active tasks
