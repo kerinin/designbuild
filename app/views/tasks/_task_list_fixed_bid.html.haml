@@ -74,7 +74,7 @@
     %td.currency
       %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, subtract_or_nil(obj.component_estimated_cost, obj.component_estimated_raw_cost ) })
     %td.currency
-      %strong=# number_to_currency( tasks.sum(:component_projected_net))
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.component_projected_net })
     %td.number
       %strong
         ='--/'
