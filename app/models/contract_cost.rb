@@ -11,7 +11,7 @@ class ContractCost < ActiveRecord::Base
   
   before_save :cache_values
   
-  after_save :cascade_cache_values
+  after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
   def total_markup
@@ -26,5 +26,10 @@ class ContractCost < ActiveRecord::Base
   
   def cache_values
     self.cost = mark_up :raw_cost
+  end
+  
+  def create_points
+    self.contract.project.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.contract.project.labor_cost_before(self.date) + self.contract.project.material_cost_before(self.date))
+    self.contract.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.contract.cost_before(self.date) )
   end
 end

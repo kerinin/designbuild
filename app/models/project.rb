@@ -25,6 +25,7 @@ class Project < ActiveRecord::Base
   validates_numericality_of :labor_percent_retainage, :material_percent_retainage
   
   before_save :cache_values
+  before_update :create_points
   
   def fixed_bid?
     self.fixed_bid
@@ -158,5 +159,14 @@ class Project < ActiveRecord::Base
     self.tasks.all.each {|t| t.markups.delete( markup ) }
     self.contracts.all.each {|c| c.markups.delete( markup ) }
     self.save
+  end
+  
+  def create_points
+    self.estimated_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.estimated_cost) if self.estimated_cost_changed?
+    self.projected_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.projected_cost) if self.projected_cost_changed?
+    # cost-to-date being created by costs
+    # This is important to get the timeline right - labor costs could
+    # be created today for a date a month ago - we want to take the
+    # date of the cost into account...
   end
 end

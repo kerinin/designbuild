@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DatePointTest < ActiveSupport::TestCase
+=begin
   context "A Date Point assigned to a project" do
     setup do
       @source = Factory :project
@@ -103,13 +104,32 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
     
-    should_eventually "create points on save" do
+    should "create points on update" do
+      @component = @source.components.create! :name => 'component'
+      @task = @source.tasks.create! :name => 'task'
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+      
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      @task.fixed_cost_estimates << @fc
+      @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
+      
+      assert_equal 4, @source.estimated_cost_points.count
+      assert_equal 4, @source.projected_cost_points.count
+      assert_equal 4, @source.cost_to_date_points.count
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.projected_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
     end
   end
-  
+
   context "A Date Point assigned to a component" do
     setup do
-      @source = Factory :component
+      @project = Factory :project
+      @source = @project.components.create! :name => 'component'
       
       @e2 = @source.estimated_cost_points.create! :date => Date::today - 5, :value => 100
       @e3 = @source.estimated_cost_points.create! :date => Date::today - 1, :value => 100
@@ -175,13 +195,23 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @e1, @source.estimated_cost_points[0]  
     end
     
-    should_eventually "create points on save" do
+    should "create points on update" do
+      assert_equal 4, @source.estimated_cost_points.count
+      
+      @source.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      
+      assert_equal 4, @source.estimated_cost_points.count
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
     end
   end
-  
+ 
   context "A Date Point assigned to a task" do
     setup do
-      @source = Factory :task
+      @project = Factory :project
+      @component = @project.components.create! :name => 'component'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      @source = @project.tasks.create! :name => 'task'
       
       @e2 = @source.estimated_cost_points.create! :date => Date::today - 5, :value => 100
       @e3 = @source.estimated_cost_points.create! :date => Date::today - 1, :value => 100
@@ -281,13 +311,30 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
     
-    should_eventually "create points on save" do
+    should "create points on update" do
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+      
+      @source.fixed_cost_estimates << @fc
+      @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
+      
+      assert_equal 4, @source.estimated_cost_points.count
+      assert_equal 4, @source.projected_cost_points.count
+      assert_equal 4, @source.cost_to_date_points.count
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.projected_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
     end
   end
-
+=end
   context "A Date Point assigned to a contract" do
     setup do
-      @source = Factory :contract
+      @project = Factory :project
+      @component = @project.components.create! :name => 'component'
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      @source = @project.contracts.create! :name => 'contract'
       
       @e2 = @source.estimated_cost_points.create! :date => Date::today - 5, :value => 100
       @e3 = @source.estimated_cost_points.create! :date => Date::today - 1, :value => 100
@@ -370,7 +417,19 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
     
-    should_eventually "create points on save" do
+    should "create points on update" do
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+      
+      @component.contracts << @source
+      @source.costs.create! :date => Date::today, :raw_cost => 200
+      
+      assert_equal 4, @source.estimated_cost_points.count
+      assert_equal 4, @source.cost_to_date_points.count
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
     end
   end
+
 end

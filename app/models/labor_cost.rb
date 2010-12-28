@@ -9,7 +9,7 @@ class LaborCost < ActiveRecord::Base
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
   
-  validates_presence_of :task, :percent_complete
+  validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
   before_save :set_project, :cache_values
@@ -17,7 +17,7 @@ class LaborCost < ActiveRecord::Base
   after_save :deactivate_task_if_done
   after_save :set_task_percent_complete
   
-  after_save :cascade_cache_values
+  after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
   scope :by_project, lambda {|project| where(:project_id => project.id ) } 
@@ -59,5 +59,10 @@ class LaborCost < ActiveRecord::Base
       self.task.percent_complete = self.percent_complete 
       self.task.save!
     end
+  end
+  
+  def create_points
+    self.task.project.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.task.project.labor_cost_before(self.date) + self.task.project.material_cost_before(self.date))
+    self.task.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.task.labor_cost_before(self.date) + self.task.material_cost_before(self.date))
   end
 end

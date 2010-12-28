@@ -30,6 +30,8 @@ class Task < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  after_update :create_points
+  
   after_save :update_invoicing_state
   
   scope :active, lambda {
@@ -206,5 +208,14 @@ class Task < ActiveRecord::Base
         
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  end
+  
+  def create_points
+    self.estimated_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.estimated_cost) if self.estimated_cost_changed?
+    self.projected_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.projected_cost) if self.projected_cost_changed?
+    # cost-to-date being created by costs
+    # This is important to get the timeline right - labor costs could
+    # be created today for a date a month ago - we want to take the
+    # date of the cost into account...
   end
 end

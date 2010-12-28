@@ -33,6 +33,8 @@ class Component < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  before_update :create_points
+  
   default_scope :order => :position
   
   def cost_estimates
@@ -163,5 +165,9 @@ class Component < ActiveRecord::Base
     self.contracts.all.each {|c| c.makrups.delete( markup ) }
     self.children.all.each {|c| c.markups.delete( markup ) }
     self.save
+  end
+  
+  def create_points
+    self.estimated_cost_points.find_or_create_by_date(Date::today).update_attributes(:value => self.estimated_cost) if self.estimated_cost_changed?
   end
 end

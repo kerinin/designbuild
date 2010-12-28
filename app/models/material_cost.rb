@@ -13,7 +13,7 @@ class MaterialCost < ActiveRecord::Base
   
   before_save :cache_values
   
-  after_save :cascade_cache_values
+  after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
   scope :purchase_order, lambda {
@@ -46,5 +46,10 @@ class MaterialCost < ActiveRecord::Base
     self.task.save!
     
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
+  end
+  
+  def create_points
+    self.task.project.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.task.project.labor_cost_before(self.date) + self.task.project.material_cost_before(self.date))
+    self.task.cost_to_date_points.find_or_create_by_date(self.date).update_attributes(:value => self.task.labor_cost_before(self.date) + self.task.material_cost_before(self.date))
   end
 end
