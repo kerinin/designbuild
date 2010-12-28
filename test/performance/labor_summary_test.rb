@@ -1,6 +1,6 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 require 'rails/performance_test_help'
-require 'performance_test_helper'
+require File.dirname(__FILE__) + '/../performance_test_helper'
 
 
 class LaborSummaryTest < ActionDispatch::PerformanceTest

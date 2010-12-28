@@ -9,8 +9,11 @@ class ProjectShowTest < ActionDispatch::PerformanceTest
     post '/users/sign_in', :user => {:email => 'ryan@bcarc.com', :password => 'kundera'}
   end
   
-  def test_payroll_summary
+  def test_project_2_show
     get '/projects/2'
+  end
+  
+  def test_project_1_show
     get '/projects/1'
   end
 end

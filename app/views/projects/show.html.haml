@@ -31,16 +31,16 @@
   -if @project.show_planning
     .full_width
       %h3 Default markups
-      =render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups}
+      =render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups.all}
       
     .left
-      %h3 Estimated Cost Graph
-      .boxed
-        %script{:type => 'text/javascript+protovis'}
-          -data = (0..30).to_a.reverse.map{|d| p = @project.version_at(d.days.ago); cost = p.nil? ? nil : p.estimated_cost; {:value => cost, :label => "#{d.days.ago.to_date.strftime('%b %d')}: #{number_to_currency cost, :precision => 0}"} }
-          =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :min => 0}
-        =# image_tag estimated_cost_graph_for_project_path(@project), :size => '490x120'
-      
+      -cache(:action_suffix => 'est_graph', :expires_in => 1.day) do
+        %h3 Estimated Cost Graph
+        .boxed
+          %script{:type => 'text/javascript+protovis'}
+            -data = (0..30).to_a.reverse.map{|d| p = @project.version_at(d.days.ago); cost = p.nil? ? nil : p.estimated_cost; {:value => cost, :label => "#{d.days.ago.to_date.strftime('%b %d')}: #{number_to_currency cost, :precision => 0}"} }
+            =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :min => 0}
+        
       .right
         =link_to estimate_report_for_project_path(@project) do
           %button Project Cost Estimate
@@ -87,28 +87,30 @@
     
     -unless LaborCost.where('project_id = ?', @project.id).empty?
       .full_width
-        %h3 Labor Allocation Timeline
-        %script{:type => 'text/javascript+protovis'}
-          -tasks = @project.tasks.active.empty? ? @project.tasks : @project.tasks.active
-          =render :partial => 'shared/protovis_timeline.js', :locals => {:height => 150, :width => 990, :tasks => tasks}
+        -cache(:action_suffix => 'labor_allocation_graph', :expires_in => 1.hour) do
+          %h3 Labor Allocation Timeline
+          %script{:type => 'text/javascript+protovis'}
+            -tasks = @project.tasks.active.empty? ? @project.tasks : @project.tasks.active
+            =render :partial => 'shared/protovis_timeline.js', :locals => {:height => 150, :width => 990, :tasks => tasks}
 
-        .right
-          =link_to timeline_for_project_path(@project) do
-            %button View Larger
+          .right
+            =link_to timeline_for_project_path(@project) do
+              %button View Larger
             
     .full_width
-      %h3 Projected vs Estimated Cost
-      %script{:type => 'text/javascript+protovis'}
-        -versions = (0..56).to_a.reverse.map{|i| @project.version_at(i.days.ago.to_date)}
-        -estimated = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.estimated_cost, :label => "Estimate: #{number_to_currency(v.estimated_cost, :precision => 0)}" } }
-        -projected = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.projected_cost, :label => "Projected: #{number_to_currency(v.projected_cost, :precision => 0)}" } }
-        -actual = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.cost, :label => "To Date: #{number_to_currency(v.cost, :precision => 0) }" } }
-        -data = [ |
-          {:name => 'Cost to Date', :color => 'hsl(0,0,75)', :line => '2', :data => actual}, |
-          {:name => 'Projected Cost', :color => 'red', :data => projected}, |
-          {:name => 'Estimated Cost', :color => 'orange', :data => estimated} |
-        ] |
-        =render :partial => 'shared/protovis_line_graph.js', :locals => {:height => 180, :width => 990, :data => data}
+      -cache(:action_suffix => 'proj_vs_est_graph', :expires_in => 1.day) do
+        %h3 Projected vs Estimated Cost
+        %script{:type => 'text/javascript+protovis'}
+          -versions = (0..56).to_a.reverse.map{|i| @project.version_at(i.days.ago.to_date)}
+          -estimated = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.estimated_cost, :label => "Estimate: #{number_to_currency(v.estimated_cost, :precision => 0)}" } }
+          -projected = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.projected_cost, :label => "Projected: #{number_to_currency(v.projected_cost, :precision => 0)}" } }
+          -actual = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.cost, :label => "To Date: #{number_to_currency(v.cost, :precision => 0) }" } }
+          -data = [ |
+            {:name => 'Cost to Date', :color => 'hsl(0,0,75)', :line => '2', :data => actual}, |
+            {:name => 'Projected Cost', :color => 'red', :data => projected}, |
+            {:name => 'Estimated Cost', :color => 'orange', :data => estimated} |
+          ] |
+          =render :partial => 'shared/protovis_line_graph.js', :locals => {:height => 180, :width => 990, :data => data}
       
     .right
       %h3
