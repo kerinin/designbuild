@@ -16,7 +16,7 @@
   //Success
   
   <% content_for :table do %>
-  	<%=render :partial => 'task_list', :locals => {:tasks => @tasks} %>
+    <%=render :partial => @project.fixed_bid? ? 'task_list_fixed_bid' : 'task_list_cost_plus', :locals => {:tasks => @tasks} %>
   <% end %>
 
   //Update the html of the div flash_notice with the new one

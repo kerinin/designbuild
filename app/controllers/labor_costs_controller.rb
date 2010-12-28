@@ -4,7 +4,7 @@ class LaborCostsController < ApplicationController
   # GET /labor_costs
   # GET /labor_costs.xml
   def index
-    @labor_costs = LaborCost.all
+    @labor_costs = LaborCost.scoped
 
     respond_to do |format|
       format.html # index.html.erb

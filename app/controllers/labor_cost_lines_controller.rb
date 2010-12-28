@@ -4,7 +4,7 @@ class LaborCostLinesController < ApplicationController
   # GET /labor_cost_lines
   # GET /labor_cost_lines.xml
   def index
-    @labor_cost_lines = LaborCostLine.all
+    @labor_cost_lines = LaborCostLine.scoped
 
     respond_to do |format|
       format.html # index.html.erb
