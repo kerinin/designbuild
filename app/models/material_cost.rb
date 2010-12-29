@@ -37,11 +37,11 @@ class MaterialCost < ActiveRecord::Base
   end
 
   def cache_values
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
+    self.cost = add_or_nil self.raw_cost, self.markups.inject(0) {|memo,obj| add_or_nil memo, obj.apply_to(self, :raw_cost) }
   end
   
   def cascade_cache_values
-    self.task.save!
+    self.task.reload.save!
     
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
   end

@@ -11,7 +11,7 @@ class LaborCostLine < ActiveRecord::Base
   
   validates_numericality_of :hours
   
-  before_validation :set_costs
+  before_save :set_costs
   
   before_save :set_project
   after_save :cascade_cache_values
@@ -35,6 +35,6 @@ class LaborCostLine < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.labor_set.save!
+    self.labor_set.reload.save!
   end
 end

@@ -118,7 +118,7 @@ class PaymentTest < ActiveSupport::TestCase
       @q = Factory :quantity, :component => @component, :value => 1
       @uc = @component.unit_cost_estimates.create! :name => 'unit cost', :unit_cost => 10, :quantity => @q
       @task.unit_cost_estimates << @uc
-      @c = @project.contracts.create! :name => 'contract'
+      @c = @project.contracts.create! :name => 'contract', :component => @component
       @component.contracts << @c
       @c.update_attributes :active_bid => @c.bids.create!( :contractor => 'contractor', :raw_cost => 100, :date => Date::today )
       

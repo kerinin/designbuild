@@ -114,11 +114,5 @@ class ComponentTest < ActiveSupport::TestCase
       @obj2 = Factory :component
       assert_equal 0, @obj2.estimated_raw_cost
     end
-    
-    should "update total markup after add" do
-      @markup = Factory :markup, :percent => 10
-      @obj.markups << @markup
-      assert_equal 10, @obj.total_markup
-    end
   end
 end

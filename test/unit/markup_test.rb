@@ -8,35 +8,21 @@ class MarkupTest < ActiveSupport::TestCase
       @task = Factory :task
       @contract = Factory :contract
       @bid = Factory :bid, :contract => @contract, :raw_cost => 100
-      @contract.active_bid = @bid
-      @contract.save
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
       @obj.components << @component
       @obj.tasks << @task
-      @obj.contracts << @contract 
 
       @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
-      @inherited_contract = Factory :contract, :project => @project
       
       Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
       Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
       Factory :material_cost, :task => @task, :raw_cost => 100
-      Factory :contract_cost, :contract => @contract, :raw_cost => 100
       
-      [@project, @component, @subcomponent, @task, @contract, @bid, @obj].each {|i| i.reload}
-    end
-
-    teardown do
-      Markup.delete_all
-      Project.delete_all
-      Component.delete_all
-      Task.delete_all
-      Contract.delete_all
-      Marking.delete_all
+      [@project, @component, @subcomponent, @task, @bid, @obj].each {|i| i.reload}
     end
 
     should "be valid" do
@@ -64,11 +50,6 @@ class MarkupTest < ActiveSupport::TestCase
     should "allow associated tasks" do
       assert_contains @obj.tasks, @task
       assert_contains @task.markups, @obj
-    end
-    
-    should "allow associated contracts" do
-      assert_contains @obj.contracts, @contract
-      assert_contains @contract.markups, @obj
     end
     
     should "copy from project to task" do
@@ -140,39 +121,17 @@ class MarkupTest < ActiveSupport::TestCase
       assert_does_not_contain @subcomponent.markups.reload.all, @new2
       assert_does_not_contain @sub3.markups.reload.all, @new2
     end
-        
-    should "copy from project to contract" do
-      assert_contains @inherited_contract.markups, @obj
-    end
-    
-    should "cascade add / delete from project to contract" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.projects << @project
-      @project.markups << @new2
-      
-      assert_contains @inherited_contract.markups.reload.all, @new1
-      assert_contains @inherited_contract.markups.reload.all, @new2
-      
-      @new1.projects.delete( @project )
-      @project.markups.delete( @new2 )
-      
-      assert_does_not_contain @inherited_contract.markups.reload.all, @new1
-      assert_does_not_contain @inherited_contract.markups.reload.all, @new2
-    end
 
     # -----------------------CALCULATIONS
 
     should "apply to markupable" do
-      assert_equal 150, @subcomponent.estimated_cost
-      assert_equal 150, @task.cost
-      assert_equal 150, @contract.estimated_cost
-      assert_equal 150, @contract.cost
+      assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_cost)
+      assert_equal 50, @obj.apply_to(@component, :estimated_raw_cost)
+      assert_equal 0, @obj.apply_to(@project, :estimated_raw_cost)
       
-      assert_equal 50, @obj.apply_to(@subcomponent)
-      assert_equal 100, @obj.apply_to(@component)
-      assert_equal 50, @obj.apply_to(@contract)
-      assert_equal 200, @obj.apply_to(@project)
+      assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_raw_cost)
+      assert_equal 100, @obj.apply_recursively_to(@component, :estimated_raw_cost)
+      assert_equal 150, @obj.apply_recursively_to(@project, :estimated_raw_cost)
     end
   end
 end

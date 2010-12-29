@@ -8,10 +8,10 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @subcomponent = @project.components.create! :name => 'subcomponent'
       @component.children << @subcomponent
       @task = @project.tasks.create! :name => 'task'
-      @contract = @project.contracts.create! :name => 'contract'
-      @contract1 = @project.contracts.create! :name => 'contract1'
+      @contract = @project.contracts.create! :name => 'contract', :component => @component
+      @contract1 = @project.contracts.create! :name => 'contract1', :component => @component
       @component.contracts << @contract1
-      @contract2 = @project.contracts.create! :name => 'contract2'
+      @contract2 = @project.contracts.create! :name => 'contract2', :component => @subcomponent
       @subcomponent.contracts << @contract2
       @laborer = Factory :laborer, :bill_rate => 1
       @random_component = Factory :component
@@ -326,6 +326,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal 100, @project.reload.estimated_raw_cost
       assert_equal 200, @project.reload.estimated_cost
       
+      @contract.component = @random_component
       @contract.project = @random_component.project
       @contract.save
       
@@ -334,8 +335,9 @@ class ProjectCachingTest < ActiveSupport::TestCase
       assert_equal 0, @project.reload.estimated_raw_cost
       assert_equal 0, @project.reload.estimated_cost
 
+      @contract.component = @component
       @contract.project = @project
-      @contract.save
+      @contract.save!
 
       assert_equal 100, @project.reload.estimated_raw_contract_cost
       assert_equal 200, @project.reload.estimated_contract_cost
@@ -386,10 +388,6 @@ class ProjectCachingTest < ActiveSupport::TestCase
       @markup = Factory :markup, :percent => 10
       @project.markups << @markup
       assert_contains @component.reload.markups.all, @markup
-      assert_equal 110, @component.reload.total_markup
-      assert_equal 110, @subcomponent.reload.total_markup
-      assert_equal 110, @task.reload.total_markup
-      assert_equal 110, @contract.reload.total_markup
     end
     
     should "update component's task after cost change" do

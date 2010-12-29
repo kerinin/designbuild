@@ -31,12 +31,6 @@ class ContractTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
     end
-    
-    should "require a project" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :contract, :project => nil
-      end
-    end
 
     should "require a component" do
       assert_raise ActiveRecord::RecordInvalid do
@@ -100,12 +94,6 @@ class ContractTest < ActiveSupport::TestCase
 
     should "aggregate costs with cutoff" do
       assert_equal 0, @obj.raw_cost_before(Date::today - 5)
-    end
-    
-    should "update total markup after add" do
-      @markup = Factory :markup, :percent => 10
-      @obj.markups << @markup
-      assert_equal 210, @obj.total_markup
     end
     
     

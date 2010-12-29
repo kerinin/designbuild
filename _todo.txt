@@ -1,5 +1,6 @@
-payment lines controller
-milestones controller
+projet caching
+markup
+
 
 + contract should require a component
 - markups should be applied only to components and tasks

@@ -32,9 +32,9 @@ class ProjectTest < ActiveSupport::TestCase
         @lc2 = Factory :labor_cost, :task => @t2, :percent_complete => 100
           @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @lab, :hours => 1000
           
-      @cont1 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 10000)
+      @cont1 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 10000)
         @cc1 = Factory :contract_cost, :contract => @cont1, :raw_cost => 10000
-      @cont2 = Factory :contract, :project => @obj, :active_bid => Factory(:bid, :raw_cost => 100000)
+      @cont2 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 100000)
         @cc2 = Factory :contract_cost, :contract => @cont2, :raw_cost => 100000
       @cont3 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 1000000)
         @cc3 = Factory :contract_cost, :contract => @cont3, :raw_cost => 1000000

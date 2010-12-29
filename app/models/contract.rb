@@ -50,8 +50,8 @@ class Contract < ActiveRecord::Base
   end
     
   def cascade_cache_values
-    self.component.save! unless self.component.blank?
-    self.project.save! unless self.project.blank?
+    self.component.reload.save!
+    self.project.reload.save!
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
     Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?

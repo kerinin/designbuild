@@ -18,11 +18,24 @@ class Markup < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
+  # Task - estimated / actual?
+  # Component - estimated / actual / subcomponents ?
+  # Project - estimated / actual / associated ?
   def apply_to(value, method = nil, *args)
     if value.instance_of?( Float ) || value.instance_of?( Integer )
       multiply_or_nil( value, divide_or_nil(self.percent, 100) )
     else
       multiply_or_nil( value.send(method, *args), divide_or_nil(self.percent, 100))
+    end
+  end
+  
+  def apply_recursively_to(value, method)
+    if value.instance_of?(Project) && value.respond_to?(method)
+      value.applied_markings.sum(method)
+    elsif value.instance_of?(Component) && value.respond_to?(method)
+      value.subtree.sum(method)
+    else
+      0
     end
   end
   
@@ -39,7 +52,7 @@ class Markup < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.tasks.all.each {|t| t.save!}
-    self.components.all.each {|c| c.save!}
+    self.tasks(true).all.each {|t| t.save!}
+    self.components(true).all.each {|c| c.save!}
   end
 end
