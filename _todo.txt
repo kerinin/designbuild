@@ -2,6 +2,22 @@ projet caching
 markup
 
 
+bid
+contract cost
+contract
+fixed cost
+invoice
+invoice line
+labor cost line
+labor cost
+material cost line
+material cost
+unit cost
+task
+component
+
+
+
 + contract should require a component
 - markups should be applied only to components and tasks
 - markup application should be via the model (not via total_markup)

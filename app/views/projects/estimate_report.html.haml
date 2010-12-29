@@ -17,6 +17,7 @@
   -else
     %button=link_to "Show Markup", estimate_report_for_project_path(@project, :break_out_markup => 1)
 
+-@active_markups = Markup.all.map {|m| m.apply_recursively_to(@project, :estimated_cost_markup_amount) > 0 ? m : nil}.compact
 
 %table.project_estimate
   %tr
@@ -27,7 +28,11 @@
       %th Quantity / Source
       %th.currency Unit Cost
     -if session[:break_out_markup]
-      %th Raw Cost
+      %th.currency Raw Cost
+      -@active_markups.each do |markup|
+        %th.currency
+          =markup.name
+          =number_to_percentage markup.percent, :precision => 0
     %th.currency= session[:break_out_markup] ? 'Cost+Markup' : 'Cost'
     
   -@project.components.roots.each do |component|
@@ -39,27 +44,14 @@
   %tr.totals
     %td.control
     %td.control
-    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
-      Subtotal
-    %td.currency{:colspan => session[:break_out_unit_costs] ? 2 : 1}
-      =number_to_currency @project.estimated_raw_cost
-    
-  -Markup.all.each do |markup|
-    -markup_sub = markup.apply_to( @project )
-    -unless markup_sub == 0
-      %tr.totals
-        %td.control
-        %td.control
-        %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
-          =markup.name
-          =number_to_percentage( markup.percent, :precision => 0 )
-        %td.currency{:colspan => session[:break_out_unit_costs] ? 2 : 1}
-          =number_to_currency markup_sub
-        
-  %tr.totals
-    %td.control
-    %td.control
-    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
-      %strong Total
-    %td.currency{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+    %td.right
+      %strong Totals
+    -if session[:break_out_unit_costs]
+      %td
+      %td
+    -if session[:break_out_markup]
+      %td.currency= number_to_currency @project.estimated_raw_cost
+      -@active_markups.each do |markup|
+        %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
+    %td.currency
       %strong= number_to_currency @project.estimated_cost

@@ -117,7 +117,7 @@ class Component < ActiveRecord::Base
     #self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
     self.estimated_subcomponent_fixed_cost = self.estimated_raw_subcomponent_fixed_cost + self.children.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
     #self.estimated_fixed_cost = self.estimated_component_fixed_cost + self.estimated_subcomponent_fixed_cost
-    self.estimated_fixed_cost = self.estimated_raw_component_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
+    self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
 
     self.estimated_component_unit_cost = self.estimated_raw_component_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
     #self.estimated_subcomponent_unit_cost = self.children.sum(:estimated_unit_cost)

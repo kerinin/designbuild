@@ -32,9 +32,9 @@ class Markup < ActiveRecord::Base
   def apply_recursively_to(value, method)
     value.reload
     if value.instance_of?(Project)
-      value.applied_markings.sum(method)
+      value.applied_markings.where(:markup_id => self.id).sum(method)
     elsif value.instance_of?(Component)
-      value.subtree.joins(:markings).sum(method)
+      value.subtree.joins(:markings).where(:markings => {:markup_id => self.id}).sum(method)
     else
       0
     end
