@@ -101,14 +101,14 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "contracts", ["project_id"], :name => "index_contracts_on_project_id"
 
   create_table "deadlines", :force => true do |t|
-    t.string    "name"
-    t.date      "date"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "interval"
-    t.integer   "parent_deadline_id"
-    t.date      "date_completed"
+    t.string   "name"
+    t.date     "date"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "interval"
+    t.integer  "parent_deadline_id"
+    t.date     "date_completed"
   end
 
   add_index "deadlines", ["parent_deadline_id"], :name => "index_deadlines_on_parent_deadline_id"
@@ -128,28 +128,28 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "fixed_cost_estimates", ["task_id"], :name => "index_fixed_cost_estimates_on_task_id"
 
   create_table "invoice_lines", :force => true do |t|
-    t.float     "labor_invoiced",     :default => 0.0, :null => false
-    t.float     "labor_retainage",    :default => 0.0, :null => false
-    t.float     "material_invoiced",  :default => 0.0, :null => false
-    t.float     "material_retainage", :default => 0.0, :null => false
-    t.string    "comment"
-    t.integer   "invoice_id"
-    t.integer   "cost_id"
-    t.string    "cost_type"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.float    "labor_invoiced",     :default => 0.0, :null => false
+    t.float    "labor_retainage",    :default => 0.0, :null => false
+    t.float    "material_invoiced",  :default => 0.0, :null => false
+    t.float    "material_retainage", :default => 0.0, :null => false
+    t.string   "comment"
+    t.integer  "invoice_id"
+    t.integer  "cost_id"
+    t.string   "cost_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "invoice_lines", ["invoice_id"], :name => "index_invoice_lines_on_invoice_id"
 
   create_table "invoices", :force => true do |t|
-    t.date      "date"
-    t.string    "state"
-    t.string    "template"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.string    "name"
+    t.date     "date"
+    t.string   "state"
+    t.string   "template"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "name"
   end
 
   add_index "invoices", ["project_id"], :name => "index_invoices_on_project_id"
@@ -184,27 +184,27 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "labor_costs", ["project_id"], :name => "index_labor_costs_on_project_id"
 
   create_table "laborers", :force => true do |t|
-    t.string    "name"
-    t.float     "bill_rate"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "pay_rate"
+    t.string   "name"
+    t.float    "bill_rate"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "pay_rate"
   end
 
   create_table "markings", :force => true do |t|
-    t.integer   "markupable_id"
-    t.string    "markupable_type"
-    t.integer   "markup_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "project_id"
-    t.float     "estimated_unit_cost_markup_amount",     :default => 0.0, :null => false
-    t.float     "estimated_fixed_cost_markup_amount",    :default => 0.0, :null => false
-    t.float     "estimated_contract_cost_markup_amount", :default => 0.0, :null => false
-    t.float     "estimated_cost_markup_amount",          :default => 0.0, :null => false
-    t.float     "labor_cost_markup_amount",              :default => 0.0, :null => false
-    t.float     "material_cost_markup_amount",           :default => 0.0, :null => false
-    t.float     "cost_markup_amount",                    :default => 0.0, :null => false
+    t.integer  "markupable_id"
+    t.string   "markupable_type"
+    t.integer  "markup_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_id"
+    t.float    "estimated_unit_cost_markup_amount",     :default => 0.0, :null => false
+    t.float    "estimated_fixed_cost_markup_amount",    :default => 0.0, :null => false
+    t.float    "estimated_contract_cost_markup_amount", :default => 0.0, :null => false
+    t.float    "estimated_cost_markup_amount",          :default => 0.0, :null => false
+    t.float    "labor_cost_markup_amount",              :default => 0.0, :null => false
+    t.float    "material_cost_markup_amount",           :default => 0.0, :null => false
+    t.float    "cost_markup_amount",                    :default => 0.0, :null => false
   end
 
   add_index "markings", ["markup_id"], :name => "index_markings_on_markup_id"
@@ -212,46 +212,46 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "markings", ["markupable_type"], :name => "index_markings_on_markupable_type"
 
   create_table "markups", :force => true do |t|
-    t.string    "name"
-    t.float     "percent"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "percent"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "material_cost_lines", :force => true do |t|
-    t.string    "name"
-    t.string    "quantity"
-    t.integer   "material_set_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.string   "quantity"
+    t.integer  "material_set_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "material_cost_lines", ["material_set_id"], :name => "index_material_cost_lines_on_material_set_id"
 
   create_table "material_costs", :force => true do |t|
-    t.date      "date"
-    t.float     "raw_cost"
-    t.integer   "task_id"
-    t.integer   "supplier_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "cost"
+    t.date     "date"
+    t.float    "raw_cost"
+    t.integer  "task_id"
+    t.integer  "supplier_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "cost"
   end
 
   add_index "material_costs", ["supplier_id"], :name => "index_material_costs_on_supplier_id"
   add_index "material_costs", ["task_id"], :name => "index_material_costs_on_task_id"
 
   create_table "milestones", :force => true do |t|
-    t.string    "name"
-    t.date      "date"
-    t.integer   "interval"
-    t.date      "date_completed"
-    t.integer   "task_id"
-    t.integer   "project_id"
-    t.integer   "parent_date_id"
-    t.string    "parent_date_type"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.date     "date"
+    t.integer  "interval"
+    t.date     "date_completed"
+    t.integer  "task_id"
+    t.integer  "project_id"
+    t.integer  "parent_date_id"
+    t.string   "parent_date_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "milestones", ["parent_date_id"], :name => "index_milestones_on_parent_date_id"
@@ -260,29 +260,29 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "milestones", ["task_id"], :name => "index_milestones_on_task_id"
 
   create_table "payment_lines", :force => true do |t|
-    t.float     "labor_paid",        :default => 0.0, :null => false
-    t.float     "labor_retained",    :default => 0.0, :null => false
-    t.float     "material_paid",     :default => 0.0, :null => false
-    t.float     "material_retained", :default => 0.0, :null => false
-    t.string    "comment"
-    t.integer   "payment_id"
-    t.integer   "cost_id"
-    t.string    "cost_type"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.float    "labor_paid",        :default => 0.0, :null => false
+    t.float    "labor_retained",    :default => 0.0, :null => false
+    t.float    "material_paid",     :default => 0.0, :null => false
+    t.float    "material_retained", :default => 0.0, :null => false
+    t.string   "comment"
+    t.integer  "payment_id"
+    t.integer  "cost_id"
+    t.string   "cost_type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "payment_lines", ["cost_id"], :name => "index_payment_lines_on_cost_id"
   add_index "payment_lines", ["payment_id"], :name => "index_payment_lines_on_payment_id"
 
   create_table "payments", :force => true do |t|
-    t.date      "date"
-    t.string    "state"
-    t.float     "paid"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "retained"
+    t.date     "date"
+    t.string   "state"
+    t.float    "paid"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "retained"
   end
 
   add_index "payments", ["project_id"], :name => "index_payments_on_project_id"
@@ -325,27 +325,27 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "projects_users", ["user_id"], :name => "index_projects_users_on_user_id"
 
   create_table "quantities", :force => true do |t|
-    t.string    "name"
-    t.float     "value"
-    t.string    "unit"
-    t.integer   "component_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.float    "value"
+    t.string   "unit"
+    t.integer  "component_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "quantities", ["component_id"], :name => "index_quantities_on_component_id"
 
   create_table "suppliers", :force => true do |t|
-    t.string    "name"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tags", :force => true do |t|
-    t.string    "name"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "name"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "tasks", :force => true do |t|
@@ -385,47 +385,47 @@ ActiveRecord::Schema.define(:version => 20101229033254) do
   add_index "tasks", ["project_id"], :name => "index_tasks_on_project_id"
 
   create_table "unit_cost_estimates", :force => true do |t|
-    t.string    "name"
-    t.float     "unit_cost"
-    t.integer   "component_id"
-    t.integer   "quantity_id"
-    t.integer   "task_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "drop"
-    t.float     "raw_cost"
-    t.float     "cost"
+    t.string   "name"
+    t.float    "unit_cost"
+    t.integer  "component_id"
+    t.integer  "quantity_id"
+    t.integer  "task_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "drop"
+    t.float    "raw_cost"
+    t.float    "cost"
   end
 
   add_index "unit_cost_estimates", ["component_id"], :name => "index_unit_cost_estimates_on_component_id"
   add_index "unit_cost_estimates", ["task_id"], :name => "index_unit_cost_estimates_on_task_id"
 
   create_table "users", :force => true do |t|
-    t.string    "email"
-    t.string    "encrypted_password",   :limit => 128, :default => "", :null => false
-    t.string    "password_salt",                       :default => "", :null => false
-    t.string    "reset_password_token"
-    t.string    "remember_token"
-    t.timestamp "remember_created_at"
-    t.integer   "sign_in_count",                       :default => 0
-    t.timestamp "current_sign_in_at"
-    t.timestamp "last_sign_in_at"
-    t.string    "current_sign_in_ip"
-    t.string    "last_sign_in_ip"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
+    t.string   "email"
+    t.string   "encrypted_password",   :limit => 128, :default => "", :null => false
+    t.string   "password_salt",                       :default => "", :null => false
+    t.string   "reset_password_token"
+    t.string   "remember_token"
+    t.datetime "remember_created_at"
+    t.integer  "sign_in_count",                       :default => 0
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.string   "current_sign_in_ip"
+    t.string   "last_sign_in_ip"
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
 
   create_table "versions", :force => true do |t|
-    t.string    "item_type",  :null => false
-    t.integer   "item_id",    :null => false
-    t.string    "event",      :null => false
-    t.string    "whodunnit"
-    t.text      "object"
-    t.timestamp "created_at"
+    t.string   "item_type",  :null => false
+    t.integer  "item_id",    :null => false
+    t.string   "event",      :null => false
+    t.string   "whodunnit"
+    t.text     "object"
+    t.datetime "created_at"
   end
 
   add_index "versions", ["created_at"], :name => "index_versions_on_created_at"

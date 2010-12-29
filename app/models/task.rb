@@ -145,7 +145,7 @@ class Task < ActiveRecord::Base
     self.component_estimated_raw_cost = component_estimated_raw_fixed_cost + component_estimated_raw_unit_cost
 
     
-    self.markings.each {|m| m.save!}
+    self.markings.each {|m| m.set_markup_amount_from!(self) }
     
     self.estimated_unit_cost = self.estimated_raw_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
     self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
@@ -161,7 +161,7 @@ class Task < ActiveRecord::Base
     self.raw_material_cost = self.material_costs.sum(:raw_cost)
     self.raw_cost = raw_labor_cost + raw_material_cost
     
-    self.markings.each {|m| m.save!}
+    self.markings.each {|m| m.set_markup_amount_from!(self) }
         
     #self.labor_cost = self.raw_labor_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_labor_cost) }
     self.labor_cost = self.raw_labor_cost + self.markings.sum(:labor_cost_markup_amount)

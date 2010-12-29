@@ -4,17 +4,19 @@ class MarkupTest < ActiveSupport::TestCase
   context "A Markup" do
     setup do
       @project = Factory :project
-      @component = Factory :component, :name => 'component'
-      @task = Factory :task
-      @contract = Factory :contract
-      @bid = Factory :bid, :contract => @contract, :raw_cost => 100
+      @component = @project.components.create! :name => 'component'
+      @task = @project.tasks.create! :name => 'task'
+      @contract = @project.contracts.create! :name => 'contract', :component => @component
+      @component.contracts << @contract
+      @bid = @contract.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
       @obj.components << @component
       @obj.tasks << @task
 
-      @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
+      @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
+      #@component.children << @subcomponent
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
       
@@ -24,7 +26,7 @@ class MarkupTest < ActiveSupport::TestCase
       
       [@project, @component, @subcomponent, @task, @bid, @obj].each {|i| i.reload}
     end
-=begin
+
     should "be valid" do
       assert @obj.valid?
     end
@@ -109,6 +111,7 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.components << @component
       @component.markups << @new2
       
+
       assert_contains @subcomponent.markups.reload.all, @new1
       assert_contains @subcomponent.markups.reload.all, @new2
       
@@ -123,20 +126,20 @@ class MarkupTest < ActiveSupport::TestCase
     end
 
     # -----------------------CALCULATIONS
-=end
+
     should "apply to markupable" do
       assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_component_cost)
       assert_equal 50, @obj.apply_to(@component, :estimated_raw_component_cost)
     end
     
     should "apply to markupable and children" do
-      
       assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
       assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
       
       assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
-      assert_equal 100, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
+      assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@project, :estimated_cost_markup_amount)
     end
+
   end
 end

@@ -110,7 +110,7 @@ class Component < ActiveRecord::Base
     self.estimated_raw_cost = self.estimated_raw_unit_cost + self.estimated_raw_fixed_cost + self.estimated_raw_contract_cost
     
     
-    self.markings.each {|m| m.save!}
+    self.markings.each {|m| m.set_markup_amount_from!(self) }
     
     
     self.estimated_component_fixed_cost = self.estimated_raw_component_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
