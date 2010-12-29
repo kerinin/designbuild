@@ -3,13 +3,14 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BidTest < ActiveSupport::TestCase
   context "A bid" do
     setup do
-      @contract = Factory :contract
+      @component = Factory :component
+      @contract = Factory :contract, :component => @component
       @bid = Factory :bid, :contract => @contract
       @active = Factory :bid, :contract => @contract
       @contract.active_bid = @active
       @contract.save!
       
-      [@contract, @bid, @active].each {|i| i.reload }
+      [@component, @contract, @bid, @active].each {|i| i.reload }
     end
 
     teardown do

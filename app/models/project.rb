@@ -11,6 +11,7 @@ class Project < ActiveRecord::Base
 
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
+  has_many :applied_markings, :class_name => 'Marking'
   
   has_many :invoices, :order => 'invoices.date DESC'
   has_many :payments, :order => 'payments.date DESC'
@@ -107,13 +108,13 @@ class Project < ActiveRecord::Base
   end
     
   def cache_estimated_contract_cost
-    self.estimated_contract_cost = self.contracts.sum(:estimated_cost )
-    self.estimated_raw_contract_cost = self.contracts.sum(:estimated_raw_cost )
+    self.estimated_contract_cost = self.components.roots.sum(:estimated_contract_cost )
+    self.estimated_raw_contract_cost = self.components.roots.sum(:estimated_raw_contract_cost )
   end
 
   def cache_estimated_cost
-    self.estimated_cost = add_or_nil self.contracts.without_component.sum(:estimated_cost), self.components.roots.sum(:estimated_cost)
-    self.estimated_raw_cost = add_or_nil self.contracts.without_component.sum(:estimated_raw_cost), self.components.roots.sum(:estimated_raw_cost)
+    self.estimated_cost = self.components.roots.sum(:estimated_cost)
+    self.estimated_raw_cost = self.components.roots.sum(:estimated_raw_cost)
   end
   
   def cache_material_cost
@@ -132,13 +133,13 @@ class Project < ActiveRecord::Base
   end
     
   def cache_cost
-    self.cost = add_or_nil(self.labor_cost, add_or_nil( self.material_cost, self.contract_cost) )
-    self.raw_cost = add_or_nil(self.raw_labor_cost, add_or_nil( self.raw_material_cost, self.raw_contract_cost) )
+    self.cost = self.labor_cost + self.material_cost + self.contract_cost
+    self.raw_cost = self.raw_labor_cost + self.raw_material_cost + self.raw_contract_cost
   end
   
   def cache_projected_cost
-    self.projected_cost = add_or_nil( self.contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.projected_cost)} )
-    self.raw_projected_cost = add_or_nil( self.raw_contract_cost, self.tasks.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)} )
+    self.projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.projected_cost)}
+    self.raw_projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)}
   end
   
   
@@ -147,7 +148,6 @@ class Project < ActiveRecord::Base
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups << markup unless c.markups.include? markup }
 
     self.tasks.all.each {|t| t.markups << markup unless t.markups.include? markup }
-    self.contracts.all.each {|c| c.markups << markup unless c.markups.include? markup }
     self.save
   end
   
@@ -156,7 +156,6 @@ class Project < ActiveRecord::Base
     Component.roots.where(:project_id => self.id).all.each {|c| c.markups.delete( markup ) }
 
     self.tasks.all.each {|t| t.markups.delete( markup ) }
-    self.contracts.all.each {|c| c.markups.delete( markup ) }
     self.save
   end
   

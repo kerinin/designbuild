@@ -1,6 +1,4 @@
 class Bid < ActiveRecord::Base
-  include MarksUp
-  
   has_paper_trail :ignore => [:created_at, :updated_at]
 
   belongs_to :contract, :inverse_of => :bids
@@ -14,6 +12,10 @@ class Bid < ActiveRecord::Base
   after_destroy :cascade_cache_values
   
   attr_accessor :is_active_bid
+  
+  def markups
+    self.contract.markups
+  end
   
   def is_active_bid?
     self.is_active_bid
@@ -34,10 +36,6 @@ class Bid < ActiveRecord::Base
     "#{self.contractor}"
   end
   
-  def total_markup
-    self.contract.total_markup unless self.contract.blank?
-  end
-  
   def cascade_cache_values
     self.contract.reload.save!
   end
@@ -45,6 +43,6 @@ class Bid < ActiveRecord::Base
   protected
   
   def cache_values
-    self.cost = mark_up :cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost)}
   end
 end

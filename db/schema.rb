@@ -10,16 +10,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20101228145919) do
+ActiveRecord::Schema.define(:version => 20101229033254) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
     t.date     "date"
-    t.float    "raw_cost"
+    t.float    "raw_cost",    :default => 0.0
     t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "cost"
+    t.float    "cost",        :default => 0.0
   end
 
   add_index "bids", ["contract_id"], :name => "index_bids_on_contract_id"
@@ -32,32 +32,32 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.string   "ancestry"
     t.boolean  "expand_in_estimate"
     t.boolean  "show_costs_in_estimate"
-    t.float    "estimated_fixed_cost"
-    t.float    "estimated_unit_cost"
-    t.float    "estimated_raw_fixed_cost"
-    t.float    "estimated_raw_unit_cost"
+    t.float    "estimated_fixed_cost",                     :default => 0.0
+    t.float    "estimated_unit_cost",                      :default => 0.0
+    t.float    "estimated_raw_fixed_cost",                 :default => 0.0
+    t.float    "estimated_raw_unit_cost",                  :default => 0.0
     t.float    "total_markup"
     t.integer  "position"
-    t.float    "estimated_contract_cost"
-    t.float    "estimated_raw_contract_cost"
-    t.float    "estimated_component_fixed_cost"
-    t.float    "estimated_raw_component_fixed_cost"
-    t.float    "estimated_subcomponent_fixed_cost"
-    t.float    "estimated_raw_subcomponent_fixed_cost"
-    t.float    "estimated_component_unit_cost"
-    t.float    "estimated_raw_component_unit_cost"
-    t.float    "estimated_subcomponent_unit_cost"
-    t.float    "estimated_raw_subcomponent_unit_cost"
-    t.float    "estimated_component_contract_cost"
-    t.float    "estimated_raw_component_contract_cost"
-    t.float    "estimated_subcomponent_contract_cost"
-    t.float    "estimated_raw_subcomponent_contract_cost"
-    t.float    "estimated_component_cost"
-    t.float    "estimated_raw_component_cost"
-    t.float    "estimated_subcomponent_cost"
-    t.float    "estimated_raw_subcomponent_cost"
-    t.float    "estimated_cost"
-    t.float    "estimated_raw_cost"
+    t.float    "estimated_contract_cost",                  :default => 0.0
+    t.float    "estimated_raw_contract_cost",              :default => 0.0
+    t.float    "estimated_component_fixed_cost",           :default => 0.0
+    t.float    "estimated_raw_component_fixed_cost",       :default => 0.0
+    t.float    "estimated_subcomponent_fixed_cost",        :default => 0.0
+    t.float    "estimated_raw_subcomponent_fixed_cost",    :default => 0.0
+    t.float    "estimated_component_unit_cost",            :default => 0.0
+    t.float    "estimated_raw_component_unit_cost",        :default => 0.0
+    t.float    "estimated_subcomponent_unit_cost",         :default => 0.0
+    t.float    "estimated_raw_subcomponent_unit_cost",     :default => 0.0
+    t.float    "estimated_component_contract_cost",        :default => 0.0
+    t.float    "estimated_raw_component_contract_cost",    :default => 0.0
+    t.float    "estimated_subcomponent_contract_cost",     :default => 0.0
+    t.float    "estimated_raw_subcomponent_contract_cost", :default => 0.0
+    t.float    "estimated_component_cost",                 :default => 0.0
+    t.float    "estimated_raw_component_cost",             :default => 0.0
+    t.float    "estimated_subcomponent_cost",              :default => 0.0
+    t.float    "estimated_raw_subcomponent_cost",          :default => 0.0
+    t.float    "estimated_cost",                           :default => 0.0
+    t.float    "estimated_raw_cost",                       :default => 0.0
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
@@ -73,11 +73,11 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
 
   create_table "contract_costs", :force => true do |t|
     t.date     "date"
-    t.float    "raw_cost"
+    t.float    "raw_cost",    :default => 0.0
     t.integer  "contract_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "cost"
+    t.float    "cost",        :default => 0.0
   end
 
   add_index "contract_costs", ["contract_id"], :name => "index_contract_costs_on_contract_id"
@@ -88,13 +88,13 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "bid_id"
-    t.float    "estimated_raw_cost"
-    t.float    "raw_cost"
+    t.float    "estimated_raw_cost", :default => 0.0
+    t.float    "raw_cost",           :default => 0.0
     t.float    "total_markup"
     t.integer  "position"
     t.integer  "component_id"
-    t.float    "estimated_cost"
-    t.float    "cost"
+    t.float    "estimated_cost",     :default => 0.0
+    t.float    "cost",               :default => 0.0
   end
 
   add_index "contracts", ["component_id"], :name => "index_contracts_on_component_id"
@@ -132,12 +132,12 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
 
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string   "name"
-    t.float    "raw_cost"
+    t.float    "raw_cost",     :default => 0.0
     t.integer  "component_id"
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "cost"
+    t.float    "cost",         :default => 0.0
   end
 
   add_index "fixed_cost_estimates", ["component_id"], :name => "index_fixed_cost_estimates_on_component_id"
@@ -177,8 +177,8 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.float    "cost"
-    t.float    "raw_cost"
-    t.float    "laborer_pay"
+    t.float    "raw_cost",     :default => 0.0
+    t.float    "laborer_pay",  :default => 0.0
     t.integer  "project_id"
   end
 
@@ -191,10 +191,10 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "raw_cost"
+    t.float    "raw_cost",         :default => 0.0
     t.string   "note"
     t.integer  "project_id"
-    t.float    "cost"
+    t.float    "cost",             :default => 0.0
   end
 
   add_index "labor_costs", ["project_id"], :name => "index_labor_costs_on_project_id"
@@ -213,6 +213,14 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.integer  "markup_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.integer  "project_id"
+    t.float    "estimated_unit_cost_markup_amount",     :default => 0.0, :null => false
+    t.float    "estimated_fixed_cost_markup_amount",    :default => 0.0, :null => false
+    t.float    "estimated_contract_cost_markup_amount", :default => 0.0, :null => false
+    t.float    "estimated_cost_markup_amount",          :default => 0.0, :null => false
+    t.float    "labor_cost_markup_amount",              :default => 0.0, :null => false
+    t.float    "material_cost_markup_amount",           :default => 0.0, :null => false
+    t.float    "cost_markup_amount",                    :default => 0.0, :null => false
   end
 
   add_index "markings", ["markup_id"], :name => "index_markings_on_markup_id"
@@ -299,29 +307,29 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.string   "name"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "estimated_fixed_cost"
-    t.float    "estimated_raw_fixed_cost"
-    t.float    "estimated_unit_cost"
-    t.float    "estimated_raw_unit_cost"
-    t.float    "estimated_contract_cost"
-    t.float    "estimated_raw_contract_cost"
-    t.float    "material_cost"
-    t.float    "raw_material_cost"
-    t.float    "labor_cost"
-    t.float    "raw_labor_cost"
-    t.float    "contract_cost"
-    t.float    "raw_contract_cost"
-    t.float    "projected_cost"
-    t.float    "raw_projected_cost"
+    t.float    "estimated_fixed_cost",        :default => 0.0
+    t.float    "estimated_raw_fixed_cost",    :default => 0.0
+    t.float    "estimated_unit_cost",         :default => 0.0
+    t.float    "estimated_raw_unit_cost",     :default => 0.0
+    t.float    "estimated_contract_cost",     :default => 0.0
+    t.float    "estimated_raw_contract_cost", :default => 0.0
+    t.float    "material_cost",               :default => 0.0
+    t.float    "raw_material_cost",           :default => 0.0
+    t.float    "labor_cost",                  :default => 0.0
+    t.float    "raw_labor_cost",              :default => 0.0
+    t.float    "contract_cost",               :default => 0.0
+    t.float    "raw_contract_cost",           :default => 0.0
+    t.float    "projected_cost",              :default => 0.0
+    t.float    "raw_projected_cost",          :default => 0.0
     t.boolean  "show_planning",               :default => true
     t.boolean  "show_construction",           :default => false
     t.float    "labor_percent_retainage",     :default => 0.0,   :null => false
     t.float    "material_percent_retainage",  :default => 0.0,   :null => false
     t.boolean  "fixed_bid",                   :default => false
-    t.float    "estimated_cost"
-    t.float    "estimated_raw_cost"
-    t.float    "cost"
-    t.float    "raw_cost"
+    t.float    "estimated_cost",              :default => 0.0
+    t.float    "estimated_raw_cost",          :default => 0.0
+    t.float    "cost",                        :default => 0.0
+    t.float    "raw_cost",                    :default => 0.0
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
@@ -364,28 +372,28 @@ ActiveRecord::Schema.define(:version => 20101228145919) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "estimated_raw_unit_cost"
-    t.float    "estimated_raw_fixed_cost"
-    t.float    "raw_labor_cost"
-    t.float    "raw_material_cost"
+    t.float    "estimated_raw_unit_cost",            :default => 0.0
+    t.float    "estimated_raw_fixed_cost",           :default => 0.0
+    t.float    "raw_labor_cost",                     :default => 0.0
+    t.float    "raw_material_cost",                  :default => 0.0
     t.float    "total_markup"
     t.float    "percent_complete",                   :default => 0.0, :null => false
-    t.float    "estimated_unit_cost"
-    t.float    "estimated_fixed_cost"
-    t.float    "estimated_cost"
-    t.float    "estimated_raw_cost"
-    t.float    "component_estimated_unit_cost"
-    t.float    "component_estimated_raw_unit_cost"
-    t.float    "component_estimated_fixed_cost"
-    t.float    "component_estimated_raw_fixed_cost"
-    t.float    "component_estimated_cost"
-    t.float    "component_estimated_raw_cost"
-    t.float    "labor_cost"
-    t.float    "material_cost"
-    t.float    "cost"
-    t.float    "raw_cost"
-    t.float    "projected_cost"
-    t.float    "raw_projected_cost"
+    t.float    "estimated_unit_cost",                :default => 0.0
+    t.float    "estimated_fixed_cost",               :default => 0.0
+    t.float    "estimated_cost",                     :default => 0.0
+    t.float    "estimated_raw_cost",                 :default => 0.0
+    t.float    "component_estimated_unit_cost",      :default => 0.0
+    t.float    "component_estimated_raw_unit_cost",  :default => 0.0
+    t.float    "component_estimated_fixed_cost",     :default => 0.0
+    t.float    "component_estimated_raw_fixed_cost", :default => 0.0
+    t.float    "component_estimated_cost",           :default => 0.0
+    t.float    "component_estimated_raw_cost",       :default => 0.0
+    t.float    "labor_cost",                         :default => 0.0
+    t.float    "material_cost",                      :default => 0.0
+    t.float    "cost",                               :default => 0.0
+    t.float    "raw_cost",                           :default => 0.0
+    t.float    "projected_cost",                     :default => 0.0
+    t.float    "raw_projected_cost",                 :default => 0.0
   end
 
   add_index "tasks", ["contract_id"], :name => "index_tasks_on_contract_id"

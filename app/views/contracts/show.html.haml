@@ -16,7 +16,7 @@ Change parent component of
 to:
 .inline
   =form_for [@project, @contract], :html => {:id => "edit_contract_#{@contract.id}_component", :class => :edit_contract_component} do |f|
-    = f.collection_select(:component_id, (@project.components.roots.map{|c| c.subtree}.flatten), :id, :select_label, { :include_blank => "-- None --" }, :onchange => "$('#edit_contract_#{@contract.id}_component').submit();")
+    = f.collection_select(:component_id, (@project.components.roots.map{|c| c.subtree}.flatten), :id, :select_label, :onchange => "$('#edit_contract_#{@contract.id}_component').submit();")
 
 %hr
 

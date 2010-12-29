@@ -12,7 +12,7 @@ class ContractTest < ActiveSupport::TestCase
       @component.markups << @cm
       
       @obj = Factory :contract, :component => @component
-      @contract2 = Factory :contract, :project => @project
+      @contract2 = Factory :contract, :project => @project, :component => @component
       
       @c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1, :date => Date::today
       @c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10, :date => Date::today
@@ -23,10 +23,6 @@ class ContractTest < ActiveSupport::TestCase
       
       [@project, @component, @obj].each {|i| i.reload}
     end
-
-    teardown do
-      Contract.delete_all
-    end
     
     should "be valid" do
       assert @obj.valid?
@@ -35,13 +31,13 @@ class ContractTest < ActiveSupport::TestCase
     should "have values" do
       assert_not_nil @obj.name
     end
-    
-    should "require a project" do
+
+    should "require a component" do
       assert_raise ActiveRecord::RecordInvalid do
-        Factory :contract, :project => nil
+        Factory :contract, :component => nil
       end
     end
-    
+        
     should "allow multiple costs" do
       assert_contains @obj.costs, @c1
       assert_contains @obj.costs, @c2
@@ -98,12 +94,6 @@ class ContractTest < ActiveSupport::TestCase
 
     should "aggregate costs with cutoff" do
       assert_equal 0, @obj.raw_cost_before(Date::today - 5)
-    end
-    
-    should "update total markup after add" do
-      @markup = Factory :markup, :percent => 10
-      @obj.markups << @markup
-      assert_equal 210, @obj.total_markup
     end
     
     

@@ -43,14 +43,15 @@ class InvoiceableTest < ActiveSupport::TestCase
     }
     
     @contract = Proc.new { |project, component1, task1, component2, task2, l, lc, lcl, mc|
-      @contract1 = project.contracts.create! :name => 'contract 1'
+      @contract1 = project.contracts.create! :name => 'contract 1', :component => component1
       @contract1.active_bid = Factory( :bid, :contract => @contract1, :raw_cost => 3 )
       component1.contracts << @contract1
-      @contract2 = project.contracts.create! :name => 'contract 2'
+      @contract2 = project.contracts.create! :name => 'contract 2', :component => component2
       @contract2.active_bid = Factory( :bid, :contract => @contract1, :raw_cost => 30 )
       component2.contracts << @contract2
-      @contract3 = project.contracts.create! :name => 'contract 3'
+      @contract3 = project.contracts.create! :name => 'contract 3', :component => component2
       @contract3.active_bid = Factory( :bid, :contract => @contract1, :raw_cost => 300 )
+      component2.contracts << @contract3
       
       @contract1.costs.create! :raw_cost => 500, :date => Date::today
       @contract1.costs.create! :raw_cost => 500, :date => Date:: today - 10

@@ -4,39 +4,27 @@ class MarkupTest < ActiveSupport::TestCase
   context "A Markup" do
     setup do
       @project = Factory :project
-      @component = Factory :component, :name => 'component'
-      @task = Factory :task
-      @contract = Factory :contract
-      @bid = Factory :bid, :contract => @contract, :raw_cost => 100
-      @contract.active_bid = @bid
-      @contract.save
+      @component = @project.components.create! :name => 'component'
+      @task = @project.tasks.create! :name => 'task'
+      @contract = @project.contracts.create! :name => 'contract', :component => @component
+      @component.contracts << @contract
+      @bid = @contract.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
       @obj.components << @component
       @obj.tasks << @task
-      @obj.contracts << @contract 
 
-      @subcomponent = Factory :component, :parent => @component, :name => 'subcomponent'
+      @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
+      #@component.children << @subcomponent
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
-      @inherited_contract = Factory :contract, :project => @project
       
       Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
       Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
       Factory :material_cost, :task => @task, :raw_cost => 100
-      Factory :contract_cost, :contract => @contract, :raw_cost => 100
       
-      [@project, @component, @subcomponent, @task, @contract, @bid, @obj].each {|i| i.reload}
-    end
-
-    teardown do
-      Markup.delete_all
-      Project.delete_all
-      Component.delete_all
-      Task.delete_all
-      Contract.delete_all
-      Marking.delete_all
+      [@project, @component, @subcomponent, @task, @bid, @obj].each {|i| i.reload}
     end
 
     should "be valid" do
@@ -64,11 +52,6 @@ class MarkupTest < ActiveSupport::TestCase
     should "allow associated tasks" do
       assert_contains @obj.tasks, @task
       assert_contains @task.markups, @obj
-    end
-    
-    should "allow associated contracts" do
-      assert_contains @obj.contracts, @contract
-      assert_contains @contract.markups, @obj
     end
     
     should "copy from project to task" do
@@ -128,6 +111,7 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.components << @component
       @component.markups << @new2
       
+
       assert_contains @subcomponent.markups.reload.all, @new1
       assert_contains @subcomponent.markups.reload.all, @new2
       
@@ -140,34 +124,22 @@ class MarkupTest < ActiveSupport::TestCase
       assert_does_not_contain @subcomponent.markups.reload.all, @new2
       assert_does_not_contain @sub3.markups.reload.all, @new2
     end
-        
-    should "copy from project to contract" do
-      assert_contains @inherited_contract.markups, @obj
-    end
-    
-    should "cascade add / delete from project to contract" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new1.projects << @project
-      @project.markups << @new2
-      
-      assert_contains @inherited_contract.markups.reload.all, @new1
-      assert_contains @inherited_contract.markups.reload.all, @new2
-      
-      @new1.projects.delete( @project )
-      @project.markups.delete( @new2 )
-      
-      assert_does_not_contain @inherited_contract.markups.reload.all, @new1
-      assert_does_not_contain @inherited_contract.markups.reload.all, @new2
-    end
 
     # -----------------------CALCULATIONS
-  
+
     should "apply to markupable" do
-      assert_equal 150, @subcomponent.estimated_cost
-      assert_equal 150, @task.cost
-      assert_equal 150, @contract.estimated_cost
-      assert_equal 150, @contract.cost
+      assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_component_cost)
+      assert_equal 50, @obj.apply_to(@component, :estimated_raw_component_cost)
     end
+    
+    should "apply to markupable and children" do
+      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
+      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      
+      assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
+      assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
+      assert_equal 150, @obj.apply_recursively_to(@project, :estimated_cost_markup_amount)
+    end
+
   end
 end

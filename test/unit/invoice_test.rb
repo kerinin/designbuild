@@ -227,7 +227,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @uc = @component.unit_cost_estimates.create! :name => 'test uc', :unit_cost => 10, :quantity => @q
       @task.unit_cost_estimates << @uc
       
-      @c = @project.contracts.create! :name => 'test contract'
+      @c = @project.contracts.create! :name => 'test contract', :component => @component
       @component.contracts << @c
       
       @c.update_attributes :active_bid => Factory( :bid, :raw_cost => 100, :contract => @c )

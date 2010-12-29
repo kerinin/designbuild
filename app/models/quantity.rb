@@ -16,6 +16,6 @@ class Quantity < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.unit_cost_estimates.all.each {|uc| uc.save!}
+    self.unit_cost_estimates(true).all.each {|uc| uc.save!}
   end
 end

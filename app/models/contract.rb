@@ -1,6 +1,5 @@
 class Contract < ActiveRecord::Base
   include AddOrNil
-  include MarksUp
   
   has_paper_trail :ignore => [:position, :created_at, :updated_at]
   has_invoices
@@ -13,19 +12,13 @@ class Contract < ActiveRecord::Base
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => Proc.new{|c,m| c.save}, :after_remove => Proc.new{|c,m| c.save}
-
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}
   has_many :cost_to_date_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :cost_to_date}
     
   acts_as_list :scope => :project
   
-  validates_presence_of :name, :project
+  validates_presence_of :name, :project, :component
 
-  after_create :add_project_markups, :unless => :component_id
-  after_create :add_component_markups, :if => :component_id
-  
   before_validation :check_project
   before_save :cache_values
   
@@ -38,11 +31,18 @@ class Contract < ActiveRecord::Base
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
   
+  def markups
+    self.component.markups
+  end
+  
   def percent_invoiced
     multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
   end
   
-  marks_up :raw_cost_before
+  def cost_before(date)
+    self.raw_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost_before, date) }
+  end
+  
   def raw_cost_before(date)
     self.costs.where('date <= ?', date).sum(:raw_cost)
   end
@@ -52,12 +52,11 @@ class Contract < ActiveRecord::Base
     
     self.cache_estimated_cost
     self.cache_cost
-    self.cache_total_markup
   end
     
   def cascade_cache_values
-    self.component.save! unless self.component.blank?
-    self.project.save! unless self.project.blank?
+    self.component.reload.save!
+    self.project.reload.save!
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
     Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?
@@ -79,26 +78,13 @@ class Contract < ActiveRecord::Base
   end
   
   def cache_estimated_cost
-    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? nil : self.active_bid.raw_cost )
-    self.estimated_cost = mark_up :estimated_raw_cost
+    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? 0 : self.active_bid.raw_cost )
+    self.estimated_cost = self.estimated_raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_cost) }
   end
   
   def cache_cost
     self.raw_cost = self.costs.sum(:raw_cost)
-    self.cost = mark_up :raw_cost
-  end
-  
-  def cache_total_markup
-    self.total_markup = self.markups.sum(:percent)
-  end
-  
-  
-  def add_project_markups
-    self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
-  end
-  
-  def add_component_markups
-    self.component.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def create_points

@@ -14,6 +14,6 @@ class Laborer < ActiveRecord::Base
   after_destroy :cascade_cache_values
 
   def cascade_cache_values
-    self.labor_cost_lines.all.each {|lc| lc.save!}
+    self.labor_cost_lines(true).all.each {|lc| lc.save!}
   end
 end

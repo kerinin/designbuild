@@ -147,7 +147,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       setup do
         @component = @project.components.create! :name => 'component'
       
-        @contract = @project.contracts.create! :name => 'contract'
+        @contract = @project.contracts.create! :name => 'contract', :component => @component
         @component.contracts << @contract
         @bid = @contract.bids.create! :raw_cost => 100, :contractor => 'contractor', :date => Date::today
         @contract.update_attributes :active_bid => @bid
@@ -325,7 +325,7 @@ class InvoiceLineTest < ActiveSupport::TestCase
       setup do
         @component = @project.components.create! :name => 'component'
       
-        @contract = @project.contracts.create! :name => 'contract'
+        @contract = @project.contracts.create! :name => 'contract', :component => @component
         @component.contracts << @contract
         @bid = @contract.bids.create! :raw_cost => 100, :contractor => 'contractor', :date => Date::today
         @contract.update_attributes :active_bid => @bid

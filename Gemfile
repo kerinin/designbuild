@@ -32,7 +32,8 @@ gem 'paperclip', ">= 2.3.5"
 gem "friendly_id", "~> 3.1"
 # gem "memcached"
 # gem "acts_as_list", :git => 'git://github.com/rails/acts_as_list.git'
-gem "ancestry", '1.2.3'
+#gem "ancestry", '1.2.3'  #using fork w/ .joins() fixes from git://github.com/raelik/ancestry.git
+                          # issue: https://github.com/stefankroes/ancestry/issuesearch?state=open&q=joins#issue/35
 gem "abstract"
 # gem 'inherited_resources', '1.1.2'
 gem 'rails3-jquery-autocomplete'

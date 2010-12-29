@@ -4,4 +4,5 @@ Factory.define :contract do |f|
   f.name {Forgery::DesignBuild.contract_name}
   
   f.project {|p| p.association(:project)}
+  f.component {|p| p.association(:component)}
 end

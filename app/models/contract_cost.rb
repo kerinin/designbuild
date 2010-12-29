@@ -1,6 +1,4 @@
 class ContractCost < ActiveRecord::Base
-  include MarksUp
-  
   belongs_to :contract, :inverse_of => :costs
   
   has_paper_trail :ignore => [:created_at, :updated_at]
@@ -14,18 +12,18 @@ class ContractCost < ActiveRecord::Base
   after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
-  def total_markup
-    self.contract.total_markup unless self.contract.blank?
+  def markups
+    self.contract.markups
   end
 
   def cascade_cache_values
-    self.contract.save!
+    self.contract.reload.save!
   end
   
   protected
   
   def cache_values
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost ) }
   end
   
   def create_points

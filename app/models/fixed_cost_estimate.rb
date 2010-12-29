@@ -1,6 +1,4 @@
 class FixedCostEstimate < ActiveRecord::Base
-  include MarksUp
-  
   has_paper_trail :ignore => [:created_at, :updated_at]
   has_invoices
   
@@ -20,20 +18,16 @@ class FixedCostEstimate < ActiveRecord::Base
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
   
+  def markups
+    self.component.markups
+  end
+  
   def task_name=(string)
     self.task = (string == '' || string.nil?) ? nil : Task.find_or_create_by_name(string, :project => self.component.project)
   end
   
   def task_name
     self.task.blank? ? nil : self.task.name
-  end
-  
-  def total_markup
-    if self.component.blank?
-      0
-    else
-      self.component.total_markup
-    end
   end
   
   def estimated_cost
@@ -97,12 +91,12 @@ class FixedCostEstimate < ActiveRecord::Base
   protected
   
   def cache_values
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def cascade_cache_values
-    self.component.save!
-    self.task.save! unless self.task.blank?
+    self.component.reload.save!
+    self.task.reload.save! unless self.task.blank?
     
     Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
     Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?

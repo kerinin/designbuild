@@ -1,6 +1,4 @@
 class UnitCostEstimate < ActiveRecord::Base
-  include MarksUp
-  
   has_paper_trail :ignore => [:created_at, :updated_at]
   has_invoices
   
@@ -22,16 +20,16 @@ class UnitCostEstimate < ActiveRecord::Base
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
+  def markups
+    self.component.markups
+  end
+  
   def task_name=(string)
     self.task = (string == '' || string.nil?) ? nil : Task.find_or_create_by_name(string, :project => self.component.project)
   end
   
   def task_name
     self.task.blank? ? nil : self.task.name
-  end
-  
-  def total_markup
-    self.component.total_markup unless self.component.blank?
   end
   
   def estimated_cost
@@ -112,7 +110,7 @@ class UnitCostEstimate < ActiveRecord::Base
     
   def cache_cost
     self.raw_cost = self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
-    self.cost = mark_up :raw_cost
+    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def set_component
