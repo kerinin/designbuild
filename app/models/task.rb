@@ -137,19 +137,22 @@ class Task < ActiveRecord::Base
   # NOTE: this component_estimated stuff is hacky - think of a better way
   def cache_estimated_costs
     self.estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
     self.estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
     self.estimated_raw_cost = estimated_raw_fixed_cost + estimated_raw_unit_cost
+
+    self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
+    self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
     self.component_estimated_raw_cost = component_estimated_raw_fixed_cost + component_estimated_raw_unit_cost
+
     
     self.markings.each {|m| m.save!}
     
-    #self.estimated_unit_cost = self.estimated_raw_unit_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_unit_cost) }
+    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
+    self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
+    self.estimated_cost = self.estimated_unit_cost + self.estimated_fixed_cost
+    
     self.component_estimated_unit_cost = self.unit_cost_estimates.sum(:cost)
-    #self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_fixed_cost) }
     self.component_estimated_fixed_cost = self.fixed_cost_estimates.sum(:cost)
-    self.estimated_cost = self.estimated_raw_cost + self.markings.sum(:estimated_cost_markup_amount)
     self.component_estimated_cost = component_estimated_fixed_cost + component_estimated_unit_cost
   end
   

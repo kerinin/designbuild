@@ -14,9 +14,9 @@ class Marking < ActiveRecord::Base
   
   def set_markup_amount
     if self.markupable.class == Component
-      self.estimated_unit_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_unit_cost)
-      self.estimated_fixed_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_fixed_cost)
-      self.estimated_contract_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_contract_cost)
+      self.estimated_unit_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_component_unit_cost)
+      self.estimated_fixed_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_component_fixed_cost)
+      self.estimated_contract_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_component_contract_cost)
       self.estimated_cost_markup_amount = (
         self.estimated_unit_cost_markup_amount + 
         self.estimated_fixed_cost_markup_amount +
