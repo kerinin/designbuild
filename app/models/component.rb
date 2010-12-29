@@ -88,21 +88,21 @@ class Component < ActiveRecord::Base
   def cache_estimated_costs
     self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
     #self.estimated_raw_subcomponent_fixed_cost = self.children.sum(:estimated_raw_fixed_cost)
-    self.estimated_raw_subcomponent_fixed_cost = self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost')
+    self.estimated_raw_subcomponent_fixed_cost = self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
     #self.estimated_raw_fixed_cost = self.estimated_raw_component_fixed_cost + self.estimated_raw_subcomponent_fixed_cost
-    self.estimated_raw_fixed_cost = self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost')
+    self.estimated_raw_fixed_cost = self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
 
     self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
     #self.estimated_raw_subcomponent_unit_cost = self.children.sum(:estimated_raw_unit_cost)
-    self.estimated_raw_subcomponent_unit_cost = self.children.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost')
+    self.estimated_raw_subcomponent_unit_cost = self.children.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
     #self.estimated_raw_unit_cost = self.estimated_raw_component_unit_cost + self.estimated_raw_subcomponent_unit_cost
-    self.estimated_raw_unit_cost = self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost')
+    self.estimated_raw_unit_cost = self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
 
     self.estimated_raw_component_contract_cost = self.contracts.sum(:estimated_raw_cost)
     #self.estimated_raw_subcomponent_contract_cost = self.children.sum(:estimated_raw_contract_cost)
-    self.estimated_raw_subcomponent_contract_cost = self.children.joins(:contracts).sum('contracts.estimated_raw_cost')
+    self.estimated_raw_subcomponent_contract_cost = self.children.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
     #self.estimated_raw_contract_cost = self.estimated_raw_component_contract_cost + self.estimated_raw_subcomponent_contract_cost
-    self.estimated_raw_contract_cost = self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost')
+    self.estimated_raw_contract_cost = self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
 
     # Leaving this as addition to reduce SQL transactions
     self.estimated_raw_component_cost = self.estimated_raw_component_unit_cost + self.estimated_raw_component_fixed_cost + self.estimated_raw_component_contract_cost 
@@ -115,21 +115,21 @@ class Component < ActiveRecord::Base
     
     self.estimated_component_fixed_cost = self.estimated_raw_component_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
     #self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
-    self.estimated_subcomponent_fixed_cost = self.estimated_raw_subcomponent_fixed_cost + self.children.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount')
+    self.estimated_subcomponent_fixed_cost = self.estimated_raw_subcomponent_fixed_cost + self.children.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
     #self.estimated_fixed_cost = self.estimated_component_fixed_cost + self.estimated_subcomponent_fixed_cost
-    self.estimated_fixed_cost = self.estimated_raw_component_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount')
+    self.estimated_fixed_cost = self.estimated_raw_component_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
 
     self.estimated_component_unit_cost = self.estimated_raw_component_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
     #self.estimated_subcomponent_unit_cost = self.children.sum(:estimated_unit_cost)
-    self.estimated_subcomponent_unit_cost = self.estimated_raw_subcomponent_unit_cost + self.children.joins(:markings).sum('markings.estimated_unit_cost_markup_amount')
+    self.estimated_subcomponent_unit_cost = self.estimated_raw_subcomponent_unit_cost + self.children.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
     #self.estimated_unit_cost = self.estimated_component_unit_cost + self.estimated_subcomponent_unit_cost
-    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.subtre.joins(:markings).sum('markings.estimated_unit_cost_markup_amount')
+    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.subtree.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
 
     self.estimated_component_contract_cost = self.estimated_raw_component_contract_cost + self.markings.sum(:estimated_contract_cost_markup_amount)
     #self.estimated_subcomponent_contract_cost = self.children.sum(:estimated_contract_cost)
-    self.estimated_subcomponent_contract_cost = self.estimated_raw_subcomponent_contract_cost + self.children.joins(:markings).sum('markings.estimated_contract_cost_markup_amount')
+    self.estimated_subcomponent_contract_cost = self.estimated_raw_subcomponent_contract_cost + self.children.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
     #self.estimated_contract_cost = self.estimated_component_contract_cost + self.estimated_subcomponent_contract_cost                                    
-    self.estimated_contract_cost = self.estimated_raw_contract_cost + self.subtree.joins(:markings).sum('markings.estimated_contract_cost_markup_amount')
+    self.estimated_contract_cost = self.estimated_raw_contract_cost + self.subtree.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
 
     # Leaving this as addition to reduce SQL transactions
     self.estimated_component_cost = self.estimated_component_unit_cost + self.estimated_component_fixed_cost + self.estimated_component_contract_cost

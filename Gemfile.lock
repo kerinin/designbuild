@@ -28,8 +28,6 @@ GEM
       activemodel (= 3.0.1)
       activesupport (= 3.0.1)
     activesupport (3.0.1)
-    ancestry (1.2.3)
-      activerecord (>= 2.2.2)
     arel (1.0.1)
       activesupport (~> 3.0.0)
     aws-s3 (0.6.2)
@@ -134,7 +132,6 @@ PLATFORMS
 
 DEPENDENCIES
   abstract
-  ancestry (= 1.2.3)
   aws-s3
   compass (>= 0.10.6)
   dalli

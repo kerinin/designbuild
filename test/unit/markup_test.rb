@@ -24,7 +24,7 @@ class MarkupTest < ActiveSupport::TestCase
       
       [@project, @component, @subcomponent, @task, @bid, @obj].each {|i| i.reload}
     end
-
+=begin
     should "be valid" do
       assert @obj.valid?
     end
@@ -123,15 +123,20 @@ class MarkupTest < ActiveSupport::TestCase
     end
 
     # -----------------------CALCULATIONS
-
+=end
     should "apply to markupable" do
-      assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_cost)
-      assert_equal 50, @obj.apply_to(@component, :estimated_raw_cost)
-      assert_equal 0, @obj.apply_to(@project, :estimated_raw_cost)
+      assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_component_cost)
+      assert_equal 50, @obj.apply_to(@component, :estimated_raw_component_cost)
+    end
+    
+    should "apply to markupable and children" do
       
-      assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_raw_cost)
-      assert_equal 100, @obj.apply_recursively_to(@component, :estimated_raw_cost)
-      assert_equal 150, @obj.apply_recursively_to(@project, :estimated_raw_cost)
+      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
+      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      
+      assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
+      assert_equal 100, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
+      assert_equal 150, @obj.apply_recursively_to(@project, :estimated_cost_markup_amount)
     end
   end
 end

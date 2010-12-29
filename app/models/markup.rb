@@ -30,10 +30,10 @@ class Markup < ActiveRecord::Base
   end
   
   def apply_recursively_to(value, method)
-    if value.instance_of?(Project) && value.respond_to?(method)
+    if value.instance_of?(Project)
       value.applied_markings.sum(method)
-    elsif value.instance_of?(Component) && value.respond_to?(method)
-      value.subtree.sum(method)
+    elsif value.instance_of?(Component)
+      value.subtree.joins(:markings).sum(method)
     else
       0
     end
