@@ -1,5 +1,5 @@
 - speed up tests
-- deleting markup doesn't refresh cost
++ deleting markup doesn't refresh cost
 - edit laborer
 
 - bank draws (invoice tracking)

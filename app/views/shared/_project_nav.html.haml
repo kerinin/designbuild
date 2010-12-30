@@ -1,8 +1,9 @@
 %ul.main_nav
-  %li= link_to 'All Projects', projects_path
-  %li= link_to 'Reports', reports_path
+  %li=select_tag :id, options_for_select([['All Projects', '/projects']] + Project.all.map{|p| [p.name, project_path(p)]}, [@project.name, project_path(@project)]), :onchange => "window.location.pathname = $(this).val();"
+
   -unless @project.nil?
     %li= link_to @project.name, @project
+    %li= link_to '>Reports', reports_path
     %li.qtip_component= link_to '>Components', project_components_path(@project)
     %li.qtip_task= link_to '>Tasks', project_tasks_path(@project)
     %li.qtip_contract= link_to '>Contracts', project_contracts_path(@project)
