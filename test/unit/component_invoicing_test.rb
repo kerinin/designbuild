@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
+# These must be saved to DB - testing functions which rely on DB.sum()
 class ComponentTest < ActiveSupport::TestCase
   context "A component w/ actual costs" do
     setup do
