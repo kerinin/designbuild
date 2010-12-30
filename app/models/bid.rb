@@ -33,7 +33,7 @@ class Bid < ActiveRecord::Base
   end
   
   def select_label
-    "#{self.contractor}"
+    "#{self.contractor} (#{self.date.to_s :short}: $#{self.raw_cost.to_i})"
   end
   
   def cascade_cache_values
