@@ -32,7 +32,7 @@
         
         -unless data.empty?
           %script{:type => 'text/javascript+protovis'}
-            = render :partial => 'shared/protovis_sparklines.js', :locals => { :data => data, :width => 150, :height => 22, :xmin => 0, :xmax => 30, :fill_style => 'rgb(220,220,220)', :stroke_style => 'black' } 
+            = render :partial => 'shared/protovis_sparklines.js', :locals => { :data => data, :width => 150, :height => 20, :xmin => 0, :xmax => 30, :fill_style => 'rgb(220,220,220)', :stroke_style => 'black' } 
           
     -if session[:break_out_markup]
       %td.currency
