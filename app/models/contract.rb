@@ -25,7 +25,7 @@ class Contract < ActiveRecord::Base
   after_save :cascade_cache_values  
   after_destroy :cascade_cache_values
   
-  before_save :create_points
+  after_save :create_points
     
   default_scope :order => :position
   
