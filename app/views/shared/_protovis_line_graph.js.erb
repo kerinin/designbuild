@@ -6,16 +6,18 @@
   max
 %>
 
-<% min ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.min }.compact.min, 0.8 %>
-<% max ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:value]}.compact.max }.compact.max, 1.2 %>
+<% xmin ||= data.map{|d| d[:data].map{|d| d[:x]}.compact.min }.compact.min * 0.8 %>
+<% xmax ||= data.map{|d| d[:data].map{|d| d[:x]}.compact.min }.compact.max * 1.2 %>
+<% ymin ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:y]}.compact.min }.compact.min, 0.8 %>
+<% ymax ||= multiply_or_nil data.map{|d| d[:data].map{|d| d[:y]}.compact.max }.compact.max, 1.2 %>
 
 var lg_data = <%= raw data.to_json %>;
 
 var lg_w = <%= width %>,
     lg_h = <%= height %>,
-    lg_max = <%= max %>,
-    lg_min = <%= min %>,
-    lg_x = pv.Scale.linear(0, <%= data[0][:data].size %>).range(0,lg_w);
+    lg_max = <%= ymax %>,
+    lg_min = <%= ymin %>,
+    lg_x = pv.Scale.linear(<%= xmin %>, <%= xmax %>).range(0,lg_w);
     lg_y = pv.Scale.linear(lg_min, lg_max).range(0,lg_h);
     
 var lg_vis = new pv.Panel()
@@ -37,8 +39,8 @@ var lg_lines = lg_graph.add(pv.Panel)
     .def('line', function(d) d['line'] )
   .add(pv.Line)
     .data( function(d) d['data'] )
-    .bottom( function(d) lg_y( d['value'] ) )
-    .left(function() lg_x(this.index) )
+    .bottom( function(d) lg_y( d['y'] ) )
+    .left(function(d) lg_x( d['x'] ) )
     .lineWidth( function(d) this.parent.line() ? this.parent.line() : 4 )
     .strokeStyle( function() this.parent.color() )
     .event("point", function(d) lg_vis.i(this.index) )
@@ -49,13 +51,13 @@ var lg_points = lg_lines.add(pv.Dot)
     .radius(5)
     .strokeStyle(null)
     .fillStyle( function() this.parent.color() )
-    .left( function() lg_x(this.index) )
-    .bottom( function(d) lg_y(d['value']) )
+    .left( function(d) lg_x( d['x'] ) )
+    .bottom( function(d) lg_y(d['y']) )
     .visible( function() lg_vis.i() == this.index );
     
 // Labels
 lg_points.anchor('top').add(pv.Label)
-    .text( function(d)  d['value'] == null ? null : d['label'] );
+    .text( function(d) d['label'] );
  
 lg_vis.render();
 

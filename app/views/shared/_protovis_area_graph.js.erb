@@ -6,18 +6,20 @@
   max
 %>
 
-<% min ||= multiply_or_nil data.map{|d| d[:value]}.compact.min, 0.8 %>
-<% max ||= multiply_or_nil data.map{|d| d[:value]}.compact.max, 1.2 %>
+<% xmin ||= data.map{|d| d[:x]}.compact.min * 0.8 %>
+<% xmax ||= data.map{|d| d[:x]}.compact.max * 1.2 %>
+<% ymin ||= data.map{|d| d[:y]}.compact.min * 0.8 %>
+<% ymax ||= data.map{|d| d[:y]}.compact.max * 1.2 %>
 
 var ag_data = <%= raw data.to_json %>;
 
 var ag_w = <%= width %>,
     ag_h = <%= height %>,
-    ag_max = <%= max %>,
-    ag_min = <%= min %>,
+    ag_max = <%= ymax %>,
+    ag_min = <%= ymin %>,
     ag_idx = -1,
-    ag_x = pv.Scale.linear(0, <%= data.size %>).range(0,ag_w);
-    ag_y = pv.Scale.linear(ag_min, ag_max).range(0,ag_h);
+    ag_x = pv.Scale.linear(<%= xmin %>, <%= xmax %>).range(0,ag_w),
+    ag_y = pv.Scale.linear(ag_min, ag_max).range(0,ag_h),
     ag_color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
     
 var ag_vis = new pv.Panel()
@@ -33,8 +35,8 @@ var ag_area = ag_vis.add(pv.Area)
     .data( ag_data )
     .segmented( true )
     .bottom(0)
-    .height(function(d) ag_y(d['value']) )
-    .left(function() ag_x(this.index) )
+    .height(function(d) ag_y(d['y']) )
+    .left(function(d) ag_x(d['x']) )
     .fillStyle( 'rgba(255,165,0,.1)' )
     .event("point", function(d) ag_vis.i(this.index) )
     .event("unpoint", function() ag_vis.i(-1) );
@@ -49,8 +51,8 @@ ag_area.add(pv.Dot)
     .radius(5)
     .strokeStyle(null)
     .fillStyle( 'orange' )
-    .left( function() ag_x(this.index) )
-    .bottom( function(d) ag_y(d['value']) )
+    .left( function(d) ag_x(d['x']) )
+    .bottom( function(d) ag_y(d['y']) )
     .visible( function() ag_vis.i() == this.index )
   .anchor('top').add(pv.Label)
     .text( function(d) d['label'] );

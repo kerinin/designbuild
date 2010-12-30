@@ -38,8 +38,8 @@
         %h3 Estimated Cost Graph
         .boxed
           %script{:type => 'text/javascript+protovis'}
-            -data = (0..30).to_a.reverse.map{|d| p = @project.version_at(d.days.ago); cost = p.nil? ? nil : p.estimated_cost; {:value => cost, :label => "#{d.days.ago.to_date.strftime('%b %d')}: #{number_to_currency cost, :precision => 0}"} }
-            =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :min => 0}
+            -data = @project.estimated_cost_points.where('date > ?', 30.days.ago).all.map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
+            =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :xmin => 0, :xmax => 30, :ymin => 0}
         
       .right
         =link_to estimate_report_for_project_path(@project) do
@@ -101,16 +101,15 @@
       -cache(:action_suffix => 'proj_vs_est_graph', :expires_in => 1.day) do
         %h3 Projected vs Estimated Cost
         %script{:type => 'text/javascript+protovis'}
-          -versions = (0..56).to_a.reverse.map{|i| @project.version_at(i.days.ago.to_date)}
-          -estimated = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.estimated_cost, :label => "Estimate: #{number_to_currency(v.estimated_cost, :precision => 0)}" } }
-          -projected = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.projected_cost, :label => "Projected: #{number_to_currency(v.projected_cost, :precision => 0)}" } }
-          -actual = versions.map{|v| v.nil? ? {:value => nil, :label => nil} : {:value => v.cost, :label => "To Date: #{number_to_currency(v.cost, :precision => 0) }" } }
+          -estimated = @project.estimated_cost_points.where('date > ?', 56.days.ago).all.map {|d| {:x => (d.date - 56.days.ago.to_date), :y => d.value, :label => "Estimate: #{number_to_currency(d.value, :precision => 0)}" } }
+          -projected = @project.projected_cost_points.where('date > ?', 56.days.ago).all.map {|d| {:x => (d.date - 56.days.ago.to_date), :y => d.value, :label => "Projected: #{number_to_currency(d.value, :precision => 0)}" } }
+          -actual = @project.cost_to_date_points.where('date > ?', 56.days.ago).all.map {|d| {:x => (d.date - 56.days.ago.to_date), :y => d.value, :label => "To Date: #{number_to_currency(d.value, :precision => 0)}" } }                  
           -data = [ |
             {:name => 'Cost to Date', :color => 'hsl(0,0,75)', :line => '2', :data => actual}, |
             {:name => 'Projected Cost', :color => 'red', :data => projected}, |
             {:name => 'Estimated Cost', :color => 'orange', :data => estimated} |
           ] |
-          =render :partial => 'shared/protovis_line_graph.js', :locals => {:height => 180, :width => 990, :data => data}
+          =render :partial => 'shared/protovis_line_graph.js', :locals => {:height => 180, :width => 990, :data => data, :xmin => 0, :xmax => 56, :ymin => 0}
       
     .right
       %h3
