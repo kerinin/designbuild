@@ -3,21 +3,13 @@ require File.dirname(__FILE__) + '/../test_helper'
 class BidTest < ActiveSupport::TestCase
   context "A bid" do
     setup do
-      @component = Factory :component
-      @contract = Factory :contract, :component => @component
-      @bid = Factory :bid, :contract => @contract
-      @active = Factory :bid, :contract => @contract
-      @contract.active_bid = @active
-      @contract.save!
-      
-      [@component, @contract, @bid, @active].each {|i| i.reload }
+      @project = Factory.build :project
+      @component = @project.components.build :name => 'component', :project => @project
+      @contract = @component.contracts.build( :name => 'contract', :project => @project, :component => @component )
+      @bid = @contract.bids.build( :contractor => 'foo', :date => Date::today, :raw_cost => 100, :contract => @contract)
+      @active = @contract.bids.build( :contractor => 'foo', :date => Date::today, :raw_cost => 100, :contract => @contract)
     end
-
-    teardown do
-      Bid.delete_all
-      Contract.delete_all
-    end
-    
+   
     should "be valid" do
       assert @bid.valid?
     end
@@ -34,11 +26,17 @@ class BidTest < ActiveSupport::TestCase
     end
     
     should "check if active" do
-      assert_equal @active.is_active_bid, true
+      [@project, @component, @contract, @bid, @active].each {|i| i.save!}
+      @contract.update_attributes :active_bid => @active
+      
+      assert_equal @active.reload.is_active_bid, true
       assert_equal @bid.is_active_bid, false
     end
     
     should "set active" do
+      [@project, @component, @contract, @bid, @active].each {|i| i.save!}
+      @contract.update_attributes :active_bid => @active
+      
       @bid.is_active_bid = true
       assert_equal @active.is_active_bid, false
       assert_equal @bid.is_active_bid, true
