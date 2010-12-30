@@ -6,8 +6,10 @@
   max
 %>
 
-<% ymin ||= data.min * 0.8 %>
-<% ymax ||= data.max * 1.2 %>
+<% xmin ||= 0 %>
+<% xmax ||= data.count %>
+<% ymin ||= data.map{|d| d[:y]}.compact.min * 0.8 %>
+<% ymax ||= data.map{|d| d[:y]}.compact.max * 1.2 %>
 <% fill_style ||= 'rgba(255,165,0,.1)' %>
 <% stroke_style ||= 'orange' %>
 
@@ -18,7 +20,7 @@ var ag_w = <%= width %>,
     ag_max = <%= ymax %>,
     ag_min = <%= ymin %>,
     ag_idx = -1,
-    ag_x = pv.Scale.linear(0, <%= data.count %>).range(0,ag_w),
+    ag_x = pv.Scale.linear(<%= xmin %>, <%= xmax %>).range(0,ag_w),
     ag_y = pv.Scale.root(.01, ag_max).range(0,ag_h),
     ag_color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
     
@@ -33,9 +35,9 @@ var ag_area = ag_vis.add(pv.Bar)
     .data( ag_data )
     .segmented( true )
     .bottom(0)
-    .height(function(d) ag_y(d) )
-    .left(function(d) ag_x(this.index) )
-    .width(function(d) ag_x(1))
+    .height(function(d) ag_y(d['y']) )
+    .left(function(d) ag_x(d['x']) )
+    .width(function(d) ag_x(0.8))
     .fillStyle( '<%= fill_style %>' );
     
 // Top Line

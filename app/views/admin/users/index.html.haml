@@ -15,7 +15,7 @@
     %tr
       %td= user.email
       %td.sparklines
-        -data = ((Date::today - 30)..(Date::today)).map{|i| Version.where(:whodunnit => user.id).where('created_at > ?', i).where('created_at < ?', (i+1)).count } 
+        -data = ((Date::today - 30)..(Date::today)).map{|i| {:x => (Date::today - i), :y => Version.where(:whodunnit => user.id).where('created_at > ?', i).where('created_at < ?', (i+1)).count } } 
 
         %script{:type => 'text/javascript+protovis'}
           = render :partial => 'shared/protovis_sparkbars.js', :locals => |
