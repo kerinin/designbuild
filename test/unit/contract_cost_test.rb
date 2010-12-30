@@ -3,12 +3,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContractCostTest < ActiveSupport::TestCase
   context "A Contract Cost" do
     setup do
-      @obj = Factory :contract_cost
-    end
-
-    teardown do
-      ContractCost.delete_all
-      Contract.delete_all
+      @obj = Factory.build :contract_cost
     end
     
     should "be valid" do
