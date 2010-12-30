@@ -18,7 +18,22 @@
     -if session[:break_out_unit_costs]
       %td
       %td.currency
-      
+    -else
+      %td.sparklines
+        -prior = component.estimated_cost_points.where('date <= ?', Date::today - 30)
+        -if prior.empty?
+          -data = []
+        -else
+          -data = [ {:x => (prior.last.date - Date::today + 30), :y => prior.last.value } ]
+          
+        -data += component.estimated_cost_points.where('date > ?', Date::today - 30).all.map{|d| {:x => (d.date - Date::today + 30), :y => d.value} }
+
+        -data.push( {:x => 30, :y => component.estimated_cost} )
+        
+        -unless data.empty?
+          %script{:type => 'text/javascript+protovis'}
+            = render :partial => 'shared/protovis_sparklines.js', :locals => { :data => data, :width => 150, :height => 22, :xmin => 0, :xmax => 30, :fill_style => 'rgb(220,220,220)', :stroke_style => 'black' } 
+          
     -if session[:break_out_markup]
       %td.currency
         %strong= number_to_currency component.estimated_raw_cost if indent == 0
@@ -40,7 +55,9 @@
             ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} +#{number_to_percentage unit_cost.drop, :precision => 0} (#{unit_cost.quantity.name})" unless unit_cost.drop.nil?
             ="#{unit_cost.quantity.value.to_i} #{unit_cost.quantity.unit} (#{unit_cost.quantity.name})" if unit_cost.drop.nil?
           %td="#{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"
-        
+        -else
+          %td
+          
         -if session[:break_out_markup]
           %td.currency
             %i= number_to_currency unit_cost.raw_cost
@@ -57,6 +74,9 @@
         -if session[:break_out_unit_costs]
           %td
           %td.currency
+        -else
+          %td.sparklines
+          
         -if session[:break_out_markup]
           %td.currency
             %i= number_to_currency fixed_cost.raw_cost

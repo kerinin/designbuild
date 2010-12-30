@@ -1,3 +1,6 @@
+-content_for :head do
+  =javascript_include_tag 'protovis-d3.2.js'
+
 .control
   =render :partial => 'shared/project_nav'
   
@@ -27,6 +30,8 @@
     -if session[:break_out_unit_costs]
       %th Quantity / Source
       %th.currency Unit Cost
+    -else
+      %th.sparklines 30-day History
     %th.currency Cost
     
   -@project.components.roots.each do |component|
@@ -39,14 +44,14 @@
     %tr.totals
       %td.control
       %td.control
-      %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1} Subtotal
+      %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 2} Subtotal
       %td.currency= number_to_currency @project.estimated_raw_cost
       
     -@active_markups.each do |markup|
       %tr.totals
         %td.control
         %td.control
-        %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+        %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 2}
           =markup.name
           =number_to_percentage markup.percent, :precision => 0
         %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
@@ -54,7 +59,7 @@
   %tr.totals
     %td.control
     %td.control
-    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 2}
       %strong Total
     %td.currency
       %strong= number_to_currency @project.estimated_cost
