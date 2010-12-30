@@ -39,7 +39,8 @@
         .boxed
           %script{:type => 'text/javascript+protovis'}
             -data = @project.estimated_cost_points.where('date > ?', 30.days.ago).all.map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
-            =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :xmin => 0, :xmax => 30, :ymin => 0}
+            -unless data.empty?
+              =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :xmin => 0, :xmax => 30, :ymin => 0}
         
       .right
         =link_to estimate_report_for_project_path(@project) do

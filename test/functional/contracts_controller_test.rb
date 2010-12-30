@@ -40,7 +40,7 @@ class ContractsControllerTest < ActionController::TestCase
     
   test "should create contract" do
     assert_difference('Contract.count') do
-      post :create, :project_id => @project.to_param, :contract => {
+      post :create, :component_id => @component.to_param, :contract => {
         :name => 'bob'
       }
     end
@@ -50,7 +50,7 @@ class ContractsControllerTest < ActionController::TestCase
 
   test "should xhr create contract" do
     assert_difference('Contract.count') do
-      xhr :post, :create, :project_id => @project.to_param, :contract => {
+      xhr :post, :create, :component_id => @project.to_param, :contract => {
         :name => 'bob'
       }
     end
@@ -63,7 +63,7 @@ class ContractsControllerTest < ActionController::TestCase
   
   test "should fail to create xhr contract" do
     assert_no_difference('Contract.count') do
-      xhr :post, :create, :project_id => @project.to_param, :contract => {
+      xhr :post, :create, :component_id => @project.to_param, :contract => {
         :name => nil
       }
     end

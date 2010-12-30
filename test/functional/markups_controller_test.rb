@@ -12,8 +12,6 @@ class MarkupsControllerTest < ActionController::TestCase
     @component.markups << [@markup, @markup2]
     @task = Factory :task, :project => @project
     @task.markups << [@markup, @markup2]
-    @contract = Factory :contract, :project => @project
-    @contract.markups << [@markup, @markup2]
 
     sign_in Factory :user
   end
@@ -27,14 +25,11 @@ class MarkupsControllerTest < ActionController::TestCase
   end
 
   test "should remove markup from component" do
-    assert_equal 300, @component.reload.total_markup
-    
     get :remove_from_component, :component_id => @component.to_param, :id => @markup.to_param
     assert_redirected_to project_component_path(@project, @component)
     
     assert_does_not_contain @component.reload.markups, @markup
     assert_contains @component.reload.markups, @markup2
-    assert_equal 200, @component.reload.total_markup
   end
 
   test "should remove markup from project" do
@@ -42,31 +37,15 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_redirected_to project_path(@project)
     
     assert_does_not_contain @component.reload.markups, @markup3
-    assert_equal 200, @component.reload.total_markup
-    assert_equal 200, @task.reload.total_markup
-    assert_equal 200, @contract.reload.total_markup
-  end
-
-  test "should remove markup from contract" do
-    assert_equal 300, @contract.reload.total_markup
-    
-    get :remove_from_contract, :contract_id => @contract.to_param, :id => @markup.to_param
-    assert_redirected_to project_contract_path(@project, @contract)
-    
-    assert_does_not_contain @contract.reload.markups, @markup
-    assert_contains @contract.reload.markups, @markup2
-    assert_equal 200, @contract.reload.total_markup
+    assert_does_not_contain @task.reload.markups, @markup3
   end
 
   test "should remove markup from task" do
-    assert_equal 300, @task.reload.total_markup
-    
     get :remove_from_task, :task_id => @task.to_param, :id => @markup.to_param
     assert_redirected_to project_task_path(@project, @task)
     
     assert_does_not_contain @task.reload.markups, @markup
     assert_contains @task.reload.markups, @markup2
-    assert_equal 200, @task.reload.total_markup
   end
          
   test "should get index" do
@@ -94,11 +73,6 @@ class MarkupsControllerTest < ActionController::TestCase
   
   test "should get new w/ associated task" do
     get :new, :task_id => @task.id
-    assert_response :success
-  end
-  
-  test "should get new w/ associated contract" do
-    get :new, :contract_id => @contract.id
     assert_response :success
   end
   
@@ -146,17 +120,6 @@ class MarkupsControllerTest < ActionController::TestCase
       }
     end
     assert_contains assigns(:markup).components, @component
-  end
-  
-  test "should create markup w/ associated contract" do
-    assert_difference('Markup.count') do
-      post :create, :markup => {
-        :name => 'Test', 
-        :percent => 20, 
-        :markings_attributes => [ { :markupable_id => @contract.id, :markupable_type => 'Contract' } ]
-      }
-    end
-    assert_contains assigns(:markup).contracts, @contract
   end
 
   test "should xhr create markup" do
@@ -268,18 +231,6 @@ class MarkupsControllerTest < ActionController::TestCase
   test "should remove from task" do
     get :remove_from_task, :task_id => @task.to_param, :id => @markup.to_param
     assert_redirected_to project_task_path(@project, @task)
-    assert_does_not_contain assigns[:parent].markups, @markup
-  end
-  
-  test "should add to contract" do
-    get :add_to_contract, :contract_id => @contract.to_param, :id => @markup.to_param
-    assert_redirected_to project_contract_path(@project,@contract)
-    assert_contains assigns[:parent].markups, @markup
-  end
-  
-  test "should remove from contract" do
-    get :remove_from_contract, :contract_id => @contract.to_param, :id => @markup.to_param
-    assert_redirected_to project_contract_path(@project,@contract)
     assert_does_not_contain assigns[:parent].markups, @markup
   end
 end

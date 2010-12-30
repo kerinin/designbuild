@@ -1,5 +1,50 @@
-datepoint
+- speed up tests
+- sparklines
 
+
+
+- bank draws (invoice tracking)
+-- JS total for balanced
+-- validate uniqueness of invoice date in context of project
+-- round to cent (decimal migration)
+-- payment line functional tests
+
+- use awesome_nested_set instead of ancestry
+- unit tests for task.component_*_cost
+- better coverage on markup tests
+- project as contract
+- task ordering / sorting
+- milestone / task percent complete UI
+- parametric components
+- versioning interface
+- equation quantities
+
+- usability tweaks
+-- sparklines @ task, component index
+-- after adding employee, active the labor entry field and pre-select the new person
+-- how to destroy markups?  (auto delete if no associated?)
+-- ajax for PO#log_cost material#edit_cost
+-- integrate different cost types into single display
+-- modal cost creation dialog; unit/fixed/contract/etc
+
+
+- performance
+++ Model.association.sum(attribute)
+-- alternate caching strategies (delete on change, generate on demand?, eliminate completely?, view caching?)
+
+
+- reporting
+-- estimates, proposals, invoices
+++ work timeline w/ deadlines
+++ labor reporting for michelle
+++ graphs
+
+- user permissions
+
+
+
+
+Completed
 + projected costs
 + active tasks
 + inherited quantities
@@ -17,6 +62,7 @@ datepoint
 + allow editing of labor cost date (material cost?)
 + projected net (estimated_cost - raw_projected_cost)
 + contracts in components
+
 + project dashboard
 ++ active tasks (with labor + material creation buttons)
 ++ printable timeline
@@ -24,12 +70,7 @@ datepoint
 ++ print purchase orders
 ++ schedule
 
-- update caching
--- project
--- project_caching
-
-
-- bank draws (invoice tracking)
++ bank draws (invoice tracking)
 ++ clean up tests
 ++ filtering costs by effective date
 ++ states for tasks w/o estimate
@@ -44,17 +85,8 @@ datepoint
 ++ only show 'next step' on payments if balanced
 ++ drawing retainage
 ++ unexpected retainage UI
--- JS total for balanced
--- validate uniqueness of invoice date in context of project
--- round to cent (decimal migration)
--- payment line functional tests
 
-
-- use awesome_nested_set instead of ancestry
-- unit tests for task.component_*_cost
-
-
-- usability tweaks
++ usability tweaks
 ++ autocomplete supplier selection (and creation)
 ++ pop-up for new employee, new PO, new labor cost
 ++ easy way to pair components & tasks
@@ -65,32 +97,3 @@ datepoint
 ++ icons
 ++ explanative text
 ++ table alignment
--- after adding employee, active the labor entry field and pre-select the new person
--- how to destroy markups?  (auto delete if no associated?)
--- ajax for PO#log_cost material#edit_cost
--- integrate different cost types into single display
--- modal cost creation dialog; unit/fixed/contract/etc
-
-
-- performance
--- Model.association.sum(attribute)
--- alternate caching strategies (delete on change, generate on demand?, eliminate completely?)
-
-- project as contract
-- task ordering / sorting
-- milestone / task percent complete UI
-- parametric components
-- versioning interface
-- equation quantities
-
-
-
-- reporting
--- estimates, proposals, invoices
-++ work timeline w/ deadlines
-++ labor reporting for michelle
-++ graphs
-
-- redesign UI to reduce vertical scrolling, white space
-
-- user permissions
