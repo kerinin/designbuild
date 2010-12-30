@@ -20,13 +20,13 @@
       %td.currency
       
     -if session[:break_out_markup]
-      %td.currency= number_to_currency component.estimated_raw_cost
-      -@active_markups.each do |markup|
-        %td.currency= number_to_currency markup.apply_recursively_to(component, :estimated_cost_markup_amount)
-      
-    %td.currency
-      %strong= number_to_currency component.estimated_cost if indent == 0
-      = number_to_currency component.estimated_cost unless indent == 0
+      %td.currency
+        %strong= number_to_currency component.estimated_raw_cost if indent == 0
+        = number_to_currency component.estimated_raw_cost unless indent == 0
+    -else
+      %td.currency
+        %strong= number_to_currency component.estimated_cost if indent == 0
+        = number_to_currency component.estimated_cost unless indent == 0
       
   -if component.show_costs_in_estimate
     -component.unit_cost_estimates.each do |unit_cost|
@@ -44,11 +44,9 @@
         -if session[:break_out_markup]
           %td.currency
             %i= number_to_currency unit_cost.raw_cost
-          -@active_markups.each do |markup|
-            %td.currency= number_to_currency unit_cost.markups.include?(markup) ? markup.apply_to(unit_cost, :estimated_raw_cost) : 0
-          
-        %td.currency
-          %i= number_to_currency unit_cost.cost
+        -else
+          %td.currency
+            %i= number_to_currency unit_cost.cost
       
     -component.fixed_cost_estimates.each do |fixed_cost|
       %tr
@@ -62,10 +60,9 @@
         -if session[:break_out_markup]
           %td.currency
             %i= number_to_currency fixed_cost.raw_cost
-          -@active_markups.each do |markup|
-            %td.currency= number_to_currency fixed_cost.markups.include?(markup) ? markup.apply_to(fixed_cost, :estimated_raw_cost) : 0 
-        %td.currency
-          %i= number_to_currency fixed_cost.cost
+        -else
+          %td.currency
+            %i= number_to_currency fixed_cost.cost
           
     -component.contracts.each do |contract|
       =render :partial => 'estimate_report_contract', :locals => {:contract => contract, :indent => indent+1}

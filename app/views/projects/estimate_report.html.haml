@@ -27,13 +27,7 @@
     -if session[:break_out_unit_costs]
       %th Quantity / Source
       %th.currency Unit Cost
-    -if session[:break_out_markup]
-      %th.currency Raw Cost
-      -@active_markups.each do |markup|
-        %th.currency
-          =markup.name
-          =number_to_percentage markup.percent, :precision => 0
-    %th.currency= session[:break_out_markup] ? 'Cost+Markup' : 'Cost'
+    %th.currency Cost
     
   -@project.components.roots.each do |component|
     =render :partial => 'estimate_report_component', :locals => {:component => component, :indent => 0}
@@ -41,17 +35,26 @@
   -@project.contracts.where(:component_id => nil).each do |contract|
     =render :partial => 'estimate_report_contract', :locals => {:contract => contract, :indent => 0}
 
+  -if session[:break_out_markup]
+    %tr.totals
+      %td.control
+      %td.control
+      %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1} Subtotal
+      %td.currency= number_to_currency @project.estimated_raw_cost
+      
+    -@active_markups.each do |markup|
+      %tr.totals
+        %td.control
+        %td.control
+        %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+          =markup.name
+          =number_to_percentage markup.percent, :precision => 0
+        %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
+  
   %tr.totals
     %td.control
     %td.control
-    %td.right
-      %strong Totals
-    -if session[:break_out_unit_costs]
-      %td
-      %td
-    -if session[:break_out_markup]
-      %td.currency= number_to_currency @project.estimated_raw_cost
-      -@active_markups.each do |markup|
-        %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
+    %td.right{:colspan => session[:break_out_unit_costs] ? 3 : 1}
+      %strong Total
     %td.currency
       %strong= number_to_currency @project.estimated_cost

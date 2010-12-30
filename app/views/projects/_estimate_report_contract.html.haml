@@ -8,16 +8,19 @@
       -else
         =contract.name
     -if session[:break_out_unit_costs]
-      %td{:colspan => 2}= "Fixed Bid from #{contract.active_bid.contractor}"
+      %td{:colspan => 2}= "Fixed Bid from #{contract.active_bid.contractor}" unless contract.active_bid.nil?
     -if session[:break_out_markup]
-      %td.currency= number_to_currency contract.estimated_raw_cost
-      -@active_markups.each do |markup|
-        %td.currency= number_to_currency contract.markups.include?(markup) ? markup.apply_to(contract, :estimated_raw_cost) : 0
-    %td.currency
-      -if indent == 0
-        %strong= number_to_currency contract.estimated_cost
-      -else
-        =number_to_currency contract.estimated_cost
+      %td.currency
+        -if indent == 0
+          %strong= number_to_currency contract.estimated_raw_cost
+        -else
+          =number_to_currency contract.estimated_raw_cost
+    -else
+      %td.currency
+        -if indent == 0
+          %strong= number_to_currency contract.estimated_cost
+        -else
+          =number_to_currency contract.estimated_cost
       
   -if session[:break_out_unit_costs]    
     -contract.bids.each do |alternate|
@@ -31,7 +34,6 @@
           -if session[:break_out_markup]
             %td.currency
               %i= number_to_currency alternate.raw_cost
-            -@active_markups.each do |markup|
-              %td.currency= number_to_currency contract.markups.include?(markup) ? markup.apply_to(contract, :estimated_raw_cost) : 0
-          %td.currency
-            %i= number_to_currency alternate.cost
+          -else
+            %td.currency
+              %i= number_to_currency alternate.cost
