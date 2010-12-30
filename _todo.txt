@@ -1,6 +1,4 @@
 - speed up tests
-- sparklines
-
 
 
 - bank draws (invoice tracking)
@@ -26,11 +24,14 @@
 -- ajax for PO#log_cost material#edit_cost
 -- integrate different cost types into single display
 -- modal cost creation dialog; unit/fixed/contract/etc
+-- project markups interface broken
+-- change cost's component
 
 
 - performance
 ++ Model.association.sum(attribute)
 -- alternate caching strategies (delete on change, generate on demand?, eliminate completely?, view caching?)
+-- eliminate redundant caching
 
 
 - reporting
