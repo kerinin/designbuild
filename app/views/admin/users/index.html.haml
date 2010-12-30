@@ -1,0 +1,36 @@
+-content_for :head do
+  =javascript_include_tag 'protovis-d3.2.js'
+  
+%h1 Listing users
+
+%table
+  %tr
+    %th Name
+    %th.sparklines Activity
+    %th.control
+    %th.control
+    %th.conrol
+
+  - @users.each do |user|
+    %tr
+      %td= user.email
+      %td.sparklines
+        -data = ((Date::today - 30)..(Date::today)).map{|i| Version.where(:whodunnit => user.id).where('created_at > ?', i).where('created_at < ?', (i+1)).count } 
+
+        %script{:type => 'text/javascript+protovis'}
+          = render :partial => 'shared/protovis_sparkbars.js', :locals => |
+          { :data => data, :width => 150, :height => 20, |
+          :xmin => 0, :xmax => 30, :ymin => 0, :ymax => 1000, |
+          :fill_style => 'orange', :stroke_style => 'black' } |
+
+      %td.control= link_to 'Show', admin_user_path( user )
+      %td.control= link_to 'Edit', edit_admin_user_path(user)
+      %td.control= link_to 'Destroy', admin_user_path(user), :confirm => 'Are you sure?', :method => :delete
+      
+  - if @users.empty?
+    %tr
+      %td{:colspan => 10} (None)
+
+%br
+
+= link_to 'New User', new_admin_user_path

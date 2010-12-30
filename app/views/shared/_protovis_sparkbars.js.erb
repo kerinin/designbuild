@@ -1,0 +1,48 @@
+<%# 
+  data = [{:value => 1.1, :label => 'blah'}] 
+  width
+  height
+  min
+  max
+%>
+
+<% ymin ||= data.min * 0.8 %>
+<% ymax ||= data.max * 1.2 %>
+<% fill_style ||= 'rgba(255,165,0,.1)' %>
+<% stroke_style ||= 'orange' %>
+
+var ag_data = <%= raw data.to_json %>;
+
+var ag_w = <%= width %>,
+    ag_h = <%= height %>,
+    ag_max = <%= ymax %>,
+    ag_min = <%= ymin %>,
+    ag_idx = -1,
+    ag_x = pv.Scale.linear(0, <%= data.count %>).range(0,ag_w),
+    ag_y = pv.Scale.root(.01, ag_max).range(0,ag_h),
+    ag_color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
+    
+var ag_vis = new pv.Panel()
+    .def('i', -1)
+    .width(ag_w)
+    .height(ag_h);
+        
+ 
+// Area graph
+var ag_area = ag_vis.add(pv.Bar)
+    .data( ag_data )
+    .segmented( true )
+    .bottom(0)
+    .height(function(d) ag_y(d) )
+    .left(function(d) ag_x(this.index) )
+    .width(function(d) ag_x(1))
+    .fillStyle( '<%= fill_style %>' );
+    
+// Top Line
+//ag_area.anchor('top').add(pv.Line)
+//    .strokeStyle('<%= stroke_style %>')
+//    .lineWidth(2);
+
+ag_vis.render();
+
+

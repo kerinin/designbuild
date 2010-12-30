@@ -2,8 +2,15 @@
 
 .main_actions
   View:
-  =link_to "Purchase Orders", purchase_order_list_projects_path
+  =link_to 'Employees', laborers_path
+  
+  =link_to 'Reports', reports_path
+  
+  =link_to 'Tags', tags_path
+  
+  =link_to 'Users', admin_users_path
   
 %hr
 
 =render :partial => 'project_list'
+

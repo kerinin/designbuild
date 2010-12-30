@@ -149,7 +149,11 @@ Designbuild::Application.routes.draw do
   resources :tags
   
   resources :markups
-
+  
+  namespace :admin do
+    resources :users
+  end
+  
   devise_for :users
   
   match 'reports', :controller => :reports, :action => :index, :as => :reports

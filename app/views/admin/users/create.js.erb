@@ -1,0 +1,20 @@
+<% if @user.errors.any? %>
+  //Error
+  
+  <% content_for :error_tr do %>
+    <div class='error'><strong><%= error_messages_for(@user) %></strong></div>
+  <% end %>
+
+  //Hide the flash notice div
+  $("#flash_notice").hide(300);
+
+  //Add a table row above the input with error info
+  $("div.error").remove();
+  $("h1.new_order").after("<%= escape_javascript( yield :error_tr ) %>");
+
+<% else %>
+  //Success
+  
+  window.location.href = "<%= @redirect %>";
+  
+<% end %>
