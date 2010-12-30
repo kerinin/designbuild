@@ -1,5 +1,6 @@
 - speed up tests
 - deleting markup doesn't refresh cost
+- edit laborer
 
 - bank draws (invoice tracking)
 -- JS total for balanced
