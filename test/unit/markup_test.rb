@@ -124,7 +124,7 @@ class MarkupTest < ActiveSupport::TestCase
       assert_does_not_contain @subcomponent.markups.reload.all, @new2
       assert_does_not_contain @sub3.markups.reload.all, @new2
     end
-
+    
     # -----------------------CALCULATIONS
 
     should "apply to markupable" do
@@ -140,6 +140,5 @@ class MarkupTest < ActiveSupport::TestCase
       assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@project, :estimated_cost_markup_amount)
     end
-
   end
 end

@@ -180,6 +180,7 @@ class MarkupsController < ApplicationController
   def add_and_redirect
     @markup = Markup.find params[:id]
     @parent.markups << @markup unless @parent.markups.include? @markup
+    @parent.save!
     
     respond_to do |format|
       format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully added.' }
@@ -189,6 +190,7 @@ class MarkupsController < ApplicationController
   def remove_and_redirect
     @markup = Markup.find params[:id]
     @parent.markups.delete @markup
+    @parent.save!
     
     respond_to do |format|
       format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully removed.' }
