@@ -1,16 +1,14 @@
-%h1 Projects
+=render :partial => 'shared/project_nav', :locals => {:current => :projects}
 
-.main_actions
-  View:
-  =link_to 'Employees', laborers_path
-  
-  =link_to 'Reports', reports_path
-  
-  =link_to 'Tags', tags_path
-  
-  =link_to 'Users', admin_users_path
-  
-%hr
+.container
+  %h1 Projects
 
-=render :partial => 'project_list'
+  .main_actions
+    View:
+    =link_to 'Employees', laborers_path
+    =link_to 'Users', admin_users_path
+    
+  %hr
+
+  =render :partial => 'project_list'
 

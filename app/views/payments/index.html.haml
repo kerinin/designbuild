@@ -1,7 +1,10 @@
-%h1 Listing payments
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
 
-=render :partial => 'payment_list'
+.container
+  %h1 Listing payments
 
-%br
+  =render :partial => 'payment_list'
 
-= link_to 'New Payment', new_payment_path
+  %br
+
+  = link_to 'New Payment', new_payment_path

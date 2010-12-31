@@ -1,7 +1,10 @@
-%h1 Editing laborer
+=render :partial => 'shared/project_nav'
 
-= render 'form'
+.container
+  %h1 Editing laborer
 
-= link_to 'Show', @laborer
-\|
-= link_to 'Back', laborers_path
+  = render 'form'
+
+  = link_to 'Show', @laborer
+  \|
+  = link_to 'Back', laborers_path

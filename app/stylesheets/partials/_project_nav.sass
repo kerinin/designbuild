@@ -1,0 +1,55 @@
+@import "compass/css3/gradient"
+
+body.bp
+  .main_nav_spacer
+    height : 34px
+    
+  .main_nav
+    overflow : hidden
+    position : absolute
+    left : 0
+    right : 0
+    top : 0
+    height : 28px
+    
+    +linear-gradient(color-stops(#ddd, #999))
+    
+    border-bottom : 1px solid #666
+    
+    a
+      font-size : 18px
+      color : #222
+      text-shadow: 1px 1px 0px #ccc, -1px -1px 0px #bbb
+      
+    li.current, li.current:hover
+      a
+        font-weight : bold
+        text-shadow: 1px 1px 0px #ddd, -1px -1px 0px #bbb
+    
+    li:hover
+      a
+        color : black
+        text-shadow: 1px 1px 0px #ddd, -1px -1px 0px #bbb
+            
+    ul
+      display : inline
+      height : 30px
+      margin : 0
+      padding : 0
+      width : auto
+      bottom : 0
+      
+      li 
+        height : 32px
+        display : inline
+        margin : 0
+        padding-left : .5em
+        padding-right : .5em
+        
+    ul.left
+      float : left
+      text-align : left
+      
+    ul.right
+      float : right
+      text-align : right

@@ -1,35 +1,36 @@
 =render :partial => 'shared/project_nav'
 
-%h1
-  Employee:
-  = @laborer.name
+.container
+  %h1
+    Employee:
+    = @laborer.name
 
-%p
-  %b Name:
-  = @laborer.name
-%p
-  %b Pay rate:
-  = @laborer.pay_rate
-%p
-  %b Bill rate:
-  = @laborer.bill_rate
+  %p
+    %b Name:
+    = @laborer.name
+  %p
+    %b Pay rate:
+    = @laborer.pay_rate
+  %p
+    %b Bill rate:
+    = @laborer.bill_rate
 
-= link_to 'Edit', edit_laborer_path(@laborer)
-\|
-= link_to 'Show All', laborers_path
+  = link_to 'Edit', edit_laborer_path(@laborer)
+  \|
+  = link_to 'Show All', laborers_path
 
-%h2 Logged Hours
+  %h2 Logged Hours
 
-%table
-  %th Project
-  %th Task
-  %th Date
-  %th Hours
-  
-  -@laborer.labor_cost_lines.each do |line|
-    %tr
-      %td=line.labor_set.task.project.name
-      %td=line.labor_set.task.name
-      %td.date=line.labor_set.date.to_s :long
-      %td.number=line.hours
-  
+  %table
+    %th Project
+    %th Task
+    %th Date
+    %th Hours
+    
+    -@laborer.labor_cost_lines.each do |line|
+      %tr
+        %td=line.labor_set.task.project.name
+        %td=line.labor_set.task.name
+        %td.date=line.labor_set.date.to_s :long
+        %td.number=line.hours
+    

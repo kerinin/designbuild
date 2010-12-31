@@ -1,12 +1,13 @@
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
 
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
 
-%h1
-  Invoice:
-  =@invoice.name
-  =@invoice.date
+.container
+  %h1
+    Invoice:
+    =@invoice.name
+    =@invoice.date
 
-%hr
+  %hr
 

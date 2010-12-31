@@ -2,11 +2,12 @@
   =javascript_include_tag 'jquery.tablednd.js'
   =render :partial => 'dnd.js', :locals => {:url => sort_project_components_path(@project)}
   
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-%h1 Design Components
+.container
+  %h1 Design Components
 
-%hr
+  %hr
 
-=#render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
-=render :partial => 'hierarchy', :locals => {:context => nil}
+  =#render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
+  =render :partial => 'hierarchy', :locals => {:context => nil}

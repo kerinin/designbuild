@@ -1,11 +1,12 @@
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
   
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :deadlines}
 
-%h1 Construction Deadlines
+.container
+  %h1 Construction Deadlines
 
-%hr
+  %hr
 
-=render :partial => 'deadline_list', :locals => {:deadlines => @deadlines}
-      
+  =render :partial => 'deadline_list', :locals => {:deadlines => @deadlines}
+        

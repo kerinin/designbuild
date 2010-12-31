@@ -1,14 +1,15 @@
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
 
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
 
-%h1
-  Payment:
-  =@payment.date
+.container
+  %h1
+    Payment:
+    =@payment.date
 
-%hr
+  %hr
 
-=render :partial => 'steps', :locals => {:current => :finished}
+  =render :partial => 'steps', :locals => {:current => :finished}
 
-Done!
+  Done!  Good job.  You deserve a beer...

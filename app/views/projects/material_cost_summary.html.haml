@@ -2,62 +2,63 @@
 -end_day = @date
 
 .control
-  =render :partial => 'shared/project_nav'
+  =render :partial => 'shared/project_nav', :locals => {:current => :reports}
 
-%h1
-  =@project.name unless @project.nil?
-  Material Cost Summary
+.container
+  %h1
+    =@project.name unless @project.nil?
+    Material Cost Summary
 
-.control
-  =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
-    change date:
-    =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
+  .control
+    =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
+      change date:
+      =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
 
-%h2
-  Material Cost Summary for
-  =start_day.strftime('%A %b %d')
-  ='-'
-  =end_day.strftime('%A %b %d')
+  %h2
+    Material Cost Summary for
+    =start_day.strftime('%A %b %d')
+    ='-'
+    =end_day.strftime('%A %b %d')
 
 
--tasks = @tasks.includes(:material_costs).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL')
--if @project.nil?
-  -@suppliers = Supplier.includes( :material_costs => :task ).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL')
--else
-  -@suppliers = Supplier.includes( :material_costs => :task ).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL').where('tasks.project_id = ?', @project.id)
+  -tasks = @tasks.includes(:material_costs).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL')
+  -if @project.nil?
+    -@suppliers = Supplier.includes( :material_costs => :task ).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL')
+  -else
+    -@suppliers = Supplier.includes( :material_costs => :task ).where('material_costs.date <= ?', end_day).where('material_costs.date >= ?', start_day).where('material_costs.raw_cost IS NOT NULL').where('tasks.project_id = ?', @project.id)
 
-%table
-  %tr
-    %th Task
-    -tasks.each do |task|
-      %th.number
-        %i= task.project.name
-        = task.name
-    %th Total Cost
+  %table
+    %tr
+      %th Task
+      -tasks.each do |task|
+        %th.number
+          %i= task.project.name
+          = task.name
+      %th Total Cost
 
-  -@suppliers.each do |supplier|
-  
-    -material_costs = MaterialCost.where(:supplier_id => supplier.id).where('date <= ?', end_day).where('date >= ?', start_day)
-    -unless material_costs.empty?
-      %tr
-        %td
-          %strong= supplier.name
-          
-        -tasks.each do |task|
-          -costs = material_costs.where('supplier_id = ?', supplier.id)
+    -@suppliers.each do |supplier|
+    
+      -material_costs = MaterialCost.where(:supplier_id => supplier.id).where('date <= ?', end_day).where('date >= ?', start_day)
+      -unless material_costs.empty?
+        %tr
+          %td
+            %strong= supplier.name
+            
+          -tasks.each do |task|
+            -costs = material_costs.where('supplier_id = ?', supplier.id)
+            %td.number
+              -cost = costs.sum(:cost)
+              = number_to_currency cost
           %td.number
-            -cost = costs.sum(:cost)
-            = number_to_currency cost
+            %strong
+              = number_to_currency material_costs.sum(:cost)
+    %tr
+      %td.right
+        %strong Total Cost
+      -tasks.each do |task|
+        -material_costs = MaterialCost.where('task_id = ?', task.id).where('date <= ?', end_day).where('date >= ?', start_day)
         %td.number
           %strong
             = number_to_currency material_costs.sum(:cost)
-  %tr
-    %td.right
-      %strong Total Cost
-    -tasks.each do |task|
-      -material_costs = MaterialCost.where('task_id = ?', task.id).where('date <= ?', end_day).where('date >= ?', start_day)
-      %td.number
-        %strong
-          = number_to_currency material_costs.sum(:cost)
-            
+              
 

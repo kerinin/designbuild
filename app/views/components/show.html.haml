@@ -4,80 +4,82 @@
   = javascript_include_tag 'jquery.tablednd.js'
   =render :partial => 'dnd.js', :locals => {:url => sort_project_component_path(@project, @component)}
     
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-%h1
-  Design Component: 
-  =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
-  = @component.name
+.container
 
-%hr
+  %h1
+    Design Component: 
+    =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
+    = @component.name
 
-=render :partial => 'hierarchy', :locals => {:context => @component}
+  %hr
 
-.main_actions
-  View:
-  =link_to "Change Log", changelog_project_component_path(@project, @component)
+  =render :partial => 'hierarchy', :locals => {:context => @component}
 
-Change building component of 
-%i=@component.name
-to:
-.inline
-  =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
-    = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
+  .main_actions
+    View:
+    =link_to "Change Log", changelog_project_component_path(@project, @component)
 
-%hr
+  Change building component of 
+  %i=@component.name
+  to:
+  .inline
+    =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
+      = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
 
-%h2 Quantities
-=render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities, :component => @component}
+  %hr
 
-%h2 Estimated Costs
-%h3 Unit Costs
-=render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates, :limit => 50, :context => :component}
-%h3 Fixed Costs
-=render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50, :context => :component}
-%h2 Contracts
-=render :partial => 'contracts/contract_list', :locals => {:contracts => @component.contracts, :context => :component}
+  %h2 Quantities
+  =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities, :component => @component}
 
-%hr
+  %h2 Estimated Costs
+  %h3 Unit Costs
+  =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates, :limit => 50, :context => :component}
+  %h3 Fixed Costs
+  =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50, :context => :component}
+  %h2 Contracts
+  =render :partial => 'contracts/contract_list', :locals => {:contracts => @component.contracts, :context => :component}
 
-%h2 Totals
+  %hr
 
-%table.totals
-  %tr
-    %th
-    %th.currency Est. Cost
-    %th.control
-    %th.control
-  %tr
-    %td Estimated Unit Costs
-    %td.currency= number_to_currency(@component.estimated_raw_component_unit_cost)
-  %tr
-    %td Estimated Fixed Costs
-    %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
-  %tr
-    %td Contract Costs (Includes Markup)
-    %td.currency= number_to_currency(@component.estimated_component_cost)
-  %tr
-    %td Sub-Component Costs (Includes Markup)
-    %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
-  =render :partial => 'markups/subtotal_lines', :locals => { |
-    :parent => @component, |
-    :markups => @component.markups, |
-    :raw_cost => @component.estimated_raw_component_cost, |
-    :edit_helper => :edit_component_markup_path, |
-    :remove_helper => :remove_component_markup_path} |
-  %tr.totals
-    %td.right
-      %strong Component Subtotal
-    %td.currency
-      %strong= number_to_currency(@component.estimated_cost)
-    %td.control.add_button{:colspan => 2}
-      =link_to '+Markup', new_component_markup_path( @component ), :remote => true
-      -unless @inactive_markups.empty?
-        or
-        -form_tag add_markup_to_component_path(@component), :id => 'add_existing_markup', :method => :post do
-          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
-    
-    
+  %h2 Totals
+
+  %table.totals
+    %tr
+      %th
+      %th.currency Est. Cost
+      %th.control
+      %th.control
+    %tr
+      %td Estimated Unit Costs
+      %td.currency= number_to_currency(@component.estimated_raw_component_unit_cost)
+    %tr
+      %td Estimated Fixed Costs
+      %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
+    %tr
+      %td Contract Costs (Includes Markup)
+      %td.currency= number_to_currency(@component.estimated_component_cost)
+    %tr
+      %td Sub-Component Costs (Includes Markup)
+      %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
+    =render :partial => 'markups/subtotal_lines', :locals => { |
+      :parent => @component, |
+      :markups => @component.markups, |
+      :raw_cost => @component.estimated_raw_component_cost, |
+      :edit_helper => :edit_component_markup_path, |
+      :remove_helper => :remove_component_markup_path} |
+    %tr.totals
+      %td.right
+        %strong Component Subtotal
+      %td.currency
+        %strong= number_to_currency(@component.estimated_cost)
+      %td.control.add_button{:colspan => 2}
+        =link_to '+Markup', new_component_markup_path( @component ), :remote => true
+        -unless @inactive_markups.empty?
+          or
+          -form_tag add_markup_to_component_path(@component), :id => 'add_existing_markup', :method => :post do
+            =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
+      
+      
         

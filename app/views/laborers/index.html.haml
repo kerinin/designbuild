@@ -1,39 +1,42 @@
 -content_for :head do
   =javascript_include_tag 'protovis-d3.2.js'
   
-%h1 Listing laborers
+=render :partial => 'shared/project_nav'
 
-%table
-  %tr
-    %th Name
-    %th.currency Pay Rate
-    %th.currency Bill rate
-    %th.sparklines Hours (30-Day History)
-    %th.control
-    %th.control
-    %th.conrol
+.container
+  %h1 Listing laborers
 
-  - @laborers.each do |laborer|
+  %table
     %tr
-      %td= laborer.name
-      %td.currency= number_to_currency laborer.pay_rate
-      %td.currency= number_to_currency laborer.bill_rate
-      %td.sparklines
-        -data = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).order('labor_costs.date').group('labor_costs.date').sum(:hours).to_a.map{|a| {:x => (a[0].to_date - Date::today + 30), :y => a[1]} }
+      %th Name
+      %th.currency Pay Rate
+      %th.currency Bill rate
+      %th.sparklines Hours (30-Day History)
+      %th.control
+      %th.control
+      %th.conrol
 
-        %script{:type => 'text/javascript+protovis'}
-          = render :partial => 'shared/protovis_sparkbars.js', :locals => |
-          { :data => data, :width => 150, :height => 20, |
-          :xmin => 0, :xmax => 30, :ymin => 0, :ymax => 40, |
-          :fill_style => 'orange', :stroke_style => 'black' } |
-      %td.control= link_to 'Show', laborer
-      %td.control= link_to 'Edit', edit_laborer_path(laborer)
-      %td.control= link_to 'Destroy', laborer, :confirm => 'Are you sure?', :method => :delete
-      
-  - if @laborers.empty?
-    %tr
-      %td{:colspan => 10} (None)
+    - @laborers.each do |laborer|
+      %tr
+        %td= laborer.name
+        %td.currency= number_to_currency laborer.pay_rate
+        %td.currency= number_to_currency laborer.bill_rate
+        %td.sparklines
+          -data = LaborCostLine.where(:laborer_id => laborer.id).joins(:labor_set).order('labor_costs.date').group('labor_costs.date').sum(:hours).to_a.map{|a| {:x => (a[0].to_date - Date::today + 30), :y => a[1]} }
 
-%br
+          %script{:type => 'text/javascript+protovis'}
+            = render :partial => 'shared/protovis_sparkbars.js', :locals => |
+            { :data => data, :width => 150, :height => 20, |
+            :xmin => 0, :xmax => 30, :ymin => 0, :ymax => 40, |
+            :fill_style => 'orange', :stroke_style => 'black' } |
+        %td.control= link_to 'Show', laborer
+        %td.control= link_to 'Edit', edit_laborer_path(laborer)
+        %td.control= link_to 'Destroy', laborer, :confirm => 'Are you sure?', :method => :delete
+        
+    - if @laborers.empty?
+      %tr
+        %td{:colspan => 10} (None)
 
-= link_to 'New Laborer', new_laborer_path
+  %br
+
+  = link_to 'New Laborer', new_laborer_path

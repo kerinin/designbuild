@@ -1,44 +1,45 @@
-%h1 Reports
+=render :partial => 'shared/project_nav', :locals => {:current => :reports}
 
-%hr
+.container
+  %h1 Reports
 
--projects = @projects.all.map{|p| p unless p.estimated_cost.nil? }.compact
--unless projects.empty?
-  %h2 Estimated Cost Report
-  
-  %ul
-    -projects.each do |project|
-      %li=link_to project.name, estimate_report_for_project_path(project)
+  %hr
 
--unless @material_costs.purchase_order.empty?
-  %h2 Purchase Orders
-  
-  %ul
-    %li=link_to 'All Purchase Orders', purchase_order_list_projects_path
-    -@projects.all.map{|p| p unless (@material_costs.purchase_order.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
-      %li=link_to "#{project.name} Purchase Orders", purchase_order_list_for_project_path(project)
+  -unless @labor_costs.empty?
+    .left
+      %h2 Labor Summary
+      
+      %ul
+        %li=link_to 'Labor Summary for All Projects', labor_summary_projects_path
+        -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
+          %li=link_to "#{project.name} Labor Summary", labor_summary_for_project_path(project)
 
--unless @labor_costs.empty?
-  %h2 Labor Summary
-  
-  %ul
-    %li=link_to 'Labor Summary for All Projects', labor_summary_projects_path
-    -@projects.all.map{|p| p unless (@labor_costs.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
-      %li=link_to "#{project.name} Labor Summary", labor_summary_for_project_path(project)
+    .right
+      %h2 Payroll Summary
+      
+      %ul
+        -date = weekday(4, Date::today)
+        %li=link_to 'Payroll Summary for All Projects', payroll_summary_projects_path('date[year]' => date.year, 'date[month]' => date.month, 'date[day]' => date.day)
+        -@projects.each do |project|
+          %li=link_to "#{project.name} Payroll Summary", payroll_summary_for_project_path(project, 'date[year]' => date.year, 'date[month]' => date.month, 'date[day]' => date.day)
+ 
+ 
+  -projects = @projects.all.map{|p| p unless p.estimated_cost.nil? }.compact
+  -unless projects.empty?
+    .left
+      %h2 Estimated Cost Report
+      
+      %ul
+        -projects.each do |project|
+          %li=link_to project.name, estimate_report_for_project_path(project)
 
-  %h2 Payroll Summary
-  
-  %ul
-    -weeks = ( @labor_costs.order(:date).first.date..@labor_costs.order(:date).last.date).map {|date| date if date.cwday == 4}.compact.reverse.map {|date| {:start => date - 7, :end => date}}
-    -weeks.each do |span|
-      -weekly_labor = @labor_costs.where('date <= ?', span[:end]).where('date > ?', span[:start])
-      -unless weekly_labor.empty?
-        %li
-          = "Week ending on #{span[:end].to_s(:long)}:"
-          %p
-            = link_to 'Payroll for All Projects', payroll_summary_projects_path('date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
-            -@projects.all.each do |project|
-              -costs = weekly_labor.joins(:task).where('tasks.project_id = ?', project.id)
-              -unless costs.empty?
-                =link_to "Payroll for #{project.name}", payroll_summary_for_project_path(project, 'date[year]' => span[:end].year, 'date[month]' => span[:end].month, 'date[day]' => span[:end].day)
-        
+  -unless @material_costs.purchase_order.empty?
+    .right
+      %h2 Purchase Orders
+      
+      %ul
+        %li=link_to 'All Purchase Orders', purchase_order_list_projects_path
+        -@projects.all.map{|p| p unless (@material_costs.purchase_order.joins(:task).where('tasks.project_id = ?', p.id)).empty? }.compact.each do |project|
+          %li=link_to "#{project.name} Purchase Orders", purchase_order_list_for_project_path(project)
+   
+

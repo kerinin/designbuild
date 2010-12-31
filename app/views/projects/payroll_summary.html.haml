@@ -2,72 +2,73 @@
 -end_day = @date
 
 .control
-  =render :partial => 'shared/project_nav'
-  
-%h1
-  =@project.name unless @project.nil?
-  Payroll Summary
+  =render :partial => 'shared/project_nav', :locals => {:current => :reports}
 
-.control
-  =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
-    change date:
-    =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
+.container
+  %h1
+    =@project.name unless @project.nil?
+    Payroll Summary
 
-%h2
-  Labor Summary for
-  =start_day.strftime('%A %b %d')
-  ='-'
-  =end_day.strftime('%A %b %d')
+  .control
+    =form_tag( nil, {:method => :get, :id => 'date_select'} ) do
+      change date:
+      =select_date @date, {}, {:onchange => "$('#date_select').submit();"}
 
--@projects ||= Project.where(:id => @project.id)
--@laborers = Laborer.scoped
--time_scope = LaborCostLine.includes(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
--total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
--project_ids = total_bill_grouped.map{|id,billed| id unless billed.nil? || billed == 0}.compact
+  %h2
+    Labor Summary for
+    =start_day.strftime('%A %b %d')
+    ='-'
+    =end_day.strftime('%A %b %d')
 
-%table
-  %th Employee
-  -@projects.where('id IN (?)', project_ids).each do |project|
-    %th=project.name
-  %th Total Pay
-    
+  -@projects ||= Project.where(:id => @project.id)
+  -@laborers = Laborer.scoped
+  -time_scope = LaborCostLine.includes(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+  -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
+  -project_ids = total_bill_grouped.map{|id,billed| id unless billed.nil? || billed == 0}.compact
 
-  -@laborers.each do |laborer|
-    -if @project.nil?
-      -labor_cost_lines = time_scope.where(:laborer_id => laborer.id)
-    -else
-      -labor_cost_lines = time_scope.where(:laborer_id => laborer.id).where(:project_id => @project.id)
-    -unless labor_cost_lines.empty?
-      %tr
-        %td= laborer.name
-        -pay_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:laborer_pay)
-        -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:cost)
-        
-        -@projects.where('id IN (?)', project_ids).each do |project|
+  %table
+    %th Employee
+    -@projects.where('id IN (?)', project_ids).each do |project|
+      %th=project.name
+    %th Total Pay
+      
+
+    -@laborers.each do |laborer|
+      -if @project.nil?
+        -labor_cost_lines = time_scope.where(:laborer_id => laborer.id)
+      -else
+        -labor_cost_lines = time_scope.where(:laborer_id => laborer.id).where(:project_id => @project.id)
+      -unless labor_cost_lines.empty?
+        %tr
+          %td= laborer.name
+          -pay_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:laborer_pay)
+          -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:cost)
+          
+          -@projects.where('id IN (?)', project_ids).each do |project|
+            %td.currency
+              -pay = pay_grouped[project.id]
+              -bill = bill_grouped[project.id]
+              -if pay || bill
+                -if pay
+                  pay:
+                  =number_to_currency pay
+                -else
+                  %h2 
+                    ='!!! PAY RATE NOT SET - '
+                    =link_to 'GO SET IT', edit_laborer_path(laborer)
+                    ='!!!'
+                %br
+                bill:
+                =number_to_currency bill
           %td.currency
-            -pay = pay_grouped[project.id]
-            -bill = bill_grouped[project.id]
-            -if pay || bill
-              -if pay
-                pay:
-                =number_to_currency pay
-              -else
-                %h2 
-                  ='!!! PAY RATE NOT SET - '
-                  =link_to 'GO SET IT', edit_laborer_path(laborer)
-                  ='!!!'
-              %br
-              bill:
-              =number_to_currency bill
+            %strong
+              = number_to_currency labor_cost_lines.sum(:laborer_pay)
+    %tr  
+      %th.right Total Bill
+      -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
+      
+      -@projects.where('id IN (?)', project_ids).each do |project|
         %td.currency
           %strong
-            = number_to_currency labor_cost_lines.sum(:laborer_pay)
-  %tr  
-    %th.right Total Bill
-    -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
+          = number_to_currency total_bill_grouped[project.id]
     
-    -@projects.where('id IN (?)', project_ids).each do |project|
-      %td.currency
-        %strong
-        = number_to_currency total_bill_grouped[project.id]
-  

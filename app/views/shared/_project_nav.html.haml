@@ -1,13 +1,21 @@
+-current ||= nil
 .main_nav
-  =link_to 'Log Out', destroy_user_session_path
-%ul.main_nav
-  %li=select_tag :id, options_for_select([['All Projects', '/projects']] + Project.all.map{|p| [p.name, project_path(p)]}, [@project.name, project_path(@project)]), :onchange => "window.location.pathname = $(this).val();"
-
   -unless @project.nil?
-    %li= link_to @project.name, @project
-    %li= link_to '>Reports', reports_path
-    %li.qtip_component= link_to '>Components', project_components_path(@project)
-    %li.qtip_task= link_to '>Tasks', project_tasks_path(@project)
-    %li.qtip_contract= link_to '>Contracts', project_contracts_path(@project)
-    %li.qtip_deadline= link_to '>Deadlines', project_deadlines_path(@project)
-    %li.qtip_invoice= link_to '>Invoicing', invoicing_project_path(@project)
+    %ul.left
+      %li{:class => current == :dashboard ? :current : nil}=link_to 'Dashboard', project_path(@project)
+      %li.qtip_component{:class => current == :components ? :current : nil}= link_to 'Components', project_components_path(@project)
+      %li.qtip_task{:class => current == :tasks ? :current : nil}= link_to 'Tasks', project_tasks_path(@project)
+      %li.qtip_contract{:class => current == :contracts ? :current : nil}= link_to 'Contracts', project_contracts_path(@project)
+      %li.qtip_deadline{:class => current == :deadlines ? :current : nil}= link_to 'Deadlines', project_deadlines_path(@project)
+      %li.qtip_invoice{:class => current == :invoicing ? :current : nil}= link_to 'Invoicing', invoicing_project_path(@project)
+
+  %ul.right
+    %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
+    %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
+    %li=link_to 'Log Out', destroy_user_session_path
+    
+.main_nav_spacer
+
+
+
+

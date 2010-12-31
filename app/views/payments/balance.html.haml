@@ -1,44 +1,45 @@
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
 
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
 
-%h1
-  Payment:
-  =@payment.date
+.container
+  %h1
+    Payment:
+    =@payment.date
 
-%hr
+  %hr
 
-=render :partial => 'steps', :locals => {:current => :balance}
+  =render :partial => 'steps', :locals => {:current => :balance}
 
-%h3
-  Payment Amount:
-  =number_to_currency @payment.paid
-%h3
-  Payment Retained:
-  =number_to_currency @payment.retained
-  
-
--if @payment.state == 'unbalanced'
-  / Unbalanced
-  .notice
-    %h2 Your payment isn't balanced - make sure the line items add up to the total payment
+  %h3
+    Payment Amount:
+    =number_to_currency @payment.paid
+  %h3
+    Payment Retained:
+    =number_to_currency @payment.retained
     
-    %h3
-      Payment Balance:
-      .payment_balance{:class => @payment.paid_balances? ? 'green' : 'red'}
-        =number_to_currency  @payment.labor_paid + @payment.material_paid - @payment.paid
-    %h3
-      Retainage Balance:
-      .retainage_balance{:class => @payment.retained_balances? ? 'green' : 'red'}
-        =number_to_currency @payment.labor_retained + @payment.material_retained - @payment.retained
 
--else
-  / Balanced
-  
-=form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
-  =render :partial => 'payment_lines/lines', :locals => {:lines => @payment.lines, :payment_form => payment_form}
-  = payment_form.submit 'Save Changes'
+  -if @payment.state == 'unbalanced'
+    / Unbalanced
+    .notice
+      %h2 Your payment isn't balanced - make sure the line items add up to the total payment
+      
+      %h3
+        Payment Balance:
+        .payment_balance{:class => @payment.paid_balances? ? 'green' : 'red'}
+          =number_to_currency  @payment.labor_paid + @payment.material_paid - @payment.paid
+      %h3
+        Retainage Balance:
+        .retainage_balance{:class => @payment.retained_balances? ? 'green' : 'red'}
+          =number_to_currency @payment.labor_retained + @payment.material_retained - @payment.retained
 
-=form_tag accept_payment_path(@payment), :method => :get do 
-  =submit_tag 'Next Step', :disabled => !@payment.balances?
+  -else
+    / Balanced
+    
+  =form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
+    =render :partial => 'payment_lines/lines', :locals => {:lines => @payment.lines, :payment_form => payment_form}
+    = payment_form.submit 'Save Changes'
+
+  =form_tag accept_payment_path(@payment), :method => :get do 
+    =submit_tag 'Next Step', :disabled => !@payment.balances?

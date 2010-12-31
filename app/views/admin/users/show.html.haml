@@ -1,9 +1,12 @@
-%h1
-  User:
-  = @user.email
+=render :partial => 'shared/project_nav'
 
-= link_to 'Edit', edit_admin_user_path(@user)
-\|
-= link_to 'Show All', admin_users_path
+.container
+  %h1
+    User:
+    = @user.email
 
-  
+  = link_to 'Edit', edit_admin_user_path(@user)
+  \|
+  = link_to 'Show All', admin_users_path
+
+    

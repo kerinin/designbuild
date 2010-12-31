@@ -1,10 +1,10 @@
-=render :partial => 'shared/project_nav'
-
-%h1
-  =@project.name
-  Invoicing
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
 
 .container
+  %h1
+    =@project.name
+    Invoicing
+
   .left
     %h2 Invoices
 
