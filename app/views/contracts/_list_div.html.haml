@@ -1,0 +1,22 @@
+.cost.contract_estimate
+  .left
+    %h3=contract.name
+    Edit
+    Destroy
+  .right
+    %h3
+      =number_to_currency contract.estimated_raw_cost
+      ='/'
+      %strong=number_to_currency contract.estimated_cost
+    
+  .details
+    .left
+      .bid
+        %strong Bid:
+        -if contract.active_bid.blank?
+          (None)
+        -else
+          =contract.active_bid.contractor     
+
+
+    
