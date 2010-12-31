@@ -21,8 +21,8 @@ module ApplicationHelper
     end
   end
   
-  def icon(name)
-    image_tag "#{name}.png", :alt => name.to_s.capitalize, :size => "16x16"
+  def icon(name, size = "16x16")
+    image_tag "#{name}.png", :alt => name.to_s.capitalize, :size => size
   end
   
   def weekday(day, week_date)

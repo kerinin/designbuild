@@ -11,12 +11,9 @@
 - use awesome_nested_set instead of ancestry
 - unit tests for task.component_*_cost
 - better coverage on markup tests
-- project as contract
-- task ordering / sorting
++ task ordering / sorting
 - milestone / task percent complete UI
-- parametric components
-- versioning interface
-- equation quantities
+
 
 - usability tweaks
 ++ sparklines @ task, component index
@@ -41,9 +38,10 @@
 ++ labor reporting for michelle
 ++ graphs
 
+- project as contract
 - user permissions
-
-
+- equation quantities
+- parametric components
 
 
 Completed

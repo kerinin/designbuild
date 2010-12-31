@@ -1,36 +1,36 @@
 @import "compass/css3/gradient"
+@import "compass/reset/utilities"
+@import "compass/css3/border-radius"
 
 body.bp
   .main_nav_spacer
     height : 34px
     
   .main_nav
-    overflow : hidden
     position : absolute
     left : 0
     right : 0
     top : 0
     height : 28px
     
-    +linear-gradient(color-stops(#ddd, #999))
+    +linear-gradient(color-stops(#ddd, #aaa))
     
     border-bottom : 1px solid #666
     
-    a
-      font-size : 18px
+    a, strong
+      font-size : 16px
+      line-height : 28px
       color : #222
-      text-shadow: 1px 1px 0px #ccc, -1px -1px 0px #bbb
+      text-shadow: 1px 1px 0px #ddd
+
+    a:hover
+      color : black
+      text-shadow: 1px 1px 0px #eee, -1px -1px 0px #bbb
+              
+    li.current, li.current a:hover
+      font-weight : bold
+      text-shadow: 1px 1px 0px #eee, -1px -1px 0px #bbb
       
-    li.current, li.current:hover
-      a
-        font-weight : bold
-        text-shadow: 1px 1px 0px #ddd, -1px -1px 0px #bbb
-    
-    li:hover
-      a
-        color : black
-        text-shadow: 1px 1px 0px #ddd, -1px -1px 0px #bbb
-            
     ul
       display : inline
       height : 30px
@@ -40,16 +40,103 @@ body.bp
       bottom : 0
       
       li 
-        height : 32px
+        position : relative
+        height : auto
         display : inline
         margin : 0
         padding-left : .5em
         padding-right : .5em
         
-    ul.left
+        .expander
+          &, .activator
+            display : inline
+          
+          .positioner
+            display : none
+          
+        .expander:hover, .expander.expanded
+          .positioner
+            display : block
+            
+        .positioner
+          //+nested-reset
+          
+          text-align : left
+          position : absolute
+          left : 0
+          top : 28px   
+          
+          ul
+            height : auto
+            width : 300px
+            float : left
+              
+            li
+              background : #eee
+              +linear-gradient(color-stops(#e8e8e8, #d8d8d8))
+              height : 18px
+              width : 100%
+              float : left
+              padding : 7px
+              margin : 0
+              border-bottom : 1px solid #666
+              border-left : 1px solid #666
+              border-right : 1px solid #666
+
+              &, a, strong
+                font-size : 14px
+                line-height : 18px
+                
+              &, a, &:hover, a:hover
+                color : #444
+                font-weight : normal
+                text-shadow: 1px 1px 0px #fff
+                
+              strong, strong a, strong:hover, strong a:hover
+                color : #333
+                font-weight : bold
+                text-shadow: 1px 1px 0px #fff
+                          
+              .left
+                float : left
+              .right
+                float : right
+                
+              &.indent_1 a
+                margin-left : 1em
+              &.indent_2 a
+                margin-left : 2em
+              &.indent_3 a
+                margin-left : 3em
+                
+              div
+                width : auto
+                              
+            li:first-child
+              border-top : 1px solid #666
+              +border-top-radius(4)
+              
+            li:last-child
+              border-bottom : 1px solid #666
+              +border-bottom-radius(4)
+              
+            li:hover
+              background : #fff
+              +linear-gradient(color-stops(#e8e8e8, #f8f8f8))
+              cursor : pointer
+              
+              &, a
+                color : #222
+                
+              strong, strong a
+                color : #222
+
+
+        
+    ul.nav_left
       float : left
       text-align : left
       
-    ul.right
+    ul.nav_right
       float : right
       text-align : right

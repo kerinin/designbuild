@@ -13,9 +13,7 @@
     =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
     = @component.name
 
-  %hr
-
-  =render :partial => 'hierarchy', :locals => {:context => @component}
+  =#render :partial => 'hierarchy', :locals => {:context => @component}
 
   .main_actions
     View:
@@ -27,6 +25,10 @@
   .inline
     =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
       = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
+
+  %br
+  
+  %button Add Subcomponent
 
   %hr
 
