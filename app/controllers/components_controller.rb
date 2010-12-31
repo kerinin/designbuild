@@ -74,6 +74,20 @@ class ComponentsController < ApplicationController
     end
   end
 
+  # GET /components/new
+  # GET /components/new.xml
+  def new_cost
+    @component = Component.find(params[:id])
+
+    respond_to do |format|
+      format.js {
+        @context_component = Component.find(params[:context]) if params.has_key?(:context)
+      }
+      format.html # new.html.erb
+      format.xml  { render :xml => @component }
+    end
+  end
+  
   # GET /components/1/edit
   def edit
     @component = Component.find(params[:id])

@@ -36,6 +36,7 @@ Designbuild::Application.routes.draw do
     resources :components do
       member do
         get :changelog
+        get :new_cost
         post :sort
       end
       collection do

@@ -1,8 +1,7 @@
-.cost.fixed_cost_estimate
+.cost.fixed_cost_estimate.expand_active_area
   .left
-    %h3=fixed_cost.name
-    Edit
-    Destroy
+    %h3=link_to fixed_cost.name, edit_component_fixed_cost_path(@component, fixed_cost)
+      
   .right
     %h3
       =number_to_currency fixed_cost.estimated_raw_cost

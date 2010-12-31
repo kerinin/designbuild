@@ -24,13 +24,15 @@
 
   %br
   
-  %button Add Subcomponent
+  =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
+    %button Add Subcomponent
 
   %hr
 
   %h2 Estimated Costs
   
-  %button Add Cost
+  =link_to new_cost_project_component_path(@project, @component) do
+    %button Add Cost
   
   -@component.unit_cost_estimates.each do |unit_cost|
     =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}

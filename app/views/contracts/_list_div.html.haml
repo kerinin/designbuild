@@ -1,8 +1,7 @@
-.cost.contract_estimate
+.cost.contract_estimate.expand_active_area
   .left
-    %h3=contract.name
-    Edit
-    Destroy
+    %h3=link_to contract.name, edit_project_contract_path(@project, contract)
+
   .right
     %h3
       =number_to_currency contract.estimated_raw_cost
@@ -12,7 +11,7 @@
   .details
     .left
       .bid
-        %strong Bid:
+        %strong Contractor:
         -if contract.active_bid.blank?
           (None)
         -else

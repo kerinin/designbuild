@@ -24,4 +24,6 @@ $(document).ready( function() {
       t=setTimeout(function(thisObj){ $(thisObj).closest('.expander').removeClass('expanded')}, 300, this);
     }
   });
+  
+  $('.tabs').tabs();
 });

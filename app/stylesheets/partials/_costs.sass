@@ -7,7 +7,17 @@ body.bp
     padding-top : .25em
     overflow : auto
     border-bottom : 1px dashed #ccc
-    
+
+    &.fitted:hover
+      background : #eee
+      +linear-gradient(color-stops(#f8f8f8, #eee))
+      
+      a
+        text-decoration : underline
+
+    &.fitted a
+      text-decoration : none
+          
     &, div
       clear : both
 
@@ -40,3 +50,5 @@ body.bp
       text-align : right
       float : right
       clear : right
+
+

@@ -1,12 +1,11 @@
-.cost.unit_cost_estimate
+.cost.unit_cost_estimate.expand_active_area
   .left
-    %h3=unit_cost.name
-    Edit
-    Destroy
+    %h3=link_to unit_cost.name, edit_component_unit_cost_estimate_path(@component, unit_cost)
+      
   .right
     .de_emphasize
       -if !unit_cost.drop.nil? && unit_cost.drop > 0
-        ="#{unit_cost.quantity.value * (1+unit_cost.drop/100)}#{unit_cost.quantity.unit} @ #{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}:"    
+        ="#{unit_cost.quantity.value * (1+unit_cost.drop/100)} #{unit_cost.quantity.unit} @ #{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"    
       -else
         ="#{unit_cost.quantity.value}#{unit_cost.quantity.unit} @ #{number_to_currency unit_cost.unit_cost}/#{unit_cost.quantity.unit.singularize}"    
     %h3
@@ -21,11 +20,11 @@
         =unit_cost.quantity.name
         %em
           -if !unit_cost.drop.nil? && unit_cost.drop > 0
-            ="#{unit_cost.quantity.value}#{unit_cost.quantity.unit} w/ #{number_to_percentage unit_cost.drop, :precision => 0} drop"
+            ="#{unit_cost.quantity.value} #{unit_cost.quantity.unit} & #{number_to_percentage unit_cost.drop, :precision => 0} drop"
             &raquo;
-            %strong="#{unit_cost.quantity.value * (1+unit_cost.drop/100)}#{unit_cost.quantity.unit}"
+            %strong="#{unit_cost.quantity.value * (1+unit_cost.drop/100)} #{unit_cost.quantity.unit}"
           -else
-            %strong="#{unit_cost.quantity.value}#{unit_cost.quantity.unit}"   
+            %strong="#{unit_cost.quantity.value} #{unit_cost.quantity.unit}"   
 
       .task
         %strong Task:

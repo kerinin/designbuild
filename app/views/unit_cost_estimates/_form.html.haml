@@ -1,9 +1,11 @@
-= form_for [@component, @unit_cost_estimate] do |f|
-  -if @unit_cost_estimate.errors.any?
+-unit_cost_estimate ||= @unit_cost_estimate
+
+= form_for [@component, unit_cost_estimate] do |f|
+  -if unit_cost_estimate.errors.any?
     #error_explanation
       %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
       %ul
-        - @unit_cost_estimate.errors.full_messages.each do |msg|
+        - unit_cost_estimate.errors.full_messages.each do |msg|
           %li= msg
 
   .field
