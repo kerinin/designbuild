@@ -1,6 +1,6 @@
 - speed up tests
 + deleting markup doesn't refresh cost
-- edit laborer
++ edit laborer
 
 - bank draws (invoice tracking)
 -- JS total for balanced
@@ -19,7 +19,7 @@
 - equation quantities
 
 - usability tweaks
--- sparklines @ task, component index
+++ sparklines @ task, component index
 -- after adding employee, active the labor entry field and pre-select the new person
 -- how to destroy markups?  (auto delete if no associated?)
 -- ajax for PO#log_cost material#edit_cost
