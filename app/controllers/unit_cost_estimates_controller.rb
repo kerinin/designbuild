@@ -27,6 +27,7 @@ class UnitCostEstimatesController < ApplicationController
   # GET /unit_cost_estimates/new.xml
   def new
     @unit_cost_estimate = UnitCostEstimate.new
+    @unit_cost_estimate.component_id = @component.id unless @component.nil?
 
     respond_to do |format|
       format.js

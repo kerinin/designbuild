@@ -27,6 +27,16 @@ class Project < ActiveRecord::Base
   
   before_save :cache_values, :create_points
   
+  def component_tree
+    recursion = Proc.new do |component, block|
+      collector = [component]
+      component.children.each {|child| collector += block.call( child, block ) }
+      collector
+    end
+    
+    self.components.roots.inject([]) {|memo,obj| memo + recursion.call(obj, recursion)}
+  end
+  
   def fixed_bid?
     self.fixed_bid
   end

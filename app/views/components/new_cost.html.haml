@@ -1,17 +1,19 @@
-  
-.tabs
-  %ul
-    %li=link_to 'Unit Cost', '#new_unit_cost'
-    %li=link_to 'Fixed Cost', '#new_fixed_cost'
-    %li=link_to 'Contract Cost', '#new_contract_cost'
+.container
+  .tabs
+    %ul
+      %li=link_to 'Unit Cost', '#new_unit_cost'
+      %li=link_to 'Fixed Cost', '#new_fixed_cost'
+      %li=link_to 'Contract Cost', '#new_contract_cost'
+      
+    %hr
     
-  #new_unit_cost
-    =render :partial => 'unit_cost_estimates/form', :locals => {:unit_cost_estimate => UnitCostEstimate.new}
-  
-  #new_fixed_cost
-    =render :partial => 'fixed_cost_estimates/form', :locals => {:fixed_cost_estimate => FixedCostEstimate.new}
+    #new_unit_cost
+      =render :partial => 'unit_cost_estimates/form', :locals => {:unit_cost_estimate => UnitCostEstimate.new(:component_id => @component.id)}
     
-  #new_contract_cost
-    =render :partial => 'contracts/form', :locals => {:contract => Contract.new}
+    #new_fixed_cost
+      =render :partial => 'fixed_cost_estimates/form', :locals => {:fixed_cost_estimate => FixedCostEstimate.new}
+      
+    #new_contract_cost
+      =render :partial => 'contracts/form', :locals => {:contract => Contract.new}
 
 

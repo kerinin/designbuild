@@ -20,6 +20,7 @@ $blueprint_grid_width: 90px;
 @import "partials/nav";
 @import "partials/popup";
 @import "partials/ajax_progress";
+@import "partials/form";
 
 @import "partials/project_index";
 @import "partials/timeline";
@@ -27,6 +28,7 @@ $blueprint_grid_width: 90px;
 @import "partials/payment";
 @import "partials/project_nav";
 @import "partials/costs";
+@import "partials/cost_creation";
 
 .negative {
   color : 'red';
