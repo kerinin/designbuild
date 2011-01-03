@@ -91,6 +91,7 @@ Designbuild::Application.routes.draw do
     resources :fixed_cost_estimates
     resources :unit_cost_estimates
     resources :contracts
+    resources :markups
     
     member do
       post :add_markup, :as => :add_markup_to

@@ -54,6 +54,12 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:markups)
   end
 
+  test "should get index from component" do
+    get :index, :component_id => @component.to_param
+    assert_response :success
+    assert_not_nil assigns(:markups)
+  end
+  
   test "should get new" do
     get :new
     assert_response :success
@@ -65,7 +71,14 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_template :new
     assert_equal 'text/javascript', response.content_type
   end
-    
+
+  test "should xhr get new from component" do
+    xhr :get, :new, :component_id => @component.to_param
+    assert_response :success
+    assert_template :new
+    assert_equal 'text/javascript', response.content_type
+  end
+      
   test "should get new w/ associated project" do
     get :new, :project_id => @project.id
     assert_response :success
@@ -146,7 +159,32 @@ class MarkupsControllerTest < ActionController::TestCase
     assert_equal 'text/javascript', response.content_type
     assert response.body.include? '//Error'
   end
+
+  test "should xhr create markup from component" do
+    assert_difference('Markup.count') do
+      xhr :post, :create, :component_id => @component.to_param, :markup => @markup.attributes
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Success'
+  end
   
+  test "should fail to create xhr markup from component" do
+    assert_no_difference('Markup.count') do
+      xhr :post, :create, :component_id => @component.to_param, :markup => {
+        :name => 'Test', 
+        :percent => nil
+      }
+    end
+
+    assert_response :success
+    assert_template :create
+    assert_equal 'text/javascript', response.content_type
+    assert response.body.include? '//Error'
+  end
+    
   test "should show markup" do
     get :show, :id => @markup.to_param
     assert_response :success

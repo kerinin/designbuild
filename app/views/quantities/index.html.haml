@@ -1,7 +1,9 @@
-%h1 Listing quantities
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-=render :partial => 'quantity_list', :locals => {:quantities => @quantities, :component => @component}
+.container
 
-%br
+  =render :partial => 'components/nav', :locals => {:current => :quantities}
 
-= link_to 'New Quantity', new_component_quantity_path(@component)
+  %h1 Quantities
+
+  =render :partial => 'quantity_list', :locals => {:quantities => @quantities, :component => @component}

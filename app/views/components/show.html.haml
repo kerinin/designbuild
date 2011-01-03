@@ -8,99 +8,77 @@
 
 .container
 
-  %h1
-    Design Component: 
-    =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
-    = @component.name
+  =render :partial => 'nav', :locals => {:current => :costs}
 
-  .tabs
-    %ul
-      %li=link_to 'Costs', '#costs'
-      %li=link_to 'Quantities', '#quantities'
-      %li=link_to 'Markups', '#markups'
-      %li=link_to 'Edit Component', '#edit_component'
+  #costs
+    %h2 Estimated Costs
 
+    =link_to new_cost_project_component_path(@project, @component) do
+      %button Add Cost
+
+    -@component.unit_cost_estimates.each do |unit_cost|
+      =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}
+  
+    -@component.fixed_cost_estimates.each do |fixed_cost|
+      =render :partial => 'fixed_cost_estimates/list_div', :locals => {:fixed_cost => fixed_cost}
+  
+    -@component.contracts.each do |contract|
+      =render :partial => 'contracts/list_div', :locals => {:contract => contract}
+  
+    -if @component.unit_cost_estimates.empty? && @component.fixed_cost_estimates.empty? && @component.contracts.empty?
+      .cost
+        %h3.left No Costs defined for this Component
     %hr
 
-    #costs
-      %h2 Estimated Costs
-  
-      =link_to new_cost_project_component_path(@project, @component) do
-        %button Add Cost
-  
-      -@component.unit_cost_estimates.each do |unit_cost|
-        =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}
-    
-      -@component.fixed_cost_estimates.each do |fixed_cost|
-        =render :partial => 'fixed_cost_estimates/list_div', :locals => {:fixed_cost => fixed_cost}
-    
-      -@component.contracts.each do |contract|
-        =render :partial => 'contracts/list_div', :locals => {:contract => contract}
-    
-      -if @component.unit_cost_estimates.empty? && @component.fixed_cost_estimates.empty? && @component.contracts.empty?
-        .cost
-          %h3.left No Costs defined for this Component
-      %hr
-  
-      %h2 Subtotal
-  
-      .cost
-        %h3
-          .left Raw Cost
-          .right= number_to_currency @component.estimated_raw_component_cost
-      .cost
-        -@component.markups.each do |markup|
-          .left
-            %h3
-              = markup.name
-              =number_to_percentage markup.percent, :precision => 0
-            Edit 
-          %h3.right= number_to_currency markup.apply_to(@component, :estimated_raw_component_cost)
-      
-      
+    %h2 Subtotal
+
+    .cost
+      %h3
+        .left Raw Cost
+        .right= number_to_currency @component.estimated_raw_component_cost
+    .cost
+      -@component.markups.each do |markup|
         .left
-          =link_to 'Add new Markup', new_component_markup_path( @component ), :remote => true
-          -unless @inactive_markups.empty?
-            or
-            .inline
-              -form_tag add_markup_to_component_path(@component), :id => 'add_existing_markup', :method => :post do
-                =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
+          %h3
+            = markup.name
+            =number_to_percentage markup.percent, :precision => 0
+          Edit 
+        %h3.right= number_to_currency markup.apply_to(@component, :estimated_raw_component_cost)
+    
+    
+      .left
+        =link_to 'Add new Markup', new_component_markup_path( @component ), :remote => true
+        -unless @inactive_markups.empty?
+          or
+          .inline
+            -form_tag add_markup_to_component_path(@component), :id => 'add_existing_markup', :method => :post do
+              =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
 
-      .cost
-        %h3
-          .left Component Cost
-          .right= number_to_currency @component.estimated_component_cost
+    .cost
+      %h3
+        .left Component Cost
+        .right= number_to_currency @component.estimated_component_cost
 
-          .left Subcomponent Cost
-          .right= number_to_currency @component.estimated_subcomponent_cost
-      .cost.last
-        %h3
-          .left
-            %strong Total Cost
-          .right
-            %strong= number_to_currency @component.estimated_cost
+        .left Subcomponent Cost
+        .right= number_to_currency @component.estimated_subcomponent_cost
+    .cost.last
+      %h3
+        .left
+          %strong Total Cost
+        .right
+          %strong= number_to_currency @component.estimated_cost
 
-    #quantities
-      %h2 Quantities
+  #quantities
+    %h2 Quantities
+    
+    =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities}
+    
+  #markups
+    %h2 Markups
+    
+    =render :partial => 'markups/markup_lines', :locals => {:markups => @component.markups}
+
+  #edit_component
+
       
-      =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities}
-      
-    #markups
-      %h2 Markups
-      
-      =render :partial => 'markups/markup_lines', :locals => {:markups => @component.markups}
-  
-    #edit_component
-      Change building component of 
-      %i=@component.name
-      to:
-      .inline
-        =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
-          = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
-
-      %br
-  
-      =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
-        %button Add Subcomponent
-        
           

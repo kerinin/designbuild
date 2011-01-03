@@ -1,9 +1,19 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-%h1 Editing component
+.container
 
-= render 'form'
+  =render :partial => 'nav', :locals => {:current => :edit}
+  
+  =render 'form'
+  
+  Change building component of 
+  %i=@component.name
+  to:
+  .inline
+    =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
+      = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
 
-= link_to 'Show', [@project, @component]
-\|
-= link_to 'Back', project_components_path(@project)
+  %br
+
+  =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
+    %button Add Subcomponent

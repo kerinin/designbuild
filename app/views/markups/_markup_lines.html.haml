@@ -3,6 +3,8 @@
     %th Name
     %th Percent
     %th
+    -unless @parent.nil?
+      %th
     %th
 
   - markups.each do |markup|
@@ -10,6 +12,9 @@
       %td=link_to markup.name, markup
       %td.number= number_to_percentage markup.percent, :precision => 1
       %td.control.edit= link_to 'Edit', edit_markup_path(markup), :remote => true
+      -case @parent.class
+      -when Component
+        %td.control.remove= link_to 'Remove', remove_component_markup_path(@component, markup)
       %td.control.destroy= link_to 'Destroy', markup, :confirm => 'Are you sure?', :method => :delete
 
   - if markups.empty?

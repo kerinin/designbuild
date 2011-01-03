@@ -1,5 +1,5 @@
 class MarkupsController < ApplicationController
-  before_filter :get_parent, :only => [:create, :update, :edit, :new]
+  before_filter :get_parent, :only => [:create, :update, :edit, :new, :index]
   
   def add_to_project
     @parent = Project.find(params[:project_id])
@@ -52,7 +52,8 @@ class MarkupsController < ApplicationController
   # GET /markups
   # GET /markups.xml
   def index
-    @markups = Markup.all
+    @markups = @parent.markups unless @parent.nil?
+    @markups ||= Markup.all
 
     respond_to do |format|
       format.html # index.html.erb
