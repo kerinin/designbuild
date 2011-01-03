@@ -1,4 +1,5 @@
 -unit_cost_estimate ||= @unit_cost_estimate
+-unit_cost_estimate.build_quantity
 
 .container.cost_creation.unit_cost_estimate
   = form_for [@component, unit_cost_estimate] do |f|
@@ -18,6 +19,24 @@
     .left
       %h2 Quantity
       
+      =f.fields_for :quantity do |quantity_form|
+        .field
+          =f.radio_button :quantity_id, nil
+          %label{:for => "unit_cost_estimate_quantity_id_"}
+            New Quantity
+          
+        .field
+          =quantity_form.label :name
+          =quantity_form.text_field :name
+          
+        .field
+          =quantity_form.label :value
+          =quantity_form.text_field :value
+          
+        .field
+          =quantity_form.label :unit
+          =quantity_form.text_field :unit
+          
       .limit_height{:tabindex => 2}
         %ul
           -@project.component_tree.map{|c| c.quantities.empty? ? nil : c}.compact.each do |c|
@@ -33,6 +52,7 @@
                       %em
                         =q.value
                         =q.unit
+      %button Add Quantity
           
     .right        
       %h2 Unit Cost

@@ -6,6 +6,8 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :quantity, :inverse_of => :unit_cost_estimates
   belongs_to :task, :inverse_of => :unit_cost_estimates
   
+  accepts_nested_attributes_for :quantity
+  
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
   

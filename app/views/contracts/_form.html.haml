@@ -1,16 +1,59 @@
 -contract ||= @contract
 
-= form_for [@project, contract] do |f|
-  -if contract.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@contract.errors.count, "error")} prohibited this contract from being saved:"
-      %ul
-        - contract.errors.full_messages.each do |msg|
-          %li= msg
+.container.cost_creation.contract
+  = form_for [@project, contract] do |f|
+    .full_width
+    
+      -if contract.errors.any?
+        #error_explanation
+          %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+          %ul
+            - contract.errors.full_messages.each do |msg|
+              %li= msg
+      %h1
+        .field
+          = f.label :name
+          = f.text_field :name, :tabindex => 1
+          
+    .left
+      %h2 Bids
+      
+      =f.fields_for :bid do |bid_form|
+        .field
+          =bid_form.label :contractor
+          =bid_form.text_field :contractor
+          
+        .field
+          =bid_form.label :raw_cost
+          =bid_form.text_field :raw_cost
+          
+        .field
+          =bid_form.label :date
+          =bid_form.date_select :date
+          
+      .limit_height{:tabindex => 2}
+        %ul
+          -contract.bids.each do |bid|
+            %li=bid.name
 
-  .field
-    = f.label :name
-    = f.text_field :name
-
-  .actions
-    = f.submit 'Save'
+      %button Add Bid
+          
+    .right        
+      %h2 Active Bid
+      
+      (not implemented)
+      
+      %h2 Parent Component
+      
+      .field
+        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+    
+      %h2 Invoices
+      
+      (not implemented)
+      
+    %hr
+    
+    .full_width
+      .actions
+        = f.submit 'Save', :tabindex => 5

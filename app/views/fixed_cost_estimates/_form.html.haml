@@ -1,24 +1,41 @@
 -fixed_cost_estimate ||= @fixed_cost_estimate
 
-= form_for [@component, fixed_cost_estimate] do |f|
-  -if fixed_cost_estimate.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@fixed_cost_estimate.errors.count, "error")} prohibited this fixed_cost_estimate from being saved:"
-      %ul
-        - fixed_cost_estimate.errors.full_messages.each do |msg|
-          %li= msg
+.container.cost_creation.fixed_cost_estimate
+  = form_for [@component, fixed_cost_estimate] do |f|
+    .full_width
+    
+      -if fixed_cost_estimate.errors.any?
+        #error_explanation
+          %h2= "#{pluralize(@fixed_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+          %ul
+            - fixed_cost_estimate.errors.full_messages.each do |msg|
+              %li= msg
+      %h1
+        .field
+          = f.label :name
+          = f.text_field :name, :tabindex => 1
+          
 
-  .field
-    = f.label :name
-    = f.text_field :name
-  .field
-    %strong= f.label :component
-    = f.collection_select :component_id, |
-      @component.ancestors.all + [@component] + @component.subtree, |
-      :id, |
-      :name |
-  .field
-    = f.label :raw_cost, 'Cost'
-    = f.text_field :raw_cost
-  .actions
-    = f.submit 'Save'
+    .left        
+      %h2 Cost
+      
+      .field
+        = f.label :raw_cost
+        = f.text_field :raw_cost
+        
+    .right
+    
+      %h2 Parent Component
+      
+      .field
+        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+    
+      %h2 Task
+      
+      (not implemented)
+      
+    %hr
+    
+    .full_width
+      .actions
+        = f.submit 'Save', :tabindex => 5
