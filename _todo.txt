@@ -24,6 +24,7 @@
 -- modal cost creation dialog; unit/fixed/contract/etc
 -- project markups interface broken
 -- change cost's component
+-- component tabs: costs/markups/quantities
 
 
 - performance
