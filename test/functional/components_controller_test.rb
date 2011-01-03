@@ -62,29 +62,29 @@ class ComponentsControllerTest < ActionController::TestCase
   end
   
   test "should show component" do
-    get :show, :project_id => @project.to_param, :id => @component.to_param
+    get :show, :id => @component.to_param
     assert_response :success
   end
 
   test "should get edit" do
-    get :edit, :project_id => @project.to_param, :id => @component.to_param
+    get :edit, :id => @component.to_param
     assert_response :success
   end
   
   test "should xhr get edit" do
-    xhr :get, :edit, :project_id => @project.to_param, :id => @component.to_param
+    xhr :get, :edit, :id => @component.to_param
     assert_response :success
     assert_template :edit
     assert_equal 'text/javascript', response.content_type
   end
 
   test "should update component" do
-    put :update, :project_id => @project.to_param, :id => @component.to_param, :component => @component.attributes
-    assert_redirected_to project_component_path(@project, assigns(:component))
+    put :update, :id => @component.to_param, :component => @component.attributes
+    assert_redirected_to component_path(assigns(:component))
   end
 
   test "should xhr update component" do
-    xhr :put, :update, :project_id => @project.to_param, :id => @component.to_param, :component => @component.attributes
+    xhr :put, :update, :id => @component.to_param, :component => @component.attributes
     
     assert_response :success
     assert_template :update
@@ -93,7 +93,7 @@ class ComponentsControllerTest < ActionController::TestCase
   end
 
   test "should fail to xhr update component" do
-    xhr :put, :update, :project_id => @project.to_param, :id => @component.to_param, :component => {
+    xhr :put, :update, :id => @component.to_param, :component => {
         :name => nil
       }
     
@@ -105,7 +105,7 @@ class ComponentsControllerTest < ActionController::TestCase
   
   test "should destroy component" do
     assert_difference('Component.count', -1) do
-      delete :destroy, :project_id => @project.to_param, :id => @component.to_param
+      delete :destroy, :id => @component.to_param
     end
 
     assert_redirected_to project_components_path(@project)

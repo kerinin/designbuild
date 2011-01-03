@@ -1,5 +1,6 @@
 class ComponentsController < ApplicationController
-  before_filter :get_project, :except => :add_markup
+  before_filter :get_objects
+  #before_filter :get_project, :except => :add_markup
   
   def sort
     if params.has_key?(:id)
@@ -139,7 +140,7 @@ class ComponentsController < ApplicationController
           if params.has_key? :redirect
             redirect_to(params[:redirect])
           else
-            redirect_to([@project, @component], :notice => 'Component was successfully updated.') 
+            redirect_to(@component, :notice => 'Component was successfully updated.') 
           end
         }
         format.xml  { head :ok }
@@ -170,5 +171,13 @@ class ComponentsController < ApplicationController
       }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @component = Component.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @project ||= @component.project unless @component.nil? || @component.project.blank?
   end
 end
