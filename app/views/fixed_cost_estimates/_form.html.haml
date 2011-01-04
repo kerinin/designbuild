@@ -19,9 +19,9 @@
     .full_width        
       %h2 Cost
       
-      .field
+      .large_input
         = f.label :raw_cost
-        = f.text_field :raw_cost
+        = f.text_field :raw_cost, :tabindex => 2
         
     .full_width
     
@@ -29,14 +29,15 @@
       
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
-    
-    .full_width
-      %h2 Task
-      
-      (not implemented)
+        
+    -unless fixed_cost_estimate.new_record?
+      .full_width
+        %h2 Task
+        
+        (not implemented)
       
     %hr
     
     .full_width
       .actions
-        = f.submit 'Save', :tabindex => 5
+        = f.submit 'Save', :tabindex => 3

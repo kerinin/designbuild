@@ -14,44 +14,57 @@
         .field
           = f.label :name
           = f.text_field :name, :tabindex => 1
-          
-    .left
-      %h2 Bids
-      
-      =f.fields_for :bid do |bid_form|
-        .field
-          =bid_form.label :contractor
-          =bid_form.text_field :contractor
-          
-        .field
-          =bid_form.label :raw_cost
-          =bid_form.text_field :raw_cost
-          
-        .field
-          =bid_form.label :date
-          =bid_form.date_select :date
-          
-      .limit_height{:tabindex => 2}
-        %ul
-          -contract.bids.each do |bid|
-            %li=bid.contractor
 
-      %button Add Bid
-          
-    .right        
-      %h2 Active Bid
-      
-      (not implemented)
-      
+    .full_width
       %h2 Parent Component
       
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
-    
-      %h2 Invoices
+
+
+    -unless contract.new_record?
+      .full_width
+        %h2 Active Bid
+        
+        (not implemented)
+        
       
-      (not implemented)
-      
+                
+      .left
+        %h2 Bids
+        
+        =f.fields_for :bid do |bid_form|
+          .field
+            =bid_form.label :contractor
+            =bid_form.text_field :contractor
+            
+          .field
+            =bid_form.label :raw_cost
+            =bid_form.text_field :raw_cost
+            
+          .field
+            =bid_form.label :date
+            =bid_form.date_select :date
+            
+        .limit_height{:tabindex => 2}
+          %ul
+            -contract.bids.each do |bid|
+              %li=bid.contractor
+
+        %button 
+          =icon :add
+          Add Bid
+            
+      .right        
+
+        %h2 Invoices
+        
+        (not implemented)
+
+        %button 
+          =icon :add
+          Add Invoice    
+            
     %hr
     
     .full_width

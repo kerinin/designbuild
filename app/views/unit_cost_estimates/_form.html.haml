@@ -21,7 +21,7 @@
         =radio_button_tag :mode, :new
         %label{:for => 'mode_new'} New Quantity
         
-      .unit_cost_equation
+      .large_input
         (
         =f.fields_for :quantity do |quantity_form|
           .name
@@ -43,7 +43,7 @@
         =radio_button_tag :mode, :existing
         %label{:for => 'mode_existing'} Existing Quantity
 
-      .unit_cost_equation
+      .large_input
         (
         =f.collection_select :quantity_id, Quantity.all, :id, :optgroup_label
         +
@@ -60,11 +60,12 @@
       
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+       
+    -unless unit_cost_estimate.new_record? 
+      .full_width
+        %h2 Task
         
-    .full_width
-      %h2 Task
-      
-      (not implemented)
+        (not implemented)
       
     %hr
     
