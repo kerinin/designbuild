@@ -5,9 +5,15 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :components}
 
 .container
-  %h1 Design Components
+  -unless @parent_component.nil?
+    -@component = @parent_component
+    =render :partial => 'nav', :locals => {:current => :subcomponents}
+  
+    =render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
+    
+  -else
+    %h1 Design Components
 
-  %hr
-
-  =#render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
-  =render :partial => 'hierarchy', :locals => {:context => nil}
+    %hr
+  
+    =render :partial => 'hierarchy', :locals => {:context => nil}

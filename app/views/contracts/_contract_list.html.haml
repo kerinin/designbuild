@@ -16,7 +16,7 @@
   %tbody#contracts
     - contracts.each do |contract|
       %tr{:id => "contract_#{contract.id}"}
-        %td.drag_handle= link_to contract.name, [@project, contract]
+        %td.drag_handle= link_to contract.name, edit_component_contract_path(contract.component, contract)
         %td= contract.active_bid.contractor unless contract.active_bid.blank?
         %td.currency= number_to_currency contract.estimated_raw_cost
         %td.number= number_to_percentage contract.total_markup, :precision => 0

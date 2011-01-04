@@ -6,23 +6,19 @@
   
   =render 'form'
   
-  %h2 Parent Component
-  
-  =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
-    = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
-
-  %h2 Subcomponents
-  
-  %table
-    %tr
-      %th Name
-      %th.currency Cost
-      %th.currency Cost w/ Markup
-      %th.control
-      %th.control
-    =render :partial => 'hierarchy_recursion', :locals => {:component => @component, :indent => 0}
-  
-  =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
-    %button
-      =icon :add
-      Add Subcomponent
+  /
+    %h2 Subcomponents
+    
+    %table
+      %tr
+        %th Name
+        %th.currency Cost
+        %th.currency Cost w/ Markup
+        %th.control
+        %th.control
+      =render :partial => 'hierarchy_recursion', :locals => {:component => @component, :indent => 0}
+    
+    =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
+      %button
+        =icon :add
+        Add Subcomponent

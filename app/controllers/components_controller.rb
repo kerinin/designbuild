@@ -40,7 +40,7 @@ class ComponentsController < ApplicationController
   # GET /components
   # GET /components.xml
   def index
-    @components = @project.components.roots
+    @components ||= @project.components.roots
 
     respond_to do |format|
       format.html # index.html.erb
@@ -178,6 +178,10 @@ class ComponentsController < ApplicationController
   def get_objects
     @component = Component.find(params[:id]) if params.has_key? :id
     @project = Project.find(params[:project_id]) if params.has_key? :project_id
-    @project ||= @component.project unless @component.nil? || @component.project.blank?
+    @parent_component = Component.find(params[:component_id]) if params.has_key? :component_id
+    
+    @project ||= @component.project unless @component.nil?
+    @project ||= @parent_component.project unless @parent_component.nil?
+    @components = @parent_component.children unless @parent_component.nil?
   end
 end

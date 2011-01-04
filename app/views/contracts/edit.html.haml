@@ -3,9 +3,33 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :contracts}
 
 .container
-  %h1 Editing Contract
-  
-  %hr
+  = render :partial => 'components/nav', :locals => {:current => :costs}
   
   = render 'form'
 
+      
+            
+  .left
+  
+    %h2 Bids
+    
+    =render :partial => 'bids/bid_list', :locals => {:bids => @contract.bids}
+
+    .control.add_button
+      =link_to new_contract_bid_path(@contract), :remote => true do
+        %button
+          = icon(:add)
+          Add Bid
+        
+  .right        
+
+    %h2 Invoices
+    
+    =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
+
+    .control.add_button
+      =link_to new_contract_contract_cost_path(@contract), :remote => true do
+        %button 
+          =icon :add
+          Add Invoice    
+            

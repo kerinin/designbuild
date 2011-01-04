@@ -21,50 +21,12 @@
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
 
-
-    -unless contract.new_record?
+    -unless contract.bids.empty?
       .full_width
         %h2 Active Bid
-        
-        (not implemented)
-        
-      
-                
-      .left
-        %h2 Bids
-        
-        =f.fields_for :bid do |bid_form|
-          .field
-            =bid_form.label :contractor
-            =bid_form.text_field :contractor
-            
-          .field
-            =bid_form.label :raw_cost
-            =bid_form.text_field :raw_cost
-            
-          .field
-            =bid_form.label :date
-            =bid_form.date_select :date
-            
-        .limit_height{:tabindex => 2}
-          %ul
-            -contract.bids.each do |bid|
-              %li=bid.contractor
+        =form_for [@project, @contract] do |f|
+          = f.collection_select(:bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();")
 
-        %button 
-          =icon :add
-          Add Bid
-            
-      .right        
-
-        %h2 Invoices
-        
-        (not implemented)
-
-        %button 
-          =icon :add
-          Add Invoice    
-            
     %hr
     
     .full_width

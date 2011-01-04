@@ -10,6 +10,14 @@
     .field
       = f.label :name
       = f.text_field :name
+      
+      
+  %h2 Parent Component
+  
+  = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
+
+  %hr
+  
   .actions
     = f.submit 'Save'
 
