@@ -60,6 +60,8 @@ class MarkupsController < ApplicationController
         case @parent.class.name
         when 'Component'
           render 'index_from_component'
+        when 'Project'
+          render 'index_from_project'
         else
           render
         end

@@ -6,8 +6,19 @@
         - @project.errors.full_messages.each do |msg|
           %li= msg
 
+  %h1
+    .field
+      = f.label :name
+      = f.text_field :name
+    
   .field
-    = f.label :name
-    = f.text_field :name
+    =f.radio_button :fixed_bid, true
+    =f.label :fixed_bid, "Fixed-Bid Project"
+
+    =f.radio_button :fixed_bid, false
+    =f.label :fixed_bid, "Cost-Plus Project"
+
+
   .actions
     = f.submit 'Save'
+

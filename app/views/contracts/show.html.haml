@@ -1,6 +1,9 @@
-=render :partial => 'shared/project_nav', :locals => {:current => :contracts}
+-@component = @contract.component
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
 .container
+  = render :partial => 'components/nav', :locals => {:current => :costs}
+
   %h1
     Fixed-Bid Contract: 
     = @contract.name
@@ -12,19 +15,26 @@
       =form_for [@project, @contract] do |f|
         = f.collection_select(:bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();")
 
-  Change parent component of 
-  %i=@contract.name
-  to:
-  .inline
-    =form_for [@project, @contract], :html => {:id => "edit_contract_#{@contract.id}_component", :class => :edit_contract_component} do |f|
-      = f.collection_select(:component_id, (@project.components.roots.map{|c| c.subtree}.flatten), :id, :select_label, :onchange => "$('#edit_contract_#{@contract.id}_component').submit();")
+  .left
 
-  %hr
+    %h2 Bids
 
-  %h3 Invoices to Date
-  =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
+    =render :partial => 'bids/bid_list', :locals => {:bids => @contract.bids}
 
-  %hr
+    .control.add_button
+      =link_to new_contract_bid_path(@contract), :remote => true do
+        %button
+          = icon(:add)
+          Add Bid
 
-  %h3 Bids
-  =render :partial => 'bids/bid_list', :locals => {:bids => @contract.bids}
+  .right        
+
+    %h2 Invoices
+
+    =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
+
+    .control.add_button
+      =link_to new_contract_contract_cost_path(@contract), :remote => true do
+        %button 
+          =icon :add
+          Add Invoice

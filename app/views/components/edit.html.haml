@@ -6,19 +6,3 @@
   
   =render 'form'
   
-  /
-    %h2 Subcomponents
-    
-    %table
-      %tr
-        %th Name
-        %th.currency Cost
-        %th.currency Cost w/ Markup
-        %th.control
-        %th.control
-      =render :partial => 'hierarchy_recursion', :locals => {:component => @component, :indent => 0}
-    
-    =link_to new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) do
-      %button
-        =icon :add
-        Add Subcomponent

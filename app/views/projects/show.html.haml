@@ -7,11 +7,7 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :dashboard}
 
 .container
-  %h1
-    Project:
-    = @project.name
-
-  %hr
+  =render :partial => 'nav', :locals => {:current => :dashboard}
 
   .header
     %h2
@@ -29,10 +25,6 @@
                         
   
   -if @project.show_planning
-    .full_width
-      %h3 Default markups
-      =render :partial => 'applied_markup_lines', :locals => {:markups => @project.markups.all}
-      
     .left
       -cache(:action_suffix => 'est_graph', :expires_in => 1.day) do
         %h3 Estimated Cost Graph

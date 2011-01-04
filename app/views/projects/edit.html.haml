@@ -1,9 +1,6 @@
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :dashboard}
 
-%h1 Editing project
+.container
+  =render :partial => 'projects/nav', :locals => {:current => :edit}
 
-= render 'form'
-
-= link_to 'Show', @project
-\|
-= link_to 'Back', projects_path
+  = render 'form'

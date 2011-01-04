@@ -61,7 +61,7 @@ Designbuild::Application.routes.draw do
       get :autocomplete_task_name
     end
     
-    resources :markups, :only => [:new, :create, :edit, :update] do
+    resources :markups do
       member do
         get :add, :action => :add_to_project
         get :remove, :action => :remove_from_project
