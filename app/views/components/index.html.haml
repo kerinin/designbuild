@@ -9,11 +9,11 @@
     -@component = @parent_component
     =render :partial => 'nav', :locals => {:current => :subcomponents}
   
-    =render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
+    =render :partial => 'hierarchy', :locals => {:context => nil, :components => @component.tree, :base_depth => @component.depth}
     
   -else
     %h1 Design Components
 
     %hr
   
-    =render :partial => 'hierarchy', :locals => {:context => nil}
+    =render :partial => 'hierarchy', :locals => {:context => nil, :components => @project.component_tree}

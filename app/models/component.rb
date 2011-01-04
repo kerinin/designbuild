@@ -36,6 +36,16 @@ class Component < ActiveRecord::Base
   
   default_scope :order => :position
   
+  def tree
+    recursion = Proc.new do |component, block|
+      collector = [component]
+      component.children.each {|child| collector += block.call( child, block ) }
+      collector
+    end
+
+    recursion.call(self, recursion)
+  end
+  
   def cost_estimates
     self.fixed_cost_estimates.all + self.unit_cost_estimates.all
   end
