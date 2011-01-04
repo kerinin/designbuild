@@ -6,4 +6,8 @@
 
   %h1 Quantities
 
+  %h2 Used in this Component
+  =render :partial => 'quantity_list', :locals => {:quantities => @component.unit_cost_estimates.map(&:quantity).uniq, :component => @component, :add => false}
+  
+  %h2 Defined under this Component
   =render :partial => 'quantity_list', :locals => {:quantities => @quantities, :component => @component}

@@ -1,4 +1,9 @@
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
+
 .container
+
+  =render :partial => 'nav', :locals => {:current => :costs}
+  
   .tabs
     %ul
       %li=link_to 'Unit Cost', '#new_unit_cost'

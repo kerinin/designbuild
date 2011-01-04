@@ -1,3 +1,4 @@
+-add = true if add.nil?
 %table.quantities
   %tr
     %th Name
@@ -18,8 +19,9 @@
     %tr
       %td{:colspan => 10} (None)
       
-  %tr.control.add_button
-    %td{:colspan => 10}
-      = link_to new_component_quantity_path(@component), :remote => true do
-        =icon(:add)
-        Add Quantity
+  -unless add == false    
+    %tr.control.add_button
+      %td{:colspan => 10}
+        = link_to new_component_quantity_path(@component), :remote => true do
+          =icon(:add)
+          Add Quantity

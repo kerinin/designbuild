@@ -16,59 +16,52 @@
           = f.label :name
           = f.text_field :name, :tabindex => 1
           
-    .left
-      %h2 Quantity
-      
-      =f.fields_for :quantity do |quantity_form|
-        .field
-          =f.radio_button :quantity_id, nil
-          %label{:for => "unit_cost_estimate_quantity_id_"}
-            New Quantity
-          
-        .field
-          =quantity_form.label :name
-          =quantity_form.text_field :name
-          
-        .field
-          =quantity_form.label :value
-          =quantity_form.text_field :value
-          
-        .field
-          =quantity_form.label :unit
-          =quantity_form.text_field :unit
-          
-      .limit_height{:tabindex => 2}
-        %ul
-          -@project.component_tree.map{|c| c.quantities.empty? ? nil : c}.compact.each do |c|
-            %li
-              %h3=c.name
-              
-              %ul
-                -c.quantities.each do |q|
-                  %li
-                    =f.radio_button :quantity_id, q.id
-                    %label{:for => "unit_cost_estimate_quantity_id_#{q.id}"}
-                      =q.name
-                      %em
-                        =q.value
-                        =q.unit
-      %button Add Quantity
-          
-    .right        
-      %h2 Unit Cost
-      
-      .field
-        = f.label :unit_cost
-        = f.text_field :unit_cost, :tabindex => 3
-      .field
-        = f.label :drop, '% Drop'
-        =f.text_field :drop, :tabindex => 4
+    .full_width
+      %h2 
+        =radio_button_tag :mode, :new
+        %label{:for => 'mode_new'} New Quantity
+        
+      .unit_cost_equation
+        (
+        =f.fields_for :quantity do |quantity_form|
+          .name
+            =quantity_form.text_field :name
+            =':'
+          .value=quantity_form.text_field :value
+          .unit=quantity_form.text_field :unit
+        +
+        .drop
+          =f.text_field :drop
+          ='%'
+        ) x
+        .unit_cost.autogrow
+          $
+          =f.text_field :unit_cost
+        
+    .full_width
+      %h2
+        =radio_button_tag :mode, :existing
+        %label{:for => 'mode_existing'} Existing Quantity
 
+      .unit_cost_equation
+        (
+        =f.collection_select :quantity_id, Quantity.all, :id, :optgroup_label
+        +
+        .drop
+          =f.text_field :drop
+          ='%'
+        ) x
+        .unit_cost.autogrow
+          $
+          =f.text_field :unit_cost
+          
+    .full_width
       %h2 Parent Component
       
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
-    
+        
+    .full_width
       %h2 Task
       
       (not implemented)

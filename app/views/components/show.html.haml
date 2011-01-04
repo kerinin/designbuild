@@ -14,7 +14,9 @@
     %h2 Estimated Costs
 
     =link_to new_cost_project_component_path(@project, @component) do
-      %button Add Cost
+      %button 
+        =icon :add
+        Add Cost
 
     -@component.unit_cost_estimates.each do |unit_cost|
       =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}
@@ -67,18 +69,6 @@
           %strong Total Cost
         .right
           %strong= number_to_currency @component.estimated_cost
-
-  #quantities
-    %h2 Quantities
-    
-    =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities}
-    
-  #markups
-    %h2 Markups
-    
-    =render :partial => 'markups/markup_lines', :locals => {:markups => @component.markups}
-
-  #edit_component
 
       
           

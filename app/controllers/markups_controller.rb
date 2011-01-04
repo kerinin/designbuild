@@ -56,7 +56,14 @@ class MarkupsController < ApplicationController
     @markups ||= Markup.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html {
+        case @parent.class.name
+        when 'Component'
+          render 'index_from_component'
+        else
+          render
+        end
+      }
       format.xml  { render :xml => @markups }
     end
   end

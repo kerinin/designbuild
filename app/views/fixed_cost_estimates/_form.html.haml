@@ -16,20 +16,21 @@
           = f.text_field :name, :tabindex => 1
           
 
-    .left        
+    .full_width        
       %h2 Cost
       
       .field
         = f.label :raw_cost
         = f.text_field :raw_cost
         
-    .right
+    .full_width
     
       %h2 Parent Component
       
       .field
         =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
     
+    .full_width
       %h2 Task
       
       (not implemented)
