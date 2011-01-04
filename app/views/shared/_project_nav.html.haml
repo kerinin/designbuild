@@ -3,7 +3,17 @@
   -unless @project.nil?
     %ul.nav_left
       %li{:class => current == :dashboard ? :current : nil}
-        =link_to 'Dashboard', project_path(@project)
+        =link_to 'Project', project_path(@project)
+        -unless Project.count < 2
+          .expander
+            .activator=icon :expand_down
+            .positioner
+              %ul
+                -Project.all.each do |project|
+                  %li.expand_active_area
+                    .left=link_to project.name, project
+                    
+              &nbsp;
 
       %li{:class => current == :components ? :current : nil}
         = link_to 'Components', project_components_path(@project)
@@ -40,20 +50,6 @@
                   %li.expand_active_area
                     .left
                       =link_to task.name, [@project, task] 
-              &nbsp;
-      %li{:class => current == :contracts ? :current : nil}
-        = link_to 'Contracts', project_contracts_path(@project)
-        -unless @project.contracts.empty?
-          .expander
-            .activator=icon :expand_down
-            .positioner
-              %ul
-                -@project.contracts.each do |contract|
-                  %li.expand_active_area
-                    .left
-                      =link_to contract.name, [@project, contract]
-                    .right
-                      =number_to_currency contract.estimated_cost, :precision => 0
               &nbsp;
               
       %li{:class => current == :deadlines ? :current : nil}

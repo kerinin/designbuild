@@ -2,11 +2,9 @@
   = javascript_include_tag 'jquery.tablednd.js'
   =render :partial => 'dnd.js'
 
-=render :partial => 'shared/project_nav', :locals => {:current => :contracts}
+=render :partial => 'shared/project_nav', :locals => {:current => :dashboard}
 
 .container
-  %h1 Fixed-Bid Contracts
-
-  %hr
+  =render :partial => 'projects/nav', :locals => {:current => :contracts}
 
   =render :partial => 'contract_list', :locals => {:contracts => @contracts}
