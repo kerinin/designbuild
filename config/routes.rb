@@ -114,9 +114,12 @@ Designbuild::Application.routes.draw do
 
     member do
       post :add_markup, :as => :add_markup_to
+      get :estimated_costs
+      get :scheduling
+      get :costs
     end
     
-    resources :markups, :only => [:new, :create, :edit, :update] do
+    resources :markups do
       member do
         get :add, :action => :add_to_task
         get :remove, :action => :remove_from_task

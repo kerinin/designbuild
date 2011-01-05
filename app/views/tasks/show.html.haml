@@ -6,14 +6,23 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :tasks}
 
 .container
-  %h1
-    Construction Task:
-    = @task.name
-    
+  =render :partial => 'nav', :locals => {:current => :summary}
+
   .main_actions
-    =link_to "Log Hours", new_task_labor_cost_path( @task), :remote => true
-    =link_to "New Purchase Order", new_task_material_cost_path( @task), :remote => true
-    =link_to "Print All Purchase Orders", purchase_order_list_projects_path
+    =link_to new_task_labor_cost_path( @task), :remote => true do
+      %button
+        =icon :add
+        Log Hours
+        
+    =link_to new_task_material_cost_path( @task), :remote => true do
+      %button
+        =icon :add
+        New Purchase Order
+        
+    =link_to purchase_order_list_projects_path do
+      %button
+        =icon :printer
+        Print All Purchase Orders
 
 
   -if @task.deadline.blank?

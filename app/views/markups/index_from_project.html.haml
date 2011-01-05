@@ -7,3 +7,9 @@
   %h1 Markups
 
   =render :partial => 'markup_lines', :locals => {:markups => @markups}
+  
+  .markup.add_button
+    =link_to new_project_markup_path(@project), :remote => true do
+      %button
+        =icon :add
+        Add markup

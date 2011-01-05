@@ -2,6 +2,15 @@
 + deleting markup doesn't refresh cost
 + edit laborer
 
+- creation
+Inline forms for simple creation
+popup forms for anything requiring complex input or associations
+old school for state machines
+
+-- inline form: markups, quantity (in list), subcomponents (in list), project
+-- popup form: costs, task, deadline
+-- old-school: invoicing
+
 - bank draws (invoice tracking)
 -- JS total for balanced
 -- validate uniqueness of invoice date in context of project

@@ -86,16 +86,6 @@ class MarkupsController < ApplicationController
   def new
     @markup = Markup.new
     @markup.markings.build
-    @parent = case
-      when params.has_key?(:project_id)
-        Project.find params[:project_id]
-      when params.has_key?(:task_id)
-        Task.find params[:task_id]
-      when params.has_key?(:component_id)
-        Component.find params[:component_id]
-      when params.has_key?(:contract_id)
-        Contract.find params[:contract_id]
-    end
 
     respond_to do |format|
       format.js
@@ -178,12 +168,13 @@ class MarkupsController < ApplicationController
   def get_parent
     if params.has_key?(:task_id)
       @parent = Task.find(params[:task_id])
+      @task = @parent
     elsif params.has_key?(:component_id)
       @parent = Component.find(params[:component_id])
-    elsif params.has_key?(:contract_id)
-      @parent = Contract.find(params[:contract_id])
+      @component = @parent
     elsif params.has_key?(:project_id)
       @parent = Project.find(params[:project_id])
+      @project = @parent
     end
   end
   
