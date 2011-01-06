@@ -16,6 +16,7 @@ class Quantity < ActiveRecord::Base
   end
 
   def cascade_cache_values
+    return unless changed?
     self.unit_cost_estimates(true).all.each {|uc| uc.save!}
   end
 end
