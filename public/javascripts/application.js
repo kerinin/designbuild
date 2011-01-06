@@ -26,4 +26,6 @@ $(document).ready( function() {
   });
   
   $('.tabs').tabs();
+  
+  $('.click_to_show').each( function(i) { $($(this).attr('href')).hide()} ).click( function(e) { $($(this).attr('href')).show(); $(this).hide(); return false; });
 });

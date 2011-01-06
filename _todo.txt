@@ -1,11 +1,41 @@
-- speed up tests
-+ deleting markup doesn't refresh cost
-+ edit laborer
+- New UI problems
+* in-table creation shouldn't autoclick new button
+* laborer#new not updated
+* laborer#show not updated
+* remove link to user#new on user#index
+* user#edit not updated
+* user#destroy broken (redirect - seems to destroy OK)
+* show project list in nav even if @project.nil?
+* add markup (esp. to project) very slow.  delayed job?
+* project#markups destroy redirects incorrectly
+* project#edit redirects incorrectly
+* add button to create component @ component#index
+* component#index rename ajax fails (but updates)
+* component#new_cost unit cost UI still needs work, doesn't add correctly
+* component#new_cost fixed cost redirects incorrectly
+* contract#show should have breadcrumbs
+* component#quantities should use add button (not inline in table)
+* component#quantities redirects incorrectly
+* component#quantities inserts edit field into both tables on 'edit'
+* component#markups destroy redirects incorrectly
+* component#markups remove redirects incorrectly
+* component#subcomponents should use add button
+* component#subcomponents add broken
+* task#index should show add button
+* task#index rows messed up on edit
+* task#index submitting task drop down also submits new tr
+* material_cost#show UI not update
+* material_cost#show link should direct to task#costs
+* material_cost#show log hours note field too large
+* after cost added to task, should redirect to task#costs
+* task#markups showing destroy but not remove
+* task#costs 'add material cost' should show amount in form
+* task#scheduling redirect wrong on deadline removal, addition
+* deadline#index should use add button
+* notice box behavior erratic
 
-- creation
-Inline forms for simple creation
-popup forms for anything requiring complex input or associations
-old school for state machines
+
+- add return true unless changed? to callbacks
 
 -- inline form: markups, quantity (in list), subcomponents (in list), project
 -- popup form: costs, task, deadline
@@ -107,3 +137,6 @@ Completed
 ++ icons
 ++ explanative text
 ++ table alignment
+
++ deleting markup doesn't refresh cost
++ edit laborer

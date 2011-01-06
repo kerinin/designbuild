@@ -20,13 +20,7 @@
     .cost
       %h3.left No Estimated Costs associated with this Task
     
-  /
-    %h3 Unit Costs
-    =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:context => :task, :unit_cost_estimates => @task.unit_cost_estimates, :limit => 5}
-    %h3 Fixed Costs
-    =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:context => :task, :fixed_cost_estimates => @task.fixed_cost_estimates, :limit => 5}
-  
-  =link_to '#add_estimated_costs' do
+  =link_to '#add_estimated_costs', :class => 'click_to_show' do
     %button 
       =icon :add
       Add Estimated Costs
