@@ -1,0 +1,35 @@
+-content_for :head do
+  =javascript_include_tag "autocomplete-rails.js"
+  =javascript_include_tag "jquery.dimscreen.js"
+  =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
+  
+=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
+
+.container
+  =render :partial => 'nav', :locals => {:current => :costs}
+
+  %h2 Purchase Orders
+        
+  =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.purchase_orders, :context => :po}
+
+  =link_to new_task_material_cost_path( @task), :remote => true do
+    %button
+      =icon :add
+      New Purchase Order
+
+  %h2 Labor Costs
+  =render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs, :context => :task}
+
+  =link_to new_task_labor_cost_path( @task), :remote => true do
+    %button
+      =icon :add
+      Log Hours
+
+      
+  %h2 Material Costs
+  =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.completed_purchases, :context => :cost}
+  
+  =link_to new_task_material_cost_path( @task), :remote => true do
+    %button
+      =icon :add
+      Add Material Cost

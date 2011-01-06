@@ -125,6 +125,20 @@ Designbuild::Application.routes.draw do
         get :remove, :action => :remove_from_task
       end
     end
+    
+    resources :unit_cost_estimates do
+      member do
+        get :add, :action => :add_to_task
+        get :remove, :action => :remove_from_task
+      end
+    end
+    
+    resources :fixed_cost_estimates do
+      member do
+        get :add, :action => :add_to_task
+        get :remove, :action => :remove_from_task
+      end
+    end
   end
     
   resources :labor_costs do    

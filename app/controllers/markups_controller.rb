@@ -62,6 +62,8 @@ class MarkupsController < ApplicationController
           render 'index_from_component'
         when 'Project'
           render 'index_from_project'
+        when 'Task'
+          render 'index_from_task'
         else
           render
         end

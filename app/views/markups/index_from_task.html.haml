@@ -1,0 +1,16 @@
+-@task = @parent
+-@project = @task.project
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
+
+.container
+  =render :partial => 'tasks/nav', :locals => {:current => :markups}
+
+  %h1 Markups
+
+  =render :partial => 'markup_lines', :locals => {:markups => @markups}
+  
+  .markup.add_button
+    =link_to new_task_markup_path(@task), :remote => true do
+      %button
+        =icon :add
+        Add markup

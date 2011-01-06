@@ -30,13 +30,6 @@
   - if material_costs.empty?
     %tr
       %td{:colspan => 10} (None)
-      
-  - if context == :po
-    %tr.control.add_button
-      %td{:colspan => 10}
-        =link_to new_task_material_cost_path(@task), :remote => true do
-          = icon(:add)
-          Add Purchase Order
   
   - if context == :task
     %tr.totals

@@ -1,5 +1,27 @@
 class UnitCostEstimatesController < ApplicationController
-  before_filter :get_component
+  #before_filter :get_component
+  before_filter :get_objects
+  
+  def add_to_task
+    @task = Task.find(params[:task_id])
+    @unit_cost_estimate = UnitCostEstimate.find params[:id]
+    @unit_cost_estimate.update_attributes :task => @task
+    
+    respond_to do |format|
+      format.html { redirect_to estimated_costs_task_path(@task) }
+    end
+  end
+  
+  def remove_from_task
+    @task = Task.find(params[:task_id])
+    
+    @unit_cost_estimate = UnitCostEstimate.find params[:id]
+    @unit_cost_estimate.update_attributes :task => nil
+    
+    respond_to do |format|
+      format.html { redirect_to estimated_costs_task_path(@task) }
+    end
+  end
   
   # GET /unit_cost_estimates
   # GET /unit_cost_estimates.xml
@@ -90,5 +112,16 @@ class UnitCostEstimatesController < ApplicationController
       format.html { redirect_to [@project, @component] }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @unit_cost_estimate = UnitCostEstimate.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @component = Component.find(params[:component_id]) if params.has_key? :component_id
+    
+    @component ||= @unit_cost_estimate.component unless @unit_cost_estimate.nil?
+    @project ||= @component.project unless @component.nil?
   end
 end

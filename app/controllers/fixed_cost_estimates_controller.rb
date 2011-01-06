@@ -1,5 +1,27 @@
 class FixedCostEstimatesController < ApplicationController
-  before_filter :get_component
+  #before_filter :get_component
+  before_filter :get_objects
+  
+  def add_to_task
+    @task = Task.find(params[:task_id])
+    @fixed_cost_estimate = FixedCostEstimate.find params[:id]
+    @task.fixed_cost_estimates << @fixed_cost_estimate unless @task.fixed_cost_estimates.include? @fixed_cost_estimate
+    
+    respond_to do |format|
+      format.html { redirect_to estimated_costs_task_path(@task) }
+    end
+  end
+  
+  def remove_from_task
+    @task = Task.find(params[:task_id])
+    
+    @fixed_cost_estimate = FixedCostEstimate.find params[:id]
+    @task.fixed_cost_estimates.delete @fixed_cost_estimate
+    
+    respond_to do |format|
+      format.html { redirect_to estimated_costs_task_path(@task) }
+    end
+  end
   
   # GET /fixed_cost_estimates
   # GET /fixed_cost_estimates.xml
@@ -89,5 +111,16 @@ class FixedCostEstimatesController < ApplicationController
       format.html { redirect_to [@project, @component] }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @fixed_cost_estimate = FixedCostEstimate.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @component = Component.find(params[:component_id]) if params.has_key? :component_id
+    
+    @component ||= @fixed_cost_estimate.component unless @fixed_cost_estimate.nil?
+    @project ||= @component.project unless @component.nil?
   end
 end
