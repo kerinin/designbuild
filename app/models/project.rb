@@ -25,7 +25,9 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_numericality_of :labor_percent_retainage, :material_percent_retainage
   
-  before_save :cache_values, :create_points
+  before_save :cache_values
+  before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
   
   def fixed_bid?
     self.fixed_bid
@@ -94,7 +96,40 @@ class Project < ActiveRecord::Base
       end
     end
   end
-    
+
+  def create_labeled_point(label, series = :estimated_cost, *args)
+    self.send( "create_#{series}_points", *args )
+    self.components.each {|c| c.send("create_#{series}_points", *args)}
+    self.tasks.each {|t| t.send("create_#{series}_points", *args)}
+  end
+  
+  def create_estimated_cost_points
+    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+    if p.label.nil?
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
+    end
+  end
+  
+  def create_projected_cost_points
+    p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
+    if p.label.nil?
+      p.series = :projected_cost
+      p.value = self.projected_cost || 0
+      p.save!
+    end
+  end
+
+  def create_cost_to_date_points(date)
+    p = self.cost_to_date_points.find_or_create_by_date(date)
+    if p.label.nil?
+      p.series = :cost_to_date
+      p.value = self.labor_cost_before(date) + self.material_cost_before(date)
+      p.save!
+    end
+  end
+      
   protected
     
   def cache_estimated_fixed_cost
@@ -157,29 +192,5 @@ class Project < ActiveRecord::Base
 
     self.tasks.all.each {|t| t.markups.delete( markup ) }
     self.save
-  end
-  
-  def create_points
-    if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
-      p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-      if p.label.nil?
-        p.series = :estimated_cost
-        p.value = self.estimated_cost || 0
-        p.save!
-      end
-    end
-    if self.projected_cost_changed? && ( !self.new_record? || ( !self.projected_cost.nil? && self.projected_cost > 0 ) )
-      p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
-      if p.label.nil?
-        p.series = :projected_cost
-        p.value = self.projected_cost || 0
-        p.save!
-      end
-    end
-    
-    # cost-to-date being created by costs
-    # This is important to get the timeline right - labor costs could
-    # be created today for a date a month ago - we want to take the
-    # date of the cost into account...
   end
 end

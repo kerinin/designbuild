@@ -32,7 +32,7 @@ class Component < ActiveRecord::Base
   after_save :cascade_cache_values
   after_destroy :cascade_cache_values
   
-  before_save :create_points
+  before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   
   default_scope :order => :position
   
@@ -164,14 +164,12 @@ class Component < ActiveRecord::Base
     self.save
   end
   
-  def create_points
-    if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
-      p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-      if p.label.nil?
-        p.series = :estimated_cost
-        p.value = self.estimated_cost || 0
-        p.save!
-      end
+  def create_estimated_cost_points
+    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+    if p.label.nil?
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
     end
   end
 end

@@ -47,18 +47,21 @@ class MaterialCost < ActiveRecord::Base
   end
   
   def create_points
-    p = self.task.project.cost_to_date_points.find_or_create_by_date(self.date)
-    if p.label.nil?
-      p.series = :cost_to_date
-      p.value = self.task.project.labor_cost_before(self.date) + self.task.project.material_cost_before(self.date)
-      p.save!
-    end
+    self.task.project.create_cost_to_date_points(self.date)
+    self.task.create_cost_to_date_points(self.date)
+    
+    #p = self.task.project.cost_to_date_points.find_or_create_by_date(self.date)
+    #if p.label.nil?
+    #  p.series = :cost_to_date
+    #  p.value = self.task.project.labor_cost_before(self.date) + self.task.project.material_cost_before(self.date)
+    #  p.save!
+    #end
 
-    p = self.task.cost_to_date_points.find_or_create_by_date(self.date)
-    if p.label.nil?
-      p.series = :cost_to_date
-      p.value = self.task.labor_cost_before(self.date) + self.task.material_cost_before(self.date)
-      p.save!
-    end
+    #p = self.task.cost_to_date_points.find_or_create_by_date(self.date)
+    #if p.label.nil?
+    #  p.series = :cost_to_date
+    #  p.value = self.task.labor_cost_before(self.date) + self.task.material_cost_before(self.date)
+    #  p.save!
+    #end
   end
 end
