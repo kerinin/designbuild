@@ -1,5 +1,5 @@
 - New UI problems
-* in-table creation shouldn't autoclick new button
+- in-table creation shouldn't autoclick new button
 * laborer#new not updated
 * laborer#show not updated
 * remove link to user#new on user#index
