@@ -5,10 +5,8 @@
 - remove link to user#new on user#index
 - user#edit not updated
 - user#destroy broken (redirect - seems to destroy OK)
-* show project list in nav even if @project.nil?
-* add markup (esp. to project) very slow.  delayed job?
-* project#markups destroy redirects incorrectly
-* project#edit redirects incorrectly
+- show project list in nav even if @project.nil?
+- project#markups destroy redirects incorrectly
 * add button to create component @ component#index
 * component#index rename ajax fails (but updates)
 * component#new_cost unit cost UI still needs work, doesn't add correctly
@@ -33,6 +31,8 @@
 * task#scheduling redirect wrong on deadline removal, addition
 * deadline#index should use add button
 * notice box behavior erratic
+* add markup (esp. to project) very slow.  delayed job?
+* can't add component to new project
 
 
 - add return true unless changed? to callbacks

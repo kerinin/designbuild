@@ -1,5 +1,5 @@
 class MarkupsController < ApplicationController
-  before_filter :get_parent, :only => [:create, :update, :edit, :new, :index]
+  before_filter :get_parent, :only => [:create, :update, :edit, :new, :index, :destroy]
   
   def add_to_project
     @parent = Project.find(params[:project_id])
@@ -160,7 +160,7 @@ class MarkupsController < ApplicationController
     @markup.destroy
 
     respond_to do |format|
-      format.html { redirect_to(markups_url) }
+      format.html { redirect_to [@parent, :markups] }
       format.xml  { head :ok }
     end
   end
@@ -186,7 +186,7 @@ class MarkupsController < ApplicationController
     @parent.save!
     
     respond_to do |format|
-      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully added.' }
+      format.html { redirect_to [@parent, :markups], :notice => 'Markup was successfully added.' }
     end
   end
   
@@ -196,7 +196,7 @@ class MarkupsController < ApplicationController
     @parent.save!
     
     respond_to do |format|
-      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully removed.' }
+      format.html { redirect_to [@parent, :markups], :notice => 'Markup was successfully removed.' }
     end
   end
 end

@@ -15,7 +15,7 @@
       -case @parent.class.name
       -when 'Component'
         %td.control.remove= link_to 'Remove', remove_component_markup_path(@component, markup)
-      %td.control.destroy= link_to 'Destroy', markup, :confirm => 'Are you sure?', :method => :delete
+      %td.control.destroy= link_to 'Destroy', [@parent, markup], :confirm => 'Are you sure?', :method => :delete
 
   - if markups.empty?
     %tr

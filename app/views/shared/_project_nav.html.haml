@@ -57,7 +57,23 @@
 
       %li{:class => current == :invoicing ? :current : nil}
         = link_to 'Invoicing', invoicing_project_path(@project)
-            
+        
+  -else
+    %ul.nav_left
+      %li{:class => current == :dashboard ? :current : nil}
+        -unless Project.count < 2
+          .expander
+            .activator
+              Project
+              =icon :expand_down
+            .positioner
+              %ul
+                -Project.all.each do |project|
+                  %li.expand_active_area
+                    .left=link_to project.name, project
+                    
+              &nbsp;
+                          
   %ul.nav_right
     %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
     %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
