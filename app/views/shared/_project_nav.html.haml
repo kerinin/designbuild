@@ -81,6 +81,23 @@
  
 .main_nav_spacer
 
+-if notice
+  %p.notice= notice
+-else
+  %p.notice.hidden
+-if alert
+  %p.alert= alert
+-else
+  %p.alert.hidden
+  
+#failure.error.hidden
+  =icon :exclamation
+  Something went wrong!  Try <a href="#" onclick="location.reload();">reloading the page</a>
+  
+#loading.notice.hidden
+  =image_tag 'spinner_small.gif'
+  Working...
 
+#post_errors
 
 
