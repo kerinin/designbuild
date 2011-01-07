@@ -162,15 +162,19 @@ class Project < ActiveRecord::Base
   def create_points
     if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
       p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-      p.series = :estimated_cost
-      p.value = self.estimated_cost || 0
-      p.save!
+      if p.label.nil?
+        p.series = :estimated_cost
+        p.value = self.estimated_cost || 0
+        p.save!
+      end
     end
     if self.projected_cost_changed? && ( !self.new_record? || ( !self.projected_cost.nil? && self.projected_cost > 0 ) )
       p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
-      p.series = :projected_cost
-      p.value = self.projected_cost || 0
-      p.save!
+      if p.label.nil?
+        p.series = :projected_cost
+        p.value = self.projected_cost || 0
+        p.save!
+      end
     end
     
     # cost-to-date being created by costs

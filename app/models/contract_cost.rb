@@ -28,13 +28,17 @@ class ContractCost < ActiveRecord::Base
   
   def create_points
     p = self.contract.project.cost_to_date_points.find_or_create_by_date(self.date)
-    p.series = :cost_to_date
-    p.value = self.contract.project.labor_cost_before(self.date) + self.contract.project.material_cost_before(self.date)
-    p.save!
+    if p.label.nil?
+      p.series = :cost_to_date
+      p.value = self.contract.project.labor_cost_before(self.date) + self.contract.project.material_cost_before(self.date)
+      p.save!
+    end
 
     p = self.contract.cost_to_date_points.find_or_create_by_date(self.date)
-    p.series = :cost_to_date
-    p.value = self.contract.cost_before(self.date)
-    p.save!
+    if p.label.nil?
+      p.series = :cost_to_date
+      p.value = self.contract.cost_before(self.date)
+      p.save!
+    end
   end
 end

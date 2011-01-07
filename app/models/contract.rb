@@ -90,9 +90,11 @@ class Contract < ActiveRecord::Base
   def create_points
     if self.estimated_cost_changed? && ( !self.new_record? || ( !self.estimated_cost.nil? && self.estimated_cost > 0 ) )
       p = self.estimated_cost_points.find_or_initialize_by_date(:date => Date::today)
-      p.series = :estimated_cost
-      p.value = self.estimated_cost || 0
-      p.save!
+      if p.label.nil?
+        p.series = :estimated_cost
+        p.value = self.estimated_cost || 0
+        p.save!
+      end
     end
   end
 end
