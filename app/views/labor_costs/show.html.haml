@@ -1,16 +1,17 @@
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
 
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
 
-%h1
-  =link_to @labor_cost.task.name, [@project, @task]
-  Labor: 
-  = @labor_cost.date.to_s :long
+.container
+  =render :partial => 'tasks/nav', :locals => {:current => :costs}
+  
 
-%hr
+  %h2
+    Labor: 
+    = @labor_cost.date.to_s :long
 
-=render :partial => 'labor_cost_lines/labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost.line_items}
+  =render :partial => 'labor_cost_lines/labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost.line_items}
 
-- if notice == 'Labor cost was successfully created.'
-  =javascript_tag "$(document).ready( function() { $('table.labor_cost_lines tr.add_button > td > a').click(); } );"
+  =add_button 'Add Employee Hours', new_labor_cost_line_item_path(@labor_cost)
+

@@ -25,8 +25,5 @@
   
     =render :partial => 'hierarchy', :locals => {:context => nil, :components => @project.component_tree}
     
-    .add_button
-      = link_to( new_project_component_path(@project), :remote => true ) do
-        %button
-          = icon(:add)
-          Add Root Component
+    =add_button 'Add Root Component', new_project_component_path(@project)
+

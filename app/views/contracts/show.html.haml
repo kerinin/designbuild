@@ -21,11 +21,7 @@
 
     =render :partial => 'bids/bid_list', :locals => {:bids => @contract.bids}
 
-    .control.add_button
-      =link_to new_contract_bid_path(@contract), :remote => true do
-        %button
-          = icon(:add)
-          Add Bid
+    =add_button "Add Bid", new_contract_bid_path(@contract)
 
   .right        
 
@@ -33,8 +29,4 @@
 
     =render :partial => 'contract_costs/contract_costs_list', :locals => {:contract_costs => @contract.costs}
 
-    .control.add_button
-      =link_to new_contract_contract_cost_path(@contract), :remote => true do
-        %button 
-          =icon :add
-          Add Invoice
+    =add_button "Add Invoice", new_contract_contract_cost_path(@contract)

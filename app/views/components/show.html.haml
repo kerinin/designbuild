@@ -13,10 +13,7 @@
   #costs
     %h2 Estimated Costs
 
-    =link_to new_cost_project_component_path(@project, @component) do
-      %button 
-        =icon :add
-        Add Cost
+    =add_button 'Add Cost', new_cost_project_component_path(@project, @component), false
 
     -@component.unit_cost_estimates.each do |unit_cost|
       =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}

@@ -11,3 +11,5 @@
   
   %h2 Defined under this Component
   =render :partial => 'quantity_list', :locals => {:quantities => @quantities, :component => @component}
+  
+  =add_button 'Add Quantity', new_component_quantity_path(@component)

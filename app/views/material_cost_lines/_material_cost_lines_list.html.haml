@@ -16,12 +16,6 @@
     %tr
       %td{:colspan => 10} (None)
       
-  %tr.control.add_button
-    %td{:colspan => 10}
-      = link_to new_material_cost_line_item_path(@material_cost), :remote => true do
-        = icon(:add)
-        Add Material
-      
   - unless context == :po
     %tr.totals
       %td.right

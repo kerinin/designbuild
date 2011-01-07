@@ -9,25 +9,20 @@
 - project#markups destroy redirects incorrectly
 - component#index rename ajax fails (but updates)
 - component#new_cost fixed cost redirects incorrectly
-* contract#show should have breadcrumbs
-* component#quantities should use add button (not inline in table)
-* component#quantities redirects incorrectly
-* component#quantities inserts edit field into both tables on 'edit'
-* component#markups destroy redirects incorrectly
-* component#markups remove redirects incorrectly
-* component#subcomponents should use add button
-* component#subcomponents add broken
-* task#index should show add button
-* task#index rows messed up on edit
-* task#index submitting task drop down also submits new tr
-* material_cost#show UI not update
-* material_cost#show link should direct to task#costs
-* material_cost#show log hours note field too large
-* after cost added to task, should redirect to task#costs
-* task#markups showing destroy but not remove
-* task#costs 'add material cost' should show amount in form
-* task#scheduling redirect wrong on deadline removal, addition
-* deadline#index should use add button
+- contract#show should have breadcrumbs
+- component#quantities should use add button (not inline in table)
+- component#quantities redirects incorrectly
+- component#markups destroy redirects incorrectly
+- component#markups remove redirects incorrectly
+- task#index should show add button
+- material_cost#show UI not update
+- material_cost#show link should direct to task#costs
+- material_cost#show log hours note field too large
+- after cost added to task, should redirect to task#costs
+- task#markups showing destroy but not remove
+- task#costs 'add material cost' should show amount in form
+- task#scheduling redirect wrong on deadline removal, addition
+- deadline#index should use add button
 * notice box behavior erratic
 * add markup (esp. to project) very slow.  delayed job?
 * can't add component to new project
@@ -35,7 +30,16 @@
     component#index uses different templates for index and subcomponent index
     this requires different input forms, if we're doing it inline (rather than popup)
     also, the buttons don't work
+    This also causes problems with subcomponent creation
 * component#new_cost unit cost UI still needs work, doesn't add correctly    
+* component#quantities inserts edit field into both tables on 'edit'
+* task#index rows messed up on edit
+    This is due to the modal fixed bid / cost+ interface
+* task#index submitting task drop down also submits new tr
+    nested forms.  Need to find a way to avoid this...
+* task#scheduling needs redesign (also not working too well)
+
+
 
 - add return true unless changed? to callbacks
 
