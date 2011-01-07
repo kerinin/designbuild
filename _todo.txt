@@ -1,10 +1,10 @@
 - New UI problems
 - in-table creation shouldn't autoclick new button
-* laborer#new not updated
-* laborer#show not updated
-* remove link to user#new on user#index
-* user#edit not updated
-* user#destroy broken (redirect - seems to destroy OK)
+- laborer#new not updated
+- laborer#show not updated
+- remove link to user#new on user#index
+- user#edit not updated
+- user#destroy broken (redirect - seems to destroy OK)
 * show project list in nav even if @project.nil?
 * add markup (esp. to project) very slow.  delayed job?
 * project#markups destroy redirects incorrectly

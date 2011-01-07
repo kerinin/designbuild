@@ -7,9 +7,11 @@
         - @laborer.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :name
-    = f.text_field :name
+  %h1
+    .field
+      = f.label :name
+      = f.text_field :name
+      
   .field
     = f.label :pay_rate
     = f.text_field :pay_rate

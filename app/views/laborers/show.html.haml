@@ -5,9 +5,8 @@
     Employee:
     = @laborer.name
 
-  %p
-    %b Name:
-    = @laborer.name
+  %hr
+  
   %p
     %b Pay rate:
     = @laborer.pay_rate
@@ -16,10 +15,8 @@
     = @laborer.bill_rate
 
   = link_to 'Edit', edit_laborer_path(@laborer)
-  \|
-  = link_to 'Show All', laborers_path
 
-  %h2 Logged Hours
+  %h2 Recently Logged Hours
 
   %table
     %th Project
@@ -27,7 +24,7 @@
     %th Date
     %th Hours
     
-    -@laborer.labor_cost_lines.each do |line|
+    -@laborer.labor_cost_lines[0..20].each do |line|
       %tr
         %td=line.labor_set.task.project.name
         %td=line.labor_set.task.name
