@@ -11,10 +11,22 @@
   
     =render :partial => 'component_list', :locals => {:parent => @project, :components => @components}
     =#render :partial => 'hierarchy', :locals => {:context => nil, :components => @component.tree, :base_depth => @component.depth}
-    
+
+    .add_button
+      = link_to( ( new_project_component_path(@project, :parent_id => @component.id, :context => @component.id) ), :remote => true ) do
+        %button
+          = icon(:add)
+          Add Subcomponent   
+           
   -else
     %h1 Design Components
 
     %hr
   
     =render :partial => 'hierarchy', :locals => {:context => nil, :components => @project.component_tree}
+    
+    .add_button
+      = link_to( new_project_component_path(@project), :remote => true ) do
+        %button
+          = icon(:add)
+          Add Root Component
