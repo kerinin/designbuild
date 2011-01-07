@@ -23,9 +23,10 @@
 - task#costs 'add material cost' should show amount in form
 - task#scheduling redirect wrong on deadline removal, addition
 - deadline#index should use add button
-* notice box behavior erratic
+- notice box behavior erratic
+- can't add component to new project
+
 * add markup (esp. to project) very slow.  delayed job?
-* can't add component to new project
 * add button to create component @ component#index
     component#index uses different templates for index and subcomponent index
     this requires different input forms, if we're doing it inline (rather than popup)
