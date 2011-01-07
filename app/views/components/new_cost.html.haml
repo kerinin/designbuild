@@ -16,7 +16,7 @@
       =render :partial => 'unit_cost_estimates/form', :locals => {:unit_cost_estimate => UnitCostEstimate.new(:component_id => @component.id)}
     
     #new_fixed_cost
-      =render :partial => 'fixed_cost_estimates/form', :locals => {:fixed_cost_estimate => FixedCostEstimate.new}
+      =render :partial => 'fixed_cost_estimates/form', :locals => {:fixed_cost_estimate => FixedCostEstimate.new(:component_id => @component.id)}
       
     #new_contract_cost
       =render :partial => 'contracts/form', :locals => {:contract => Contract.new}

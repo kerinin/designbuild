@@ -73,7 +73,7 @@ class FixedCostEstimatesController < ApplicationController
     respond_to do |format|
       if @fixed_cost_estimate.save
         format.js
-        format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully created.') }
+        format.html { redirect_to(@component, :notice => 'Fixed cost estimate was successfully created.') }
         format.xml  { render :xml => @fixed_cost_estimate, :status => :created, :location => @fixed_cost_estimate }
       else
         format.js

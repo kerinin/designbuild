@@ -16,7 +16,7 @@
   //Success
   
   <% content_for :table do %>
-  	<%=render :partial => 'hierarchy', :locals => {:context => @context_component}%>
+  	<%=render :partial => 'hierarchy', :locals => {:context => @context_component, :components => @project.component_tree}%>
   <% end %>
 
   //Update the html of the div flash_notice with the new one

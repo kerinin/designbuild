@@ -7,14 +7,8 @@
 - user#destroy broken (redirect - seems to destroy OK)
 - show project list in nav even if @project.nil?
 - project#markups destroy redirects incorrectly
-* add button to create component @ component#index
-    component#index uses different templates for index and subcomponent index
-    this requires different input forms, if we're doing it inline (rather than popup)
-    also, the buttons don't work
-
-* component#index rename ajax fails (but updates)
-* component#new_cost unit cost UI still needs work, doesn't add correctly
-* component#new_cost fixed cost redirects incorrectly
+- component#index rename ajax fails (but updates)
+- component#new_cost fixed cost redirects incorrectly
 * contract#show should have breadcrumbs
 * component#quantities should use add button (not inline in table)
 * component#quantities redirects incorrectly
@@ -37,7 +31,11 @@
 * notice box behavior erratic
 * add markup (esp. to project) very slow.  delayed job?
 * can't add component to new project
-
+* add button to create component @ component#index
+    component#index uses different templates for index and subcomponent index
+    this requires different input forms, if we're doing it inline (rather than popup)
+    also, the buttons don't work
+* component#new_cost unit cost UI still needs work, doesn't add correctly    
 
 - add return true unless changed? to callbacks
 
