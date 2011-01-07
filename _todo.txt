@@ -40,7 +40,8 @@
     nested forms.  Need to find a way to avoid this...
 * task#scheduling needs redesign (also not working too well)
 
-
+- ul-based component hierarchy.  sortable between components, collapsible
+- named data points (which don't get over-written)
 
 - add return true unless changed? to callbacks
 
