@@ -9,7 +9,7 @@
         =contract.name
     -if session[:break_out_unit_costs]
       %td{:colspan => 2}= "Fixed Bid from #{contract.active_bid.contractor}" unless contract.active_bid.nil?
-    -else
+    -elsif session[:show_graph]
       %td
       
     -if session[:break_out_markup]
