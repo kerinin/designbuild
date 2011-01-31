@@ -1,21 +1,20 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DatePointTest < ActiveSupport::TestCase
-
   context "A Date Point assigned to a project" do
     setup do
       @source = Factory.build :project
       
       @e2 = @source.estimated_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :estimated_cost
-      @e3 = @source.estimated_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :estimated_cost
+      @e3 = @source.estimated_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :estimated_cost
       @e1 = @source.estimated_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :estimated_cost
       
       @p2 = @source.projected_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :projected_cost
-      @p3 = @source.projected_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :projected_cost
+      @p3 = @source.projected_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :projected_cost
       @p1 = @source.projected_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :projected_cost
       
       @t2 = @source.cost_to_date_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :cost_to_date
-      @t3 = @source.cost_to_date_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :cost_to_date
+      @t3 = @source.cost_to_date_points.build :date => Date::today, :value => 100, :source => @source, :series => :cost_to_date
       @t1 = @source.cost_to_date_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :cost_to_date
     end
     
@@ -75,7 +74,7 @@ class DatePointTest < ActiveSupport::TestCase
       @source.save!
       
       assert_raise ActiveRecord::RecordInvalid do
-        @source.estimated_cost_points.create! :date => Date::today - 1, :value => 200
+        @source.estimated_cost_points.create! :date => Date::today, :value => 200
       end
     end
         
@@ -109,9 +108,29 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t3, @source.cost_to_date_points[2]
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
-    
-    should "create points on update" do 
+
+    should "update points on update" do 
       [@source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+      @source.reload
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
+      @component = @source.components.create! :name => 'component'
+      @task = @source.tasks.create! :name => 'task'
+            
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      @task.fixed_cost_estimates << @fc
+      @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.projected_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
+    end
+        
+    should "create points on update" do 
+      [@e3, @p3, @t3].each {|i| i.update_attributes(:date => Date::today - 1)}
       @source.reload
       
       assert_equal 3, @source.estimated_cost_points.count
@@ -133,6 +152,33 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 200, @source.projected_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
     end
+    
+    should "not create points on update if labeled point exists" do 
+      @e3.label = 'Label'
+      @p3.label = 'Label'
+      @t3.label = 'Label'
+      [@source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+      @source.reload
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
+      @component = @source.components.create! :name => 'component'
+      @task = @source.tasks.create! :name => 'task'
+            
+      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      @task.fixed_cost_estimates << @fc
+      @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+      
+      assert_equal 100, @source.estimated_cost_points.last.value
+      assert_equal 100, @source.projected_cost_points.last.value
+      assert_equal 100, @source.cost_to_date_points.last.value
+    end
   end
 
   context "A Date Point assigned to a component" do
@@ -141,7 +187,7 @@ class DatePointTest < ActiveSupport::TestCase
       @source = @project.components.create! :name => 'component', :project => @project
 
       @e2 = @source.estimated_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :estimated_cost
-      @e3 = @source.estimated_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :estimated_cost
+      @e3 = @source.estimated_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :estimated_cost
       @e1 = @source.estimated_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :estimated_cost
     end
   
@@ -190,7 +236,7 @@ class DatePointTest < ActiveSupport::TestCase
       [@project, @source].each {|i| i.save!}
       
       assert_raise ActiveRecord::RecordInvalid do
-        @source.estimated_cost_points.create! :date => Date::today - 1, :value => 200
+        @source.estimated_cost_points.create! :date => Date::today, :value => 200
       end
     end
         
@@ -219,6 +265,46 @@ class DatePointTest < ActiveSupport::TestCase
       
       assert_equal 200, @source.estimated_cost_points.last.value
     end
+    
+    
+
+    should "update points on update" do 
+      [@project, @source, @e1, @e2, @e3].each {|i| i.save!}
+      
+      assert_equal 3, @source.estimated_cost_points.count
+
+      @source.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+    end
+        
+    should "create points on update" do 
+      @e3.date = Date::today - 1
+      [@project, @source, @e1, @e2, @e3].each {|i| i.save!}
+      
+      assert_equal 3, @source.estimated_cost_points.count
+
+      @source.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      
+      assert_equal 4, @source.estimated_cost_points.count
+      
+      assert_equal 200, @source.estimated_cost_points.last.value
+    end
+    
+    should "not create points on update if labeled point exists" do 
+      @e3.label = 'Label'
+      [@project, @source, @e1, @e2, @e3].each {|i| i.save!}
+      
+      assert_equal 3, @source.estimated_cost_points.count
+
+      @source.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 200
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      
+      assert_equal 100, @source.estimated_cost_points.last.value
+    end
+    
+    
   end
 
   context "A Date Point assigned to a task" do
@@ -229,15 +315,15 @@ class DatePointTest < ActiveSupport::TestCase
       @source = @project.tasks.create! :name => 'task', :project => @project
       
       @e2 = @source.estimated_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :estimated_cost
-      @e3 = @source.estimated_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :estimated_cost
+      @e3 = @source.estimated_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :estimated_cost
       @e1 = @source.estimated_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :estimated_cost
       
       @p2 = @source.projected_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :projected_cost
-      @p3 = @source.projected_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :projected_cost
+      @p3 = @source.projected_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :projected_cost
       @p1 = @source.projected_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :projected_cost
       
       @t2 = @source.cost_to_date_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :cost_to_date
-      @t3 = @source.cost_to_date_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :cost_to_date
+      @t3 = @source.cost_to_date_points.build :date => Date::today, :value => 100, :source => @source, :series => :cost_to_date
       @t1 = @source.cost_to_date_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :cost_to_date
 
     end
@@ -303,7 +389,7 @@ class DatePointTest < ActiveSupport::TestCase
       [@project, @source].each {|i| i.save!}
       
       assert_raise ActiveRecord::RecordInvalid do
-        @source.estimated_cost_points.create! :date => Date::today - 1, :value => 200
+        @source.estimated_cost_points.create! :date => Date::today, :value => 200
       end
     end
         
@@ -337,14 +423,32 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t3, @source.cost_to_date_points[2]
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
-    
-    should "create points on update" do
-      [@project, @source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+
+    should "update points on update" do 
+      [@source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+      @source.reload
       
       assert_equal 3, @source.estimated_cost_points.count
       assert_equal 3, @source.projected_cost_points.count
       assert_equal 3, @source.cost_to_date_points.count
+
+      @source.fixed_cost_estimates << @fc
+      @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
       
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.projected_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
+    end
+        
+    should "create points on update" do 
+      [@source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+      [@e3, @p3, @t3].each {|i| i.update_attributes(:date => Date::today - 1)}
+      @source.reload
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
       @source.fixed_cost_estimates << @fc
       @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
       
@@ -356,6 +460,29 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 200, @source.projected_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
     end
+    
+    should "not create points on update if labeled point exists" do 
+      @e3.label = 'Label'
+      @p3.label = 'Label'
+      @t3.label = 'Label'
+      [@source, @e1, @e2, @e3, @p1, @p2, @p3, @t1, @t2, @t3].each {|i| i.save!}
+      @source.reload
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
+      @source.fixed_cost_estimates << @fc
+      @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
+      
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+      
+      assert_equal 100, @source.estimated_cost_points.last.value
+      assert_equal 100, @source.projected_cost_points.last.value
+      assert_equal 100, @source.cost_to_date_points.last.value
+    end
   end
 
   context "A Date Point assigned to a contract" do
@@ -366,11 +493,11 @@ class DatePointTest < ActiveSupport::TestCase
       @source = @project.contracts.create! :name => 'contract', :component => @component, :project => @project
       
       @e2 = @source.estimated_cost_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :estimated_cost
-      @e3 = @source.estimated_cost_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :estimated_cost
+      @e3 = @source.estimated_cost_points.build :date => Date::today, :value => 100, :source => @source, :series => :estimated_cost
       @e1 = @source.estimated_cost_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :estimated_cost
 
       @t2 = @source.cost_to_date_points.build :date => Date::today - 5, :value => 100, :source => @source, :series => :cost_to_date
-      @t3 = @source.cost_to_date_points.build :date => Date::today - 1, :value => 100, :source => @source, :series => :cost_to_date
+      @t3 = @source.cost_to_date_points.build :date => Date::today, :value => 100, :source => @source, :series => :cost_to_date
       @t1 = @source.cost_to_date_points.build :date => Date::today - 10, :value => 100, :source => @source, :series => :cost_to_date
 
     end
@@ -433,7 +560,7 @@ class DatePointTest < ActiveSupport::TestCase
       [@project, @component, @source].each {|i| i.save!}
       
       assert_raise ActiveRecord::RecordInvalid do
-        @source.estimated_cost_points.create! :date => Date::today - 1, :value => 200
+        @source.estimated_cost_points.create! :date => Date::today, :value => 200
       end
     end
         
@@ -460,23 +587,58 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal @t1, @source.cost_to_date_points[0]   
     end
     
-    should "create points on update" do
-      [@project, @component, @source, @e1, @e2, @e3, @t1, @t2, @t3].each {|i| i.save!}
+    should "update points on update" do 
+      [@source, @e1, @e2, @e3, @t1, @t2, @t3].each {|i| i.save!}
       @source.reload
-      
+    
       assert_equal 3, @source.estimated_cost_points.count
       assert_equal 3, @source.cost_to_date_points.count
-      
+
       @bid = @source.bids.create! :contractor => 'foo', :raw_cost => 200, :date => Date::today
       @source.update_attributes :active_bid => @bid
       @source.costs.create! :date => Date::today, :raw_cost => 200
-      
-      assert_equal 4, @source.estimated_cost_points(true).count
-      assert_equal 4, @source.cost_to_date_points(true).count
-      
+    
       assert_equal 200, @source.estimated_cost_points.last.value
-      assert_equal 200, @source.cost_to_date_points(true).last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
+    end
+      
+    should "create points on update" do 
+      [@source, @e1, @e2, @e3, @t1, @t2, @t3].each {|i| i.save!}
+      [@e3, @t3].each {|i| i.update_attributes(:date => Date::today - 1)}
+      @source.reload
+    
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
+      @bid = @source.bids.create! :contractor => 'foo', :raw_cost => 200, :date => Date::today
+      @source.update_attributes :active_bid => @bid
+      @source.costs.create! :date => Date::today, :raw_cost => 200
+    
+      assert_equal 4, @source.estimated_cost_points.count
+      assert_equal 4, @source.cost_to_date_points.count
+    
+      assert_equal 200, @source.estimated_cost_points.last.value
+      assert_equal 200, @source.cost_to_date_points.last.value
+    end
+  
+    should "not create points on update if labeled point exists" do 
+      @e3.label = 'Label'
+      @t3.label = 'Label'
+      [@source, @e1, @e2, @e3, @t1, @t2, @t3].each {|i| i.save!}
+      @source.reload
+    
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+
+      @bid = @source.bids.create! :contractor => 'foo', :raw_cost => 200, :date => Date::today
+      @source.update_attributes :active_bid => @bid
+      @source.costs.create! :date => Date::today, :raw_cost => 200
+    
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+    
+      assert_equal 100, @source.estimated_cost_points.last.value
+      assert_equal 100, @source.cost_to_date_points.last.value
     end
   end
-
 end

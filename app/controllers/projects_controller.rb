@@ -125,6 +125,7 @@ class ProjectsController < ApplicationController
     @project = Project.find(params[:id])
     session[:break_out_unit_costs] = (1 == params[:break_out_unit_costs].to_i) if params.has_key?(:break_out_unit_costs)
     session[:break_out_markup] = (1 == params[:break_out_markup].to_i) if params.has_key?(:break_out_markup)
+    session[:show_graph] = (1 == params[:show_graph].to_i) if params.has_key?(:show_graph)
 
     respond_to do |format|
       format.html # show.html.erb
