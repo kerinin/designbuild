@@ -24,7 +24,6 @@
 - task#scheduling redirect wrong on deadline removal, addition
 - deadline#index should use add button
 * notice box behavior erratic
-* add markup (esp. to project) very slow.  delayed job?
 * can't add component to new project
 * add button to create component @ component#index
     component#index uses different templates for index and subcomponent index
@@ -38,10 +37,11 @@
 * task#index submitting task drop down also submits new tr
     nested forms.  Need to find a way to avoid this...
 * task#scheduling needs redesign (also not working too well)
-
+* component list drag & drop
 
 
 - add return true unless changed? to callbacks
+- add markup (esp. to project) very slow.  delayed job?
 
 -- inline form: markups, quantity (in list), subcomponents (in list), project
 -- popup form: costs, task, deadline

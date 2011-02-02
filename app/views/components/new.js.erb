@@ -21,7 +21,7 @@ form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
 $("table.components").wrap(form).append(contents);
-$("table.components tr:last").before("<%= escape_javascript( yield :tr ) %>");
+$("table.components tr:last").after("<%= escape_javascript( yield :tr ) %>");
 $("table.components tr.component_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 //$("table.components tr.add_button, table.components tr.add_root_button").hide();
 //$("table.components tr.add_button a, table.components tr.add_root_button a").contents().unwrap();

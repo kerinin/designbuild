@@ -50,6 +50,6 @@ module ApplicationHelper
   end
   
   def add_button(text, link, remote = true)
-    raw "<div class=\"add_button\"><a href=\"#{link}\"#{remote ? ' data-remote=\"true\"' : ''}><button>#{icon(:add)}Add Deadline</button></a></div>"
+    raw "<div class=\"add_button\"><a href=\"#{link}\"#{remote ? ' data-remote=\"true\"' : ''}><button>#{icon(:add)} #{text}</button></a></div>"
   end
 end
