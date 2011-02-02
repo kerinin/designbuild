@@ -25,6 +25,7 @@
 - deadline#index should use add button
 - can't add component to new project
 - add button to create component @ component#index
+- add button to create component @ component#index
     component#index uses different templates for index and subcomponent index
     this requires different input forms, if we're doing it inline (rather than popup)
     also, the buttons don't work
@@ -39,8 +40,11 @@
 * notice box behavior erratic
 * task#scheduling needs redesign (also not working too well)
 * component list drag & drop
+* add markup (esp. to project) very slow.  delayed job?
 
 
+- ul-based component hierarchy.  sortable between components, collapsible
+- named data points (which don't get over-written)
 - add return true unless changed? to callbacks
 - add markup (esp. to project) very slow.  delayed job?
 
