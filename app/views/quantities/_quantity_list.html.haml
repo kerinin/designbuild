@@ -1,5 +1,5 @@
 -add = true if add.nil?
-%table.quantities
+%table{:class => add ? 'quantities' : 'quantities_without_add'}
   %tr
     %th Name
     %th.number Value
@@ -12,7 +12,7 @@
       %td= quantity.name
       %td.number= quantity.value
       %td= quantity.unit
-      %td.control.edit= link_to 'Edit', edit_component_quantity_path(@component, quantity), :remote => true
+      %td.control.edit= link_to 'Edit', edit_component_quantity_path(@component, quantity, :add => add), :remote => true
       %td.control.destroy= link_to icon(:delete), [@component, quantity], :confirm => 'Are you sure?', :method => :delete
 
   - if quantities.empty?

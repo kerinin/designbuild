@@ -10,13 +10,14 @@
   <%= link_to 'Cancel', [@project, @component] %>
 <% end %>
 
+<% table_class = params[:add] ? 'quantities' : 'quantities_without_add' %>
 
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
-$("table.quantities tr#quantity_<%= @quantity.id %>").closest("table").wrap(form).append(contents);
-$("table.quantities tr#quantity_<%= @quantity.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
-$("table.quantities tr.quantity_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+$("table.#{table_class} tr#quantity_<%= @quantity.id %>").closest("table").wrap(form).append(contents);
+$("table.#{table_class} tr#quantity_<%= @quantity.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.#{table_class} tr.quantity_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 
-$("table.quantities tr.add_button").hide();
-$("table.quantities input:text:visible:first").focus();
+$("table.#{table_class} tr.add_button").hide();
+$("table.#{table_class} input:text:visible:first").focus();

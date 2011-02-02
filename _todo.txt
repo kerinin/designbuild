@@ -23,19 +23,20 @@
 - task#costs 'add material cost' should show amount in form
 - task#scheduling redirect wrong on deadline removal, addition
 - deadline#index should use add button
-* notice box behavior erratic
-* can't add component to new project
-* add button to create component @ component#index
+- can't add component to new project
+- add button to create component @ component#index
     component#index uses different templates for index and subcomponent index
     this requires different input forms, if we're doing it inline (rather than popup)
     also, the buttons don't work
     This also causes problems with subcomponent creation
-* component#new_cost unit cost UI still needs work, doesn't add correctly    
-* component#quantities inserts edit field into both tables on 'edit'
-* task#index rows messed up on edit
+- component#quantities inserts edit field into both tables on 'edit'
+- task#index rows messed up on edit
     This is due to the modal fixed bid / cost+ interface
-* task#index submitting task drop down also submits new tr
+- task#index submitting task drop down also submits new tr
     nested forms.  Need to find a way to avoid this...
+    
+* component#new_cost unit cost UI still needs work, doesn't add correctly    
+* notice box behavior erratic
 * task#scheduling needs redesign (also not working too well)
 * component list drag & drop
 

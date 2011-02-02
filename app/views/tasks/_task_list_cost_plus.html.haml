@@ -5,8 +5,8 @@
     %th.currency Cost-to-Date
     %th.currency.qtip_projected Projected Cost
     %th.number % Complete (Est./Act.)
-    %th.check_box Active
-    %th Deadline
+    / %th.check_box Active
+    / %th Deadline
     %th.control
     %th.control
 
@@ -24,24 +24,26 @@
         = number_to_percentage( task.percent_complete, :precision => 0 )
         ='/'
         = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
-      / Active
-      %td.check_box
-        =form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_active"} do |f|
-          = f.check_box :active, :onchange => "$('#edit_task_#{task.id}_active').submit();"
-      / Deadline
-      %td
-        -if task.deadline.blank?
-          Set Deadline:
-          = link_to 'New', new_task_deadline_path(task, :context => 'tasks'), :remote => true
-          or
-          =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
-            =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
-        -else
-          = link_to( task.deadline.name, edit_task_deadline_path(task, :context => 'tasks'), :remote => true ) 
-          = date_relative_to_now(task.deadline.date)
-          = form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)) do |f|
-            = f.hidden_field :deadline_id, :value => nil
-            = f.submit 'Remove'
+      / 
+        Active
+        %td.check_box
+          =form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_active"} do |f|
+            = f.check_box :active, :onchange => "$('#edit_task_#{task.id}_active').submit();"
+      / 
+        Deadline
+        %td
+          -if task.deadline.blank?
+            Set Deadline:
+            = link_to 'New', new_task_deadline_path(task, :context => 'tasks'), :remote => true
+            or
+            =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
+              =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
+          -else
+            = link_to( task.deadline.name, edit_task_deadline_path(task, :context => 'tasks'), :remote => true ) 
+            = date_relative_to_now(task.deadline.date)
+            = form_for [@project, task], :url => project_task_path(@project, task, :redirect_to => project_tasks_path(@project)) do |f|
+              = f.hidden_field :deadline_id, :value => nil
+              = f.submit 'Remove'
       %td.control.edit= link_to 'Edit', edit_project_task_path(@project, task, :context => 'tasks'), :remote => true
       %td.control.destroy= link_to icon(:delete), [@project, task], :confirm => 'Are you sure?', :method => :delete
       

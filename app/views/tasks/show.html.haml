@@ -36,14 +36,15 @@
       .left Total Raw Cost
       .right= number_to_currency @task.raw_cost
       
-  .cost
-    -@task.markups.each do |markup|
-      .left
+  -unless @task.markups.empty?
+    .cost
+      -@task.markups.each do |markup|
         %h3
-          =markup.name
-          =number_to_percentage markup.percent, :precision => 0
-          
-      %h3.right= number_to_currency markup.apply_to(@task, :raw_cost)
+          .left      
+            =markup.name
+            =number_to_percentage markup.percent, :precision => 0
+            
+        %h3.right= number_to_currency markup.apply_to(@task, :raw_cost)
   
   .cost
     %h3
