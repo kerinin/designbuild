@@ -1,0 +1,13 @@
+-current ||= nil
+%h1
+  Design Component: 
+  =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
+  = @component.name
+
+%ul.nav
+  %li{:class => current == :costs ? 'current' : nil}=link_to "Costs", @component
+  %li{:class => current == :quantities ? 'current' : nil}=link_to "Quantities(#{@component.quantities.count})", component_quantities_path(@component)
+  %li{:class => current == :markups ? 'current' : nil}=link_to "Markups(#{@component.markups.count})", component_markups_path(@component)
+  %li{:class => current == :edit ? 'current' : nil}=link_to 'Edit Component', edit_component_path(@component)
+  %li{:class => current == :subcomponents ? 'current' : nil}=link_to 'Subcomponents', component_subcomponents_path(@component)
+%hr

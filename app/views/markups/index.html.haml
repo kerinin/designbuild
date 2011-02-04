@@ -1,3 +1,10 @@
-%h1 Listing markups
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-=render :partial => 'markup_lines', :locals => {:markups => @markups}
+.container
+  -if !@parent.nil? && @parent.class == Component
+    -@component = @parent
+    =render :partial => 'components/nav', :locals => {:current => :markups}
+
+  %h1 Markups
+
+  =render :partial => 'markup_lines', :locals => {:markups => @markups}

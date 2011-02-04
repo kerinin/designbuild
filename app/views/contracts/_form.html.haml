@@ -1,14 +1,34 @@
-= form_for [@project, @contract] do |f|
-  -if @contract.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@contract.errors.count, "error")} prohibited this contract from being saved:"
-      %ul
-        - @contract.errors.full_messages.each do |msg|
-          %li= msg
+-contract ||= @contract
 
-  .field
-    = f.label :name
-    = f.text_field :name
+.container.cost_creation.contract
+  = form_for [@project, contract] do |f|
+    .full_width
+    
+      -if contract.errors.any?
+        #error_explanation
+          %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+          %ul
+            - contract.errors.full_messages.each do |msg|
+              %li= msg
+      %h1
+        .field
+          = f.label :name
+          = f.text_field :name, :tabindex => 1
 
-  .actions
-    = f.submit 'Save'
+    .full_width
+      %h2 Parent Component
+      
+      .field
+        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+
+    -unless contract.bids.empty?
+      .full_width
+        %h2 Active Bid
+        =form_for [@project, @contract] do |f|
+          = f.collection_select(:bid_id, @contract.bids, :id, :select_label, { :include_blank => "-- No Active Bid --" }, :onchange =>"$('#edit_contract_#{@contract.id}').submit();")
+
+    %hr
+    
+    .full_width
+      .actions
+        = f.submit 'Save', :tabindex => 5

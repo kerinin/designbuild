@@ -1,33 +1,74 @@
-= form_for [@component, @unit_cost_estimate] do |f|
-  -if @unit_cost_estimate.errors.any?
-    #error_explanation
-      %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
-      %ul
-        - @unit_cost_estimate.errors.full_messages.each do |msg|
-          %li= msg
+-unit_cost_estimate ||= @unit_cost_estimate
+-unit_cost_estimate.build_quantity
 
-  .field
-    = f.label :name
-    = f.text_field :name
-  .field
-    %strong= f.label :component
-    = f.collection_select :component_id, |
-      @component.ancestors.all + [@component] + @component.subtree, |
-      :id, |
-      :name |
-  .field
-    %strong= f.label :quantity
-    = f.grouped_collection_select :quantity_id, |
-      @component.ancestors.all + [@component], |
-      :quantities, |
-      :name, |
-      :id, |
-      :optgroup_label |
-  .field
-    = f.label :unit_cost
-    = f.text_field :unit_cost
-  .field
-    = f.label :drop
-    =f.text_field :drop
-  .actions
-    = f.submit 'Save'
+.container.cost_creation.unit_cost_estimate
+  = form_for [@component, unit_cost_estimate] do |f|
+    .full_width
+    
+      -if unit_cost_estimate.errors.any?
+        #error_explanation
+          %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+          %ul
+            - unit_cost_estimate.errors.full_messages.each do |msg|
+              %li= msg
+      %h1
+        .field
+          = f.label :name
+          = f.text_field :name, :tabindex => 1
+          
+    .full_width
+      %h2 
+        =radio_button_tag :mode, :new
+        %label{:for => 'mode_new'} New Quantity
+        
+      .large_input
+        (
+        =f.fields_for :quantity do |quantity_form|
+          .name
+            =quantity_form.text_field :name
+            =':'
+          .value=quantity_form.text_field :value
+          .unit=quantity_form.text_field :unit
+        +
+        .drop
+          =f.text_field :drop
+          ='%'
+        ) x
+        .unit_cost.autogrow
+          $
+          =f.text_field :unit_cost
+        
+    .full_width
+      %h2
+        =radio_button_tag :mode, :existing
+        %label{:for => 'mode_existing'} Existing Quantity
+
+      .large_input
+        (
+        =f.collection_select :quantity_id, Quantity.all, :id, :optgroup_label
+        +
+        .drop
+          =f.text_field :drop
+          ='%'
+        ) x
+        .unit_cost.autogrow
+          $
+          =f.text_field :unit_cost
+          
+    .full_width
+      %h2 Parent Component
+      
+      .field
+        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+       
+    -unless unit_cost_estimate.new_record? 
+      .full_width
+        %h2 Task
+        
+        (not implemented)
+      
+    %hr
+    
+    .full_width
+      .actions
+        = f.submit 'Save', :tabindex => 5

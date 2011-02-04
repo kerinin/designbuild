@@ -15,28 +15,11 @@
   - if contract_costs.empty?
     %tr
       %td{:colspan => 10} (None)
-      
-  %tr.control.add_button
-    %td{:colspan => 10}
-      = link_to new_contract_contract_cost_path(@contract), :remote => true do
-        = icon(:add)
-        Add Contract Invoice
 
-  =render :partial => 'markups/subtotal_lines', :locals => { |
-    :parent => @contract, |
-    :markups => @contract.markups, |
-    :raw_cost => @contract.raw_cost, |
-    :edit_helper => :edit_contract_markup_path, |
-    :remove_helper => :remove_contract_markup_path} |
   %tr.totals
     %td.right
-      %strong Contract Subtotal
+      %strong Invoiced to Date
     %td.currency
       %strong= number_to_currency(@contract.invoiced)
     %td.control.add_button{:colspan => 2}
-      =link_to '+Markup', new_contract_markup_path( @contract ), :remote => true
-      -unless @inactive_markups.empty?
-        or
-        -form_tag add_markup_to_contract_path(@contract), :id => 'add_existing_markup', :method => :post do
-          =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
 

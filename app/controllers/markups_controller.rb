@@ -1,5 +1,5 @@
 class MarkupsController < ApplicationController
-  before_filter :get_parent, :only => [:create, :update, :edit, :new]
+  before_filter :get_parent, :only => [:create, :update, :edit, :new, :index, :destroy]
   
   def add_to_project
     @parent = Project.find(params[:project_id])
@@ -52,10 +52,22 @@ class MarkupsController < ApplicationController
   # GET /markups
   # GET /markups.xml
   def index
-    @markups = Markup.all
+    @markups = @parent.markups unless @parent.nil?
+    @markups ||= Markup.all
 
     respond_to do |format|
-      format.html # index.html.erb
+      format.html {
+        case @parent.class.name
+        when 'Component'
+          render 'index_from_component'
+        when 'Project'
+          render 'index_from_project'
+        when 'Task'
+          render 'index_from_task'
+        else
+          render
+        end
+      }
       format.xml  { render :xml => @markups }
     end
   end
@@ -76,16 +88,6 @@ class MarkupsController < ApplicationController
   def new
     @markup = Markup.new
     @markup.markings.build
-    @parent = case
-      when params.has_key?(:project_id)
-        Project.find params[:project_id]
-      when params.has_key?(:task_id)
-        Task.find params[:task_id]
-      when params.has_key?(:component_id)
-        Component.find params[:component_id]
-      when params.has_key?(:contract_id)
-        Contract.find params[:contract_id]
-    end
 
     respond_to do |format|
       format.js
@@ -158,7 +160,7 @@ class MarkupsController < ApplicationController
     @markup.destroy
 
     respond_to do |format|
-      format.html { redirect_to(markups_url) }
+      format.html { redirect_to [@parent, :markups] }
       format.xml  { head :ok }
     end
   end
@@ -168,12 +170,13 @@ class MarkupsController < ApplicationController
   def get_parent
     if params.has_key?(:task_id)
       @parent = Task.find(params[:task_id])
+      @task = @parent
     elsif params.has_key?(:component_id)
       @parent = Component.find(params[:component_id])
-    elsif params.has_key?(:contract_id)
-      @parent = Contract.find(params[:contract_id])
+      @component = @parent
     elsif params.has_key?(:project_id)
       @parent = Project.find(params[:project_id])
+      @project = @parent
     end
   end
   
@@ -183,7 +186,7 @@ class MarkupsController < ApplicationController
     @parent.save!
     
     respond_to do |format|
-      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully added.' }
+      format.html { redirect_to [@parent, :markups], :notice => 'Markup was successfully added.' }
     end
   end
   
@@ -193,7 +196,7 @@ class MarkupsController < ApplicationController
     @parent.save!
     
     respond_to do |format|
-      format.html { redirect_to (@parent.class.name == 'Project' ? @parent : [@parent.project, @parent] ), :notice => 'Markup was successfully removed.' }
+      format.html { redirect_to [@parent, :markups], :notice => 'Markup was successfully removed.' }
     end
   end
 end

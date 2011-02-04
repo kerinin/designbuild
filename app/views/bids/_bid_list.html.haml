@@ -3,7 +3,6 @@
     %th Contractor
     %th Date
     %th.currency Cost
-    %th.currency Cost w/ Markup
     %th.control
     %th.control
 
@@ -12,17 +11,10 @@
       %td= bid.contractor
       %td= bid.date.to_s :long
       %td.currency= number_to_currency bid.raw_cost
-      %td.currency= number_to_currency bid.cost
       %td.control.edit= link_to 'Edit', edit_contract_bid_path(@contract, bid), :remote => true
       %td.control.destroy= link_to icon(:delete), [@contract, bid], :confirm => 'Are you sure?', :method => :delete
       
   - if bids.empty?
     %tr
       %td{:colspan => 10} (None)
-      
-  %tr.control.add_button
-    %td{:colspan => 10}
-      = link_to new_contract_bid_path(@contract), :remote => true do
-        = icon(:add)
-        Add Bid
-  
+

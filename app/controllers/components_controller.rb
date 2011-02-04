@@ -1,5 +1,6 @@
 class ComponentsController < ApplicationController
-  before_filter :get_project, :except => :add_markup
+  before_filter :get_objects
+  #before_filter :get_project, :except => :add_markup
   
   def sort
     if params.has_key?(:id)
@@ -39,7 +40,7 @@ class ComponentsController < ApplicationController
   # GET /components
   # GET /components.xml
   def index
-    @components = @project.components.roots
+    @components ||= @project.components.roots
 
     respond_to do |format|
       format.html # index.html.erb
@@ -74,6 +75,20 @@ class ComponentsController < ApplicationController
     end
   end
 
+  # GET /components/new
+  # GET /components/new.xml
+  def new_cost
+    @component = Component.find(params[:id])
+
+    respond_to do |format|
+      format.js {
+        @context_component = Component.find(params[:context]) if params.has_key?(:context)
+      }
+      format.html # new.html.erb
+      format.xml  { render :xml => @component }
+    end
+  end
+  
   # GET /components/1/edit
   def edit
     @component = Component.find(params[:id])
@@ -125,7 +140,7 @@ class ComponentsController < ApplicationController
           if params.has_key? :redirect
             redirect_to(params[:redirect])
           else
-            redirect_to([@project, @component], :notice => 'Component was successfully updated.') 
+            redirect_to(@component, :notice => 'Component was successfully updated.') 
           end
         }
         format.xml  { head :ok }
@@ -156,5 +171,17 @@ class ComponentsController < ApplicationController
       }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @component = Component.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @parent_component = Component.find(params[:component_id]) if params.has_key? :component_id
+    
+    @project ||= @component.project unless @component.nil?
+    @project ||= @parent_component.project unless @parent_component.nil?
+    @components = @parent_component.children unless @parent_component.nil?
   end
 end

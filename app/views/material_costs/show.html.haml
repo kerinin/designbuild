@@ -1,14 +1,14 @@
-=render :partial => 'shared/project_nav'
+=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
 
-%h1
-  =link_to @material_cost.task.name, [@project, @task]
-  Materials:
-  = @supplier.name
-  = @material_cost.date.to_s :long
+.container
+  =render :partial => 'tasks/nav', :locals => {:current => :costs}
+  
+  %h2
+    Materials:
+    = @supplier.name
+    = @material_cost.date.to_s :long
 
-%hr
+  =render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => params[:context] || :po}
+  
+  =add_button 'Add Material', new_material_cost_line_item_path(@material_cost)
 
-=render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => params[:context] || :po}
-
-- if notice == 'Material cost was successfully created.'
-  =javascript_tag "$(document).ready( function() { $('table.material_cost_lines tr.add_button > td > a').click(); } );"

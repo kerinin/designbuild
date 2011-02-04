@@ -21,3 +21,5 @@
   %hr
 
   =render :partial => @project.fixed_bid? ? 'task_list_fixed_bid' : 'task_list_cost_plus', :locals => {:tasks => @tasks}
+  
+  =add_button 'Add Task', new_project_task_path(@project)

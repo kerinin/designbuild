@@ -1,0 +1,19 @@
+.cost.fixed_cost_estimate.expand_active_area
+  .left
+    %h3=link_to fixed_cost.name, edit_component_fixed_cost_estimate_path(fixed_cost.component_id, fixed_cost)
+      
+  .right
+    %h3
+      =number_to_currency fixed_cost.estimated_raw_cost
+      ='/'
+      %strong=number_to_currency fixed_cost.estimated_cost
+    
+  .details
+    .left
+      .task
+        %strong Task:
+        -unless fixed_cost.task.blank?
+          =fixed_cost.task.name
+        -else
+          (None)  
+

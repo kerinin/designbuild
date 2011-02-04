@@ -7,9 +7,10 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
 
-  .field
-    = f.label :email
-    = f.text_field :email
+  %h1
+    .field
+      = f.label :email
+      = f.text_field :email
 
   .field
     = f.label :password

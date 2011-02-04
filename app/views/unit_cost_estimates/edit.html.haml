@@ -1,7 +1,8 @@
-%h1 Editing unit_cost_estimate
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-= render 'form'
+.container
 
-= link_to 'Show', [@component, @unit_cost_estimate]
-\|
-= link_to 'Back', component_unit_cost_estimates_path(@component)
+  = render :partial => 'components/nav', :locals => {:current => :costs}
+
+  = render 'form'
+

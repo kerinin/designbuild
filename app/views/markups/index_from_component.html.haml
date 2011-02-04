@@ -1,0 +1,12 @@
+-@component = @parent
+-@project = @component.project
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
+
+.container
+  =render :partial => 'components/nav', :locals => {:current => :markups}
+
+  %h1 Markups
+
+  =render :partial => 'markup_lines', :locals => {:markups => @markups}
+  
+  =add_button 'Add Markup', new_component_markup_path(@component)

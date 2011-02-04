@@ -29,6 +29,10 @@ class Project < ActiveRecord::Base
   before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
   
+  def component_tree
+    self.components.roots.inject([]) {|memo,obj| memo + obj.tree}
+  end
+  
   def fixed_bid?
     self.fixed_bid
   end

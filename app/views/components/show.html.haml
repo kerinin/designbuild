@@ -1,6 +1,6 @@
 -content_for :head do
   =javascript_include_tag "autocomplete-rails.js"
-  =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
+  =#stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
   = javascript_include_tag 'jquery.tablednd.js'
   =render :partial => 'dnd.js', :locals => {:url => sort_project_component_path(@project, @component)}
     
@@ -8,80 +8,55 @@
 
 .container
 
-  %h1
-    Design Component: 
-    =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
-    = @component.name
+  =render :partial => 'nav', :locals => {:current => :costs}
 
-  =#render :partial => 'hierarchy', :locals => {:context => @component}
+  #costs
+    %h2 Estimated Costs
 
-  .main_actions
-    View:
-    =link_to "Change Log", changelog_project_component_path(@project, @component)
+    =add_button 'Add Cost', new_cost_project_component_path(@project, @component), false
 
-  Change building component of 
-  %i=@component.name
-  to:
-  .inline
-    =form_for [@project, @component], :html => {:class => :edit_component_parent} do |f|
-      = f.collection_select(:parent_id, (@project.components.roots.map{|c| c.subtree}.flatten - @component.subtree.flatten), :id, :select_label, { :include_blank => "-- Top Level --" }, :onchange =>"$('#edit_component_#{@component.id}').submit();")
-
-  %br
+    -@component.unit_cost_estimates.each do |unit_cost|
+      =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}
   
-  %button Add Subcomponent
+    -@component.fixed_cost_estimates.each do |fixed_cost|
+      =render :partial => 'fixed_cost_estimates/list_div', :locals => {:fixed_cost => fixed_cost}
+  
+    -@component.contracts.each do |contract|
+      =render :partial => 'contracts/list_div', :locals => {:contract => contract}
+  
+    -if @component.unit_cost_estimates.empty? && @component.fixed_cost_estimates.empty? && @component.contracts.empty?
+      .cost
+        %h3.left No Costs defined for this Component
+    %hr
 
-  %hr
+    %h2 Subtotal
 
-  %h2 Quantities
-  =render :partial => 'quantities/quantity_list', :locals => {:quantities => @component.quantities, :component => @component}
+    .cost
+      %h3
+        .left Raw Cost
+        .right= number_to_currency @component.estimated_raw_component_cost
+    .cost
+      -@component.markups.each do |markup|
+        .left
+          %h3
+            =markup.name
+            =number_to_percentage markup.percent, :precision => 0
+            
+        %h3.right= number_to_currency markup.apply_to(@component, :estimated_raw_component_cost)
+    
+    .cost
+      %h3
+        .left Component Cost
+        .right= number_to_currency @component.estimated_component_cost
 
-  %h2 Estimated Costs
-  %h3 Unit Costs
-  =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:unit_cost_estimates => @component.unit_cost_estimates, :limit => 50, :context => :component}
-  %h3 Fixed Costs
-  =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:fixed_cost_estimates => @component.fixed_cost_estimates, :limit => 50, :context => :component}
-  %h2 Contracts
-  =render :partial => 'contracts/contract_list', :locals => {:contracts => @component.contracts, :context => :component}
+        .left Subcomponent Cost
+        .right= number_to_currency @component.estimated_subcomponent_cost
+    .cost.last
+      %h3
+        .left
+          %strong Total Cost
+        .right
+          %strong= number_to_currency @component.estimated_cost
 
-  %hr
-
-  %h2 Totals
-
-  %table.totals
-    %tr
-      %th
-      %th.currency Est. Cost
-      %th.control
-      %th.control
-    %tr
-      %td Estimated Unit Costs
-      %td.currency= number_to_currency(@component.estimated_raw_component_unit_cost)
-    %tr
-      %td Estimated Fixed Costs
-      %td.currency= number_to_currency(@component.estimated_raw_component_fixed_cost)
-    %tr
-      %td Contract Costs (Includes Markup)
-      %td.currency= number_to_currency(@component.estimated_component_cost)
-    %tr
-      %td Sub-Component Costs (Includes Markup)
-      %td.currency= number_to_currency(add_or_nil @component.estimated_subcomponent_fixed_cost, @component.estimated_subcomponent_unit_cost)
-    =render :partial => 'markups/subtotal_lines', :locals => { |
-      :parent => @component, |
-      :markups => @component.markups, |
-      :raw_cost => @component.estimated_raw_component_cost, |
-      :edit_helper => :edit_component_markup_path, |
-      :remove_helper => :remove_component_markup_path} |
-    %tr.totals
-      %td.right
-        %strong Component Subtotal
-      %td.currency
-        %strong= number_to_currency(@component.estimated_cost)
-      %td.control.add_button{:colspan => 2}
-        =link_to '+Markup', new_component_markup_path( @component ), :remote => true
-        -unless @inactive_markups.empty?
-          or
-          -form_tag add_markup_to_component_path(@component), :id => 'add_existing_markup', :method => :post do
-            =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
       
-      
-        
+          

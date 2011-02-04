@@ -1,0 +1,37 @@
+-content_for :head do
+  =javascript_include_tag "autocomplete-rails.js"
+  =javascript_include_tag "jquery.dimscreen.js"
+  =stylesheet_link_tag 'jquery.theme.css', :media => 'screen, projection'
+  
+=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
+
+.container
+  =render :partial => 'nav', :locals => {:current => :estimated_costs}
+
+  %h2 Estimated Costs
+  
+  -@task.unit_cost_estimates.each do |unit_cost|
+    =render :partial => 'unit_cost_estimates/list_div', :locals => {:unit_cost => unit_cost}
+    
+  -@task.fixed_cost_estimates.each do |fixed_cost|
+    =render :partial => 'fixed_cost_estimates/list_div', :locals => {:fixed_cost => fixed_cost}
+  
+  -if @task.unit_cost_estimates.empty? && @task.fixed_cost_estimates.empty?
+    .cost
+      %h3.left No Estimated Costs associated with this Task
+    
+  =link_to '#add_estimated_costs', :class => 'click_to_show' do
+    %button 
+      =icon :add
+      Add Estimated Costs
+      
+  #add_estimated_costs
+    -@project.component_tree.each do |c|
+      -uc = c.unit_cost_estimates - @task.fixed_cost_estimates
+      -fc = c.fixed_cost_estimates - @task.fixed_cost_estimates
+      -unless uc.empty? && fc.empty?
+        %h3=c.name
+        -uc.each do |unit_cost|
+          =link_to unit_cost.name, add_task_unit_cost_estimate_path(@task, unit_cost)
+        -fc.each do |fixed_cost|
+          =link_to fixed_cost.name, add_task_fixed_cost_estimate_path(@task, fixed_cost)

@@ -36,6 +36,7 @@ Designbuild::Application.routes.draw do
     resources :components do
       member do
         get :changelog
+        get :new_cost
         post :sort
       end
       collection do
@@ -60,7 +61,7 @@ Designbuild::Application.routes.draw do
       get :autocomplete_task_name
     end
     
-    resources :markups, :only => [:new, :create, :edit, :update] do
+    resources :markups do
       member do
         get :add, :action => :add_to_project
         get :remove, :action => :remove_from_project
@@ -90,6 +91,8 @@ Designbuild::Application.routes.draw do
     resources :fixed_cost_estimates
     resources :unit_cost_estimates
     resources :contracts
+    resources :markups
+    resources :components, :as => :subcomponents, :path => :subcomponents
     
     member do
       post :add_markup, :as => :add_markup_to
@@ -111,9 +114,26 @@ Designbuild::Application.routes.draw do
 
     member do
       post :add_markup, :as => :add_markup_to
+      get :estimated_costs
+      get :scheduling
+      get :costs
     end
     
-    resources :markups, :only => [:new, :create, :edit, :update] do
+    resources :markups do
+      member do
+        get :add, :action => :add_to_task
+        get :remove, :action => :remove_from_task
+      end
+    end
+    
+    resources :unit_cost_estimates do
+      member do
+        get :add, :action => :add_to_task
+        get :remove, :action => :remove_from_task
+      end
+    end
+    
+    resources :fixed_cost_estimates do
       member do
         get :add, :action => :add_to_task
         get :remove, :action => :remove_from_task

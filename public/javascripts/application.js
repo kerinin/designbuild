@@ -24,4 +24,8 @@ $(document).ready( function() {
       t=setTimeout(function(thisObj){ $(thisObj).closest('.expander').removeClass('expanded')}, 300, this);
     }
   });
+  
+  $('.tabs').tabs();
+  
+  $('.click_to_show').each( function(i) { $($(this).attr('href')).hide()} ).click( function(e) { $($(this).attr('href')).show(); $(this).hide(); return false; });
 });

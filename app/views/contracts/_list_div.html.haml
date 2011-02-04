@@ -1,0 +1,21 @@
+.cost.contract_estimate.expand_active_area
+  .left
+    %h3=link_to contract.name, edit_component_contract_path(@component, contract)
+
+  .right
+    %h3
+      =number_to_currency contract.estimated_raw_cost
+      ='/'
+      %strong=number_to_currency contract.estimated_cost
+    
+  .details
+    .left
+      .bid
+        %strong Contractor:
+        -if contract.active_bid.blank?
+          (None)
+        -else
+          =contract.active_bid.contractor     
+
+
+    

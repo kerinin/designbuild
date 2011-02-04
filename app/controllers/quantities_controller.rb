@@ -4,7 +4,7 @@ class QuantitiesController < ApplicationController
   # GET /quantities
   # GET /quantities.xml
   def index
-    @quantities = Quantity.all
+    @quantities = @component.quantities
 
     respond_to do |format|
       format.html # index.html.erb

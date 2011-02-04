@@ -1,0 +1,54 @@
+body.bp
+  .cost:last-child
+    border-bottom : 0
+  .cost
+    width : 100%
+    padding-bottom : .25em
+    padding-top : .25em
+    overflow : auto
+    border-bottom : 1px dashed #ccc
+
+    &.fitted:hover
+      background : #eee
+      +linear-gradient(color-stops(#f8f8f8, #eee))
+      
+      a
+        text-decoration : underline
+
+    &.fitted a
+      text-decoration : none
+          
+    &, div
+      clear : both
+
+    div
+      width : auto
+      margin : 0
+      padding : 0   
+                 
+    h3
+      margin : 0
+      width : auto
+      display : inline
+      
+      &, div
+        font-size : 16px
+        line-height : 22px
+      
+    .de_emphasize
+      display : inline
+      
+    .details
+      padding-left : 5em
+      padding-right : 2em
+        
+    .left
+      text-align : left
+      float : left
+      clear : left
+    .right
+      text-align : right
+      float : right
+      clear : right
+
+

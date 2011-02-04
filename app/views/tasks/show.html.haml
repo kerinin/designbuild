@@ -6,97 +6,61 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :tasks}
 
 .container
-  %h1
-    Construction Task:
-    = @task.name
-    
+  =render :partial => 'nav', :locals => {:current => :summary}
+
   .main_actions
-    =link_to "Log Hours", new_task_labor_cost_path( @task), :remote => true
-    =link_to "New Purchase Order", new_task_material_cost_path( @task), :remote => true
-    =link_to "Print All Purchase Orders", purchase_order_list_projects_path
-
-
-  -if @task.deadline.blank?
-    Set Deadline:
-    = link_to 'New', new_task_deadline_path(@task, :context => 'tasks'), :remote => true
-    or
-    .inline
-      =form_for [@project,@task], :html => {:id => "edit_task_#{@task.id}_deadline"} do |f|
-        =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{@task.id}_deadline').submit();"
-
-  -else
-    Deadline:
-    %strong=link_to @task.deadline.name, edit_task_deadline_path(@task, :context => 'task'), :remote => true
-    = @task.deadline.date.to_s :long
-    = "(#{date_relative_to_now @task.deadline.date})"
-    .inline
-      = form_for [@project, @task], :html => {:id => "edit_task_#{@task.id}_deadline"} do |f|
-        = f.hidden_field :deadline_id, :value => nil
-        = f.submit 'Remove'
-
-  =form_for [@project, @task], :html => {:id => "edit_task_#{@task.id}_active"} do |f|
-    = f.label :active
-    = f.check_box :active, :onchange => "$('#edit_task_#{@task.id}_active').submit();"
-
-  %hr
-
-  %h2=# Markups
-
-  =#render :partial => 'applied_markup_lines', :locals => {:markups => @task.markups}
-
-  %h2 Purchase Orders
-
-  =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.purchase_orders, :context => :po}
-
-  %hr
+    =add_button 'New Purchase Order', new_task_material_cost_path( @task)
     
-  %h2 Costs to Date
-  %h3 Labor
-  =render :partial => 'labor_costs/labor_cost_list', :locals => {:labor_costs => @task.labor_costs, :context => :task}
-  %h3 Material
-  =render :partial => 'material_costs/material_cost_list', :locals => {:task => @task, :material_costs => @task.completed_purchases, :context => :cost}
+    =add_button 'Log Hours', new_task_labor_cost_path( @task)
+      
+    =link_to purchase_order_list_projects_path do
+      %button
+        =icon :printer
+        Print All Purchase Orders
 
-  %hr
+  %h2 Timeline
+  
+  (Later...)
+  
+  
+  %h2 Cost Summary
+  
+  .cost
+    %h3
+      .left Raw Material Cost
+      .right= number_to_currency @task.raw_material_cost
+      
+      .left Raw Labor Cost
+      .right= number_to_currency @task.raw_labor_cost
+      
+      .left Total Raw Cost
+      .right= number_to_currency @task.raw_cost
+      
+  -unless @task.markups.empty?
+    .cost
+      -@task.markups.each do |markup|
+        %h3
+          .left      
+            =markup.name
+            =number_to_percentage markup.percent, :precision => 0
+            
+        %h3.right= number_to_currency markup.apply_to(@task, :raw_cost)
+  
+  .cost
+    %h3
+      .left
+        %strong Cost to Date
+      .right
+        %strong= number_to_currency @task.cost
+        
+      .left Estimated Cost
+      .right= number_to_currency @task.estimated_cost
+        
+  .cost
+    %h3
+      .left Estimated % Complete
+      .right= number_to_percentage @task.percent_complete, :precision => 0
+      
+      .left Cost to Date as % of Estimated
+      .right= number_to_percentage( @task.percent_of_estimated, :precision => 0 ) || '-'
 
-  %h2 Total Cost
-
-  %table.totals
-    %tr
-      %th
-      %th.currency Cost
-      %th.control
-      %th.control
-    %tr
-      %td Labor Costs
-      %td.currency= number_to_currency(@task.raw_labor_cost)
-      %td{:colspan => 2}
-    %tr
-      %td Material Costs
-      %td.currency= number_to_currency(@task.raw_material_cost)
-      %td{:colspan => 2}
-
-    =render :partial => 'markups/subtotal_lines', :locals => { |
-      :parent => @task, |
-      :markups => @task.markups, |
-      :raw_cost => @task.raw_cost, |
-      :edit_helper => :edit_task_markup_path, |
-      :remove_helper => :remove_task_markup_path} |
-    %tr.totals
-      %td.right
-        %strong Task Subtotal
-      %td.currency
-        %strong= number_to_currency(@task.cost)
-      %td.control.add_button{:colspan => 2}
-        =link_to '+Markup', new_task_markup_path( @task ), :remote => true
-        -unless @inactive_markups.empty?
-          or
-          -form_tag add_markup_to_task_path(@task), :id => 'add_existing_markup', :method => :post do
-            =select_tag :markup_id, options_from_collection_for_select(@inactive_markups, :id, :select_label), { :include_blank => "Add Existing Markup", :onchange =>"$('form#add_existing_markup').submit();" }
-
-  %hr
-
-  %h2 Estimated Costs
-  %h3 Unit Costs
-  =render :partial => 'unit_cost_estimates/unit_cost_estimate_list', :locals => {:context => :task, :unit_cost_estimates => @task.unit_cost_estimates, :limit => 5}
-  %h3 Fixed Costs
-  =render :partial => 'fixed_cost_estimates/fixed_cost_estimate_list', :locals => {:context => :task, :fixed_cost_estimates => @task.fixed_cost_estimates, :limit => 5}

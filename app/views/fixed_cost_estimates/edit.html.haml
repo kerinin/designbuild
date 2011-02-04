@@ -1,7 +1,7 @@
-%h1 Editing fixed_cost_estimate
+=render :partial => 'shared/project_nav', :locals => {:current => :components}
 
-= render 'form'
+.container
+  = render :partial => 'components/nav', :locals => {:current => :costs}
+  
+  = render 'form'
 
-= link_to 'Show', [@component, @fixed_cost_estimate]
-\|
-= link_to 'Back', component_fixed_cost_estimates_path(@component)

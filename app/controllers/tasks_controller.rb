@@ -1,5 +1,6 @@
 class TasksController < ApplicationController
-  before_filter :get_project, :except => :add_markup
+  #before_filter :get_project, :except => :add_markup
+  before_filter :get_objects
   
   def add_markup
     @task = Task.find(params[:id])
@@ -23,7 +24,37 @@ class TasksController < ApplicationController
       format.xml  { render :xml => @tasks }
     end
   end
-
+  
+  def scheduling
+    @task = Task.find(params[:id])
+    @inactive_markups = Markup.scoped - @task.markups
+    
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @task }
+    end
+  end
+  
+  def estimated_costs
+    @task = Task.find(params[:id])
+    @inactive_markups = Markup.scoped - @task.markups
+    
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @task }
+    end
+  end
+  
+  def costs
+    @task = Task.find(params[:id])
+    @inactive_markups = Markup.scoped - @task.markups
+    
+    respond_to do |format|
+      format.html # show.html.erb
+      format.xml  { render :xml => @task }
+    end
+  end
+  
   # GET /tasks/1
   # GET /tasks/1.xml
   def show
@@ -104,5 +135,14 @@ class TasksController < ApplicationController
       format.html { redirect_to(project_tasks_url(@project)) }
       format.xml  { head :ok }
     end
+  end
+  
+  protected
+  
+  def get_objects
+    @task = Task.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    
+    @project ||= @task.project unless @task.nil?
   end
 end

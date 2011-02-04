@@ -3,8 +3,7 @@
 .container
   %h1 Editing user
 
+  %hr
+  
   = render 'form'
 
-  = link_to 'Show', admin_user_path( @user )
-  \|
-  = link_to 'Back', admin_users_path

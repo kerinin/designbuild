@@ -1,5 +1,5 @@
 %tr.task_fields
-  %td.field{:colspan => 7}
+  %td.field{:colspan => @project.fixed_bid? ? 8 : 6}
     %strong= f.label :name
     = f.text_field :name
   %td.field

@@ -1,9 +1,11 @@
+-@component ||= @contract.component
+
 =render :partial => 'shared/project_nav', :locals => {:current => :contracts}
 
-%h1 Editing contract
+.container
+  = render :partial => 'components/nav', :locals => {:current => :costs}
+  
+  = render 'form'
 
-= render 'form'
 
-= link_to 'Show', [@project, @contract]
-\|
-= link_to 'Back', project_contracts_path(@project)
+            

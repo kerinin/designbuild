@@ -1,7 +1,10 @@
 =render :partial => 'shared/project_nav', :locals => {:current => :contracts}
 
-%h1 New contract
+.container
+  %h1 New Contract
+  
+  %hr
+  
+  = render 'form'
 
-= render 'form'
 
-= link_to 'Back', project_contracts_path(@project)

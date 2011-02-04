@@ -1,4 +1,3 @@
--context ||= :po
 -remote ||= false
 
 = form_for [@task, @material_cost], :remote => remote do |f|
@@ -20,10 +19,9 @@
     =#or
     =#link_to "(Add new Supplier)", new_supplier_path
 
-  -unless context == :po
-    .field
-      = f.label :raw_cost, 'Cost'
-      = f.text_field :raw_cost
+  .field
+    = f.label :raw_cost, 'Cost'
+    = f.text_field :raw_cost
       
   .field.submit
     = f.submit 'Save'
