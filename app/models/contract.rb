@@ -36,7 +36,7 @@ class Contract < ActiveRecord::Base
   end
   
   def percent_invoiced
-    multiply_or_nil( 100, divide_or_nil( self.raw_invoiced, self.raw_cost ) )
+    multiply_or_nil( 100, divide_or_nil( self.invoiced, self.estimated_cost ) )
   end
   
   def cost_before(date)
