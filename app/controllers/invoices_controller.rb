@@ -11,7 +11,7 @@ class InvoicesController < ApplicationController
   end
   
   def set_amounts
-    @invoice = Invoice.find(params[:id])
+    @invoice = Invoice.find(params[:id], :include => :lines)
     @project = @invoice.project
 
     respond_to do |format|
@@ -119,16 +119,18 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       
       @invoice.attributes = params[:invoice]
-      @invoice.lines.each do |line|
-        if line.labor_retainage.nil?
-          line.update_attributes :labor_retainage => 0
-          line.set_default_retainage(:labor).save! 
-        end
-        if line.labor_retainage.nil?
-          line.update_attributes :labor_retainage => 0
-          line.set_default_retainage(:material).save! 
-        end
-      end
+      # trying to reduce update time
+      
+      #@invoice.lines.each do |line|
+      #  if line.labor_retainage.nil?
+      #    line.update_attributes :labor_retainage => 0
+      #    line.set_default_retainage(:labor).save! 
+      #  end
+      #  if line.labor_retainage.nil?
+      #    line.update_attributes :labor_retainage => 0
+      #    line.set_default_retainage(:material).save! 
+      #  end
+      #end
       @invoice.advance
       @invoice.save
       
