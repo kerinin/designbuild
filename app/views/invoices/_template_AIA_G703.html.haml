@@ -1,5 +1,6 @@
 %table
   %tr
+    %td.control{:rowspan => 2} Expand
     %th.number{:rowspan => 2} Item No.
     %th{:rowspan => 2} Description of Work
     %th.currency{:rowspan => 2} Scheduled Value
@@ -15,40 +16,13 @@
     %th.currency This Period
     
   -i = 1 + ( ((params[:page] || 1).to_i - 1) * 20 )
-  -lines = @invoice.lines.paginate(:page => params[:page], :per_page => 20)
-  -lines.each do |line|
-    %tr
-      %td.number=i
-      %td= line.cost.name
-      
-      / Scheduled Value
-      %td.currency= number_to_currency line.cost.estimated_cost
-      
-      / Work Completed - From previous applications
-      %td.currency= number_to_currency line.cost.labor_invoiced_before(@invoice.date - 1)
-      
-      / Work Complete - This period
-      %td.currency= number_to_currency line.labor_invoiced
-      
-      / Materials Presently Stored
-      %td.currency= number_to_currency line.cost.material_invoiced_before(@invoice.date)
-      
-      / Total Completed and Stored
-      %td.currency= number_to_currency line.cost.invoiced_before(@invoice.date)
-      
-      / %
-      %td.number
-        -if !line.cost.estimated_cost.nil? && line.cost.estimated_cost > 0 && !line.cost.invoiced_before(@invoice.date).nil?
-          = number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
-          
-      / Balance to finish
-      %td.currency= number_to_currency subtract_or_nil line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)
-      
-      / Retainage
-      %td.currency= number_to_currency line.cost.retainage_before(@invoice.date)
+  
+  -@project.components.roots.each do |component|
+    =render :partial => 'template_AIA_G703_recursion', :locals => {:component => component, :i => i}
     -i += 1
   
   %tr
+    %td.control
     %th.number
     %th Grand Totals
     
@@ -77,7 +51,3 @@
     
     / Retainage
     %th.currency= number_to_currency @project.retainage_before(@invoice.date)
-
-%p
-  = will_paginate lines
-  = page_entries_info lines
