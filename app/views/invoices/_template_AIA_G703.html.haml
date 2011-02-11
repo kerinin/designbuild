@@ -14,8 +14,9 @@
     %th.currency From Previous Application
     %th.currency This Period
     
-  -i = 1
-  -@invoice.lines.each do |line|
+  -i = 1 + ( ((params[:page] || 1).to_i - 1) * 20 )
+  -lines = @invoice.lines.paginate(:page => params[:page], :per_page => 20)
+  -lines.each do |line|
     %tr
       %td.number=i
       %td= line.cost.name
@@ -76,3 +77,7 @@
     
     / Retainage
     %th.currency= number_to_currency @project.retainage_before(@invoice.date)
+
+%p
+  = will_paginate lines
+  = page_entries_info lines
