@@ -24,19 +24,27 @@
       .large_input
         (
         =f.fields_for :quantity do |quantity_form|
-          .name
+          .name.inline_block
             =quantity_form.text_field :name
             =':'
-          .value=quantity_form.text_field :value
-          .unit=quantity_form.text_field :unit
+            =quantity_form.label :name
+          .value.inline_block
+            =quantity_form.text_field :value
+            =quantity_form.label :value
+          .unit.inline_block
+            =quantity_form.text_field :unit
+            =quantity_form.label :unit
         +
-        .drop
+        .drop.inline_block
           =f.text_field :drop
           ='%'
+          =f.label :drop
         ) x
-        .unit_cost.autogrow
+        .unit_cost
           $
-          =f.text_field :unit_cost
+          .inline_block
+            =f.text_field :unit_cost
+            =f.label :unit_cost
         
     .full_width
       %h2
@@ -47,13 +55,16 @@
         (
         =f.collection_select :quantity_id, Quantity.all, :id, :optgroup_label
         +
-        .drop
+        .drop.inline_block
           =f.text_field :drop
           ='%'
+          =f.label :drop
         ) x
-        .unit_cost.autogrow
+        .unit_cost
           $
-          =f.text_field :unit_cost
+          .inline_block
+            =f.text_field :unit_cost
+            =f.label :unit_cost
           
     .full_width
       %h2 Parent Component
