@@ -1,0 +1,53 @@
+-if component.expand_in_invoice
+  %tr.control
+    %td.control
+      -unless component.children.empty?
+        =form_for( [@project, component], :html => { :id => "expand_#{component.id}" } ) do |f|
+          =f.check_box :expand_in_invoice, :onchange => "$('form#expand_#{component.id}').submit();"
+          =hidden_field_tag :redirect, finished_invoice_path(@invoice, :page => params[:page])  
+    %td.number  
+    %td{:colspan => 10}
+      %i= component.name
+      
+  -component.children.each do |child|
+    =render :partial => 'template_AIA_G703_recursion', :locals => {:component => child, :i => i}
+    -i += 1
+    
+-else
+  %tr
+    %td.control
+      -unless component.children.empty?
+        =form_for( [@project, component], :html => { :id => "expand_#{component.id}" } ) do |f|
+          =f.check_box :expand_in_invoice, :onchange => "$('form#expand_#{component.id}').submit();"
+          =hidden_field_tag :redirect, finished_invoice_path(@invoice, :page => params[:page])
+        
+    %td.number=i
+    %td= component.name
+  
+    / Scheduled Value
+    %td.currency= number_to_currency component.estimated_cost
+  
+    / Work Completed - From previous applications
+    %td.currency= number_to_currency component.labor_invoiced_before(@invoice.date - 1, :recursive => true)
+  
+    / Work Complete - This period
+    %td.currency= number_to_currency component.labor_invoiced(:recursive => true)  #line.labor_invoiced
+  
+    / Materials Presently Stored
+    %td.currency= number_to_currency component.material_invoiced_before(@invoice.date, :recursive => true) #line.cost.material_invoiced_before(@invoice.date)
+  
+    / Total Completed and Stored
+    %td.currency= number_to_currency component.invoiced_before(@invoice.date, :recursive => true)  #line.cost.invoiced_before(@invoice.date)
+  
+    / %
+    %td.number
+      -#if !line.cost.estimated_cost.nil? && line.cost.estimated_cost > 0 && !line.cost.invoiced_before(@invoice.date).nil?
+        =# number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
+      -if !component.estimated_cost.nil? && component.estimated_cost > 0 && !component.invoiced_before(@invoice.date, :recursive => true).nil?
+        =number_to_percentage 100 * component.invoiced_before(@invoice.date, :recursive => true) / component.estimated_cost, :precision => 0
+      
+    / Balance to finish
+    %td.currency= number_to_currency subtract_or_nil component.estimated_cost, component.invoiced_before(@invoice.date, :recursive => true) # line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)
+  
+    / Retainage
+    %td.currency= number_to_currency component.retainage_before(@invoice.date, :recursive => true)  #line.cost.retainage_before(@invoice.date)

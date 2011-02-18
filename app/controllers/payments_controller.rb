@@ -1,5 +1,5 @@
 class PaymentsController < ApplicationController
-  before_filter :get_project, :except => [:start, :balance, :finished, :accept]
+  before_filter :get_project, :except => [:start, :balance, :finished, :accept, :destroy]
   
   def start
     @payment = Payment.find(params[:id])
@@ -121,10 +121,11 @@ class PaymentsController < ApplicationController
   # DELETE /payments/1.xml
   def destroy
     @payment = Payment.find(params[:id])
+    @project = @payment.project
     @payment.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_payments_url(@project)) }
+      format.html { redirect_to(invoicing_project_url(@project)) }
       format.xml  { head :ok }
     end
   end
