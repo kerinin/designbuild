@@ -42,7 +42,7 @@
         %tr
           %td= laborer.name
           -pay_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:laborer_pay)
-          -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:cost)
+          -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:raw_cost)
           
           -@projects.where('id IN (?)', project_ids).each do |project|
             %td.currency
@@ -65,7 +65,7 @@
               = number_to_currency labor_cost_lines.sum(:laborer_pay)
     %tr  
       %th.right Total Bill
-      -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
+      -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:raw_cost)
       
       -@projects.where('id IN (?)', project_ids).each do |project|
         %td.currency

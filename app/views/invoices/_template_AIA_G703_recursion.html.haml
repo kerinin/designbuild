@@ -43,6 +43,8 @@
     %td.number
       -#if !line.cost.estimated_cost.nil? && line.cost.estimated_cost > 0 && !line.cost.invoiced_before(@invoice.date).nil?
         =# number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
+      -if !component.estimated_cost.nil? && component.estimated_cost > 0 && !component.invoiced_before(@invoice.date, :recursive => true).nil?
+        =number_to_percentage 100 * component.invoiced_before(@invoice.date, :recursive => true) / component.estimated_cost, :precision => 0
       
     / Balance to finish
     %td.currency= number_to_currency subtract_or_nil component.estimated_cost, component.invoiced_before(@invoice.date, :recursive => true) # line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)

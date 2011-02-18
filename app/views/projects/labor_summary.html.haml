@@ -32,8 +32,9 @@
 
   -laborers = Laborer.scoped
   -tasks = @tasks.includes(:labor_costs => :line_items).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
-  -tasks = tasks.includes(:project) unless @projects.nil?
+  -tasks = tasks.includes(:project).where('tasks.project_id = ?', @project.id) unless @project.nil?
   -time_scope = LaborCostLine.includes(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
+  -time_scope = time_scope.where(:project_id => @project.id) unless @project.nil?
 
   %table
     %tr
@@ -50,14 +51,16 @@
       -scope = time_scope.where(:laborer_id => laborer.id)
       -total_hours = scope.sum(:hours)
       -grouped_hours = scope.group('labor_costs.task_id').sum(:hours)
+
       -unless grouped_hours.empty?
         %tr
           %td
+            =grouped_hours.to_s
             %strong= laborer.name
             
           -tasks.each do |task|
             %td.number
-              -hours = grouped_hours[task.id.to_s]
+              -hours = grouped_hours[task.id]
               -if hours
                 =hours
                 h
@@ -67,10 +70,10 @@
               h
     %tr
       %td.right
-        %strong Total Hours
+        %strong Total Billed
       -tasks.each do |task|
-        -grouped_costs = time_scope.group('labor_costs.task_id').sum(:cost)
+        -grouped_costs = time_scope.group('labor_costs.task_id').sum(:raw_cost)
         %td.number
           %strong
-            = number_to_currency grouped_costs[task.id.to_s]
+            = number_to_currency grouped_costs[task.id]
 
