@@ -41,13 +41,13 @@
       -unless labor_cost_lines.empty?
         %tr
           %td= laborer.name
-          -pay_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:laborer_pay)
-          -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:raw_cost)
+          -pay_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:laborer_pay).stringify_keys
+          -bill_grouped = labor_cost_lines.group('labor_cost_lines.project_id').sum(:raw_cost).stringify_keys
           
           -@projects.where('id IN (?)', project_ids).each do |project|
             %td.currency
-              -pay = pay_grouped[project.id]
-              -bill = bill_grouped[project.id]
+              -pay = pay_grouped[project.id.to_s]
+              -bill = bill_grouped[project.id.to_s]
               -if pay || bill
                 -if pay
                   pay:
@@ -65,10 +65,10 @@
               = number_to_currency labor_cost_lines.sum(:laborer_pay)
     %tr  
       %th.right Total Bill
-      -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:raw_cost)
+      -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:raw_cost).stringify_keys
       
       -@projects.where('id IN (?)', project_ids).each do |project|
         %td.currency
           %strong
-          = number_to_currency total_bill_grouped[project.id]
+          = number_to_currency total_bill_grouped[project.id.to_s]
     
