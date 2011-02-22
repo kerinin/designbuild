@@ -50,17 +50,16 @@
     
       -scope = time_scope.where(:laborer_id => laborer.id)
       -total_hours = scope.sum(:hours)
-      -grouped_hours = scope.group('labor_costs.task_id').sum(:hours)
+      -grouped_hours = scope.group('labor_costs.task_id').sum(:hours).stringify_keys
 
       -unless grouped_hours.empty?
         %tr
           %td
-            =grouped_hours.to_s
             %strong= laborer.name
             
           -tasks.each do |task|
             %td.number
-              -hours = grouped_hours[task.id]
+              -hours = grouped_hours[task.id.to_s]
               -if hours
                 =hours
                 h
@@ -72,8 +71,8 @@
       %td.right
         %strong Total Billed
       -tasks.each do |task|
-        -grouped_costs = time_scope.group('labor_costs.task_id').sum(:raw_cost)
+        -grouped_costs = time_scope.group('labor_costs.task_id').sum(:raw_cost).stringify_keys
         %td.number
           %strong
-            = number_to_currency grouped_costs[task.id]
+            = number_to_currency grouped_costs[task.id.to_s]
 
