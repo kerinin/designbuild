@@ -10,31 +10,32 @@
           %ul
             - fixed_cost_estimate.errors.full_messages.each do |msg|
               %li= msg
-      %h1
-        .field
-          = f.label :name
-          = f.text_field :name, :tabindex => 1
-          
-
-    .full_width        
-      %h2 Cost
+              
+      %h1 Fixed Cost
       
       .large_input
-        = f.label :raw_cost
-        = f.text_field :raw_cost, :tabindex => 2
-        
-    .full_width
-    
-      %h2 Parent Component
+        .name.inline_block
+          = f.text_field :name, :tabindex => 1
+          = f.label :name, 'Name (Insurance)'
       
-      .field
-        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
-        
+        .raw_cost.inline_block
+          $
+          = f.text_field :raw_cost, :tabindex => 2
+          = f.label :raw_cost, 'Raw Cost (1200.00)'
+                
     -unless fixed_cost_estimate.new_record?
       .full_width
-        %h2 Task
+      
+        %h2 Parent Component
         
-        (not implemented)
+        .field
+          =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+          
+      -unless fixed_cost_estimate.new_record?
+        .full_width
+          %h2 Task
+          
+          (not implemented)
       
     %hr
     

@@ -10,16 +10,17 @@
           %ul
             - contract.errors.full_messages.each do |msg|
               %li= msg
-      %h1
-        .field
-          = f.label :name
+      .large_input
+        .name.inline_block
           = f.text_field :name, :tabindex => 1
+          = f.label :name, 'Name (Structural Steel)'
 
-    .full_width
-      %h2 Parent Component
-      
-      .field
-        =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
+    -unless contract.new_record?
+      .full_width
+        %h2 Parent Component
+        
+        .field
+          =f.select :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
 
     -unless contract.bids.empty?
       .full_width
