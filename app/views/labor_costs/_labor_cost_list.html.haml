@@ -2,6 +2,7 @@
 %table
   %tr
     %th Date
+    %th Note
     %th.currency Cost
     %th.currency Cost w/ Markup
     %th.number % Complete
@@ -11,6 +12,7 @@
   - labor_costs.each do |labor_cost|
     %tr
       %td= link_to labor_cost.date.to_s( :long ), [@task, labor_cost]
+      %td= labor_cost.note
       %td.currency= number_to_currency(labor_cost.raw_cost)
       %td.currency= number_to_currency(labor_cost.cost)
       %td.number= number_to_percentage(labor_cost.percent_complete, :precision => 0)
@@ -22,7 +24,7 @@
       %td{:colspan => 10} (None)
     
   %tr.totals
-    %td.right
+    %td.right{:colspan => 2}
       %strong Subtotal
     %td.currency
       %strong= number_to_currency( labor_costs.sum(:raw_cost) )

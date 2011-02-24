@@ -1,11 +1,8 @@
 -current ||= nil
-%h1
-  Project: 
-  = @project.name
+%h1= @project.name
 
 %ul.nav
   %li{:class => current == :dashboard ? 'current' : nil}=link_to "Dashboard", @project
   %li{:class => current == :markups ? 'current' : nil}=link_to "Markups(#{@project.markups.count})", project_markups_path(@project)
-  %li{:class => current == :contracts ? 'current' : nil}=link_to "Contracts(#{@project.contracts.count})", project_contracts_path(@project)
   %li{:class => current == :edit ? 'current' : nil}=link_to 'Edit Project', edit_project_path(@project)
 %hr

@@ -3,7 +3,7 @@
   -unless @project.nil?
     %ul.nav_left
       %li{:class => current == :dashboard ? :current : nil}
-        =link_to 'Project', project_path(@project)
+        =link_to @project.name, project_path(@project)
         -unless Project.count < 2
           .expander
             .activator=icon :expand_down
