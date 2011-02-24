@@ -38,6 +38,18 @@
                   -recursion.call(component, 0, recursion)
                   
               &nbsp;
+              
+      %li{:class => current == :contracts ? :current : nil}
+        =link_to 'Contracts', project_contracts_path(@project)
+        -unless @project.contracts.empty?
+          .expander
+            .activator=icon :expand_down
+            .positioner
+              %ul
+                -@project.contracts.each do |contract|
+                  %li.expand_active_area
+                    .left
+                      =link_to contract.name, [@project, contract]
           
       %li{:class => current == :tasks ? :current : nil}
         = link_to 'Tasks', project_tasks_path(@project)

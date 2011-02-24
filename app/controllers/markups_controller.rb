@@ -62,6 +62,8 @@ class MarkupsController < ApplicationController
           render 'index_from_component'
         when 'Project'
           render 'index_from_project'
+        when 'Contract'
+          render 'index_from_contract'
         when 'Task'
           render 'index_from_task'
         else
@@ -177,6 +179,9 @@ class MarkupsController < ApplicationController
     elsif params.has_key?(:project_id)
       @parent = Project.find(params[:project_id])
       @project = @parent
+    elsif params.has_key?(:contract_id)
+      @parent = Contract.find(params[:contract_id])
+      @contract = @parent
     end
   end
   

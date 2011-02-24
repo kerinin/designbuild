@@ -1,0 +1,14 @@
+-current ||= nil
+%h1
+  Contract: 
+  = @contract.name
+%h2
+  Component:
+  =link_to @contract.component.name, @component
+  
+%ul.nav
+  %li{:class => current == :costs ? 'current' : nil}=link_to 'Costs', @contract
+  %li{:class => current == :markups ? 'current' : nil}=link_to "Markups(#{@contract.markups.count})", contract_markups_path(@contract)
+  %li{:class => current == :edit ? 'current' : nil}=link_to 'Edit Contract', edit_component_contract_path(@contract, @contract)
+
+%hr

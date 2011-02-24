@@ -1,5 +1,6 @@
 class ContractsController < ApplicationController
-  before_filter :get_project_or_component, :except => :add_markup
+  #before_filter :get_project_or_component, :except => :add_markup
+  before_filter :get_objects
   
   def sort
     @project.contracts.all.each do |sub|
@@ -117,5 +118,16 @@ class ContractsController < ApplicationController
       format.html { redirect_to(project_contracts_url(@project)) }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @contract = Contract.find(params[:id]) if params.has_key? :id
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @component = Component.find(params[:component_id]) if params.has_key? :component_id
+    
+    @project ||= @contract.project unless @contract.nil?
+    @component ||= @contract.component unless @contract.nil?
   end
 end

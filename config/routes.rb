@@ -158,7 +158,7 @@ Designbuild::Application.routes.draw do
       post :add_markup, :as => :add_markup_to
     end
     
-    resources :markups, :only => [:new, :create, :edit, :update] do
+    resources :markups do
       member do
         get :add, :action => :add_to_contract
         get :remove, :action => :remove_from_contract

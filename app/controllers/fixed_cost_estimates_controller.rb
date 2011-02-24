@@ -91,7 +91,7 @@ class FixedCostEstimatesController < ApplicationController
     respond_to do |format|
       if @fixed_cost_estimate.update_attributes(params[:fixed_cost_estimate])
         format.js
-        format.html { redirect_to([@component, @fixed_cost_estimate], :notice => 'Fixed cost estimate was successfully updated.') }
+        format.html { redirect_to(@fixed_cost_estimate.component, :notice => 'Fixed cost estimate was successfully updated.') }
         format.xml  { head :ok }
       else
         format.js
