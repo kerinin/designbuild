@@ -16,7 +16,7 @@ class ProjectSweeper < ActionController::Caching::Sweeper
   private
   
   def expire_cache_for(project)
-    expire fragment("project_nav")
-    expire fragment("project_nav_#{project.id}")
+    expire_fragment("project_nav")
+    expire_fragment("project_nav_#{project.id}")
   end  
 end
