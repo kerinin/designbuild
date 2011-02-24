@@ -14,12 +14,14 @@
       %h1 Unit Cost (New Quantity)
       .large_input
         .name.inline_block
-          = f.text_field :name, :tabindex => 1
+          = f.text_field :name
           = f.label :name, 'Name (Plywood Subfloor)'
                   
       .large_input
         (
         =f.fields_for :quantity do |quantity_form|
+          -quantity_form.object.component = @component
+          = quantity_form.hidden_field :component_id
           .name.inline_block
             =quantity_form.text_field :name
             =':'
@@ -43,7 +45,8 @@
             =f.label :unit_cost, 'Unit Cost (5.0)'
 
         %p.actions
-          = f.submit 'Save', :tabindex => 5         
+          = f.hidden_field :component_id
+          = f.submit 'Save'         
   %hr
   
   -quantities = Quantity.includes(:component).where('components.project_id = ?', @project.id)
@@ -62,7 +65,7 @@
         
         .large_input
           .name.inline_block
-            = f.text_field :name, :tabindex => 1
+            = f.text_field :name
             = f.label :name, 'Name (Plywood Subfloor)'
         
 
@@ -82,7 +85,7 @@
               =f.label :unit_cost, 'Unit Cost (5.0)'
 
           %p.actions
-            = f.submit 'Save', :tabindex => 5   
+            = f.submit 'Save'
                
   -unless unit_cost_estimate.new_record? 
     .full_width

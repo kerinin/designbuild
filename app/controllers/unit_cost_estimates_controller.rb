@@ -74,7 +74,7 @@ class UnitCostEstimatesController < ApplicationController
     respond_to do |format|
       if @unit_cost_estimate.save
         format.js
-        format.html { redirect_to([@component, @unit_cost_estimate], :notice => 'Unit cost estimate was successfully created.') }
+        format.html { redirect_to( @component, :notice => 'Unit cost estimate was successfully created.') }
         format.xml  { render :xml => @unit_cost_estimate, :status => :created, :location => @unit_cost_estimate }
       else
         format.js
