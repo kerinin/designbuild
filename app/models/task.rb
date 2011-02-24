@@ -14,7 +14,7 @@ class Task < ActiveRecord::Base
   has_many :milestones, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => Proc.new{|t,m| t.save}, :after_remove => Proc.new{|t,m| t.save}
+  has_many :markups, :through => :markings, :after_add => :refresh_markup, :after_remove => :refresh_markup
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}
   has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}
@@ -45,6 +45,13 @@ class Task < ActiveRecord::Base
   scope :future, lambda {
     where(:percent_complete => 0).where(:active => false)
   }
+  
+  
+  def refresh_markup(markup)
+    LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
+    self.material_costs.each {|mc| mc.save!}
+    self.save!
+  end
   
   def is_complete?
     self.percent_complete >= 100

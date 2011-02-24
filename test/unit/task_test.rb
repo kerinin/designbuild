@@ -22,23 +22,33 @@ class TaskTest < ActiveSupport::TestCase
       @mc4 = Factory :material_cost, :task => @obj, :raw_cost => nil
       
       @laborer = Factory :laborer, :bill_rate => 1
-      Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 200
-      Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 2000
-      Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
-      Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
+      @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 200
+      @lcl2 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @laborer, :hours => 2000
+      @lcl3 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
+      @lcl4 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
       
-      [@obj, @lc1, @lc2, @q, @ctr, @dl1, @laborer].each {|i| i.reload}
+      [@obj, @lc1, @lc2, @q, @ctr, @dl1, @laborer, @lcl1, @lcl2, @lcl3, @lcl4].each {|i| i.reload}
     end
-
-    teardown do
-      Task.delete_all
-      Component.delete_all
-      Deadline.delete_all
-      Contract.delete_all
-      FixedCostEstimate.delete_all
-      UnitCostEstimate.delete_all
-      LaborCost.delete_all
-      MaterialCost.delete_all
+    
+    should "update labor cost lines when markup added/removed" do
+      @obj.markups << Factory(:markup, :percent => 100)
+      [@obj, @lcl1, @lcl2].each {|i| i.reload}
+      
+      assert_equal 400, @lcl1.cost
+      assert_equal 4000, @lcl2.cost
+      
+      @obj.markups = []
+      
+      [@obj, @lcl1, @lcl2].each {|i| i.reload}
+      
+      assert_equal 200, @lcl1.cost
+      assert_equal 2000, @lcl2.cost
+    end
+  
+    should "update material cost lines when markup added" do
+    end
+    
+    should "update material cost lines when markup removed" do
     end
     
     #-----------------------REQUIRED

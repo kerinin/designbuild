@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110107211638) do
+ActiveRecord::Schema.define(:version => 20110211160450) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -58,6 +58,7 @@ ActiveRecord::Schema.define(:version => 20110107211638) do
     t.float     "estimated_raw_subcomponent_cost",          :default => 0.0
     t.float     "estimated_cost",                           :default => 0.0
     t.float     "estimated_raw_cost",                       :default => 0.0
+    t.boolean   "expand_in_invoice",                        :default => false
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
