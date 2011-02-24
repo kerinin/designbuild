@@ -4,6 +4,8 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :check_redirect, :set_context
   
+  cache_sweeper :project_sweeper
+  
   private
   
   def redirect_from_session_or(*args)

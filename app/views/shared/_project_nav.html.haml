@@ -1,115 +1,116 @@
--current ||= nil
-.main_nav
-  -unless @project.nil?
-    %ul.nav_left
-      %li{:class => current == :dashboard ? :current : nil}
-        =link_to @project.name, project_path(@project)
-        -unless Project.count < 2
-          .expander
-            .activator=icon :expand_down
-            .positioner
-              %ul
-                -Project.all.each do |project|
-                  %li.expand_active_area
-                    .left=link_to project.name, project
-                    
-              &nbsp;
+-cache( @project.nil? ? "project_nav" : "project_nav_#{@project.id}" ) do
+  -current ||= nil
+  .main_nav
+    -unless @project.nil?
+      %ul.nav_left
+        %li{:class => current == :dashboard ? :current : nil}
+          =link_to @project.name, project_path(@project)
+          -unless Project.count < 2
+            .expander
+              .activator=icon :expand_down
+              .positioner
+                %ul
+                  -Project.all.each do |project|
+                    %li.expand_active_area
+                      .left=link_to project.name, project
+                      
+                &nbsp;
 
-      %li{:class => current == :components ? :current : nil}
-        = link_to 'Components', project_components_path(@project)
-        -unless @project.components.empty?
-          .expander
-            .activator=icon :expand_down
-            .positioner
-              %ul
-                %li.expand_active_area
-                  .left
-                    %strong=link_to @project.name, @project
-                  .right
-                    %strong=number_to_currency @project.estimated_cost, :precision => 0
-                -recursion = Proc.new do |component,indent,block| 
-                  %li.expand_active_area{:class => "indent_#{indent}"}
-                    .left=link_to component.name, [@project, component]
-                    .right= number_to_currency component.estimated_cost, :precision => 0  
-                  -component.children.each do |child|
-                    -block.call(child,indent+1,block)
-                            
-                -@project.components.roots.each do |component|
-                  -recursion.call(component, 0, recursion)
-                  
-              &nbsp;
-              
-      %li{:class => current == :contracts ? :current : nil}
-        =link_to 'Contracts', project_contracts_path(@project)
-        -unless @project.contracts.empty?
-          .expander
-            .activator=icon :expand_down
-            .positioner
-              %ul
-                -@project.contracts.each do |contract|
+        %li{:class => current == :components ? :current : nil}
+          = link_to 'Components', project_components_path(@project)
+          -unless @project.components.empty?
+            .expander
+              .activator=icon :expand_down
+              .positioner
+                %ul
                   %li.expand_active_area
                     .left
-                      =link_to contract.name, [@project, contract]
+                      %strong=link_to @project.name, @project
+                    .right
+                      %strong=number_to_currency @project.estimated_cost, :precision => 0
+                  -recursion = Proc.new do |component,indent,block| 
+                    %li.expand_active_area{:class => "indent_#{indent}"}
+                      .left=link_to component.name, [@project, component]
+                      .right= number_to_currency component.estimated_cost, :precision => 0  
+                    -component.children.each do |child|
+                      -block.call(child,indent+1,block)
+                              
+                  -@project.components.roots.each do |component|
+                    -recursion.call(component, 0, recursion)
+                    
+                &nbsp;
+                
+        %li{:class => current == :contracts ? :current : nil}
+          =link_to 'Contracts', project_contracts_path(@project)
+          -unless @project.contracts.empty?
+            .expander
+              .activator=icon :expand_down
+              .positioner
+                %ul
+                  -@project.contracts.each do |contract|
+                    %li.expand_active_area
+                      .left
+                        =link_to contract.name, [@project, contract]
+            
+        %li{:class => current == :tasks ? :current : nil}
+          = link_to 'Tasks', project_tasks_path(@project)
+          -unless @project.tasks.empty?
+            .expander
+              .activator=icon :expand_down
+              .positioner
+                %ul
+                  -@project.tasks.each do |task|
+                    %li.expand_active_area
+                      .left
+                        =link_to task.name, [@project, task] 
+                &nbsp;
+                
+        %li{:class => current == :deadlines ? :current : nil}
+          = link_to 'Deadlines', project_deadlines_path(@project)
+
+        %li{:class => current == :invoicing ? :current : nil}
+          = link_to 'Invoicing', invoicing_project_path(@project)
           
-      %li{:class => current == :tasks ? :current : nil}
-        = link_to 'Tasks', project_tasks_path(@project)
-        -unless @project.tasks.empty?
-          .expander
-            .activator=icon :expand_down
-            .positioner
-              %ul
-                -@project.tasks.each do |task|
-                  %li.expand_active_area
-                    .left
-                      =link_to task.name, [@project, task] 
-              &nbsp;
-              
-      %li{:class => current == :deadlines ? :current : nil}
-        = link_to 'Deadlines', project_deadlines_path(@project)
+    -else
+      %ul.nav_left
+        %li{:class => current == :dashboard ? :current : nil}
+          -unless Project.count < 2
+            .expander
+              .activator
+                Project
+                =icon :expand_down
+              .positioner
+                %ul
+                  -Project.all.each do |project|
+                    %li.expand_active_area
+                      .left=link_to project.name, project
+                      
+                &nbsp;
+                            
+    %ul.nav_right
+      %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
+      %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
+      %li=link_to 'Log Out', destroy_user_session_path
+   
+  .main_nav_spacer
 
-      %li{:class => current == :invoicing ? :current : nil}
-        = link_to 'Invoicing', invoicing_project_path(@project)
-        
+  -if notice
+    %p.notice= notice
   -else
-    %ul.nav_left
-      %li{:class => current == :dashboard ? :current : nil}
-        -unless Project.count < 2
-          .expander
-            .activator
-              Project
-              =icon :expand_down
-            .positioner
-              %ul
-                -Project.all.each do |project|
-                  %li.expand_active_area
-                    .left=link_to project.name, project
-                    
-              &nbsp;
-                          
-  %ul.nav_right
-    %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
-    %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
-    %li=link_to 'Log Out', destroy_user_session_path
- 
-.main_nav_spacer
+    %p.notice.hidden
+  -if alert
+    %p.alert= alert
+  -else
+    %p.alert.hidden
+    
+  #failure.error.hidden
+    =icon :exclamation
+    Something went wrong!  Try <a href="#" onclick="location.reload();">reloading the page</a>
+    
+  #loading.notice.hidden
+    =image_tag 'spinner_small.gif'
+    Working...
 
--if notice
-  %p.notice= notice
--else
-  %p.notice.hidden
--if alert
-  %p.alert= alert
--else
-  %p.alert.hidden
-  
-#failure.error.hidden
-  =icon :exclamation
-  Something went wrong!  Try <a href="#" onclick="location.reload();">reloading the page</a>
-  
-#loading.notice.hidden
-  =image_tag 'spinner_small.gif'
-  Working...
-
-#post_errors
+  #post_errors
 
 
