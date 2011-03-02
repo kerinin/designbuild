@@ -1,6 +1,7 @@
 .cost.contract_estimate.expand_active_area
   .left
     %h3=link_to contract.name, contract_path(contract)
+    =link_to icon(:delete), [@component, contract], :confirm => 'Are you sure?', :method => :delete
 
   .right
     %h3

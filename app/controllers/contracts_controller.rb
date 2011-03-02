@@ -115,7 +115,7 @@ class ContractsController < ApplicationController
     @contract.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_contracts_url(@project)) }
+      format.html { redirect_to(@component) }
       format.xml  { head :ok }
     end
   end
