@@ -27,7 +27,7 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   def task_name=(string)
-    self.task = (string == '' || string.nil?) ? nil : Task.find_or_create_by_name(string, :project => self.component.project)
+    self.task = (string == '' || string.nil?) ? nil : Task.find_or_create_by_name_and_project_id(string, self.component.project_id)
   end
   
   def task_name
