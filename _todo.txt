@@ -1,4 +1,6 @@
 To look into
+- Task association autocomplete not filtering by project (associating between them)
+- Cost -> Task association not implemented
 - graph of RB doesn't seem to be updating
 - fixed / cost+ interface - consider use cases
 + labor comments not showing

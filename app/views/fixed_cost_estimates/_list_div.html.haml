@@ -14,7 +14,7 @@
       .task
         %strong Task:
         -unless fixed_cost.task.blank?
-          =fixed_cost.task.name
+          =link_to fixed_cost.task.name, fixed_cost.task
         -else
           (None)  
 

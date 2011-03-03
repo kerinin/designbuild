@@ -35,7 +35,17 @@
         .full_width
           %h2 Task
           
-          (not implemented)
+          %p
+            %h3 New Task
+            =f.label :task_name, 'Task Name'
+            =text_field_tag 'fixed_cost_estimate[task_name]'
+            
+          %p
+            %h3 Existing Task
+            -@project.tasks.each do |task|
+              =f.radio_button :task_id, task.id
+              =f.label :task_id, task.name, :value => task.id
+              %br
       
     %hr
     

@@ -88,7 +88,8 @@ class UnitCostEstimatesController < ApplicationController
   # PUT /unit_cost_estimates/1.xml
   def update
     @unit_cost_estimate = UnitCostEstimate.find(params[:id])
-
+    params[:unit_cost_estimate].delete(:task_name) if params[:unit_cost_estimate][:task_name] == ''
+    
     respond_to do |format|
       if @unit_cost_estimate.update_attributes(params[:unit_cost_estimate])
         format.js

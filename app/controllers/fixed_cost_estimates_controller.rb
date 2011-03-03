@@ -87,6 +87,7 @@ class FixedCostEstimatesController < ApplicationController
   # PUT /fixed_cost_estimates/1.xml
   def update
     @fixed_cost_estimate = FixedCostEstimate.find(params[:id])
+    params[:fixed_cost_estimate].delete(:task_name) if params[:fixed_cost_estimate][:task_name] == ''
 
     respond_to do |format|
       if @fixed_cost_estimate.update_attributes(params[:fixed_cost_estimate])

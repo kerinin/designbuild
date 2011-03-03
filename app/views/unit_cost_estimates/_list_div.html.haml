@@ -30,7 +30,7 @@
       .task
         %strong Task:
         -unless unit_cost.task.blank?
-          =unit_cost.task.name
+          =link_to unit_cost.task.name, unit_cost.task
         -else
           (None)  
 
