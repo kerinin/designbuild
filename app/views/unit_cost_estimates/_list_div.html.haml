@@ -1,7 +1,10 @@
 .cost.unit_cost_estimate.expand_active_area
   .left
     %h3=link_to unit_cost.name, edit_component_unit_cost_estimate_path(unit_cost.component_id, unit_cost)
-    =link_to icon(:delete), [@component, unit_cost], :confirm => 'Are you sure?', :method => :delete
+    - unless @component.nil?
+      =link_to icon(:delete), [@component, unit_cost], :confirm => 'Are you sure?', :method => :delete
+    - else
+      =link_to icon(:delete), [@task, unit_cost], :confirm => 'Are you sure?', :method => :delete
       
   .right
     .de_emphasize
