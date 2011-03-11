@@ -1,6 +1,5 @@
 -unit_cost_estimate ||= @unit_cost_estimate
 -unit_cost_estimate.build_quantity if unit_cost_estimate.quantity.blank?
--quantity = unit_cost_estimate.quantity
 
 .container.cost_creation.unit_cost_estimate
 
@@ -24,11 +23,20 @@
                 
       .large_input
         (
-        =link_to quantity.name, edit_component_quantity_path(@component, quantity)
-        =':'
-        =quantity.value
-        =quantity.unit
-
+        =f.fields_for :quantity do |quantity_form|
+          -quantity_form.object.component ||= @component
+          = quantity_form.hidden_field :component_id
+          
+          .name.inline_block
+            =quantity_form.text_field :name
+            =':'
+            =quantity_form.label :name, 'Quantity Name (Floor Area)'
+          .value.inline_block
+            =quantity_form.text_field :value
+            =quantity_form.label :value, 'Value (250.0)'
+          .unit.inline_block
+            =quantity_form.text_field :unit
+            =quantity_form.label :unit, 'Unit (sf)'
         +
         .drop.inline_block
           =f.text_field :drop
@@ -74,4 +82,43 @@
         %p.actions
           = f.submit 'Save'
             
+              
+  -unless quantities.empty?
+    -quantities = Quantity.includes(:component).where('components.project_id = ?', @project.id)
+    
+    .full_width
+      =form_for [@component, unit_cost_estimate] do |f|
+        
+        -if unit_cost_estimate.errors.any?
+          #error_explanation
+            %h2= "#{pluralize(@unit_cost_estimate.errors.count, "error")} prohibited this unit_cost_estimate from being saved:"
+            %ul
+              - unit_cost_estimate.errors.full_messages.each do |msg|
+                %li= msg
+                
+        %h1 Unit Cost (Existing Quantity)
+        
+        .large_input
+          .name.inline_block
+            = f.text_field :name
+            = f.label :name, 'Name (Plywood Subfloor)'
+        
+
+        .large_input
+          (
+          =f.collection_select :quantity_id, quantities, :id, :optgroup_label
+          +
+          .drop.inline_block
+            =f.text_field :drop
+            ='%'
+            =f.label :drop, 'Drop (10)'
+          ) x
+          .unit_cost
+            $
+            .inline_block
+              =f.text_field :unit_cost
+              =f.label :unit_cost, 'Unit Cost (5.0)'
+          
+        %p.actions
+          = f.submit 'Save'
 
