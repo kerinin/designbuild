@@ -1,7 +1,7 @@
 To look into
-* in-line unit cost editing should only be at creation (link to quantity otherwise - allows unintentional editing of shared data)
-* Can't edit markups
-- Future tasks not showing up
++ in-line unit cost editing should only be at creation (link to quantity otherwise - allows unintentional editing of shared data)
++ Can't edit markups
++ Future tasks not showing up
 - Graphs all fucked up (estimated, projected, to date, etc)
 - Add bid/invoice to contract not working
 - graph of RB doesn't seem to be updating
