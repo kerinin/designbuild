@@ -66,7 +66,12 @@ class ProjectsController < ApplicationController
     end
     
     if params.has_key? :date
-      @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+      begin
+        @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+      rescue ArgumentError
+        @date = Date::today
+        flash[:alert] = "Date Error: Check that the date you entered (#{params[:date][:month]}/#{params[:date][:day]}/#{params[:date][:year]}) actually exists..."
+      end
     else
       @date = Date::today
     end
@@ -86,7 +91,12 @@ class ProjectsController < ApplicationController
     end
     
     if params.has_key? :date
-      @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+      begin
+        @date = Date::new(params[:date][:year].to_i, params[:date][:month].to_i, params[:date][:day].to_i)
+      rescue ArgumentError
+        @date = Date::today
+        flash[:alert] = "Date Error: Check that the date you entered (#{params[:date][:month]}/#{params[:date][:day]}/#{params[:date][:year]}) actually exists..."
+      end
     else
       @date = Date::today
     end
