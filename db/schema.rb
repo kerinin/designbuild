@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110303162828) do
+ActiveRecord::Schema.define(:version => 20110311183633) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -369,35 +369,35 @@ ActiveRecord::Schema.define(:version => 20110303162828) do
   end
 
   create_table "tasks", :force => true do |t|
-    t.string    "name"
-    t.boolean   "active"
-    t.integer   "contract_id"
-    t.integer   "deadline_id"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "estimated_raw_unit_cost",            :default => 0.0
-    t.float     "estimated_raw_fixed_cost",           :default => 0.0
-    t.float     "raw_labor_cost",                     :default => 0.0
-    t.float     "raw_material_cost",                  :default => 0.0
-    t.float     "total_markup"
-    t.float     "percent_complete",                   :default => 0.0, :null => false
-    t.float     "estimated_unit_cost",                :default => 0.0
-    t.float     "estimated_fixed_cost",               :default => 0.0
-    t.float     "estimated_cost",                     :default => 0.0
-    t.float     "estimated_raw_cost",                 :default => 0.0
-    t.float     "component_estimated_unit_cost",      :default => 0.0
-    t.float     "component_estimated_raw_unit_cost",  :default => 0.0
-    t.float     "component_estimated_fixed_cost",     :default => 0.0
-    t.float     "component_estimated_raw_fixed_cost", :default => 0.0
-    t.float     "component_estimated_cost",           :default => 0.0
-    t.float     "component_estimated_raw_cost",       :default => 0.0
-    t.float     "labor_cost",                         :default => 0.0
-    t.float     "material_cost",                      :default => 0.0
-    t.float     "cost",                               :default => 0.0
-    t.float     "raw_cost",                           :default => 0.0
-    t.float     "projected_cost",                     :default => 0.0
-    t.float     "raw_projected_cost",                 :default => 0.0
+    t.string   "name"
+    t.boolean  "active",                             :default => false
+    t.integer  "contract_id"
+    t.integer  "deadline_id"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "estimated_raw_unit_cost",            :default => 0.0
+    t.float    "estimated_raw_fixed_cost",           :default => 0.0
+    t.float    "raw_labor_cost",                     :default => 0.0
+    t.float    "raw_material_cost",                  :default => 0.0
+    t.float    "total_markup"
+    t.float    "percent_complete",                   :default => 0.0,   :null => false
+    t.float    "estimated_unit_cost",                :default => 0.0
+    t.float    "estimated_fixed_cost",               :default => 0.0
+    t.float    "estimated_cost",                     :default => 0.0
+    t.float    "estimated_raw_cost",                 :default => 0.0
+    t.float    "component_estimated_unit_cost",      :default => 0.0
+    t.float    "component_estimated_raw_unit_cost",  :default => 0.0
+    t.float    "component_estimated_fixed_cost",     :default => 0.0
+    t.float    "component_estimated_raw_fixed_cost", :default => 0.0
+    t.float    "component_estimated_cost",           :default => 0.0
+    t.float    "component_estimated_raw_cost",       :default => 0.0
+    t.float    "labor_cost",                         :default => 0.0
+    t.float    "material_cost",                      :default => 0.0
+    t.float    "cost",                               :default => 0.0
+    t.float    "raw_cost",                           :default => 0.0
+    t.float    "projected_cost",                     :default => 0.0
+    t.float    "raw_projected_cost",                 :default => 0.0
   end
 
   add_index "tasks", ["contract_id"], :name => "index_tasks_on_contract_id"
