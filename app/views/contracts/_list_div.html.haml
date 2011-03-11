@@ -1,7 +1,11 @@
 .cost.contract_estimate.expand_active_area
   .left
     %h3=link_to contract.name, contract_path(contract)
-
+    - unless @component.nil?
+      =link_to icon(:delete), [@component, contract], :confirm => 'Are you sure?', :method => :delete
+    - else
+      =link_to icon(:delete), [@task, contract], :confirm => 'Are you sure?', :method => :delete
+      
   .right
     %h3
       =number_to_currency contract.estimated_raw_cost

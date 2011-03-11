@@ -1,6 +1,10 @@
 .cost.fixed_cost_estimate.expand_active_area
   .left
     %h3=link_to fixed_cost.name, edit_component_fixed_cost_estimate_path(fixed_cost.component_id, fixed_cost)
+    - unless @component.nil?
+      =link_to icon(:delete), [@component, fixed_cost], :confirm => 'Are you sure?', :method => :delete
+    - else
+      =link_to icon(:delete), [@task, fixed_cost], :confirm => 'Are you sure?', :method => :delete
       
   .right
     %h3
@@ -13,7 +17,7 @@
       .task
         %strong Task:
         -unless fixed_cost.task.blank?
-          =fixed_cost.task.name
+          =link_to fixed_cost.task.name, fixed_cost.task
         -else
           (None)  
 

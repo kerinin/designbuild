@@ -2,6 +2,7 @@
   -unless context == :project
     %tr
       %th Purchase Order
+      %th Note
       -if context != :po
         %th.currency Cost
         %th.currency Cost w/ Markup
@@ -17,6 +18,7 @@
   - material_costs.each do |material_cost|
     %tr
       %td=link_to "#{material_cost.supplier.name}: #{material_cost.date.to_s( :long )}", [@task, material_cost]
+      %td= material_cost.note
       -if context != :po
         %td.currency= number_to_currency material_cost.raw_cost
         %td.currency= number_to_currency material_cost.cost
