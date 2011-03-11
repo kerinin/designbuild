@@ -44,7 +44,7 @@ class PaymentLinesController < ApplicationController
 
     respond_to do |format|
       if @payment_line.save
-        format.html { redirect_to(@payment_line, :notice => 'Payment line was successfully created.') }
+        format.html { redirect_to( payment_line_items_path(@payment_line.payment, @payment_line), :notice => 'Payment line was successfully created.') }
         format.xml  { render :xml => @payment_line, :status => :created, :location => @payment_line }
       else
         format.html { render :action => "new" }
@@ -60,7 +60,7 @@ class PaymentLinesController < ApplicationController
 
     respond_to do |format|
       if @payment_line.update_attributes(params[:payment_line])
-        format.html { redirect_to(@payment_line, :notice => 'Payment line was successfully updated.') }
+        format.html { redirect_to( payment_line_items_path(@payment_line.payment, @payment_line), :notice => 'Payment line was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }
@@ -73,10 +73,11 @@ class PaymentLinesController < ApplicationController
   # DELETE /payment_lines/1.xml
   def destroy
     @payment_line = PaymentLine.find(params[:id])
+    @payment = @payment_line.payment
     @payment_line.destroy
 
     respond_to do |format|
-      format.html { redirect_to(payment_lines_url) }
+      format.html { redirect_to(payment_path(@payment)) }
       format.xml  { head :ok }
     end
   end

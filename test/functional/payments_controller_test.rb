@@ -254,7 +254,7 @@ class PaymentsControllerTest < ActionController::TestCase
         delete :destroy, :project_id => @project1.to_param, :id => @payment.to_param
       end
 
-      assert_redirected_to project_payments_path(@project1)
+      assert_redirected_to invoicing_project_url(@project1)
     end
 
   end

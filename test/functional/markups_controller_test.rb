@@ -26,7 +26,7 @@ class MarkupsControllerTest < ActionController::TestCase
 
   test "should remove markup from component" do
     get :remove_from_component, :component_id => @component.to_param, :id => @markup.to_param
-    assert_redirected_to project_component_path(@project, @component)
+    assert_redirected_to component_markups_path(@component)
     
     assert_does_not_contain @component.reload.markups, @markup
     assert_contains @component.reload.markups, @markup2
@@ -34,7 +34,7 @@ class MarkupsControllerTest < ActionController::TestCase
 
   test "should remove markup from project" do
     get :remove_from_project, :project_id => @project.to_param, :id => @markup3.to_param
-    assert_redirected_to project_path(@project)
+    assert_redirected_to project_markups_path(@project)
     
     assert_does_not_contain @component.reload.markups, @markup3
     assert_does_not_contain @task.reload.markups, @markup3
@@ -42,7 +42,7 @@ class MarkupsControllerTest < ActionController::TestCase
 
   test "should remove markup from task" do
     get :remove_from_task, :task_id => @task.to_param, :id => @markup.to_param
-    assert_redirected_to project_task_path(@project, @task)
+    assert_redirected_to task_markups_path(@task)
     
     assert_does_not_contain @task.reload.markups, @markup
     assert_contains @task.reload.markups, @markup2
@@ -238,37 +238,37 @@ class MarkupsControllerTest < ActionController::TestCase
   
   test "should add to project" do
     get :add_to_project, :project_id => @project.to_param, :id => @markup.to_param
-    assert_redirected_to project_path(@project)
+    assert_redirected_to project_markups_path(@project)
     assert_contains assigns[:parent].markups, @markup
   end
   
   test "should remove from project" do
     get :remove_from_project, :project_id => @project.to_param, :id => @markup.to_param
-    assert_redirected_to project_path(@project)
+    assert_redirected_to project_markups_path(@project)
     assert_does_not_contain assigns[:parent].markups, @markup
   end
   
   test "should add to component" do
     get :add_to_component, :component_id => @component.to_param, :id => @markup.to_param
-    assert_redirected_to project_component_path(@project, @component)
+    assert_redirected_to component_markups_path(@component)
     assert_contains assigns[:parent].markups, @markup
   end
   
   test "should remove from component" do
     get :remove_from_component, :component_id => @component.to_param, :id => @markup.to_param
-    assert_redirected_to project_component_path(@project, @component)
+    assert_redirected_to component_markups_path(@component)
     assert_does_not_contain assigns[:parent].markups, @markup
   end
   
   test "should add to task" do
     get :add_to_task, :task_id => @task.to_param, :id => @markup.to_param
-    assert_redirected_to project_task_path(@project, @task)
+    assert_redirected_to task_markups_path(@task)
     assert_contains assigns[:parent].markups, @markup
   end
   
   test "should remove from task" do
     get :remove_from_task, :task_id => @task.to_param, :id => @markup.to_param
-    assert_redirected_to project_task_path(@project, @task)
+    assert_redirected_to task_markups_path(@task)
     assert_does_not_contain assigns[:parent].markups, @markup
   end
 end

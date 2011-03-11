@@ -128,6 +128,7 @@ class ContractsController < ApplicationController
     @component = Component.find(params[:component_id]) if params.has_key? :component_id
     
     @project ||= @contract.project unless @contract.nil?
+    @project ||= @component.project unless @component.nil?
     @component ||= @contract.component unless @contract.nil?
   end
 end

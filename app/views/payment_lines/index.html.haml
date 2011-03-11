@@ -18,10 +18,10 @@
       %td= payment_line.material_paid
       %td= payment_line.material_retained
       %td= payment_line.comment
-      %td= link_to 'Show', payment_line
-      %td= link_to 'Edit', edit_payment_line_path(payment_line)
-      %td= link_to 'Destroy', payment_line, :confirm => 'Are you sure?', :method => :delete
+      %td= link_to 'Show', payment_line_item_path(payment_line)
+      %td= link_to 'Edit', edit_payment_line_item_path(payment_line)
+      %td= link_to 'Destroy', payment_line_item_path(payment_line), :confirm => 'Are you sure?', :method => :delete
 
 %br
 
-= link_to 'New Payment line', new_payment_line_path
+= link_to 'New Payment line', new_payment_line_item_path

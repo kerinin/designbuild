@@ -48,7 +48,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
       }
     end
     
-    assert_redirected_to component_unit_cost_estimate_path(@component, assigns(:unit_cost_estimate))
+    assert_redirected_to component_path(@component)
   end
   
   test "should create xhr unit cost estimate" do
@@ -95,7 +95,7 @@ class UnitCostEstimatesControllerTest < ActionController::TestCase
 
   test "should update unit_cost_estimate" do
     put :update, :component_id => @component, :id => @unit_cost_estimate.to_param, :unit_cost_estimate => @unit_cost_estimate.attributes
-    assert_redirected_to component_unit_cost_estimate_path(@component, assigns(:unit_cost_estimate))
+    assert_redirected_to component_path(@component)
   end
   
   test "should update xhr unit cost estimate" do

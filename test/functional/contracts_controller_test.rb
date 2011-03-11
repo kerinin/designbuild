@@ -3,9 +3,9 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ContractsControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
-    @contract = Factory :contract, :project => @project
     @component = Factory :component, :project => @project
-    @c_contract = Factory :contract, :project => @project, :component => @component
+    @contract = Factory :contract, :project => @project, :component => @component
+    #@c_contract = Factory :contract, :project => @project, :component => @component
     
     @project.reload
     
@@ -120,7 +120,7 @@ class ContractsControllerTest < ActionController::TestCase
   end
 
   test "should xhr get edit from component" do
-    xhr :get, :edit, :component_id => @component.to_param, :id => @c_contract.to_param
+    xhr :get, :edit, :component_id => @component.to_param, :id => @contract.to_param
     assert_response :success
     assert_template :edit
     assert_equal 'text/javascript', response.content_type
@@ -152,7 +152,7 @@ class ContractsControllerTest < ActionController::TestCase
   end
 
   test "should xhr update contract from component" do
-    xhr :put, :update, :component_id => @component.to_param, :id => @c_contract.to_param, :contract => @c_contract.attributes
+    xhr :put, :update, :component_id => @component.to_param, :id => @contract.to_param, :contract => @contract.attributes
     
     assert_response :success
     assert_template :update
@@ -161,7 +161,7 @@ class ContractsControllerTest < ActionController::TestCase
   end
 
   test "should fail to xhr update contract from component" do
-    xhr :put, :update, :component_id => @component.to_param, :id => @c_contract.to_param, :contract => {
+    xhr :put, :update, :component_id => @component.to_param, :id => @contract.to_param, :contract => {
         :name => nil
       }
     
@@ -176,6 +176,6 @@ class ContractsControllerTest < ActionController::TestCase
       delete :destroy, :project_id => @project.to_param, :id => @contract.to_param
     end
 
-    assert_redirected_to project_contracts_path(@project)
+    assert_redirected_to component_path(@component)
   end
 end
