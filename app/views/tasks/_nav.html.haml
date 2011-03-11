@@ -1,7 +1,7 @@
 -current ||= nil
 %h1
   Task: 
-  = @task.name
+  =link_to @task.name, @task
 
 %ul.nav
   %li{:class => current == :summary ? 'current' : nil}=link_to "Summary", @task

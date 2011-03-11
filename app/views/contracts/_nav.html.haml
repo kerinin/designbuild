@@ -1,7 +1,7 @@
 -current ||= nil
 %h1
   Contract: 
-  = @contract.name
+  =link_to @contract.name, @contract
 %h2
   Component:
   =link_to @contract.component.name, @component

@@ -1,5 +1,5 @@
 -current ||= nil
-%h1= @project.name
+%h1=link_to @project.name, @project
 
 %ul.nav
   %li{:class => current == :dashboard ? 'current' : nil}=link_to "Dashboard", @project

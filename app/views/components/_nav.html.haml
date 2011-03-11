@@ -2,7 +2,7 @@
 %h1
   Design Component: 
   =render :partial => 'shared/breadcrumbs', :locals => {:ancestors => @component.ancestors}
-  = @component.name
+  =link_to @component.name, @component
 
 %ul.nav
   %li{:class => current == :costs ? 'current' : nil}=link_to "Costs", @component
