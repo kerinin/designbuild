@@ -11,13 +11,16 @@
     %tr{:id => "markup_#{markup.id}"}
       %td=link_to markup.name, markup
       %td.number= number_to_percentage markup.percent, :precision => 1
-      %td.control.edit= link_to 'Edit', edit_markup_path(markup), :remote => true
+      
       -case @parent.class.name
       -when 'Component'
+        %td.control.edit= link_to 'Edit', edit_component_markup_path(@component, markup), :remote => true
         %td.control.remove= link_to 'Remove', remove_component_markup_path(@component, markup)
       -when 'Project'
+        %td.control.edit= link_to 'Edit', edit_project_markup_path(@project, markup), :remote => true
         %td.control.remove= link_to 'Remove', remove_project_markup_path(@project, markup)
       -when 'Task'
+        %td.control.edit= link_to 'Edit', edit_task_markup_path(@task, markup), :remote => true
         %td.control.remove= link_to 'Remove', remove_task_markup_path(@task, markup)
         
       %td.control.destroy= link_to 'Destroy', [@parent, markup], :confirm => 'Are you sure?', :method => :delete

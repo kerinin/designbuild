@@ -14,9 +14,9 @@
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
-$("table.totals tr#markup_<%= @markup.id %>").closest("table").wrap(form).append(contents);
-$("table.totals tr#markup_<%= @markup.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
-$("table.totals tr.markup_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
-$("table.totals tr.add_button").hide();
-$("table.totals td.control.edit > a").contents().unwrap();
+$("table.markups tr#markup_<%= @markup.id %>").closest("table").wrap(form).append(contents);
+$("table.markups tr#markup_<%= @markup.id %>").replaceWith("<%= escape_javascript( yield :tr ) %>");
+$("table.markups tr.markup_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
+// $("table.markups tr.add_button").hide();
+$("table.markups td.control.edit > a").contents().unwrap();
 $("input:text:visible:first").focus();

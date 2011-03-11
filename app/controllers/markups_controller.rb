@@ -101,16 +101,6 @@ class MarkupsController < ApplicationController
   # GET /markups/1/edit
   def edit
     @markup = Markup.find(params[:id])
-    @parent = case
-      when params.has_key?(:project_id)
-        Project.find params[:project_id]
-      when params.has_key?(:task_id)
-        Task.find params[:task_id]
-      when params.has_key?(:component_id)
-        Component.find params[:component_id]
-      when params.has_key?(:contract_id)
-        Contract.find params[:contract_id]
-    end
   end
 
   # POST /markups
