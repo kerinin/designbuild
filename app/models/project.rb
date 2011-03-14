@@ -28,6 +28,8 @@ class Project < ActiveRecord::Base
   before_save :cache_values
   before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
+  #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
+
   
   def component_tree
     self.components.roots.inject([]) {|memo,obj| memo + obj.tree}
@@ -130,6 +132,7 @@ class Project < ActiveRecord::Base
     if p.label.nil?
       p.series = :cost_to_date
       p.value = self.labor_cost_before(date) + self.material_cost_before(date)
+      #p.value = self.cost_before(date)
       p.save!
     end
   end

@@ -26,6 +26,7 @@ class Contract < ActiveRecord::Base
   after_destroy :cascade_cache_values
   
   after_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  #after_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
     
   default_scope :order => :position
   

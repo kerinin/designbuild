@@ -31,6 +31,8 @@ class Task < ActiveRecord::Base
   
   before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
+  #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
+
   
   after_save :update_invoicing_state
   
@@ -145,6 +147,15 @@ class Task < ActiveRecord::Base
   def material_percent_before(date)
     100 * (divide_or_nil(self.labor_cost_before(date), self.cost_before(date) ) || 0)
   end
+      
+  def create_estimated_cost_points
+    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
+    if p.label.nil?
+      p.series = :estimated_cost
+      p.value = self.estimated_cost || 0
+      p.save!
+    end
+  end
     
   def create_projected_cost_points
     p = self.projected_cost_points.find_or_initialize_by_date(Date::today)
@@ -160,6 +171,7 @@ class Task < ActiveRecord::Base
     if p.label.nil?
       p.series = :cost_to_date
       p.value = self.labor_cost_before(date) + self.material_cost_before(date)
+      #p.value = self.cost_before(date)
       p.save!
     end
   end
@@ -233,14 +245,5 @@ class Task < ActiveRecord::Base
         
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
-  end
-  
-  def create_estimated_cost_points
-    p = self.estimated_cost_points.find_or_initialize_by_date(Date::today)
-    if p.label.nil?
-      p.series = :estimated_cost
-      p.value = self.estimated_cost || 0
-      p.save!
-    end
   end
 end
