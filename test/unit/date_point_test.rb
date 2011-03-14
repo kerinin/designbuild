@@ -1,6 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class DatePointTest < ActiveSupport::TestCase
+=begin
   context "A Date Point assigned to a project" do
     setup do
       @source = Factory.build :project
@@ -306,7 +307,7 @@ class DatePointTest < ActiveSupport::TestCase
     
     
   end
-
+=end
   context "A Date Point assigned to a task" do
     setup do
       @project = Factory :project
@@ -434,10 +435,18 @@ class DatePointTest < ActiveSupport::TestCase
 
       @source.fixed_cost_estimates << @fc
       @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
-      
+
+      assert_equal 3, @source.estimated_cost_points.count
+      assert_equal 3, @source.projected_cost_points.count
+      assert_equal 3, @source.cost_to_date_points.count
+                  
       assert_equal 200, @source.estimated_cost_points.last.value
       assert_equal 200, @source.projected_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
+      
+      assert_equal 200, @project.estimated_cost_points.last.value
+      assert_equal 200, @project.projected_cost_points.last.value
+      assert_equal 200, @project.cost_to_date_points.last.value
     end
         
     should "create points on update" do 
@@ -448,7 +457,7 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 3, @source.estimated_cost_points.count
       assert_equal 3, @source.projected_cost_points.count
       assert_equal 3, @source.cost_to_date_points.count
-
+      
       @source.fixed_cost_estimates << @fc
       @mc = @source.material_costs.create! :date => Date::today, :raw_cost => 200, :supplier => Factory(:supplier)
       
@@ -459,6 +468,10 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 200, @source.estimated_cost_points.last.value
       assert_equal 200, @source.projected_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
+      
+      assert_equal 200, @project.estimated_cost_points.last.value
+      assert_equal 200, @project.projected_cost_points.last.value
+      assert_equal 200, @project.cost_to_date_points.last.value
     end
     
     should "not create points on update if labeled point exists" do 
@@ -484,7 +497,7 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 100, @source.cost_to_date_points.last.value
     end
   end
-
+=begin
   context "A Date Point assigned to a contract" do
     setup do
       @project = Factory :project
@@ -600,6 +613,10 @@ class DatePointTest < ActiveSupport::TestCase
     
       assert_equal 200, @source.estimated_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
+      
+      assert_equal 400, @project.estimated_cost_points.last.value
+      assert_equal 400, @component.estimated_cost_points.last.value
+      assert_equal 200, @project.cost_to_date_points.last.value
     end
       
     should "create points on update" do 
@@ -619,6 +636,10 @@ class DatePointTest < ActiveSupport::TestCase
     
       assert_equal 200, @source.estimated_cost_points.last.value
       assert_equal 200, @source.cost_to_date_points.last.value
+      
+      assert_equal 400, @project.estimated_cost_points.last.value
+      assert_equal 400, @component.estimated_cost_points.last.value
+      assert_equal 200, @project.cost_to_date_points.last.value
     end
   
     should "not create points on update if labeled point exists" do 
@@ -641,4 +662,5 @@ class DatePointTest < ActiveSupport::TestCase
       assert_equal 100, @source.cost_to_date_points.last.value
     end
   end
+=end
 end

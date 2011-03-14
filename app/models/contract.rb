@@ -40,6 +40,15 @@ class Contract < ActiveRecord::Base
     multiply_or_nil( 100, divide_or_nil( self.invoiced, self.estimated_cost ) )
   end
   
+  # Hack for cost_to_date points
+  def labor_cost_before(date)
+    self.cost_before(date)
+  end
+  
+  def material_cost_before(date)
+    0
+  end
+  
   def cost_before(date)
     self.raw_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost_before, date) }
   end
