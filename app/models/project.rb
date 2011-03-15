@@ -181,8 +181,15 @@ class Project < ActiveRecord::Base
   end
   
   def cache_projected_cost
-    self.projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.projected_cost)}
-    self.raw_projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)}
+    self.projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.projected_cost)} + 
+      self.estimated_contract_cost + 
+      ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f + 
+      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f
+      
+    self.raw_projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)} + 
+      self.estimated_raw_contract_cost +
+      ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
+      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f    
   end
   
   

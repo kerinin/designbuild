@@ -16,9 +16,9 @@ class Task < ActiveRecord::Base
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => :refresh_markup, :after_remove => :refresh_markup
   
-  has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}
-  has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}
-  has_many :cost_to_date_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :cost_to_date}
+  has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
+  has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}, :dependent => :destroy
+  has_many :cost_to_date_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :cost_to_date}, :dependent => :destroy
   
   validates_presence_of :name, :project
 
@@ -27,6 +27,7 @@ class Task < ActiveRecord::Base
   before_save :cache_values
   
   after_save :cascade_cache_values
+  after_destroy :clear_associated
   after_destroy :cascade_cache_values
   
   before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
@@ -246,5 +247,10 @@ class Task < ActiveRecord::Base
         
   def add_project_markups
     self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  end
+  
+  def clear_associated
+    self.fixed_cost_estimates.each {|fc| fc.task= nil; fc.save!}
+    self.unit_cost_estimates.each {|uc| uc.task = nil; uc.save!}
   end
 end

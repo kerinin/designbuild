@@ -14,28 +14,43 @@ class ProjectTest < ActiveSupport::TestCase
       @u1 = Factory :user, :projects => [@obj]
       @c1 = Factory :component, :name => 'c1', :project => @obj
         @sc1 = Factory :component, :name => 'sc1', :parent => @c1, :project => @obj
+          # .1, assigned task
           @fc1 = Factory :fixed_cost_estimate, :component => @sc1, :raw_cost => 0.1, :task => @task
           @q1 = Factory :quantity, :component => @sc1, :value => 1
+          # .03, assigned task
           @uc1 = Factory :unit_cost_estimate, :name => 'uc1', :component => @sc1, :quantity => @q1, :unit_cost => 0.03, :drop => 0, :task => @task #.03
       
       @c2 = Factory :component, :project => @obj
+        # 1, unassigned
         @fc2 = Factory :fixed_cost_estimate, :component => @c2, :raw_cost => 1
         @q2 = Factory :quantity, :component => @c2, :value => 1
+        # 30, unassigned
         @uc3 = Factory :unit_cost_estimate, :component => @c2, :quantity => @q2, :unit_cost => 30, :drop => 0 #30
 
       @t1 = Factory :task, :project => @obj
+        # 1, assigned t1
         @mc1 = Factory :material_cost, :task => @t1, :raw_cost => 1, :supplier => @s1
+        # 10, assigned t1
         @lc1 = Factory :labor_cost, :task => @t1, :percent_complete => 100
           @lcl1 = Factory :labor_cost_line, :labor_set => @lc1, :laborer => @lab, :hours => 10
       @t2 = Factory :task, :project => @obj
+        # 100, assigned t2
         @mc2 = Factory :material_cost, :task => @t2, :raw_cost => 100, :supplier => @s2
+        # 1000, assigned t2
         @lc2 = Factory :labor_cost, :task => @t2, :percent_complete => 100
           @lcl2 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @lab, :hours => 1000
           
+      # t1, t2 100% complete
+      
+      # 10000, cont1
       @cont1 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 10000)
         @cc1 = Factory :contract_cost, :contract => @cont1, :raw_cost => 10000
+        
+      # 100000, cont2
       @cont2 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 100000)
         @cc2 = Factory :contract_cost, :contract => @cont2, :raw_cost => 100000
+      
+      # 1000000, cont3
       @cont3 = Factory :contract, :project => @obj, :component => @c1, :active_bid => Factory(:bid, :raw_cost => 1000000)
         @cc3 = Factory :contract_cost, :contract => @cont3, :raw_cost => 1000000
                 
@@ -45,6 +60,14 @@ class ProjectTest < ActiveSupport::TestCase
       @rdl2 = Factory :deadline, :parent_deadline => @dl2, :interval => 20
       
       [@obj, @task, @c1, @c2, @t1, @t2].each {|i| i.reload}
+      
+      # 31.13 estimated, plus 1110000 from contracts
+      # 1111 actual, plus 1110000 from contracts
+      # 1111 actual from tasks has no estimates, so additional
+      
+      # 1110031.13 estimated
+      # 1111111 actual
+      # 1111142.13 projected
     end
 
     should "be valid" do
@@ -130,6 +153,10 @@ class ProjectTest < ActiveSupport::TestCase
     
     should "aggregate costs" do
       assert_equal 1111111, @obj.reload.raw_cost
+    end
+   
+    should "aggregated projected cost" do
+      assert_equal 1111142.13, @obj.reload.raw_projected_cost
     end
 
     should "determine projected net" do

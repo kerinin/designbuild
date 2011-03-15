@@ -29,7 +29,7 @@ class TaskTest < ActiveSupport::TestCase
       
       [@obj, @lc1, @lc2, @q, @ctr, @dl1, @laborer, @lcl1, @lcl2, @lcl3, @lcl4].each {|i| i.reload}
     end
-    
+
     should "update labor cost lines when markup added/removed" do
       @obj.markups << Factory(:markup, :percent => 100)
       [@obj, @lcl1, @lcl2].each {|i| i.reload}
@@ -218,6 +218,15 @@ class TaskTest < ActiveSupport::TestCase
       @markup = Factory :markup, :percent => 100
       @obj.markups << @markup
       assert_equal (2222 - 222222), @obj.reload.projected_net
+    end
+ 
+    should "de-associate costs when destroyed" do
+      @obj.destroy
+      
+      assert_equal nil, @fce1.reload.task_id
+      assert_equal nil, @fce2.reload.task_id
+      assert_equal nil, @uce1.reload.task_id
+      assert_equal nil, @uce2.reload.task_id
     end
   end
 end
