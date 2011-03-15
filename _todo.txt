@@ -12,6 +12,7 @@ To look into
 - make sure points are being deleted if base object deleted
 - make sure associations that aren't dep => destroy are cleared
 - markups overview page - list all components, contracts, & tasks - show checkboxes to apply relevant markups
+- think about and test deletion for all object types
 
 
 
