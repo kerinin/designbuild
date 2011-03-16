@@ -14,7 +14,7 @@ form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
 $("table.bids").wrap(form).append(contents);
-$("table.bids tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("table.bids tr:last").after("<%= escape_javascript( yield :tr ) %>");
 $("table.bids tr.bid_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 $("table.bids tr.add_button").hide();
 $("table.bids td.control.edit > a").contents().unwrap();

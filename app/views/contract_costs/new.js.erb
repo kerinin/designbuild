@@ -13,8 +13,8 @@
 form = $("<%= escape_javascript( yield :wrapping_form) %>")
 contents = form.children().detach();
 
-$("table.contract_costs tr.add_button").closest("table").wrap(form).append(contents);
-$("table.contract_costs tr.add_button").before("<%= escape_javascript( yield :tr ) %>");
+$("table.contract_costs").wrap(form).append(contents);
+$("table.contract_costs tr:last").before("<%= escape_javascript( yield :tr ) %>");
 $("table.contract_costs tr.contract_cost_fields > td.control").append("or <%= escape_javascript yield :cancel_link %>")
 $("table.contract_costs tr.add_button").hide();
 $("table.contract_costs td.control.edit > a").contents().unwrap();
