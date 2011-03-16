@@ -53,8 +53,8 @@ class UnitCostEstimate < ActiveRecord::Base
     self.component.reload.save!
     self.task.reload.save! unless self.task.blank?
     
-    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
-    Task.find(self.task_id_was).save! if Task.exists?(:id => self.task_id_was) && self.task_id_changed? && !self.task_id_was.nil?    
+    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil? && Component.exists?(:id => self.component_id_was)
+    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
   
   

@@ -68,8 +68,8 @@ class Contract < ActiveRecord::Base
     self.component.reload.save!
     self.project.reload.save!
     
-    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil?
-    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?
+    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil? && Component.exists?(:id => self.component_id_was)
+    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil? && Project.exists?(:id => self.project_id_was)
   end
   
   def percent_complete

@@ -43,7 +43,7 @@ class MaterialCost < ActiveRecord::Base
   def cascade_cache_values
     self.task.reload.save!
     
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil?
+    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
   
   def create_points

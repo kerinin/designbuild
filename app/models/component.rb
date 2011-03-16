@@ -67,7 +67,7 @@ class Component < ActiveRecord::Base
       self.parent.reload.save!
     end
     
-    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil?
+    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil? && Project.exists?(:id => self.project_id_was)
   end
   
   
