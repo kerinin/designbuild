@@ -3,7 +3,7 @@ To look into
 + Can't edit markups
 + Future tasks not showing up
 + Graphs all fucked up (estimated, projected, to date, etc)
-- Add bid/invoice to contract not working
++ Add bid/invoice to contract not working
 + graph of RB doesn't seem to be updating
 - fixed / cost+ interface - consider use cases
 + labor comments not showing
@@ -12,8 +12,11 @@ To look into
 - make sure points are being deleted if base object deleted
 - make sure associations that aren't dep => destroy are cleared
 - markups overview page - list all components, contracts, & tasks - show checkboxes to apply relevant markups
+    UI needs work
+    controller not tested
+    need autosubmit on change
+    
 - think about and test deletion for all object types
-
 
 
 * notice box behavior erratic

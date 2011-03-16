@@ -9,3 +9,64 @@
   =render :partial => 'markup_lines', :locals => {:markups => @markups}
   
   =add_button 'Add Markup', new_project_markup_path(@project)
+  
+  %h1 Applied Markups
+  
+  %p
+    %h3 Project
+    .markup_set
+      .markup_header
+        .title
+        -@markups.each do |markup|
+          .markup_title
+            =markup.name
+        
+      .markup_line
+        .title= @project.name
+        -@markups.each do |markup|
+          .selector= check_box_tag :markup, true
+  
+  %p
+    %h3 Components
+    .markup_set
+      .markup_header
+        .title Component Name
+        -@markups.each do |markup|
+          .markup_title= markup.name
+      
+      -@project.components.each do |component|
+        =form_for [@project, component] do |f|
+          .markup_line
+            .title= component.name
+            -@markups.each do |markup|
+              .selector= check_box_tag "component[markup_ids][]", markup.id, component.markups.include?(markup)
+   
+  %p       
+    %h3 Contracts
+    .markup_set
+      .markup_header
+        .title Contract Name
+        -@markups.each do |markup|
+          .markup_title= markup.name
+      
+      -@project.contracts.each do |contract|
+        =form_for [@project, contract] do |f|
+          .markup_line
+            .title= contract.name
+            -@markups.each do |markup|
+              .selector= check_box_tag "contract[markup_ids][]", markup.id, contract.markups.include?(markup)
+  
+  %p    
+    %h3 Tasks
+    .markup_set
+      .markup_header
+        .title Task Name
+        -@markups.each do |markup|
+          .markup_title= markup.name
+        
+      -@project.tasks.each do |task|
+        =form_for [@project, task] do |f|
+          .markup_line
+            .title= task.name
+            -@markups.each do |markup|
+              .selector= check_box_tag "task[markup_ids][]", markup.id, task.markups.include?(markup)
