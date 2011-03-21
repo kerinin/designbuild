@@ -11,6 +11,11 @@ class NewInvoicing < ActiveRecord::Migration
 
   def self.down
     remove_column :invoice_lines, :component_id, :integer
+    remove_column :invoice_lines, :invoiced
+    remove_column :invoice_lines, :retainage
+    
     remove_column :payment_lines, :component_id
+    remove_column :payment_lines, :paid
+    remove_column :payment_lines, :retained
   end
 end

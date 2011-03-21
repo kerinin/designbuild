@@ -8,13 +8,7 @@ class InvoiceLine < ActiveRecord::Base
   validates_presence_of :invoice, :component
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
-  def invoiced
-    self.labor_invoiced + self.material_invoiced
-  end
-  
-  def retainage
-    self.labor_retainage + self.material_retainage
-  end
+  before_save :set_sums
   
   def invoiced=(value)
     # allows quick setting of invoiced - divides evenly
@@ -44,6 +38,13 @@ class InvoiceLine < ActiveRecord::Base
   
   def calculate_retainage( invoiced, retainage_float, retainage)
     ( invoiced * retainage_float / ( 1 - retainage_float ) ) - retainage
+  end
+  
+  protected
+  
+  def set_sums
+    self.invoiced = self.labor_invoiced + self.material_invoiced
+    self.retainage = self.labor_retainage + self.material_retainage
   end
 end
 
