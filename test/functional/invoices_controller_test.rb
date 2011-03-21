@@ -13,7 +13,7 @@ class InvoicesControllerTest < ActionController::TestCase
       @bid = Factory :bid, :raw_cost => 100, :contract => @c
       @c.update_attributes :active_bid => @bid
       
-      # For missing task
+      # For unassigned costs
       @project2 = Factory :project
       @task2 = Factory :task, :project => @project2
       @mc2 = Factory :material_cost, :task => @task2, :raw_cost => 100
@@ -33,8 +33,8 @@ class InvoicesControllerTest < ActionController::TestCase
       
       @new_invoice = Factory :invoice, :project => @project1
       
-      @missing_task_invoice = @project2.invoices.create! :date => Date::today
-      @missing_task_invoice.advance!
+      @unassigned_costs_invoice = @project2.invoices.create! :date => Date::today
+      @unassigned_costs_invoice.advance!
       
       @payments_unbalanced_invoice = @project3.invoices.create! :date => Date::today
       @payments_unbalanced_invoice.advance!
@@ -60,14 +60,14 @@ class InvoicesControllerTest < ActionController::TestCase
       @complete_invoice.advance!
       
 
-      [@invoice, @new_invoice, @missing_task_invoice, @payments_unbalanced_invoice, @retainage_expected_invoice, @retainage_unexpected_invoice, @costs_specified_invoice, @complete_invoice].each {|i| i.reload}
+      [@invoice, @new_invoice, @unassigned_costs_invoice, @payments_unbalanced_invoice, @retainage_expected_invoice, @retainage_unexpected_invoice, @costs_specified_invoice, @complete_invoice].each {|i| i.reload}
 
       sign_in Factory :user
     end
 
     should "start in expected states" do
       assert_equal 'new', @new_invoice.state
-      assert_equal 'missing_task', @missing_task_invoice.state
+      assert_equal 'unassigned_costs', @unassigned_costs_invoice.state
       assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
       assert_equal 'retainage_expected', @retainage_expected_invoice.state
       assert_equal 'retainage_unexpected', @retainage_unexpected_invoice.state
@@ -82,10 +82,10 @@ class InvoicesControllerTest < ActionController::TestCase
       assert response.body.include? '<!-- Start -->'
     end
 
-    should "get start in state missing_task" do
-      get :start, :id => @missing_task_invoice.to_param
+    should "get start in state unassigned_costs" do
+      get :start, :id => @unassigned_costs_invoice.to_param
       assert_response :success
-      assert response.body.include? '<!-- Missing Task -->'
+      assert response.body.include? '<!-- Start -->'
     end
     
     should "get start in state payments_unbalanced" do
@@ -117,16 +117,58 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_response :success
       assert response.body.include? '<!-- Start -->'
     end
-   
+
+    # Assign Costs
+    should "get assign costs in state new" do
+      get :assign_amounts, :id => @new_invoice.to_param
+      assert_redirected_to start_invoice_path(assigns(:invoice))
+    end
+
+    should "get assign costs in state unassigned_costs" do
+      get :assign_costs, :id => @unassigned_costs_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+    
+    should "get assign costs in state payments_unbalanced" do
+      get :assign_costs, :id => @payments_unbalanced_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+    
+    should "get assign costs in state retainage_expected" do
+      get :assign_costs, :id => @retainage_expected_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+    
+    should "get assign costs in state retainage_unexpected" do
+      get :assign_costs, :id => @retainage_unexpected_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+    
+    should "get assign costs in state costs_specified" do
+      get :assign_costs, :id => @costs_specified_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+    
+    should "get assign costs in state complete" do
+      get :assign_costs, :id => @complete_invoice.to_param
+      assert_response :success
+      assert response.body.include? '<!-- Assign Costs -->'
+    end
+       
     # Set Amounts
     should "get set amounts in state new" do
       get :set_amounts, :id => @new_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should "get set_amounts in state missing_task" do
-      get :set_amounts, :id => @missing_task_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
+    should "get set_amounts in state unassigned_costs" do
+      get :set_amounts, :id => @unassigned_costs_invoice.to_param
+      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
     end
     
     should "get set_amounts in state payments_unbalanced" do
@@ -164,9 +206,9 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should "get select_template in state missing_task" do
-      get :select_template, :id => @missing_task_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
+    should "get select_template in state unassigned_costs" do
+      get :select_template, :id => @unassigned_costs_invoice.to_param
+      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
     end
     
     should "get select_template in state payments_unbalanced" do
@@ -200,9 +242,9 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
     
-    should "get finished in state missing_task" do
-      get :finished, :id => @missing_task_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
+    should "get finished in state unassigned_costs" do
+      get :finished, :id => @unassigned_costs_invoice.to_param
+      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
     end
     
     should "get finished in state payments_unbalanced" do
@@ -277,7 +319,7 @@ class InvoicesControllerTest < ActionController::TestCase
     end
 
 
-    should "update new invoice" do
+    should_eventually "update new invoice" do
       put :update, :project_id => @project1.to_param, :id => @new_invoice.to_param, :invoice => {
         :date => Date::today, :name => 'foo'
       }
@@ -293,7 +335,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
   
-    should "update retainage_expected invoice" do
+    should_eventually "update retainage_expected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_expected_invoice.to_param, :invoice => { :lines_attributes => 
         [ { :id => @retainage_expected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 } ]
       }
@@ -319,7 +361,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
     end
     
-    should "update retainage_unexpected invoice" do
+    should_eventually "update retainage_unexpected invoice" do
       put :update, :project_id => @project1.to_param, :id => @retainage_unexpected_invoice.to_param, :invoice => { :lines_attributes => [
         { :id => @retainage_unexpected_line.id, :labor_invoiced => 1, :material_invoiced => 10, :labor_retainage => 100, :material_retainage => 1000 }
       ] }

@@ -1,0 +1,20 @@
+-content_for :head do
+  =javascript_include_tag "jquery.dimscreen.js"
+
+=render :partial => 'shared/project_nav', :locals => {:current => :invoicing}
+
+.container
+  %h1
+    Invoice:
+    =@invoice.name
+    =@invoice.date
+
+  %hr
+
+  =render :partial => 'steps', :locals => {:current => :assign_costs}
+  
+  -if @invoice.state == 'unassigned_costs'
+    / Assign Costs
+    .error
+      %h2 Before you can set invoice amounts...
+

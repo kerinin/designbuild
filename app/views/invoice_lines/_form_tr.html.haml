@@ -1,27 +1,27 @@
 %tr
   / Name
-  %td{:rowspan => 2}= "#{line.cost.component.name}: #{line.cost.name}"
+  %td{:rowspan => 2}= line.component.name
   
   / Cost - estimated
-  %td.currency{:rowspan => 2}= number_to_currency line.cost.estimated_cost
+  %td.currency{:rowspan => 2}= number_to_currency line.component.estimated_cost
   
   / Cost - as of invoice date
   -if line.cost.instance_of? Contract
-    %td.currency{:rowspan => 2}= number_to_currency line.cost.cost_before(@invoice.date)
+    %td.currency{:rowspan => 2}= number_to_currency line.component.cost_before(@invoice.date)
   -else
-    %td.currency= number_to_currency line.cost.labor_cost_before(@invoice.date)
+    %td.currency= number_to_currency line.component.labor_cost_before(@invoice.date)
   
   / Previous Invoices - Invoiced
-  %td.currency= number_to_currency line.cost.labor_invoiced_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.labor_invoiced_before(@invoice.date - 1)
   
   / Previous Invoices - Retainage
-  %td.currency= number_to_currency line.cost.labor_retainage_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.labor_retainage_before(@invoice.date - 1)
   
   / Previous Payments - Paid
-  %td.currency= number_to_currency line.cost.labor_paid_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.labor_paid_before(@invoice.date - 1)
   
   / Previous Payments - Retained
-  %td.currency= number_to_currency line.cost.labor_retained_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.labor_retained_before(@invoice.date - 1)
   
   / Current Invoice - Invoice
   %td.currency= f.text_field :labor_invoiced
@@ -37,19 +37,19 @@
 %tr
   -unless line.cost.instance_of? Contract
     / Cost - as of invoice date
-    %td.currency= number_to_currency line.cost.material_cost_before(@invoice.date)
+    %td.currency= number_to_currency line.component.material_cost_before(@invoice.date)
   
   / Previous Invoices - Invoiced
-  %td.currency= number_to_currency line.cost.material_invoiced_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.material_invoiced_before(@invoice.date - 1)
   
   / Previous Invoices - Retainage
-  %td.currency= number_to_currency line.cost.material_retainage_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.material_retainage_before(@invoice.date - 1)
   
   / Previous Payments - Paid
-  %td.currency= number_to_currency line.cost.material_paid_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.material_paid_before(@invoice.date - 1)
   
   / Previous Payments - Retained
-  %td.currency= number_to_currency line.cost.material_retained_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.material_retained_before(@invoice.date - 1)
   
   / Current Invoice - Invoice
   %td.currency= f.text_field :material_invoiced

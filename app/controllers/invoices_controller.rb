@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_filter :get_project, :except => [:start, :set_amounts, :select_template, :finished, :accept]
+  before_filter :get_project, :except => [:start, :assign_costs, :set_amounts, :select_template, :finished, :accept]
   
   def start
     @invoice = Invoice.find(params[:id])
@@ -10,14 +10,31 @@ class InvoicesController < ApplicationController
     end
   end
   
+  def assign_costs
+    @invoice = Invoice.find(params[:id], :include => :lines)
+    @project = @invoice.project
+
+    respond_to do |format|
+      format.html {
+        if ['new'].include? @invoice.state
+          redirect_to start_invoice_path(@invoice)
+        else
+          render
+        end
+      }
+    end    
+  end
+  
   def set_amounts
     @invoice = Invoice.find(params[:id], :include => :lines)
     @project = @invoice.project
 
     respond_to do |format|
       format.html {
-        if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
+        if ['new', 'payments_unbalanced'].include? @invoice.state
           redirect_to start_invoice_path(@invoice)
+        elsif ['unassigned_costs'].include? @invoice.state
+          redirect_to assign_costs_invoice_path(@invoice)
         else
           render
         end
@@ -34,8 +51,10 @@ class InvoicesController < ApplicationController
 
     respond_to do |format|
       format.html {
-        if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
+        if ['new', 'payments_unbalanced'].include? @invoice.state
           redirect_to start_invoice_path(@invoice)
+        elsif ['unassigned_costs'].include? @invoice.state
+          redirect_to assign_costs_invoice_path(@invoice)
         elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
           redirect_to set_amounts_invoice_path(@invoice)
         else
@@ -53,6 +72,8 @@ class InvoicesController < ApplicationController
       format.html {
         if ['new', 'missing_task', 'payments_unbalanced'].include? @invoice.state
           redirect_to start_invoice_path(@invoice)
+        elsif ['unassigned_costs'].include? @invoice.state
+          redirect_to assign_costs_invoice_path(@invoice)
         elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
           redirect_to set_amounts_invoice_path(@invoice)
         elsif 'costs_specified' == @invoice.state
@@ -136,8 +157,10 @@ class InvoicesController < ApplicationController
       
       format.html {
         case @invoice.state
-        when 'new', 'missing_task', 'payments_unbalanced'
+        when 'new', 'payments_unbalanced'
           redirect_from_session_or start_invoice_path(@invoice)
+        when 'unassigned_costs'
+          redirect_from_session_or assign_costs_invoice_path(@invoice)
         when 'retainage_expected', 'retainage_unexpected'
           redirect_from_session_or set_amounts_invoice_path(@invoice)
         when 'costs_specified'

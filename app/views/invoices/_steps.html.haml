@@ -7,7 +7,17 @@
         %span.emphasize Start
       -else
         =link_to 'Start', start_invoice_path( @invoice)
-        
+
+    %li.step >
+
+    %li.step
+      -if current == :assign_costs
+        %span.emphasize Assign Costs
+      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'complete'].include? @invoice.state
+        =link_to 'Assign Costs', assign_costs_invoice_path(@invoice)
+      -else
+        Assign Costs
+                    
     %li.step >
     
     %li.step

@@ -6,6 +6,7 @@ Designbuild::Application.routes.draw do
     
     member do
       get :start
+      get :assign_costs
       get :set_amounts
       get :select_template
       get :finished
