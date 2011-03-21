@@ -1,6 +1,8 @@
 class MaterialCost < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   
+  belongs_to :project
+  belongs_to :component
   belongs_to :task, :inverse_of => :material_costs
   belongs_to :supplier, :inverse_of => :material_costs
   
@@ -9,8 +11,11 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
+  before_create :inherit_project
+  
   before_save :cache_values
   
+  before_save :auto_assign_component
   after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
@@ -63,5 +68,21 @@ class MaterialCost < ActiveRecord::Base
     #  p.value = self.task.labor_cost_before(self.date) + self.task.material_cost_before(self.date)
     #  p.save!
     #end
+  end
+  
+  protected
+  
+  def inherit_project
+    self.project = self.task.project
+  end
+  
+  def auto_assign_component
+    components = Component.scoped.includes(:fixed_cost_estimates, :unit_cost_estimates)
+    
+    # if the task has costs associated with it and they're all from the same component, assign the component to this cost
+    components = components.where('fixed_cost_estimates.task_id = ?', self.task_id) unless self.task.fixed_cost_estimates.empty?
+    components = components.where('unit_cost_estimates.task_id = ?', self.task_id) unless self.task.unit_cost_estimates.empty?
+    
+    self.component = components.first if components.count == 1
   end
 end

@@ -4,8 +4,10 @@ class LaborCostTest < ActiveSupport::TestCase
   context "A Labor Cost" do
     setup do
       @laborer = Factory :laborer, :bill_rate => 1
+      @project = Factory :project
+      @task = Factory :task, :project => @project
       
-      @obj = Factory :labor_cost
+      @obj = Factory :labor_cost, :task => @task
       
       @li1 = Factory :labor_cost_line, :labor_set => @obj, :laborer => @laborer, :hours => 2
       @li2 = Factory :labor_cost_line, :labor_set => @obj, :laborer => @laborer, :hours => 20
@@ -32,7 +34,11 @@ class LaborCostTest < ActiveSupport::TestCase
         Factory :labor_cost, :task => nil
       end
     end
-    
+
+    should "inherit project" do
+      assert_equal @project, @obj.project
+    end
+        
     should "allow multiple line items" do
       assert_contains @obj.line_items, @li1
       assert_contains @obj.line_items, @li2

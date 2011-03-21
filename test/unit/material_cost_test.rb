@@ -33,6 +33,10 @@ class MaterialCostTest < ActiveSupport::TestCase
       assert_not_nil @obj.raw_cost
     end
     
+    should "inherit project" do
+      assert_equal @proj1, @o1.project
+    end
+    
     should "require a task" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :material_cost, :task => nil

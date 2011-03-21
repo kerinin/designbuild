@@ -18,6 +18,8 @@ class Component < ActiveRecord::Base
   
   has_many :invoice_lines
   has_many :payment_lines
+  has_many :material_costs
+  has_many :labor_costs
   
   has_and_belongs_to_many :tags
   

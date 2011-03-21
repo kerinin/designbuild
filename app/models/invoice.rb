@@ -12,7 +12,7 @@ class Invoice < ActiveRecord::Base
     state :new do
     end
     
-    state :missing_task do
+    state :unassigned_costs do
     end
     
     state :payments_unbalanced do
@@ -31,16 +31,16 @@ class Invoice < ActiveRecord::Base
     state :complete do
     end
     
-    after_transition [:new, :missing_task, :payments_unbalanced] => [:retainage_expected, :retainage_unexpected], :do => :populate_lines
+    after_transition [:new, :unassigned_costs, :payments_unbalanced] => [:retainage_expected, :retainage_unexpected], :do => :populate_lines
     
     # Events
     event :advance do
-      transition :new => :missing_task, :if => Proc.new{|inv| inv.date? && inv.missing_tasks? }
-      transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :missing_tasks?
+      transition :new => :unassigned_costs, :if => Proc.new{|inv| inv.date? && inv.unassigned_costs? }
+      transition :new => :payments_unbalanced, :if => Proc.new{|inv| inv.date? && inv.unbalanced_payments? }, :unless => :unassigned_costs?
       
-      transition :missing_task => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :missing_tasks?
+      transition :unassigned_costs => :payments_unbalanced, :if => :unbalanced_payments?, :unless => :unassigned_costs?
       
-      transition [:new, :missing_task, :payments_unbalanced] => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.missing_tasks? && !inv.unbalanced_payments? }
+      transition [:new, :unassigned_costs, :payments_unbalanced] => :retainage_expected, :if => Proc.new{|inv| inv.date? && !inv.unassigned_costs? && !inv.unbalanced_payments? }
       
       transition :retainage_unexpected => :retainage_expected, :if => :retainage_as_expected?
       transition :retainage_expected => :retainage_unexpected, :unless => :retainage_as_expected?    
@@ -68,10 +68,11 @@ class Invoice < ActiveRecord::Base
     true
   end
   
-  def missing_tasks?
-    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
-      task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
-    }.include?( true ) 
+  def unassigned_costs?
+    !self.project.material_costs.where(:component_id => nil).empty? || !self.project.labor_costs.where(:component_id => nil).empty?
+    #self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    #  task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
+    #}.include?( true ) 
   end
   
   def unbalanced_payments?

@@ -19,6 +19,10 @@ class ComponentTest < ActiveSupport::TestCase
       #@subsub = Factory :component, :parent => @sub1
       @subsub = @project.components.build :name => 'subsub', :project => @project
       #@q1 = Factory :quantity, :component => @obj, :value => 1
+      
+      @task = @project.tasks.build :name => 'test', :project => @project
+      @mc = @task.material_costs.build :component => @obj, :date => Date::today, :supplier => Factory(:supplier), :raw_cost => 0, :task => @task
+      @lc = @task.labor_costs.build :component => @obj, :date => Date::today, :task => @task, :percent_complete => 0
     end
 
     should "be valid" do
@@ -61,7 +65,21 @@ class ComponentTest < ActiveSupport::TestCase
         @sub2.update_attributes :parent => @obj
         @subsub.update_attributes :parent => @sub1
       end
-      
+
+      should "allow multiple material costs" do
+        assert_contains @obj.reload.material_costs, @mc
+      end
+
+      should "allow multiple labor costs" do
+        assert_contains @obj.reload.labor_costs, @lc
+      end
+
+      should_eventually "auto-assign material costs" do
+      end
+
+      should_eventually "auto-assign labor costs" do
+      end
+            
       should "have a parent component" do
         assert_equal @obj.parent, @parent
       end

@@ -4,6 +4,7 @@ class LaborCost < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :project
+  belongs_to :component
   belongs_to :task, :inverse_of => :labor_costs
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
@@ -11,7 +12,10 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
+  before_create :inherit_project
+  
   before_save :set_project, :cache_values
+  before_save :auto_assign_component
   
   after_save :deactivate_task_if_done
   after_save :set_task_percent_complete
@@ -39,6 +43,20 @@ class LaborCost < ActiveRecord::Base
 
   protected
     
+  def inherit_project
+    self.project = self.task.project
+  end
+  
+  def auto_assign_component
+    components = Component.scoped.includes(:fixed_cost_estimates, :unit_cost_estimates)
+    
+    # if the task has costs associated with it and they're all from the same component, assign the component to this cost
+    components = components.where('fixed_cost_estimates.task_id = ?', self.task_id) unless self.task.fixed_cost_estimates.empty?
+    components = components.where('unit_cost_estimates.task_id = ?', self.task_id) unless self.task.unit_cost_estimates.empty?
+    
+    self.component = components.first if components.count == 1
+  end
+  
   def set_project
     self.project = self.task.project
   end

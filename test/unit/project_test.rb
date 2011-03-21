@@ -10,6 +10,8 @@ class ProjectTest < ActiveSupport::TestCase
       @s2 = Factory :supplier
       @s3 = Factory :supplier
       @task = Factory :task, :project => @obj
+      @mc = Factory :material_cost, :task => @task, :raw_cost => 0
+      @lc = Factory :labor_cost, :task => @task
       
       @u1 = Factory :user, :projects => [@obj]
       @c1 = Factory :component, :name => 'c1', :project => @obj
@@ -98,7 +100,15 @@ class ProjectTest < ActiveSupport::TestCase
       assert_contains @obj.contracts, @cont1
       assert_contains @obj.contracts, @cont2
     end
+
+    should "allow multiple material costs" do
+      assert_contains @obj.material_costs, @mc
+    end
     
+    should "allow multiple labor costs" do
+      assert_contains @obj.labor_costs, @lc
+    end
+        
     should_eventually "allow multiple deadlines" do
       assert_contains @obj.deadlines, @dl1
       assert_contains @obj.deadlines, @dl2
