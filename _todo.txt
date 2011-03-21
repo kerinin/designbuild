@@ -15,8 +15,22 @@ To look into
     UI needs work
     controller not tested
     need autosubmit on change
-    
+- new material line doesn't hide 'new' button
 - think about and test deletion for all object types
+- make sure editing cost date doesn't fuck up points
+- cache graph points, pull current day's value every time
+- buttons to make task active, or set as complete
+- think about non-labor, non-contract cost tracking
+- would be nice to be able to see all costs over a given time period (material cost summary, add date range )
+- deleting invoice redirects to wrong page
+- invoice defaults should round to cents
+- how does invoicing account for unexpected costs?  
+- invoicing shouldn't allow negative values
+
+
+=== Invoicing redesign
+- component-specific (rather than cost-specific)
+- invoice lines associated with components
 
 
 * notice box behavior erratic
