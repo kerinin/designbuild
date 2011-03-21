@@ -75,6 +75,83 @@ class Component < ActiveRecord::Base
   
   
   # Invoicing
+
+  [:invoiced, :retainage, :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage].each do |sym|
+    self.send(:define_method, sym) do
+      #self.invoice_lines.inject(0) {|memo,obj| memo + obj.send(sym)}
+      self.invoice_lines.sum(sym)
+    end
+  end
+
+  [:invoiced_before, :retainage_before, :labor_invoiced_before, :labor_retainage_before, :material_invoiced_before, :material_retainage_before].each do |sym|
+    self.send(:define_method, sym) do |date|
+      date ||= Date::today
+      #self.invoice_lines.includes(:invoice).where('invoices.date <= ?', date).inject(0) {|memo,obj| memo + obj.send(sym.to_s.split('_before').first)}
+      self.invoice_lines.includes(:invoice).where('invoices.date <= ?', date).sum(sym.to_s.split('_before'))
+    end
+  end
+  
+  [:paid, :retained, :labor_paid, :labor_retained, :material_paid, :material_retained].each do |sym|
+    self.send(:define_method, sym) do
+      #self.payment_lines.inject(0) {|memo,obj| memo + obj.send(sym)}
+      self.payment_lines.sum(sym)
+    end
+  end
+  
+  [:paid_before, :retained_before, :labor_paid_before, :labor_retained_before, :material_paid_before, :material_retained_before].each do |sym|
+    self.send(:define_method, sym) do |date|
+      date ||= Date::today
+      #self.payment_lines.includes(:payment).where('payments.date <= ?', date).inject(0) {|memo,obj| memo + obj.send(sym.to_s.split('_before').first)}
+      self.payment_lines.includes(:payment).where('payments.date <= ?', date).sum(sym.to_s.split('_before'))
+    end
+  end
+
+  def labor_percent
+    # portion of task's cost's to date which are for labor
+    unless !self.respond_to?(:task) || self.task.nil? || self.task.blank? || self.task.cost.nil?
+      pct = multiply_or_nil 100, divide_or_nil( self.task.labor_cost, self.task.cost )
+      pct ||= 0
+    end
+    
+    # default to 50%
+    pct ||= 50
+  end
+
+  def material_percent
+    # to ensure these always sum to 100
+    100 - self.labor_percent
+  end   
+  
+  [:labor_percent, :material_percent].each do |sym|
+    self.send(:define_method, "#{sym}_float") do
+      divide_or_nil self.send(sym), 100
+    end
+  end
+  
+  def labor_outstanding
+    self.labor_invoiced - self.labor_paid
+  end
+  
+  def labor_outstanding_before(date = Date::today)
+    self.labor_invoiced_before(date) - self.labor_paid_before(date)
+  end
+  
+  def material_outstanding
+    self.material_invoiced - self.material_paid
+  end
+  
+  def material_outstanding_before(date = Date::today)
+    self.material_invoiced_before(date) - self.material_paid_before(date)
+  end
+  
+  def outstanding
+    self.labor_outstanding + self.material_outstanding
+  end
+  
+  def outstanding_before(date = Date::today)
+    self.labor_outstanding_before(date) + self.material_outstanding_before(date)
+  end
+    
   [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
     self.send(:define_method, sym) do |recursive|
       if recursive
@@ -125,21 +202,15 @@ class Component < ActiveRecord::Base
   
   def cache_estimated_costs
     self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    #self.estimated_raw_subcomponent_fixed_cost = self.children.sum(:estimated_raw_fixed_cost)
     self.estimated_raw_subcomponent_fixed_cost = self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
-    #self.estimated_raw_fixed_cost = self.estimated_raw_component_fixed_cost + self.estimated_raw_subcomponent_fixed_cost
     self.estimated_raw_fixed_cost = self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
 
     self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    #self.estimated_raw_subcomponent_unit_cost = self.children.sum(:estimated_raw_unit_cost)
     self.estimated_raw_subcomponent_unit_cost = self.children.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
-    #self.estimated_raw_unit_cost = self.estimated_raw_component_unit_cost + self.estimated_raw_subcomponent_unit_cost
     self.estimated_raw_unit_cost = self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
 
     self.estimated_raw_component_contract_cost = self.contracts.sum(:estimated_raw_cost)
-    #self.estimated_raw_subcomponent_contract_cost = self.children.sum(:estimated_raw_contract_cost)
     self.estimated_raw_subcomponent_contract_cost = self.children.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-    #self.estimated_raw_contract_cost = self.estimated_raw_component_contract_cost + self.estimated_raw_subcomponent_contract_cost
     self.estimated_raw_contract_cost = self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
 
     # Leaving this as addition to reduce SQL transactions
@@ -152,21 +223,15 @@ class Component < ActiveRecord::Base
     
     
     self.estimated_component_fixed_cost = self.estimated_raw_component_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
-    #self.estimated_subcomponent_fixed_cost = self.children.sum(:estimated_fixed_cost)
     self.estimated_subcomponent_fixed_cost = self.estimated_raw_subcomponent_fixed_cost + self.children.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
-    #self.estimated_fixed_cost = self.estimated_component_fixed_cost + self.estimated_subcomponent_fixed_cost
     self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
 
     self.estimated_component_unit_cost = self.estimated_raw_component_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
-    #self.estimated_subcomponent_unit_cost = self.children.sum(:estimated_unit_cost)
     self.estimated_subcomponent_unit_cost = self.estimated_raw_subcomponent_unit_cost + self.children.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
-    #self.estimated_unit_cost = self.estimated_component_unit_cost + self.estimated_subcomponent_unit_cost
     self.estimated_unit_cost = self.estimated_raw_unit_cost + self.subtree.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
 
     self.estimated_component_contract_cost = self.estimated_raw_component_contract_cost + self.markings.sum(:estimated_contract_cost_markup_amount)
-    #self.estimated_subcomponent_contract_cost = self.children.sum(:estimated_contract_cost)
     self.estimated_subcomponent_contract_cost = self.estimated_raw_subcomponent_contract_cost + self.children.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
-    #self.estimated_contract_cost = self.estimated_component_contract_cost + self.estimated_subcomponent_contract_cost                                    
     self.estimated_contract_cost = self.estimated_raw_contract_cost + self.subtree.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
 
     # Leaving this as addition to reduce SQL transactions

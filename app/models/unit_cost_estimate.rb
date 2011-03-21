@@ -1,6 +1,6 @@
 class UnitCostEstimate < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
-  has_invoices
+  #has_invoices
   
   belongs_to :component, :inverse_of => :unit_cost_estimates
   belongs_to :quantity, :inverse_of => :unit_cost_estimates
