@@ -2,9 +2,10 @@ class InvoiceLine < ActiveRecord::Base
   include AddOrNil
   
   belongs_to :invoice, :inverse_of => :lines #, :autosave => true
+  belongs_to :component, :inverse_of => :invoice_lines
   belongs_to :cost, :polymorphic => true
   
-  validates_presence_of :invoice, :cost
+  validates_presence_of :invoice, :component
   validates_numericality_of :labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage
   
   def invoiced
@@ -42,6 +43,26 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def set_default_invoiced(sym)
+    self.component.contracts.each do |cost|
+      if self.invoice.project.fixed_bid
+        total = multiply_or_nil 0.5 * cost.percent_complete_float, cost.estimated_cost
+      else
+        total = multiply_or_nil 0.5, cost.cost
+      end
+    end
+    
+    self.component.fixed_cost_estimates + self.component.unit_cost_estimates do |cost|
+      if self.invoice.project.fixed_bid
+        # determine % of estimated
+        total = multiply_or_nil cost.send("#{sym.to_s}_percent_float") * cost.percent_complete_float, cost.estimated_cost
+      else
+        # determine costs
+        total = cost.send("#{sym.to_s}_cost")
+      end
+    end      
+    
+    total ||= 0
+=begin
     if self.cost.instance_of? Contract
       if self.invoice.project.fixed_bid
         cost = multiply_or_nil 0.5 * self.cost.percent_complete_float, self.cost.estimated_cost
@@ -58,10 +79,10 @@ class InvoiceLine < ActiveRecord::Base
       end
     end
     cost ||= 0
-    
+=end    
     # remove retainage and previously invoiced
-    cost *= (1-self.invoice.project.send("#{sym.to_s}_percent_retainage_float")) unless self.invoice.project.send("#{sym.to_s}_percent_retainage_float").nil?
-    self.send("#{sym.to_s}_invoiced=", cost - (self.cost.send("#{sym.to_s}_invoiced") || 0) )
+    total *= (1-self.invoice.project.send("#{sym.to_s}_percent_retainage_float")) unless self.invoice.project.send("#{sym.to_s}_percent_retainage_float").nil?
+    self.send("#{sym.to_s}_invoiced=", total - (self.component.send("#{sym.to_s}_invoiced") || 0) )
     self
   end
   
@@ -78,9 +99,9 @@ class InvoiceLine < ActiveRecord::Base
     # calculate retainage based on material costs
     # the math allows retainage to be calculated for arbitrary labor & material values
     self.send("#{sym.to_s}_retainage=", calculate_retainage( 
-      add_or_nil( self.send("#{sym.to_s}_invoiced"), self.cost.send("#{sym.to_s}_invoiced")), 
+      add_or_nil( self.send("#{sym.to_s}_invoiced"), self.component.send("#{sym.to_s}_invoiced")), 
       self.invoice.project.send("#{sym.to_s}_percent_retainage_float"), 
-      self.cost.send("#{sym.to_s}_retainage") || 0
+      self.component.send("#{sym.to_s}_retainage") || 0
     ) )
     self
   end

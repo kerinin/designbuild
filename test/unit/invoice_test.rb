@@ -2,6 +2,89 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
 
+context "An Invoice" do
+
+  setup do
+    @q = Factory :quantity, :value => 1
+    @project = Factory :project
+    @component = @project.components.create! :name => 'component'
+    @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
+    @uc = @component.unit_cost_estimates.create! :name => 'unit cost', :quantity => @q, :unit_cost => 0
+    @c = @component.contracts.create! :name => 'contract'
+    
+    @obj = @project.invoices.create! :date => Date::today
+    @obj.lines = []
+    @obj.save!
+    
+    @line1 = @obj.lines.create!( :component => @component )
+    @line1.update_attributes(
+      :labor_invoiced => 1,
+      :material_invoiced => 10,
+      :labor_retainage => 100,
+      :material_retainage => 1000
+    )
+      
+    @line2 = @obj.lines.create!( :component => @component )
+    @line2.update_attributes(
+      :labor_invoiced => 10000,
+      :material_invoiced => 100000,
+      :labor_retainage => 1000000,
+      :material_retainage => 10000000
+    )
+    @obj.advance
+  end  
+  
+  should "be valid" do
+    assert @obj.valid?
+  end
+  
+  should "have values" do
+    assert_not_nil @obj.date
+    assert_not_nil @obj.state
+  end
+  
+  should "require a project" do
+    assert_raise ActiveRecord::RecordInvalid do
+      Factory :invoice, :project => nil
+    end
+  end
+  
+  should "allow a template" do
+    @i = Factory :invoice, :template => 'blah'
+    assert_equal 'blah', @i.template
+  end
+  
+  should "have multiple line items" do
+    assert_contains @obj.lines, @line1
+    assert_contains @obj.lines, @line2
+  end
+  
+  should "aggregate labor invoiced" do
+    assert_equal 10001, @obj.labor_invoiced
+  end
+  
+  should "aggregate material invoiced" do
+    assert_equal 100010, @obj.material_invoiced
+  end
+  
+  should "aggregate invoiced" do
+    assert_equal 110011, @obj.invoiced
+  end
+  
+  should "aggregate labor retainage" do
+    assert_equal 1000100, @obj.labor_retainage
+  end
+  
+  should "aggregate material retainage" do
+    assert_equal 10001000, @obj.material_retainage
+  end
+  
+  should "aggregate retainage" do
+    assert_equal 11001100, @obj.retainage
+  end
+end
+
+=begin
   context "An Invoice" do
     setup do
       @q = Factory :quantity, :value => 1
@@ -337,4 +420,5 @@ class InvoiceTest < ActiveSupport::TestCase
     end
    
   end
+=end
 end

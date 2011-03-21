@@ -2,9 +2,10 @@ class PaymentLine < ActiveRecord::Base
   include AddOrNil
   
   belongs_to :payment, :inverse_of => :lines
+  belongs_to :component, :inverse_of => :payment_lines
   belongs_to :cost, :polymorphic => true
   
-  validates_presence_of :payment, :cost
+  validates_presence_of :payment, :component
   validates_associated :payment
   validates_numericality_of :labor_paid, :material_paid, :labor_retained, :material_retained
   
