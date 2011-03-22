@@ -18,3 +18,81 @@
     .error
       %h2 Before you can set invoice amounts...
 
+  -unassigned_labor = LaborCost.where(:component_id => nil, :project_id => @project.id)
+  -unless unassigned_labor.empty?
+    %h2 Labor Costs
+    
+    -unassigned_labor.each do |cost|
+      %p
+        =cost.task.name
+        =cost.date
+        =cost.note
+        
+    %hr
+        
+  -unassigned_material = MaterialCost.where(:component_id => nil, :project_id => @project.id)
+  -unless unassigned_material.empty?
+    %h2 Material Costs
+    
+    -unassigned_material.each do |cost|
+      %p
+        =cost.task.name
+        =cost.date
+        =cost.note
+        
+    %hr
+    
+  %h2 Component Costs
+  -@project.components.each do |component|
+    %p
+      %h3=component.name
+      
+      -unless params[:itemize] == component.id.to_s
+        Material Cost:
+        =number_to_currency component.material_cost
+        Labor Cost:
+        =number_to_currency component.labor_cost
+      
+        =link_to 'Show Line Items', assign_costs_invoice_path(@invoice, :itemize => component.id)
+      -else
+        
+        %table
+          %tr
+            %th Task
+            %th Date
+            %th Note
+            %th Amount
+            
+          %tr
+            %th{:colspan => 4} Material Costs
+          -component.material_costs.each do |cost|
+            %tr
+              %td=cost.task.name
+              %td
+                =cost.supplier.name
+                =cost.date
+              %td=cost.note
+              %td.currency=number_to_currency cost.cost
+          -if component.material_costs.empty?
+            %tr{:colspan => 4}
+              %td (None)
+
+          %tr
+            %th{:colspan => 4} Labor Costs
+          -component.labor_costs.each do |cost|
+            %tr
+              %td=cost.task.name
+              %td=cost.date
+              %td=cost.note
+              %td.currency=number_to_currency cost.cost
+          -if component.labor_costs.empty?
+            %tr
+              %td{:colspan => 4} (None)
+
+          %tr
+            %th{:colspan => 2}
+            %th Total
+            %th
+            
+        =link_to 'Hide Line Items', assign_costs_invoice_path(@invoice)          
+        

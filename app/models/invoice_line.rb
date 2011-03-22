@@ -17,6 +17,8 @@ class InvoiceLine < ActiveRecord::Base
   end
   
   def retainage_as_expected?
+    return true if self.component.blank?
+    
     # I think this is required because we can't do polymorphic inverse_of
     # As such, the cost's labor_retainage doesn't get updated (on self's cached version)
     # if another invoice line is changed
