@@ -1,4 +1,5 @@
 -@project = @parent
+-@markups = Markup.includes(:markings).where('markings.project_id = ?', @project.id)
 =render :partial => 'shared/project_nav', :locals => {:current => :dashboard}
 
 .container
@@ -20,14 +21,15 @@
         -@markups.each do |markup|
           .markup_title
             =markup.name
-        
-      .markup_line
-        .title= @project.name
-        -@markups.each do |markup|
-          .selector= check_box_tag :markup, true
+      =form_for @project do |f|  
+        .markup_line
+          .title= @project.name
+          -@markups.each do |markup|
+            .selector= check_box_tag "project[markup_ids][]", markup.id, @project.markups.include?(markup)
   
   %p
     %h3 Components
+
     .markup_set
       .markup_header
         .title Component Name
@@ -36,11 +38,11 @@
       
       -@project.components.each do |component|
         =form_for [@project, component] do |f|
-          =f.hidden_field :redirect_to, project_markups_path(@project)
+          =hidden_field_tag :redirect_to, project_markups_path(@project)
           .markup_line
-            .title= component.name
+            .title=link_to component.name, project_component_path(@project, component)
             -@markups.each do |markup|
-              .selector= check_box_tag "component[markup_ids][]", markup.id, component.markups.include?(markup), {:onchange => "$('#date_select').submit();"}
+              .selector= check_box_tag "component[markup_ids][]", markup.id, component.markups.include?(markup), {:onchange => "$('#edit_component_#{component.id}').submit();"}
    
   %p       
     %h3 Contracts
@@ -52,11 +54,11 @@
       
       -@project.contracts.each do |contract|
         =form_for [@project, contract] do |f|
-          =f.hidden_field :redirect_to, project_markups_path(@project)
+          =hidden_field_tag :redirect_to, project_markups_path(@project)
           .markup_line
-            .title= contract.name
+            .title=link_to contract.name, project_contract_path(@project, contract)
             -@markups.each do |markup|
-              .selector= check_box_tag "contract[markup_ids][]", markup.id, contract.markups.include?(markup)
+              .selector= check_box_tag "contract[markup_ids][]", markup.id, contract.markups.include?(markup), {:onchange => "$('#edit_contract_#{contract.id}').submit();"}
   
   %p    
     %h3 Tasks
@@ -68,8 +70,8 @@
         
       -@project.tasks.each do |task|
         =form_for [@project, task] do |f|
-          =f.hidden_field :redirect_to, project_markups_path(@project)
+          =hidden_field_tag :redirect_to, project_markups_path(@project)
           .markup_line
-            .title= task.name
+            .title=link_to task.name, project_task_path(@project, task)
             -@markups.each do |markup|
-              .selector= check_box_tag "task[markup_ids][]", markup.id, task.markups.include?(markup)
+              .selector= check_box_tag "task[markup_ids][]", markup.id, task.markups.include?(markup), {:onchange => "$('#edit_task_#{task.id}').submit();"}
