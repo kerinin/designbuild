@@ -18,7 +18,7 @@
 <% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
 
 
-var scale = <%= 400/(Date::today - start_date) %>;
+var scale = <%= 400/((Date::today - start_date) || 400) %>;
 var data = <%= raw data.to_json %>;
 var weeks = <%= raw weeks.to_json %>;
 var rangeStart = <%= Date::today - start_date > 60 ? (Date::today - start_date) - 60 : Date::today - start_date %>;
