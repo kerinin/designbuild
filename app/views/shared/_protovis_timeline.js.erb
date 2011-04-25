@@ -4,7 +4,7 @@
   <% {
     :task_name => "#{task.name} #{number_to_percentage task.percent_complete, :precision => 0} est, #{number_to_percentage( task.percent_of_estimated || 0, :precision => 0)} spent", 
     :task_start => task.labor_costs.empty? ? Date::today - start_date : task.labor_costs.last.date - start_date,
-    :task_end => (task.is_complete? ? task.labor_costs.first.date : Date::today) - start_date,
+    :task_end => (task.is_complete? && !task.labor_costs.empty? ? task.labor_costs.first.date : Date::today) - start_date,
     :labor_costs => task.labor_costs.all.reverse.map{ |lc| 
       {:id => lc.id,
       :percent_complete => lc.percent_complete,
