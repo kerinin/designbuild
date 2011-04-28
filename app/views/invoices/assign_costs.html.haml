@@ -82,12 +82,13 @@
               %tr
                 %td
                   Task:
-                  =cost.task.name
+                  =link_to cost.task.name, task_path(cost.task)
                 %td
-                  =cost.supplier.name
-                  =cost.date.to_s(:long)
+                  =link_to task_material_cost_path( cost.task, cost) do
+                    =cost.supplier.name
+                    =cost.date.to_s(:long)
                 %td=cost.note
-                %td.currency=number_to_currency cost.cost
+                %td.currency=number_to_currency cost.raw_cost
             -if material_costs.empty?
               %tr{:colspan => 4}
                 %td (None)
@@ -102,7 +103,7 @@
                   =cost.task.name
                 %td=cost.date.to_s(:long)
                 %td=cost.note
-                %td.currency=number_to_currency cost.cost
+                %td.currency=number_to_currency cost.raw_cost
             -if labor_costs.empty?
               %tr
                 %td{:colspan => 4} (None)

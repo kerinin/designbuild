@@ -155,19 +155,19 @@ class Component < ActiveRecord::Base
   end
   
   def labor_cost
-    self.labor_costs.sum(:cost)
+    self.labor_costs.sum(:raw_cost)
   end
   
   def labor_cost_before( date = Date::today )
-    self.labor_costs.where( "date <= ?", date ).sum(:cost)
+    self.labor_costs.where( "date <= ?", date ).sum(:raw_cost)
   end
   
   def material_cost
-    self.material_costs.sum(:cost)
+    self.material_costs.sum(:raw_cost)
   end
   
   def material_cost_before( date = Date::today )
-    self.material_costs.where( "date <= ?", date ).sum(:cost)
+    self.material_costs.where( "date <= ?", date ).sum(:raw_cost)
   end
   
   def contract_cost
