@@ -58,7 +58,7 @@ class ComponentTest < ActiveSupport::TestCase
     
     context "with hierarchy" do
       setup do
-        [@project, @parent, @obj, @sub1, @sub2, @subsub].each {|i| i.save!}
+        [@project, @parent, @obj, @sub1, @sub2, @subsub, @task, @mc, @lc].each {|i| i.save!}
         
         @obj.update_attributes :parent => @parent
         @sub1.update_attributes :parent => @obj

@@ -10,11 +10,12 @@ class InvoiceLine < ActiveRecord::Base
   
   before_save :set_sums
   
-  def invoiced=(value)
+  # Removed - saving invoiced total explicitly to allow SQL summing
+  #def invoiced=(value)
     # allows quick setting of invoiced - divides evenly
-    self.labor_invoiced = value / 2
-    self.material_invoiced = value / 2
-  end
+  #  self.labor_invoiced = value / 2
+  #  self.material_invoiced = value / 2
+  #end
   
   def retainage_as_expected?
     # I think this is required because we can't do polymorphic inverse_of

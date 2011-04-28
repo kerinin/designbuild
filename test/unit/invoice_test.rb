@@ -31,9 +31,9 @@ context "An Invoice" do
       :labor_retainage => 1000000,
       :material_retainage => 10000000
     )
-    @obj.advance
+    #@obj.advance
   end  
-  
+ 
   should "be valid" do
     assert @obj.valid?
   end
@@ -58,11 +58,11 @@ context "An Invoice" do
     assert_contains @obj.lines, @line1
     assert_contains @obj.lines, @line2
   end
-  
+
   should "aggregate labor invoiced" do
     assert_equal 10001, @obj.labor_invoiced
   end
-  
+
   should "aggregate material invoiced" do
     assert_equal 100010, @obj.material_invoiced
   end
