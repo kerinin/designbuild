@@ -87,7 +87,7 @@ class Invoice < ActiveRecord::Base
   
   def populate_lines
     self.project.components.each do |component|
-      self.lines.create!(:component => component)
+      self.lines.create!(:component_id => component.id)
       #component.unit_cost_estimates.assigned.each {|uc| self.lines.build(:cost => uc).set_defaults.save! }
       #component.fixed_cost_estimates.assigned.each {|fc| self.lines.build(:cost => fc).set_defaults.save! }
       #component.contracts.each {|c| self.lines.build(:cost => c).set_defaults.save! }

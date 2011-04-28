@@ -19,6 +19,7 @@ class LaborCost < ActiveRecord::Base
   after_save :set_task_percent_complete
   
   after_save :cascade_cache_values, :create_points
+  after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
   after_destroy :cascade_cache_values
   
   scope :by_project, lambda {|project| where(:project_id => project.id ) }
@@ -44,6 +45,11 @@ class LaborCost < ActiveRecord::Base
   end
 
   protected
+  
+  def advance_invoicing
+    self.project.invoices.each {|i| i.advance!}
+    self.project.payments.each {|i| i.advance!}
+  end
   
   def auto_assign_component
     # If the task has no estimated costs, it can't have a component association

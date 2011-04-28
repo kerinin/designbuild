@@ -66,7 +66,7 @@ class LaborCostsController < ApplicationController
 
     respond_to do |format|
       if @labor_cost.update_attributes(params[:labor_cost])
-        format.html { redirect_to([@task, @labor_cost], :notice => 'Labor cost was successfully updated.') }
+        format.html { redirect_from_session_or([@task, @labor_cost], :notice => 'Labor cost was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

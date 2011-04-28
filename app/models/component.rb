@@ -153,8 +153,40 @@ class Component < ActiveRecord::Base
   def outstanding_before(date = Date::today)
     self.labor_outstanding_before(date) + self.material_outstanding_before(date)
   end
-    
-  [:labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
+  
+  def labor_cost
+    self.labor_costs.sum(:cost)
+  end
+  
+  def labor_cost_before( date = Date::today )
+    self.labor_costs.where( "date <= ?", date ).sum(:cost)
+  end
+  
+  def material_cost
+    self.material_costs.sum(:cost)
+  end
+  
+  def material_cost_before( date = Date::today )
+    self.material_costs.where( "date <= ?", date ).sum(:cost)
+  end
+  
+  def contract_cost
+    self.contracts.sum(:raw_cost)
+  end
+  
+  def contract_cost_before( date = Date::today )
+    self.contracts.includes(:costs).where( "contract_costs.date <= ?", date).sum( 'contract_costs.raw_cost' )
+  end
+  
+  def cost
+    self.labor_cost + self.material_cost + self.contract_cost
+  end
+  
+  def cost_before( date = Date::today )
+    self.labor_cost_before(date) + self.material_cost_before(date) + self.contract_cost_before(date)
+  end
+=begin  
+  [:cost, :labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
     self.send(:define_method, sym) do |*args|
       recursive = args[0] unless args.empty?
       if recursive
@@ -177,7 +209,7 @@ class Component < ActiveRecord::Base
     end
   end
 
-  [:labor_cost_before, :material_cost_before, :labor_invoiced_before, :material_invoiced_before, :invoiced_before, :labor_retainage_before, :material_retainage_before, :retainage_before, :labor_paid_before, :material_paid_before, :paid_before, :labor_retained_before, :material_retained_before, :retained_before, :labor_outstanding_before, :material_outstanding_before, :outstanding_before].each do |sym|
+  [:cost_before, :labor_cost_before, :material_cost_before, :labor_invoiced_before, :material_invoiced_before, :invoiced_before, :labor_retainage_before, :material_retainage_before, :retainage_before, :labor_paid_before, :material_paid_before, :paid_before, :labor_retained_before, :material_retained_before, :retained_before, :labor_outstanding_before, :material_outstanding_before, :outstanding_before].each do |sym|
     self.send(:define_method, sym) do |*args|
       date, recursive = args
       
@@ -202,7 +234,8 @@ class Component < ActiveRecord::Base
       end
     end
   end
-    
+=end    
+
   protected
   
   def cache_estimated_costs

@@ -8,6 +8,8 @@
     = @supplier.name
     = @material_cost.date.to_s :long
 
+  =@material_cost.component.name unless @material_cost.component.blank?
+  ="(No component)" if @material_cost.component.blank?
   =render :partial => 'material_cost_lines/material_cost_lines_list', :locals => {:material_cost_lines => @material_cost.line_items, :material_cost => @material_cost, :context => params[:context] || :po}
   
   =add_button 'Add Material', new_material_cost_line_item_path(@material_cost)

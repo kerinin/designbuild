@@ -88,7 +88,7 @@ class Payment < ActiveRecord::Base
   
   def populate_lines
     self.project.components.each do |component|
-      line = self.lines.create!(:component => component)
+      line = self.lines.create!(:component_id => component.id)
       line.set_defaults
       line.save
       

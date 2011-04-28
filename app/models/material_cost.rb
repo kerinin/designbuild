@@ -15,6 +15,7 @@ class MaterialCost < ActiveRecord::Base
   
   before_save :auto_assign_component
   after_save :cascade_cache_values, :create_points
+  after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
   after_destroy :cascade_cache_values
   
   scope :purchase_order, lambda {
@@ -73,6 +74,11 @@ class MaterialCost < ActiveRecord::Base
   end
   
   protected
+  
+  def advance_invoicing
+    self.project.invoices.each {|i| i.advance!}
+    self.project.payments.each {|i| i.advance!}
+  end
   
   def set_project
     self.project = self.task.project

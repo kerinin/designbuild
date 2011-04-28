@@ -1,3 +1,4 @@
+-component_tree = @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }
 -content_for :head do
   =javascript_include_tag "jquery.dimscreen.js"
 
@@ -37,65 +38,95 @@
             =link_to labor_cost.task.name, labor_cost.task
             
             =hidden_field_tag :redirect_to, assign_costs_invoice_path(@invoice)
-            =f.select( :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }, { :include_blank => ' -- Select Component --'}, :onchange =>"$('#edit_labor_cost_#{labor_cost.id}').submit();" )
+            =f.select( :component_id, component_tree, { :include_blank => ' -- Select Component --'}, :onchange =>"$('#edit_labor_cost_#{labor_cost.id}').submit();" )
           
       -material_costs = @project.material_costs.unassigned
       -unless material_costs.empty?
         %h3 Material Costs
         -material_costs.each do |material_cost|
-          =material_cost.date
+          -form_for [material_cost.task, material_cost] do |f|
+            =link_to "#{material_cost.supplier.name} on #{material_cost.date.to_s(:long)};", task_material_cost_path(material_cost.task, material_cost)
+            =number_to_currency material_cost.cost
+            assigned to task 
+            =link_to material_cost.task.name, material_cost.task
+          
+            =hidden_field_tag :redirect_to, assign_costs_invoice_path(@invoice)
+            =f.select( :component_id, component_tree, { :include_blank => ' -- Select Component --'}, :onchange =>"$('#edit_material_cost_#{material_cost.id}').submit();" )
+
+    
+  -else  
+    %h2 Component Costs
+    -@project.components.each do |component|
+      %p
+        %h3
+          =component.name
+          =number_to_currency component.cost_before(@invoice.date)
       
-  %h2 Component Costs
-  -@project.components.each do |component|
-    %p
-      %h3=component.name
+        -unless params[:itemize] == component.id.to_s
+          Material Cost:
+          =number_to_currency component.material_cost_before(@invoice.date)
+          Labor Cost:
+          =number_to_currency component.labor_cost_before(@invoice.date)
+          Contract Cost:
+          =number_to_currency component.contract_cost_before(@invoice.date)
       
-      -unless params[:itemize] == component.id.to_s
-        Material Cost:
-        =number_to_currency component.material_cost
-        Labor Cost:
-        =number_to_currency component.labor_cost
-      
-        =link_to 'Show Line Items', assign_costs_invoice_path(@invoice, :itemize => component.id)
-      -else
+          =link_to 'Show Line Items', assign_costs_invoice_path(@invoice, :itemize => component.id)
+        -else
         
-        %table
-          %tr
-            %th Task
-            %th Date
-            %th Note
-            %th Amount
+          %table
             
-          %tr
-            %th{:colspan => 4} Material Costs
-          -component.material_costs.each do |cost|
             %tr
-              %td=cost.task.name
-              %td
-                =cost.supplier.name
-                =cost.date
-              %td=cost.note
-              %td.currency=number_to_currency cost.cost
-          -if component.material_costs.empty?
-            %tr{:colspan => 4}
-              %td (None)
+              %th{:colspan => 4} Material Costs
+            -material_costs = component.material_costs.where( 'date <= ?', @invoice.date)
+            -material_costs.each do |cost|
+              %tr
+                %td
+                  Task:
+                  =cost.task.name
+                %td
+                  =cost.supplier.name
+                  =cost.date.to_s(:long)
+                %td=cost.note
+                %td.currency=number_to_currency cost.cost
+            -if material_costs.empty?
+              %tr{:colspan => 4}
+                %td (None)
 
-          %tr
-            %th{:colspan => 4} Labor Costs
-          -component.labor_costs.each do |cost|
             %tr
-              %td=cost.task.name
-              %td=cost.date
-              %td=cost.note
-              %td.currency=number_to_currency cost.cost
-          -if component.labor_costs.empty?
-            %tr
-              %td{:colspan => 4} (None)
+              %th{:colspan => 4} Labor Costs
+            -labor_costs = component.labor_costs.where( 'date <= ?', @invoice.date)
+            -labor_costs.each do |cost|
+              %tr
+                %td
+                  Task:
+                  =cost.task.name
+                %td=cost.date.to_s(:long)
+                %td=cost.note
+                %td.currency=number_to_currency cost.cost
+            -if labor_costs.empty?
+              %tr
+                %td{:colspan => 4} (None)
 
-          %tr
-            %th{:colspan => 2}
-            %th Total
-            %th
+            %tr
+              %th{:colspan => 4} Contract Costs
+            -component.contracts.each do |contract|
+              -contract.costs.where('date <= ?', @invoice.date).each do |cost|
+                %tr
+                  %td
+                    Contract:
+                    ="#{contract.name} (#{contract.active_bid.contractor})"
+                  %td=cost.date.to_s(:long)
+                  %td
+                  %td.currency=number_to_currency cost.raw_cost
+                
+            -if component.contracts.joins(:costs).where('contract_costs.date <= ?', @invoice.date).empty?
+              %tr{:colspan => 4}
+                %td (None)
+                                        
+            %tr
+              %th{:colspan => 2}
+              %th Total
+              %th.currency=number_to_currency component.cost_before(@invoice.date)
             
-        =link_to 'Hide Line Items', assign_costs_invoice_path(@invoice)          
+          =link_to 'Hide Line Items', assign_costs_invoice_path(@invoice)          
         
