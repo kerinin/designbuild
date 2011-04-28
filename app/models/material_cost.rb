@@ -27,6 +27,10 @@ class MaterialCost < ActiveRecord::Base
     where('raw_cost IS NOT NULL')
   }
     
+  scope :unassigned, lambda {
+    where(:component_id => nil)
+  }
+    
   scope :by_project, lambda {|project| joins(:task).where('tasks.project_id = ?', project.id) } 
   
   def markups

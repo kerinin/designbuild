@@ -17,4 +17,32 @@
     / Assign Costs
     .error
       %h2 Before you can set invoice amounts...
+      
+      %p
+        You must assign costs to components before you can generate an invoice.  Each cost (labor cost, material cost, etc)
+        must be assigned to a component.  This is done automatically in most cases, but it looks like there are some costs
+        that haven't been assigned
+      
+      %p
+        Use the drop-down to assign costs to components
+      
+      -labor_costs = @project.labor_costs.unassigned
+      -unless labor_costs.empty?  
+        %h3 Labor Costs
+        -labor_costs.each do |labor_cost|
+          -form_for [labor_cost.task, labor_cost] do |f|
+            =link_to "#{labor_cost.date.to_s(:long)};", task_labor_cost_path(labor_cost.task, labor_cost)
+            =number_to_currency labor_cost.cost
+            assigned to task 
+            =link_to labor_cost.task.name, labor_cost.task
+            
+            =hidden_field_tag :redirect_to, assign_costs_invoice_path(@invoice)
+            =f.select( :component_id, @project.component_tree.map{|c| ['--' * c.depth + c.name, c.id] }, { :include_blank => ' -- Select Component --'}, :onchange =>"$('#edit_labor_cost_#{labor_cost.id}').submit();" )
+          
+      -material_costs = @project.material_costs.unassigned
+      -unless material_costs.empty?
+        %h3 Material Costs
+        -material_costs.each do |material_cost|
+          =material_cost.date
+      
 

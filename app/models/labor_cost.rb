@@ -23,7 +23,11 @@ class LaborCost < ActiveRecord::Base
   after_save :cascade_cache_values, :create_points
   after_destroy :cascade_cache_values
   
-  scope :by_project, lambda {|project| where(:project_id => project.id ) } 
+  scope :by_project, lambda {|project| where(:project_id => project.id ) }
+  
+  scope :unassigned, lambda {
+    where(:component_id => nil)
+  }
 
   def markups
     self.task.markups

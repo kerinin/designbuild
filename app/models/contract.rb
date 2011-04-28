@@ -37,7 +37,7 @@ class Contract < ActiveRecord::Base
   end
   
   def percent_invoiced
-    multiply_or_nil( 100, divide_or_nil( self.invoiced, self.estimated_cost ) )
+    multiply_or_nil( 100, divide_or_nil( self.cost, self.estimated_cost ) )
   end
   
   # Hack for cost_to_date points

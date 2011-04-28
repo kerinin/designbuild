@@ -29,14 +29,6 @@ To look into
 - when new cost created, should update all points after the date of the cost
 - add actual cost summary to component
 
-
-=== Invoicing redesign
-- component-specific (rather than cost-specific)
-- invoice lines associated with components
-Tests failing
-  invoice
-  component
-
 * notice box behavior erratic
 * task#scheduling needs redesign (also not working too well)
 * new cost tab CSS
