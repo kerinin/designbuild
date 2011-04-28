@@ -82,10 +82,9 @@
         %p.actions
           = f.submit 'Save'
             
-              
+  -quantities = Quantity.includes(:component).where('components.project_id = ?', @project.id)
+            
   -unless quantities.empty?
-    -quantities = Quantity.includes(:component).where('components.project_id = ?', @project.id)
-    
     .full_width
       =form_for [@component, unit_cost_estimate] do |f|
         

@@ -26,6 +26,8 @@ To look into
 - invoice defaults should round to cents
 - how does invoicing account for unexpected costs?  
 - invoicing shouldn't allow negative values
+- when new cost created, should update all points after the date of the cost
+- add actual cost summary to component
 
 
 === Invoicing redesign
