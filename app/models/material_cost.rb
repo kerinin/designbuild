@@ -77,6 +77,9 @@ class MaterialCost < ActiveRecord::Base
   end
   
   def auto_assign_component
+    # If the task has no estimated costs, it can't have a component association
+    return if self.task.fixed_cost_estimates.empty? && self.task.unit_cost_estimates.empty?
+    
     components = Component.scoped.includes(:fixed_cost_estimates, :unit_cost_estimates)
     
     # if the task has costs associated with it and they're all from the same component, assign the component to this cost
