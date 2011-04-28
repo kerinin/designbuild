@@ -72,77 +72,6 @@ class PaymentTest < ActiveSupport::TestCase
     should_eventually "determine payment unbalanced" do
     end
   end
-  
-=begin
-  context "A Payment" do
-    setup do  
-      @project = Factory :project
-      @component = @project.components.create! :name => 'component'
-      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
-      
-      @obj = @project.payments.create! :date => Date::today, :paid => 90, :retained => 100
-      
-      @line1 = @obj.lines.create!(
-        :cost => @fc,
-        :labor_paid => 1,
-        :material_paid => 10,
-        :labor_retained => 100,
-        :material_retained => 1000
-      )
-        
-      @line2 = @obj.lines.create!(
-        :cost => @fc,
-        :labor_paid => 10000,
-        :material_paid => 100000,
-        :labor_retained => 1000000,
-        :material_retained => 10000000
-      )
-    end
-    
-    should "be valid" do
-      assert @obj.valid?
-    end
-    
-    should "have values" do
-      assert_not_nil @obj.paid
-      assert_not_nil @obj.date
-      assert_not_nil @obj.state
-    end
-    
-    should "require a project" do
-      assert_raise ActiveRecord::RecordInvalid do
-        Factory :payment, :project => nil
-      end
-    end
-    
-    should "have multiple line items" do
-      assert_contains @obj.lines, @line1
-      assert_contains @obj.lines, @line2
-    end
-    
-    should "aggregate labor paid" do
-      assert_equal 10001, @obj.labor_paid
-    end
-    
-    should "aggregate material paid" do
-      assert_equal 100010, @obj.material_paid
-    end
-    
-    should "aggregate labor retained" do
-      assert_equal 1000100, @obj.labor_retained
-    end
-    
-    should "aggregate material retained" do
-      assert_equal 10001000, @obj.material_retained
-    end
-    
-    should_eventually "determine payment balanced" do
-    end
-    
-    should_eventually "determine payment unbalanced" do
-    end
-  end
-  
 
   context "state machine validation" do
     setup do
@@ -150,29 +79,28 @@ class PaymentTest < ActiveSupport::TestCase
       @component = @project.components.create! :name => 'component'
     end
   
-    should "new -> missing_task if tasks have costs without estimates" do
+    should "new -> unassigned_costs if costs exist without components" do
       @task = @project.tasks.create! :name => 'task'
       @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 100, :supplier => Factory(:supplier)
       @obj = @project.payments.create! :date => Date::today, :paid => 100, :retained => 100
       @obj.advance!
       
-      assert_equal 'missing_task', @obj.state
+      assert_equal 'unassigned_costs', @obj.state
       assert_equal [], @obj.lines
     end
    
-    should "missing_task -> unbalanced after task assigned" do
+    should "unassigned_costs -> unbalanced after costs assigned to component" do
       @task = @project.tasks.create! :name => 'task'
       @mc = @task.material_costs.create! :date => Date::today, :raw_cost => 100, :supplier => Factory(:supplier)
       @obj = @project.payments.create! :date => Date::today, :paid => 100, :retained => 100
       @obj.advance!
       
-      assert_equal 'missing_task', @obj.state
+      assert_equal 'unassigned_costs', @obj.state
       
-      @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
-      @task.fixed_cost_estimates << @fc
+      @mc.update_attributes(:component_id => @component.id)
       @obj.advance!
 
-      assert_equal false, @obj.missing_tasks?
+      assert_equal false, @obj.unassigned_costs?
       assert_equal false, @obj.balances?
       
       assert_equal 'unbalanced', @obj.state
@@ -232,14 +160,7 @@ class PaymentTest < ActiveSupport::TestCase
       @obj.advance!
       assert_equal 'balanced', @obj.state
       
-      costs = @obj.lines.map{|l| l.cost}
-      assert_contains costs, @fc
-      assert_contains costs, @uc
-      assert_contains costs, @c
-      
-      @obj.advance!
-      
-      assert_equal 3, @obj.lines.count
+      assert_equal 1, @obj.lines.count
     end
 
     should "populate line items when -> unbalanced" do
@@ -248,14 +169,7 @@ class PaymentTest < ActiveSupport::TestCase
       
       assert_equal 'unbalanced', @obj.state
       
-      costs = @obj.lines.map{|l| l.cost}
-      assert_contains costs, @fc
-      assert_contains costs, @uc
-      assert_contains costs, @c
-      
-      @obj.advance!
-      
-      assert_equal 3, @obj.lines.count
+      assert_equal 1, @obj.lines.count
     end
     
     should "new -> balanced" do
@@ -322,6 +236,5 @@ class PaymentTest < ActiveSupport::TestCase
       
       assert_equal 'unbalanced', @obj.state
     end
-  end
-=end  
+  end  
 end

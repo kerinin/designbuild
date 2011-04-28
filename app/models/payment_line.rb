@@ -13,11 +13,11 @@ class PaymentLine < ActiveRecord::Base
   after_save Proc.new {|pl| pl.payment(true).save }
   
   def set_defaults
-    self.labor_paid = self.cost.labor_outstanding
-    self.material_paid = self.cost.material_outstanding
+    self.labor_paid = self.component.labor_outstanding
+    self.material_paid = self.component.material_outstanding
     
-    self.labor_retained = self.cost.labor_retainage - self.cost.labor_retained
-    self.material_retained = self.cost.material_retainage - self.cost.material_retained
+    self.labor_retained = self.component.labor_retainage - self.component.labor_retained
+    self.material_retained = self.component.material_retainage - self.component.material_retained
     self
   end
   

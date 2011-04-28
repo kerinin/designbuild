@@ -16,7 +16,7 @@ class Payment < ActiveRecord::Base
     state :new do
     end
     
-    state :missing_task do
+    state :unassigned_costs do
     end
     
     state :balanced do
@@ -29,18 +29,18 @@ class Payment < ActiveRecord::Base
     state :complete do
     end
     
-    after_transition [:new, :missing_task] => [:balanced, :unbalanced], :do => :populate_lines
+    after_transition [:new, :unassigned_costs] => [:balanced, :unbalanced], :do => :populate_lines
     after_transition any => :balanced, :do => Proc.new{|p| p.project.invoices.each{|pr| pr.advance!}}
     
     # Events
     event :advance do
-      transition :new => :missing_task, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && p.missing_tasks? }
+      transition :new => :unassigned_costs, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && p.unassigned_costs? }
       
-      transition :missing_task => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && p.balances? }
-      transition :missing_task => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && !p.balances? }
+      transition :unassigned_costs => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.unassigned_costs? && p.balances? }
+      transition :unassigned_costs => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.unassigned_costs? && !p.balances? }
             
-      transition :new => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && p.balances? }
-      transition :new => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.missing_tasks? && !p.balances?}
+      transition :new => :balanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.unassigned_costs? && p.balances? }
+      transition :new => :unbalanced, :if => Proc.new{|p| !p.date.nil? && !p.paid.nil? && !p.retained.nil? && !p.unassigned_costs? && !p.balances?}
       
       transition :unbalanced => :balanced, :if => :balances?
       transition :balanced => :unbalanced, :unless => :balances?    
@@ -61,10 +61,11 @@ class Payment < ActiveRecord::Base
     self.save! if self.advance
   end
   
-  def missing_tasks?
-    self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
-      task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
-    }.include?( true ) 
+  def unassigned_costs?
+    !self.project.material_costs.where(:component_id => nil).empty? || !self.project.labor_costs.where(:component_id => nil).empty?
+    #self.project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{ |task| 
+    #  task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty?
+    #}.include?( true ) 
   end
   
   def paid_balances?
@@ -87,13 +88,17 @@ class Payment < ActiveRecord::Base
   
   def populate_lines
     self.project.components.each do |component|
-      [component.unit_cost_estimates.assigned, component.fixed_cost_estimates.assigned, component.contracts].each do |association|
-        association.all.each do |c|
-          line = self.lines.build :cost => c
-          line.set_defaults
-          line.save
-        end
-      end
+      line = self.lines.create!(:component => component)
+      line.set_defaults
+      line.save
+      
+      #[component.unit_cost_estimates.assigned, component.fixed_cost_estimates.assigned, component.contracts].each do |association|
+      #  association.all.each do |c|
+      #    line = self.lines.build :cost => c
+      #    line.set_defaults
+      #    line.save
+      #  end
+      #end
     end
     
     self.project.contracts.scoped.without_component.each {|c| line = PaymentLine(:payment => self, :cost => c); self.lines << line; line.set_defaults }
