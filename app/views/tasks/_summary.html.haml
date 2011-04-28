@@ -24,7 +24,7 @@
         %td.number
           = number_to_percentage( task.percent_complete, :precision => 0 )
           ='/'
-          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
+          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 0) || '--'
         %td
           -unless task.deadline.blank?
             -if task.deadline.date <= Date::today
@@ -57,7 +57,7 @@
         %td.number
           = number_to_percentage( task.percent_complete, :precision => 0 )
           ='/'
-          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
+          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 0) || '--'
         %td
           -unless task.deadline.blank?
             -if task.deadline.date <= Date::today
@@ -84,7 +84,7 @@
         %td.number
           = number_to_percentage( task.percent_complete, :precision => 0 )
           ='/'
-          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.projected_cost, task.estimated_cost )), :precision => 0) || '--'
+          = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 0) || '--'
         %td
           -unless task.deadline.blank?
             -if task.deadline.date <= Date::today
