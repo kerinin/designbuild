@@ -11,9 +11,7 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
-  before_create :inherit_project
-  
-  before_save :cache_values
+  before_save :set_project, :cache_values
   
   before_save :auto_assign_component
   after_save :cascade_cache_values, :create_points
@@ -76,7 +74,7 @@ class MaterialCost < ActiveRecord::Base
   
   protected
   
-  def inherit_project
+  def set_project
     self.project = self.task.project
   end
   

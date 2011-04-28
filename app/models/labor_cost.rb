@@ -12,8 +12,6 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
-  before_create :inherit_project
-  
   before_save :set_project, :cache_values
   before_save :auto_assign_component
   
@@ -46,10 +44,6 @@ class LaborCost < ActiveRecord::Base
   end
 
   protected
-    
-  def inherit_project
-    self.project = self.task.project
-  end
   
   def auto_assign_component
     # If the task has no estimated costs, it can't have a component association
