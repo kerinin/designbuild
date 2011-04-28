@@ -14,8 +14,9 @@
 
   =render :partial => 'steps', :locals => {:current => :assign_costs}
   
+  / Assign Costs
+  
   -if @invoice.state == 'unassigned_costs'
-    / Assign Costs
     .error
       %h2 Before you can set invoice amounts...
       
@@ -44,7 +45,7 @@
       -unless material_costs.empty?
         %h3 Material Costs
         -material_costs.each do |material_cost|
-          -form_for [material_cost.task, material_cost] do |f|
+          =form_for [material_cost.task, material_cost] do |f|
             =link_to "#{material_cost.supplier.name} on #{material_cost.date.to_s(:long)};", task_material_cost_path(material_cost.task, material_cost)
             =number_to_currency material_cost.cost
             assigned to task 

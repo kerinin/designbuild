@@ -2,6 +2,6 @@
 
 = render 'form'
 
-= link_to 'Show', @payment_line
+= link_to 'Show', payment_line_item_path(@payment, @payment_line)
 \|
-= link_to 'Back', payment_lines_path
+= link_to 'Back', payment_line_items_path(@payment)

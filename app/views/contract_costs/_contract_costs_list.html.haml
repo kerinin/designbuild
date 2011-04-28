@@ -20,6 +20,6 @@
     %td.right
       %strong Invoiced to Date
     %td.currency
-      %strong= number_to_currency(@contract.invoiced)
+      %strong= number_to_currency(@contract.raw_cost)
     %td.control.add_button{:colspan => 2}
 

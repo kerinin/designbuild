@@ -12,28 +12,11 @@
 
   =render :partial => 'steps', :locals => {:current => :start}
 
-  -if @payment.state == 'missing_task'
-    / Missing Task
+  -if @payment.state == 'unassigned_costs'
+    / Unassigned Costs
     .error
       %h2 Before you can set payment amounts...
       
-      %p
-        You currently have some tasks which have not been assigned to
-        an estimated cost. Before you can create a payment, you must ensure 
-        that all recorded costs are associated with an estimate.
-        
-      %p
-        To resolve this, either associate the tasks with an existing estimated cost, or create new
-        cost estimates and assign them to each of the tasks.
-      
-      %p 
-        This payment has been saved in its current state; once these issues have been resolved
-        you will be able to continue defining this payment
-        
-      %h3 The following Tasks must be assigned to an estimated cost:
-      %p
-        -@project.tasks.where('raw_labor_cost > 0 OR raw_material_cost > 0').map{|task| task.unit_cost_estimates.empty? && task.fixed_cost_estimates.empty? ? task : nil}.compact.each do |task|
-          =link_to task.name, [@project, task]
 
   -else
     / Start

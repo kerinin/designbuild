@@ -3,10 +3,11 @@ require File.dirname(__FILE__) + '/../test_helper'
 class PaymentLinesControllerTest < ActionController::TestCase
   setup do
     @project = Factory :project
+    @component = Factory :component, :project => @project
     @contract = Factory :contract, :project => @project
     @payment = Factory :payment, :project => @project
     
-    @payment_line = Factory :payment_line, :payment => @payment, :cost => @contract
+    @payment_line = Factory :payment_line, :payment => @payment, :cost => @contract, :component => @component
     sign_in Factory :user
   end
 

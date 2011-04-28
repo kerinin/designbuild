@@ -1,4 +1,4 @@
-= form_for @payment_line do |f|
+= form_for @payment_line, :url => payment_line_items_path(@payment, @payment_line) do |f|
   -if @payment_line.errors.any?
     #error_explanation
       %h2= "#{pluralize(@payment_line.errors.count, "error")} prohibited this payment_line from being saved:"

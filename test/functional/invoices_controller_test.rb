@@ -120,7 +120,7 @@ class InvoicesControllerTest < ActionController::TestCase
 
     # Assign Costs
     should "get assign costs in state new" do
-      get :assign_amounts, :id => @new_invoice.to_param
+      get :assign_costs, :id => @new_invoice.to_param
       assert_redirected_to start_invoice_path(assigns(:invoice))
     end
 
@@ -159,7 +159,7 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_response :success
       assert response.body.include? '<!-- Assign Costs -->'
     end
-       
+     
     # Set Amounts
     should "get set amounts in state new" do
       get :set_amounts, :id => @new_invoice.to_param

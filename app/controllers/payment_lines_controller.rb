@@ -1,4 +1,6 @@
 class PaymentLinesController < ApplicationController
+  before_filter :get_objects
+  
   # GET /payment_lines
   # GET /payment_lines.xml
   def index
@@ -80,5 +82,14 @@ class PaymentLinesController < ApplicationController
       format.html { redirect_to(payment_path(@payment)) }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_objects
+    @payment_line = PaymentLine.find(params[:id]) if params.has_key? :id
+    @payment = Payment.find(params[:payment_id]) if params.has_key? :payment_id
+    
+    @payment ||= @payment_line.payment unless @payment_line.nil?
   end
 end

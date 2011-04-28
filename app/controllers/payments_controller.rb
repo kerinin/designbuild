@@ -16,7 +16,7 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        if ['new', 'missing_task'].include? @payment.state
+        if ['new', 'unassigned_costs'].include? @payment.state
           redirect_to start_payment_path(@payment)
         else
           render
@@ -31,7 +31,7 @@ class PaymentsController < ApplicationController
 
     respond_to do |format|
       format.html {
-        if ['new', 'missing_task'].include? @payment.state
+        if ['new', 'unassigned_costs'].include? @payment.state
           redirect_to start_payment_path(@invoice)
         elsif ['balanced', 'unbalanced'].include? @payment.state
           redirect_to balance_payment_path(@payment)

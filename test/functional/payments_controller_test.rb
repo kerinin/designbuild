@@ -30,8 +30,8 @@ class PaymentsControllerTest < ActionController::TestCase
       
       @new_payment = Factory :payment, :project => @project1
       
-      @missing_task_payment = @project2.payments.create! :date => Date::today, :paid => 110, :retained => 0
-      @missing_task_payment.advance!
+      @unassigned_costs_payment = @project2.payments.create! :date => Date::today, :paid => 110, :retained => 0
+      @unassigned_costs_payment.advance!
       
       @balanced_payment = @project1.payments.create! :date => Date::today, :paid => 110, :retained => 0
       @balanced_payment.advance!
@@ -49,14 +49,14 @@ class PaymentsControllerTest < ActionController::TestCase
       @unbalanced_line.update_attributes(:labor_paid => 65486432184)
       @unbalanced_payment.advance!
       
-      [@payment, @new_payment, @missing_task_payment, @balanced_payment, @balanced_line, @unbalanced_payment, @unbalanced_line, @complete_payment].each {|i| i.reload}
+      [@payment, @new_payment, @unassigned_costs_payment, @balanced_payment, @balanced_line, @unbalanced_payment, @unbalanced_line, @complete_payment].each {|i| i.reload}
 
       sign_in Factory :user
     end
 
     should "start in expected states" do
       assert_equal 'new', @new_payment.state
-      assert_equal 'missing_task', @missing_task_payment.state
+      assert_equal 'unassigned_costs', @unassigned_costs_payment.state
       
       assert_equal 'balanced', @balanced_payment.state
       assert_equal 'unbalanced', @unbalanced_payment.state
@@ -70,10 +70,10 @@ class PaymentsControllerTest < ActionController::TestCase
       assert response.body.include? '<!-- Start -->'
     end
 
-    should "get start in state missing_task" do
-      get :start, :id => @missing_task_payment.to_param
+    should "get start in state unassigned_costs" do
+      get :start, :id => @unassigned_costs_payment.to_param
       assert_response :success
-      assert response.body.include? '<!-- Missing Task -->'
+      assert response.body.include? '<!-- Unassigned Costs -->'
     end
     
     should "get start in state balanced" do
@@ -100,8 +100,8 @@ class PaymentsControllerTest < ActionController::TestCase
       assert_redirected_to start_payment_path(assigns(:payment))
     end
     
-    should "get balance in state missing_task" do
-      get :balance, :id => @missing_task_payment.to_param
+    should "get balance in state unassigned_costs" do
+      get :balance, :id => @unassigned_costs_payment.to_param
       assert_redirected_to start_payment_path(assigns(:payment))
     end
     
@@ -129,11 +129,11 @@ class PaymentsControllerTest < ActionController::TestCase
       assert_redirected_to start_payment_path(assigns(:invoice))
     end
     
-    should "get finished in state missing_task" do
-      get :finished, :id => @missing_task_payment.to_param
+    should "get finished in state unassigned_costs" do
+      get :finished, :id => @unassigned_costs_payment.to_param
       assert_redirected_to start_payment_path(assigns(:invoice))
     end
-    
+
     should "get finished in state balanced" do
       get :finished, :id => @balanced_payment.to_param
       assert_redirected_to balance_payment_path(assigns(:payment))
@@ -256,7 +256,6 @@ class PaymentsControllerTest < ActionController::TestCase
 
       assert_redirected_to invoicing_project_url(@project1)
     end
-
   end
 end
 
