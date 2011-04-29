@@ -24,7 +24,7 @@
     =invoice_form.fields_for :markup_lines do |f|
       %p
         -markup_line = f.object
-        %h3=markup_line.markup.name
+        %h3="#{markup_line.markup.name} (#{number_to_percentage markup_line.markup.percent, :precision => 0})"
         .field
           =f.label :labor_invoiced, "Labor Invoiced (#{number_to_currency markup_line.expected_labor_invoiced} expected)"
           =f.text_field :labor_invoiced

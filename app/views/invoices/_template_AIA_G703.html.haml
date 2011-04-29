@@ -21,6 +21,40 @@
     =render :partial => 'template_AIA_G703_recursion', :locals => {:component => component, :i => i}
     -i += 1
   
+  -@invoice.markup_lines.each do |markup_line|
+    -all_lines = InvoiceMarkupLine.includes(:invoice).where('invoices.project_id = ?', @project.id).where(:markup_id => markup_line.markup_id)
+    -scheduled = markup_line.markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
+    -to_date = all_lines.sum(:labor_invoiced) + all_lines.sum(:material_invoiced)
+    
+    %tr
+      %td.control
+      %td.number
+      %td="#{markup_line.markup.name} (#{number_to_percentage markup_line.markup.percent, :precision => 0})"
+      
+      / Scheduled Value
+      %td.currency= number_to_currency scheduled
+      
+      / Work Completed - From previous applications
+      %td.currency= number_to_currency all_lines.where('invoices.date <= ?', @invoice.date - 1).sum(:labor_invoiced)
+      
+      / Work Completed - This Period
+      %td.currency= number_to_currency markup_line.labor_invoiced
+      
+      / Materials Presently Stored
+      %td.currency= number_to_currency markup_line.material_invoiced
+      
+      / Total Completed and Stored
+      %td.currency= number_to_currency to_date
+      
+      / %
+      %td.number= number_to_percentage 100 * (to_date / scheduled ), :precision => 0
+  
+      / Balance to finish
+      %td.currency= number_to_currency scheduled - to_date
+      
+      / Retainage
+      %td.currency= number_to_currency all_lines.sum(:labor_retainage) + all_lines.sum(:material_retainage)
+
   %tr
     %td.control
     %th.number
@@ -33,7 +67,7 @@
     %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date - 1)
     
     / Work Complete - This period
-    %th.currency= number_to_currency subtract_or_nil @project.labor_invoiced_before(@invoice.date), @project.labor_invoiced_before(@invoice.date - 1)
+    %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date) - @project.labor_invoiced_before(@invoice.date - 1)
     
     / Materials Presently Stored
     %th.currency= number_to_currency @project.material_invoiced_before(@invoice.date)
