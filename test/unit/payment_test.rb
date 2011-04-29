@@ -8,6 +8,8 @@ class PaymentTest < ActiveSupport::TestCase
     setup do  
       @project = Factory :project
       @component = @project.components.create! :name => 'component'
+      @markup = Factory :markup, :percent => 50
+      @component.markups << @markup
       @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
       
       @obj = @project.payments.create! :date => Date::today, :paid => 90, :retained => 100
@@ -27,6 +29,8 @@ class PaymentTest < ActiveSupport::TestCase
         :labor_retained => 1000000,
         :material_retained => 10000000
       )
+      
+      @markup_line = @obj.markup_lines.create!(:markup => @markup)
     end
     
     should "be valid" do
@@ -50,20 +54,11 @@ class PaymentTest < ActiveSupport::TestCase
       assert_contains @obj.lines, @line2
     end
     
-    should "aggregate labor paid" do
-      assert_equal 10001, @obj.labor_paid
-    end
-    
-    should "aggregate material paid" do
-      assert_equal 100010, @obj.material_paid
-    end
-    
-    should "aggregate labor retained" do
-      assert_equal 1000100, @obj.labor_retained
-    end
-    
-    should "aggregate material retained" do
-      assert_equal 10001000, @obj.material_retained
+    should "aggregate values" do
+      assert_equal 15001.5, @obj.labor_paid
+      assert_equal 150015, @obj.material_paid
+      assert_equal 1500150, @obj.labor_retained
+      assert_equal 15001500, @obj.material_retained
     end
     
     should_eventually "determine payment balanced" do

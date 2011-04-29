@@ -1,7 +1,7 @@
 class CreatePaymentMarkupLines < ActiveRecord::Migration
   def self.up
     create_table :payment_markup_lines do |t|
-      t.belongs_to :invoice
+      t.belongs_to :payment
       t.belongs_to :markup
       
       t.string :comment

@@ -319,7 +319,7 @@ ActiveRecord::Schema.define(:version => 20110429144951) do
   add_index "payment_lines", ["payment_id"], :name => "index_payment_lines_on_payment_id"
 
   create_table "payment_markup_lines", :force => true do |t|
-    t.integer  "invoice_id"
+    t.integer  "payment_id"
     t.integer  "markup_id"
     t.string   "comment"
     t.float    "labor_paid",        :default => 0.0

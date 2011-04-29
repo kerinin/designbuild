@@ -2,11 +2,12 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
   context "An Invoice" do
-
     setup do
       @q = Factory :quantity, :value => 1
       @project = Factory :project
       @component = @project.components.create! :name => 'component'
+      @markup = Factory :markup, :percent => 50
+      @component.markups << @markup
       @fc = @component.fixed_cost_estimates.create! :name => 'fixed cost', :raw_cost => 100
       @uc = @component.unit_cost_estimates.create! :name => 'unit cost', :quantity => @q, :unit_cost => 0
       @c = @component.contracts.create! :name => 'contract'
@@ -30,6 +31,8 @@ class InvoiceTest < ActiveSupport::TestCase
         :labor_retainage => 1000000,
         :material_retainage => 10000000
       )
+      
+      @markup_line = @obj.markup_lines.create!(:markup => @markup)
       #@obj.advance
     end  
 
@@ -70,27 +73,27 @@ class InvoiceTest < ActiveSupport::TestCase
     end
 
     should "aggregate labor invoiced" do
-      assert_equal 10001, @obj.labor_invoiced
+      assert_equal 15001.5, @obj.labor_invoiced
     end
 
     should "aggregate material invoiced" do
-      assert_equal 100010, @obj.material_invoiced
+      assert_equal 150015, @obj.material_invoiced
     end
   
     should "aggregate invoiced" do
-      assert_equal 110011, @obj.invoiced
+      assert_equal 165016.5, @obj.invoiced
     end
   
     should "aggregate labor retainage" do
-      assert_equal 1000100, @obj.labor_retainage
+      assert_equal 1500150, @obj.labor_retainage
     end
   
     should "aggregate material retainage" do
-      assert_equal 10001000, @obj.material_retainage
+      assert_equal 15001500, @obj.material_retainage
     end
   
     should "aggregate retainage" do
-      assert_equal 11001100, @obj.retainage
+      assert_equal 16501650, @obj.retainage
     end
   end
 

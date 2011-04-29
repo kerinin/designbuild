@@ -57,7 +57,7 @@ class Invoice < ActiveRecord::Base
   [:labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage].each do |sym|
     self.send(:define_method, sym) do
       #self.lines.inject(0) {|memo,obj| memo + obj.send(sym)}
-      self.lines.sum(sym)
+      self.lines.sum(sym) + self.markup_lines.sum(sym)
     end
   end
   
