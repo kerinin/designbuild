@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Float:
+  = @invoice_markup_line.float
+%p
+  %b Float:
+  = @invoice_markup_line.float
+%p
+  %b Float:
+  = @invoice_markup_line.float
+%p
+  %b Float:
+  = @invoice_markup_line.float
+%p
+  %b String:
+  = @invoice_markup_line.string
+%p
+  %b Float:
+  = @invoice_markup_line.float
+%p
+  %b Float:
+  = @invoice_markup_line.float
+
+= link_to 'Edit', edit_invoice_markup_line_path(@invoice_markup_line)
+\|
+= link_to 'Back', invoice_markup_lines_path

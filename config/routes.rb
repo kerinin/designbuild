@@ -3,6 +3,8 @@ Designbuild::Application.routes.draw do
   resources :invoices do
     resources :invoice_lines
     resources :invoice_lines, :as => :line_items
+    resources :invoice_markup_lines
+    resources :invoice_markup_lines, :as => :markups
     
     member do
       get :start
@@ -16,8 +18,11 @@ Designbuild::Application.routes.draw do
   end  
 
   resources :payments do
+    resources :payment_lines
     resources :payment_lines, :as => :line_items
-    
+    resources :payment_markup_lines
+    resources :payment_markup_lines, :as => :markups
+
     member do
       get :start
       get :balance

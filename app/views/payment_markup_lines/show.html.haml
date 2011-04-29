@@ -1,0 +1,27 @@
+%p#notice= notice
+
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b Float:
+  = @payment_markup_line.float
+%p
+  %b String:
+  = @payment_markup_line.string
+
+= link_to 'Edit', edit_payment_markup_line_path(@payment_markup_line)
+\|
+= link_to 'Back', payment_markup_lines_path

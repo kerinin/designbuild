@@ -1,0 +1,2 @@
+module PaymentMarkupLinesHelper
+end

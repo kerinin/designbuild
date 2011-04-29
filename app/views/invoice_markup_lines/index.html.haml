@@ -1,0 +1,31 @@
+%h1 Listing invoice_markup_lines
+
+%table
+  %tr
+    %th Float
+    %th Float
+    %th Float
+    %th Float
+    %th String
+    %th Float
+    %th Float
+    %th
+    %th
+    %th
+
+  - @invoice_markup_lines.each do |invoice_markup_line|
+    %tr
+      %td= invoice_markup_line.float
+      %td= invoice_markup_line.float
+      %td= invoice_markup_line.float
+      %td= invoice_markup_line.float
+      %td= invoice_markup_line.string
+      %td= invoice_markup_line.float
+      %td= invoice_markup_line.float
+      %td= link_to 'Show', invoice_markup_line
+      %td= link_to 'Edit', edit_invoice_markup_line_path(invoice_markup_line)
+      %td= link_to 'Destroy', invoice_markup_line, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Invoice markup line', new_invoice_markup_line_path
