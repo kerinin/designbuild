@@ -333,7 +333,7 @@ class InvoiceTest < ActiveSupport::TestCase
     
       assert_equal 'costs_specified', @obj.state
       
-      @obj.advance
+      @obj.accept_markups
       assert_equal 'markups_added', @obj.state
     end
               
@@ -343,7 +343,7 @@ class InvoiceTest < ActiveSupport::TestCase
       @obj.advance
       @obj.accept_costs
       
-      @obj.advance
+      @obj.accept_markups
     
       @obj.update_attributes :template => 'blah'
       @obj.advance

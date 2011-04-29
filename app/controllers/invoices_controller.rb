@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_filter :get_project, :except => [:start, :assign_costs, :set_amounts, :add_markups, :select_template, :finished, :accept]
+  before_filter :get_project, :except => [:start, :assign_costs, :set_amounts, :add_markups, :select_template, :finished, :accept_costs, :accept_markups]
   
   def start
     @invoice = Invoice.find(params[:id])
@@ -108,10 +108,24 @@ class InvoicesController < ApplicationController
     end
   end
   
-  def accept
+  def accept_costs
     @invoice = Invoice.find(params[:id])
     @project = @invoice.project
     @invoice.accept_costs
+    
+    respond_to do |format|
+      if @invoice.save
+        format.html { redirect_to( add_markups_invoice_path( @invoice ), :notice => 'Invoice was successfully updated.') }
+      else
+        format.html { render :action => "show" }
+      end
+    end
+  end
+
+  def accept_markups
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+    @invoice.accept_markups
     
     respond_to do |format|
       if @invoice.save
@@ -121,7 +135,7 @@ class InvoicesController < ApplicationController
       end
     end
   end
-
+  
   # GET /invoices
   # GET /invoices.xml
   def index
@@ -164,7 +178,18 @@ class InvoicesController < ApplicationController
       
       @invoice.attributes = params[:invoice]
       # trying to reduce update time
-      
+      if params.has_key? :included_markups
+        # remove unchecked markups
+        @invoice.markup_lines.each do |markup_line|
+          markup_line.destroy unless params[:included_markups].include? markup_line.markup_id
+        end
+        
+        # add checked markups
+        params[:included_markups].each do |markup_id|
+          @invoice.markup_lines.create!(:markup_id => markup_id) unless @invoice.markup_line_ids.include? markup_id
+        end
+      end
+          
       #@invoice.lines.each do |line|
       #  if line.labor_retainage.nil?
       #    line.update_attributes :labor_retainage => 0
@@ -187,6 +212,8 @@ class InvoicesController < ApplicationController
         when 'retainage_expected', 'retainage_unexpected'
           redirect_from_session_or set_amounts_invoice_path(@invoice)
         when 'costs_specified'
+          redirect_from_session_or add_markups_invoice_path(@invoice)
+        when 'markups_added'
           redirect_from_session_or select_template_invoice_path(@invoice)
         when 'complete'
           redirect_from_session_or finished_invoice_path(@invoice)

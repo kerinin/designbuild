@@ -38,7 +38,7 @@
     = page_entries_info lines
     
   %p
-    =form_tag accept_invoice_path(@invoice), :method => :get do 
+    =form_tag accept_costs_invoice_path(@invoice), :method => :get do 
       -unless @invoice.retainage_as_expected?
         .notice
           =submit_tag 'Next Step'

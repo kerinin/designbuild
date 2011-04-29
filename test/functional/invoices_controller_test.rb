@@ -6,6 +6,7 @@ class InvoicesControllerTest < ActionController::TestCase
       # For normal states
       @project1 = Factory :project
       @component1 = Factory :component, :project => @project1
+      @markup = Factory :markup
       @task1 = Factory :task, :project => @project1
       @fce1 = Factory :fixed_cost_estimate, :component => @component1, :task => @task1
       @uce1 = Factory :unit_cost_estimate, :component => @component1, :task => @task1
@@ -32,7 +33,7 @@ class InvoicesControllerTest < ActionController::TestCase
       @invoice = Factory :invoice, :project => @project1
       sign_in Factory :user
     end
-    
+     
     context "with invoice in state new" do
       setup do
         @new_invoice = Factory :invoice, :project => @project1
@@ -317,7 +318,7 @@ class InvoicesControllerTest < ActionController::TestCase
         @markups_added_invoice = @project1.invoices.create! :date => Date::today
         @markups_added_invoice.advance!
         @markups_added_invoice.accept_costs
-        @markups_added_invoice.advance!     
+        @markups_added_invoice.accept_markups     
       end
       
       should "start in expected states" do
@@ -364,7 +365,7 @@ class InvoicesControllerTest < ActionController::TestCase
         @complete_invoice = @project1.invoices.create! :date => Date::today
         @complete_invoice.advance!
         @complete_invoice.accept_costs
-        @complete_invoice.advance!
+        @complete_invoice.accept_markups
         @complete_invoice.update_attributes(:template => 'template_AIA_G703')
         @complete_invoice.advance!
       end
@@ -513,6 +514,21 @@ class InvoicesControllerTest < ActionController::TestCase
       assert_redirected_to finished_invoice_path(assigns(:invoice))
     end
     
+    should "create markup lines" do
+      assert_does_not_contain @invoice.markup_lines.map{|ml| ml.markup}, @markup
+      
+      put :update, :project_id => @project1.to_param, :id => @invoice.to_param, :included_markups => [@markup.id]
+      assert_contains assigns[:invoice].markup_lines.map{|ml| ml.markup}, @markup
+    end
+    
+    should "remove markup lines" do
+      @invoice.markup_lines.create!(:markup => @markup)
+      assert_contains @invoice.markup_lines.map{|ml| ml.markup}, @markup
+      
+      put :update, :project_id => @project1.to_param, :id => @invoice.to_param, :included_markups => []
+      assert_does_not_contain assigns[:invoice].reload.markup_lines.map{|ml| ml.markup}, @markup
+    end
+        
     should_eventually "fail to update costs_specified invoice" do
       put :update, :project_id => @project1.to_param, :id => @costs_specified_invoice.to_param, :invoice => {
         :template => 'foo'

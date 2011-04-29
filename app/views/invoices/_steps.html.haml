@@ -33,8 +33,8 @@
     %li.step
       -if current == :add_markups
         %span.emphasize Add Markups
-      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'complete'].include? @invoice.state
-        =link_to 'Set Invoice Amounts', set_amounts_invoice_path(@invoice)
+      -elsif ['retainage_expected', 'retainage_unexpected', 'costs_specified', 'markups_added', 'complete'].include? @invoice.state
+        =link_to 'Set Invoice Amounts', add_markups_invoice_path(@invoice)
       -else
         Set Invoice Amounts
       

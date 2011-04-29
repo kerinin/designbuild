@@ -73,7 +73,7 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal true, @obj.balances?
     end
   end
-=begin
+  
   context "state machine validation" do
     setup do
       @project = Factory :project
@@ -238,5 +238,4 @@ class PaymentTest < ActiveSupport::TestCase
       assert_equal 'unbalanced', @obj.state
     end
   end  
-=end
 end

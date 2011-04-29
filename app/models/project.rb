@@ -33,6 +33,9 @@ class Project < ActiveRecord::Base
   # cost to date points being created at cost creation
   #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
 
+  def active_markups
+    Markup.all.map {|m| m.apply_recursively_to(self, :estimated_cost_markup_amount) > 0 ? m : nil}.compact
+  end
   
   def component_tree
     self.components.roots.inject([]) {|memo,obj| memo + obj.tree}

@@ -34,9 +34,15 @@ class InvoiceMarkupLine < ActiveRecord::Base
     ( invoiced * retainage_float / ( 1 - retainage_float ) ) - retainage
   end
   
+  [:expected_labor_invoiced, :expected_labor_retainage, :expected_material_invoiced, :expected_material_retainage].each do |sym|
+    self.send(:define_method, sym) do
+      self.markup.apply_to(self.invoice.lines.includes(:component => :markups).where('markups.id = ?', self.markup_id).sum(sym.to_s.sub('expected_','')))
+    end
+  end
+  
   def set_defaults
     [:labor_invoiced, :labor_retainage, :material_invoiced, :material_retainage].each do |sym|
-      self.send("#{sym.to_s}=", self.markup.apply_to(self.invoice.lines.includes(:component => :markups).where('markups.id = ?', self.markup_id).sum(sym)))
+      self.send("#{sym.to_s}=", self.send("expected_#{sym.to_s}"))
     end
     self.set_sums
   end

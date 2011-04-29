@@ -14,7 +14,8 @@ Designbuild::Application.routes.draw do
       get :select_template
       get :finished
       
-      get :accept
+      get :accept_costs
+      get :accept_markups
     end
   end  
 

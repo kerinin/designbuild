@@ -25,7 +25,7 @@
     -else
       %button=link_to "Show Markup", estimate_report_for_project_path(@project, :break_out_markup => 1)
 
-  -@active_markups = Markup.all.map {|m| m.apply_recursively_to(@project, :estimated_cost_markup_amount) > 0 ? m : nil}.compact
+  -@active_markups = @project.active_markups
 
   %table.project_estimate
     %tr

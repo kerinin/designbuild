@@ -103,7 +103,13 @@ class Payment < ActiveRecord::Base
       #end
     end
     
-    self.project.contracts.scoped.without_component.each {|c| line = PaymentLine(:payment => self, :cost => c); self.lines << line; line.set_defaults }
+    self.project.active_markups.each do |markup|
+      line = self.markup_lines.create!(:markup => markup)
+      line.set_defaults
+      line.save
+    end
+    
+    #self.project.contracts.scoped.without_component.each {|c| line = PaymentLine(:payment => self, :cost => c); self.lines << line; line.set_defaults }
     true
   end
   
