@@ -30,263 +30,385 @@ class InvoicesControllerTest < ActionController::TestCase
       [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
       
       @invoice = Factory :invoice, :project => @project1
-      
-      @new_invoice = Factory :invoice, :project => @project1
-      
-      @unassigned_costs_invoice = @project2.invoices.create! :date => Date::today
-      @unassigned_costs_invoice.advance!
-      
-      @payments_unbalanced_invoice = @project3.invoices.create! :date => Date::today
-      @payments_unbalanced_invoice.advance!
-      
-      @retainage_expected_invoice = @project1.invoices.create! :date => Date::today
-      @retainage_expected_invoice.advance!
-      @retainage_expected_line = @retainage_expected_invoice.lines.first
-      
-      @retainage_unexpected_invoice = @project1.invoices.create! :date => Date::today
-      @retainage_unexpected_invoice.advance!
-      @retainage_unexpected_line = @retainage_unexpected_invoice.lines.first
-      @retainage_unexpected_line.update_attributes(:labor_retainage => 65486432184)
-      @retainage_unexpected_invoice.advance!
-      
-      @costs_specified_invoice = @project1.invoices.create! :date => Date::today
-      @costs_specified_invoice.advance!
-      @costs_specified_invoice.accept_costs
-      
-      @complete_invoice = @project1.invoices.create! :date => Date::today
-      @complete_invoice.advance!
-      @complete_invoice.accept_costs
-      @complete_invoice.update_attributes(:template => 'template_AIA_G703')
-      @complete_invoice.advance!
-      
-
-      [@invoice, @new_invoice, @unassigned_costs_invoice, @payments_unbalanced_invoice, @retainage_expected_invoice, @retainage_unexpected_invoice, @costs_specified_invoice, @complete_invoice].each {|i| i.reload}
-
       sign_in Factory :user
     end
+    
+    context "with invoice in state new" do
+      setup do
+        @new_invoice = Factory :invoice, :project => @project1
+      end
+      
+      should "start in expected states" do
+        assert_equal 'new', @new_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @new_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @new_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get set amounts" do
+        get :set_amounts, :id => @new_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get add_markups" do
+        get :add_markups, :id => @new_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get select template" do
+        get :select_template, :id => @invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @new_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+    end
+    
+    context "with invoice in state unassigned_costs" do
+      setup do
+        @unassigned_costs_invoice = @project2.invoices.create! :date => Date::today
+        @unassigned_costs_invoice.advance!
+      end
+      
+      should "start in expected states" do
+        assert_equal 'unassigned_costs', @unassigned_costs_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @unassigned_costs_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @unassigned_costs_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @unassigned_costs_invoice.to_param
+        assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
+      end
+      
+      should "get add_markups" do
+        get :select_template, :id => @unassigned_costs_invoice.to_param
+        assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
+      end
+        
+      should "get select_template" do
+        get :select_template, :id => @unassigned_costs_invoice.to_param
+        assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @unassigned_costs_invoice.to_param
+        assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
+      end
+    end
+    
+    context "with invoice in state payments_unbalanced" do
+      setup do
+        @payments_unbalanced_invoice = @project3.invoices.create! :date => Date::today
+        @payments_unbalanced_invoice.advance!
+      end
+      
+      should "start in expected states" do
+        assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @payments_unbalanced_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Payments Unbalanced -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @payments_unbalanced_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @payments_unbalanced_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get add_markups" do
+        get :select_template, :id => @payments_unbalanced_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+                
+      should "get select_template" do
+        get :select_template, :id => @payments_unbalanced_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @payments_unbalanced_invoice.to_param
+        assert_redirected_to start_invoice_path(assigns(:invoice))
+      end
+    end
+    
+    context "with invoice in state retainage_expected" do
+      setup do
+        @retainage_expected_invoice = @project1.invoices.create! :date => Date::today
+        @retainage_expected_invoice.advance!
+        @retainage_expected_line = @retainage_expected_invoice.lines.first
+      end
+      
+      should "start in expected states" do
+        assert_equal 'retainage_expected', @retainage_expected_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @retainage_expected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @retainage_expected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @retainage_expected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Retainage Expected -->'
+      end
+      
+      should "get add_markups" do
+        get :select_template, :id => @retainage_expected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+                
+      should "get select_template" do
+        get :select_template, :id => @retainage_expected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @retainage_expected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+      
+      should "accept costs" do
+        get :accept, :id => @retainage_expected_invoice.to_param
 
-    should "start in expected states" do
-      assert_equal 'new', @new_invoice.state
-      assert_equal 'unassigned_costs', @unassigned_costs_invoice.state
-      assert_equal 'payments_unbalanced', @payments_unbalanced_invoice.state
-      assert_equal 'retainage_expected', @retainage_expected_invoice.state
-      assert_equal 'retainage_unexpected', @retainage_unexpected_invoice.state
-      assert_equal 'costs_specified', @costs_specified_invoice.state
-      assert_equal 'complete', @complete_invoice.state
+        assert_redirected_to select_template_invoice_path(assigns(:invoice))
+        assert_equal 'costs_specified', assigns(:invoice).state
+      end
     end
+    
+    context "with invoice in state retainage_unexpected" do
+      setup do
+        @retainage_unexpected_invoice = @project1.invoices.create! :date => Date::today
+        @retainage_unexpected_invoice.advance!
+        @retainage_unexpected_line = @retainage_unexpected_invoice.lines.first
+        @retainage_unexpected_line.update_attributes(:labor_retainage => 65486432184)
+        @retainage_unexpected_invoice.advance!
+      end
+      
+      should "start in expected states" do
+        assert_equal 'retainage_unexpected', @retainage_unexpected_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @retainage_unexpected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @retainage_unexpected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @retainage_unexpected_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Retainage Unexpected -->'
+      end
+      
+      should "get add_markups" do
+        get :select_template, :id => @retainage_unexpected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+              
+      should "get select_template" do
+        get :select_template, :id => @retainage_unexpected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @retainage_unexpected_invoice.to_param
+        assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
+      end
+      
+      should "accept costs" do
+        get :accept, :id => @retainage_unexpected_invoice.to_param
 
-    # Start
-    should "get start in state new" do
-      get :start, :id => @new_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
-    end
-
-    should "get start in state unassigned_costs" do
-      get :start, :id => @unassigned_costs_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
+        assert_redirected_to select_template_invoice_path(assigns(:invoice))
+        assert_equal 'costs_specified', assigns(:invoice).state
+      end
     end
     
-    should "get start in state payments_unbalanced" do
-      get :start, :id => @payments_unbalanced_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Payments Unbalanced -->'
+    context "with invoice in state costs_specified" do
+      setup do
+        @costs_specified_invoice = @project1.invoices.create! :date => Date::today
+        @costs_specified_invoice.advance!
+        @costs_specified_invoice.accept_costs
+      end
+      
+      should "start in expected states" do
+        assert_equal 'costs_specified', @costs_specified_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @costs_specified_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @costs_specified_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @costs_specified_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Retainage Expected -->'
+      end
+      
+      should "get add_markups" do
+        get :add_markups, :id => @costs_specified_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Add Markups -->'
+      end
+                
+      should "get select_template" do
+        get :select_template, :id => @costs_specified_invoice.to_param
+        assert_redirected_to add_markups_invoice_path(assigns(:invoice))
+      end
+      
+      should "get finished" do
+        get :finished, :id => @costs_specified_invoice.to_param
+        assert_redirected_to add_markups_invoice_path(assigns(:invoice))
+      end
     end
     
-    should "get start in state retainage_expected" do
-      get :start, :id => @retainage_expected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
+    context "with invoice in state markups_added" do
+      setup do
+        @markups_added_invoice = @project1.invoices.create! :date => Date::today
+        @markups_added_invoice.advance!
+        @markups_added_invoice.accept_costs
+        @markups_added_invoice.advance!     
+      end
+      
+      should "start in expected states" do
+        assert_equal 'markups_added', @markups_added_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @markups_added_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @markups_added_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @markups_added_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Retainage Expected -->'
+      end
+      
+      should "get add_markups" do
+        get :add_markups, :id => @markups_added_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Add Markups -->'
+      end
+      
+      should "get select_template" do
+        get :select_template, :id => @markups_added_invoice.to_param
+        assert_response :success
+      end
+      
+      should "get finished" do
+        get :finished, :id => @markups_added_invoice.to_param
+        assert_redirected_to select_template_invoice_path(assigns(:invoice))
+      end
     end
     
-    should "get start in state retainage_unexpected" do
-      get :start, :id => @retainage_unexpected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
+    context "with invoice in state complete" do
+      setup do
+        @complete_invoice = @project1.invoices.create! :date => Date::today
+        @complete_invoice.advance!
+        @complete_invoice.accept_costs
+        @complete_invoice.advance!
+        @complete_invoice.update_attributes(:template => 'template_AIA_G703')
+        @complete_invoice.advance!
+      end
+      
+      should "start in expected states" do
+        assert_equal 'complete', @complete_invoice.state
+      end
+      
+      should "get start" do
+        get :start, :id => @complete_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Start -->'
+      end
+      
+      should "get assign costs" do
+        get :assign_costs, :id => @complete_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Assign Costs -->'
+      end
+      
+      should "get set_amounts" do
+        get :set_amounts, :id => @complete_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Retainage Expected -->'
+      end
+      
+      should "get add_markups" do
+        get :add_markups, :id => @complete_invoice.to_param
+        assert_response :success
+        assert response.body.include? '<!-- Add Markups -->'
+      end
+            
+      should "get select_template" do
+        get :select_template, :id => @complete_invoice.to_param
+        assert_response :success
+      end
+      
+      should "get finished" do
+        get :finished, :id => @complete_invoice.to_param
+        assert_response :success
+      end
     end
     
-    should "get start in state costs_specified" do
-      get :start, :id => @costs_specified_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
-    end
-    
-    should "get start in state complete" do
-      get :start, :id => @complete_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Start -->'
-    end
-
-    # Assign Costs
-    should "get assign costs in state new" do
-      get :assign_costs, :id => @new_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-
-    should "get assign costs in state unassigned_costs" do
-      get :assign_costs, :id => @unassigned_costs_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-    
-    should "get assign costs in state payments_unbalanced" do
-      get :assign_costs, :id => @payments_unbalanced_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-    
-    should "get assign costs in state retainage_expected" do
-      get :assign_costs, :id => @retainage_expected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-    
-    should "get assign costs in state retainage_unexpected" do
-      get :assign_costs, :id => @retainage_unexpected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-    
-    should "get assign costs in state costs_specified" do
-      get :assign_costs, :id => @costs_specified_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-    
-    should "get assign costs in state complete" do
-      get :assign_costs, :id => @complete_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Assign Costs -->'
-    end
-     
-    # Set Amounts
-    should "get set amounts in state new" do
-      get :set_amounts, :id => @new_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get set_amounts in state unassigned_costs" do
-      get :set_amounts, :id => @unassigned_costs_invoice.to_param
-      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
-    end
-    
-    should "get set_amounts in state payments_unbalanced" do
-      get :set_amounts, :id => @payments_unbalanced_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get set_amounts in state retainage_expected" do
-      get :set_amounts, :id => @retainage_expected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Retainage Expected -->'
-    end
-    
-    should "get set_amounts in state retainage_unexpected" do
-      get :set_amounts, :id => @retainage_unexpected_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Retainage Unexpected -->'
-    end
-    
-    should "get set_amounts in state costs_specified" do
-      get :set_amounts, :id => @costs_specified_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Retainage Expected -->'
-    end
-    
-    should "get set_amounts in state complete" do
-      get :set_amounts, :id => @complete_invoice.to_param
-      assert_response :success
-      assert response.body.include? '<!-- Retainage Expected -->'
-    end
-    
-    # Select Template
-    should "get select template in state new" do
-      get :select_template, :id => @invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get select_template in state unassigned_costs" do
-      get :select_template, :id => @unassigned_costs_invoice.to_param
-      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
-    end
-    
-    should "get select_template in state payments_unbalanced" do
-      get :select_template, :id => @payments_unbalanced_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get select_template in state retainage_expected" do
-      get :select_template, :id => @retainage_expected_invoice.to_param
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
-    end
-    
-    should "get select_template in state retainage_unexpected" do
-      get :select_template, :id => @retainage_unexpected_invoice.to_param
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
-    end
-    
-    should "get select_template in state costs_specified" do
-      get :select_template, :id => @costs_specified_invoice.to_param
-      assert_response :success
-    end
-    
-    should "get select_template in state complete" do
-      get :select_template, :id => @complete_invoice.to_param
-      assert_response :success
-    end
-     
-    # Finished
-    should "get finished in state new" do
-      get :finished, :id => @new_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state unassigned_costs" do
-      get :finished, :id => @unassigned_costs_invoice.to_param
-      assert_redirected_to assign_costs_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state payments_unbalanced" do
-      get :finished, :id => @payments_unbalanced_invoice.to_param
-      assert_redirected_to start_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state retainage_expected" do
-      get :finished, :id => @retainage_expected_invoice.to_param
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state retainage_unexpected" do
-      get :finished, :id => @retainage_unexpected_invoice.to_param
-      assert_redirected_to set_amounts_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state costs_specified" do
-      get :finished, :id => @costs_specified_invoice.to_param
-      assert_redirected_to select_template_invoice_path(assigns(:invoice))
-    end
-    
-    should "get finished in state complete" do
-      get :finished, :id => @complete_invoice.to_param
-      assert_response :success
-    end
    
-    # Accept Costs
-    should "accept costs in state retainage_expected" do
-      get :accept, :id => @retainage_expected_invoice.to_param
-      
-      assert_redirected_to select_template_invoice_path(assigns(:invoice))
-      assert_equal 'costs_specified', assigns(:invoice).state
-    end
-    
-    should "accept costs in state retainage_unexpected" do
-      get :accept, :id => @retainage_unexpected_invoice.to_param
-      
-      assert_redirected_to select_template_invoice_path(assigns(:invoice))
-      assert_equal 'costs_specified', assigns(:invoice).state
-    end
-    
     # CRUD
     
     should "get index" do

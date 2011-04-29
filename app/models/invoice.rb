@@ -28,6 +28,9 @@ class Invoice < ActiveRecord::Base
     
     state :costs_specified do
     end
+    
+    state :markups_added do
+    end
         
     state :complete do
     end
@@ -46,7 +49,9 @@ class Invoice < ActiveRecord::Base
       transition :retainage_unexpected => :retainage_expected, :if => :retainage_as_expected?
       transition :retainage_expected => :retainage_unexpected, :unless => :retainage_as_expected?    
       
-      transition :costs_specified => :complete, :if => :template?
+      transition :costs_specified => :markups_added
+      
+      transition :markups_added => :complete, :if => :template?
     end
     
     event :accept_costs do

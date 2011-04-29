@@ -1,5 +1,5 @@
 class InvoicesController < ApplicationController
-  before_filter :get_project, :except => [:start, :assign_costs, :set_amounts, :select_template, :finished, :accept]
+  before_filter :get_project, :except => [:start, :assign_costs, :set_amounts, :add_markups, :select_template, :finished, :accept]
   
   def start
     @invoice = Invoice.find(params[:id])
@@ -42,6 +42,25 @@ class InvoicesController < ApplicationController
     end
   end
   
+  def add_markups
+    @invoice = Invoice.find(params[:id])
+    @project = @invoice.project
+
+    respond_to do |format|
+      format.html {
+        if ['new', 'payments_unbalanced'].include? @invoice.state
+          redirect_to start_invoice_path(@invoice)
+        elsif ['unassigned_costs'].include? @invoice.state
+          redirect_to assign_costs_invoice_path(@invoice)
+        elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
+          redirect_to set_amounts_invoice_path(@invoice)
+        else
+          render
+        end
+      }
+    end
+  end
+        
   def select_template
     @invoice = Invoice.find(params[:id])
     @project = @invoice.project
@@ -57,6 +76,8 @@ class InvoicesController < ApplicationController
           redirect_to assign_costs_invoice_path(@invoice)
         elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
           redirect_to set_amounts_invoice_path(@invoice)
+        elsif ['costs_specified'].include?( @invoice.state )
+          redirect_to add_markups_invoice_path(@invoice)
         else
           render
         end
@@ -77,6 +98,8 @@ class InvoicesController < ApplicationController
         elsif ['retainage_expected', 'retainage_unexpected'].include? @invoice.state
           redirect_to set_amounts_invoice_path(@invoice)
         elsif 'costs_specified' == @invoice.state
+          redirect_to add_markups_invoice_path(@invoice)
+        elsif 'markups_added' == @invoice.state
           redirect_to select_template_invoice_path(@invoice)
         else
           render
