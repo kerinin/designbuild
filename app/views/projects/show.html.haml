@@ -27,15 +27,16 @@
   -if @project.show_planning
     .left
       -cache(:action_suffix => 'est_graph', :expires_in => 1.day) do
-        %h3 Estimated Cost Graph
-        .boxed
-          %script{:type => 'text/javascript+protovis'}
-            / Includes the last point prior to the date range and the current value
-            -data = [ @project.estimated_cost_points.where('date < ?', 30.days.ago).last ].map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
-            -data += @project.estimated_cost_points.where('date > ?', 30.days.ago).all.map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
-            -data += [ {:x => 30, :y => @project.estimated_cost, :label => "#{Date.today.strftime('%b %d')}: #{number_to_currency @project.estimated_cost, :precision => 0}"} ]
-            -unless data.empty?
-              =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :xmin => 0, :xmax => 30, :ymin => 0}
+        -unless @project.estimated_cost_points.empty?
+          %h3 Estimated Cost Graph
+          .boxed
+            %script{:type => 'text/javascript+protovis'}
+              / Includes the last point prior to the date range and the current value
+              -data = [ @project.estimated_cost_points.where('date < ?', 30.days.ago).last ].map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
+              -data += @project.estimated_cost_points.where('date > ?', 30.days.ago).all.map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
+              -data += [ {:x => 30, :y => @project.estimated_cost, :label => "#{Date.today.strftime('%b %d')}: #{number_to_currency @project.estimated_cost, :precision => 0}"} ]
+              -unless data.empty?
+                =render :partial => 'shared/protovis_area_graph.js', :locals => {:height => 120, :width => 490, :data => data, :xmin => 0, :xmax => 30, :ymin => 0}
         
       .right
         =link_to estimate_report_for_project_path(@project) do
