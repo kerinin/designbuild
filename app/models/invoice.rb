@@ -2,6 +2,7 @@ class Invoice < ActiveRecord::Base
   belongs_to :project, :inverse_of => :invoices
   
   has_many :lines, :class_name => 'InvoiceLine', :dependent => :destroy
+  has_many :markup_lines, :class_name => 'InvoiceMarkupLine', :dependent => :destroy
   
   accepts_nested_attributes_for :lines
   

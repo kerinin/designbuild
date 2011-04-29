@@ -8,6 +8,8 @@ class Markup < ActiveRecord::Base
   has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_add => :cascade_add, :before_remove => :cascade_remove
   has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :after_add => Proc.new{|m,t| t.save}, :after_remove => Proc.new{|m,t| t.save}
   has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :invoice_markup_lines
+  has_many :payment_markup_lines
   
   accepts_nested_attributes_for :markings
   

@@ -2,6 +2,7 @@ class Payment < ActiveRecord::Base
   belongs_to :project, :inverse_of => :payments
   
   has_many :lines, :class_name => 'PaymentLine', :dependent => :destroy, :after_add => :update_invoices, :after_remove => :update_invoices
+  has_many :markup_lines, :class_name => 'PaymentMarkupLine', :dependent => :destroy
   
   accepts_nested_attributes_for :lines
   

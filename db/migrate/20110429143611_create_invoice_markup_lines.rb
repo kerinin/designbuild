@@ -1,17 +1,17 @@
 class CreateInvoiceMarkupLines < ActiveRecord::Migration
   def self.up
     create_table :invoice_markup_lines do |t|
-      belongs_to :invoice
-      belongs_to :markup
+      t.belongs_to :invoice
+      t.belongs_to :markup
       
-      t.comment :string
+      t.string :comment
             
-      t.labor_invoiced :float, :default => 0
-      t.labor_retainage :float, :default => 0
-      t.material_invoiced :float, :default => 0
-      t.material_retainage :float, :default => 0
-      t.invoiced :float, :default => 0
-      t.retainage :float, :default => 0
+      t.float :labor_invoiced, :default => 0
+      t.float :labor_retainage, :default => 0
+      t.float :material_invoiced, :default => 0
+      t.float :material_retainage, :default => 0
+      t.float :invoiced, :default => 0
+      t.float :retainage, :default => 0
 
       t.timestamps
     end
