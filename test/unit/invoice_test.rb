@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceTest < ActiveSupport::TestCase
-=begin
   context "An Invoice" do
     setup do
       @q = Factory :quantity, :value => 1
@@ -218,7 +217,7 @@ class InvoiceTest < ActiveSupport::TestCase
       assert_equal 'retainage_expected', @obj.reload.state
     end
   end
-=end
+
   context "state machine" do
     setup do
       @project = Factory :project, :labor_percent_retainage => 10, :material_percent_retainage => 20

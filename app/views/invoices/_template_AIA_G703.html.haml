@@ -70,7 +70,7 @@
     %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date) - @project.labor_invoiced_before(@invoice.date - 1)
     
     / Materials Presently Stored
-    %th.currency= number_to_currency @project.material_invoiced_before(@invoice.date)
+    %th.currency= number_to_currency @project.material_invoiced_before(@invoice.date) - @project.material_invoiced_before(@invoice.date - 1)
     
     / Total Completed and Stored
     %th.currency= number_to_currency @project.invoiced_before(@invoice.date)

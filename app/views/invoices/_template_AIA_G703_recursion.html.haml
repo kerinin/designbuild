@@ -28,26 +28,26 @@
     %td.currency= number_to_currency component.estimated_cost
   
     / Work Completed - From previous applications
-    %td.currency= number_to_currency component.labor_invoiced_before(@invoice.date - 1)
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced_before(@invoice.date - 1)}
   
     / Work Complete - This period
-    %td.currency= number_to_currency component.labor_invoiced(:recursive => true)  #line.labor_invoiced
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced(:recursive => true)}  #line.labor_invoiced
   
     / Materials Presently Stored
-    %td.currency= number_to_currency component.material_invoiced_before(@invoice.date) #line.cost.material_invoiced_before(@invoice.date)
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.material_invoiced_before(@invoice.date)} #line.cost.material_invoiced_before(@invoice.date)
   
     / Total Completed and Stored
-    %td.currency= number_to_currency component.invoiced_before(@invoice.date)  #line.cost.invoiced_before(@invoice.date)
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.invoiced_before(@invoice.date)}  #line.cost.invoiced_before(@invoice.date)
   
     / %
     %td.number
       -#if !line.cost.estimated_cost.nil? && line.cost.estimated_cost > 0 && !line.cost.invoiced_before(@invoice.date).nil?
         =# number_to_percentage 100 * line.cost.invoiced_before(@invoice.date) / line.cost.estimated_cost, :precision => 0
       -if !component.estimated_cost.nil? && component.estimated_cost > 0 && !component.invoiced_before(@invoice.date).nil?
-        =number_to_percentage 100 * component.invoiced_before(@invoice.date) / component.estimated_cost, :precision => 0
+        =number_to_percentage 100 * component.subtree.inject(0) {|memo, obj| memo + obj.invoiced_before(@invoice.date) } / component.estimated_cost, :precision => 0
       
     / Balance to finish
-    %td.currency= number_to_currency subtract_or_nil component.estimated_cost, component.invoiced_before(@invoice.date) # line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)
+    %td.currency= number_to_currency subtract_or_nil component.estimated_cost, component.subtree.inject(0) {|memo, obj| memo + obj.invoiced_before(@invoice.date)} # line.cost.estimated_cost, line.cost.invoiced_before(@invoice.date)
   
     / Retainage
-    %td.currency= number_to_currency component.retainage_before(@invoice.date)  #line.cost.retainage_before(@invoice.date)
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.retainage_before(@invoice.date)}  #line.cost.retainage_before(@invoice.date)
