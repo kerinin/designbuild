@@ -177,19 +177,26 @@ class InvoicesController < ApplicationController
     respond_to do |format|
       
       @invoice.attributes = params[:invoice]
+      
       # trying to reduce update time
-      if params.has_key? :included_markups
+
+      if params.has_key? :update_markups
         # remove unchecked markups
         @invoice.markup_lines.each do |markup_line|
-          markup_line.destroy unless params[:included_markups].include? markup_line.markup_id
+          markup_line.destroy unless params.has_key?(:included_markups) && params[:included_markups].include?( markup_line.markup_id.to_s )
         end
         
         # add checked markups
-        params[:included_markups].each do |markup_id|
-          @invoice.markup_lines.create!(:markup_id => markup_id) unless @invoice.markup_line_ids.include? markup_id
+        if params.has_key? :included_markups
+          params[:included_markups].each do |markup_id|
+            puts "Adding Markup: #{markup_id}"
+            puts @invoice.markup_line_ids
+            puts @invoice.markup_line_ids.include?(markup_id.to_i)
+            @invoice.markup_lines.create!(:markup_id => markup_id) unless @invoice.markup_lines.where("markup_id = ?", markup_id).exists?
+          end
         end
       end
-          
+         
       #@invoice.lines.each do |line|
       #  if line.labor_retainage.nil?
       #    line.update_attributes :labor_retainage => 0

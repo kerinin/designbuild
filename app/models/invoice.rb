@@ -4,7 +4,8 @@ class Invoice < ActiveRecord::Base
   has_many :lines, :class_name => 'InvoiceLine', :dependent => :destroy
   has_many :markup_lines, :class_name => 'InvoiceMarkupLine', :dependent => :destroy
   
-  accepts_nested_attributes_for :lines, :markup_lines
+  accepts_nested_attributes_for :lines
+  accepts_nested_attributes_for :markup_lines
   
   validates_presence_of :project
   
@@ -94,7 +95,7 @@ class Invoice < ActiveRecord::Base
   protected
   
   def populate_lines
-    self.project.components.each do |component|
+    self.project.component_tree.each do |component|
       self.lines.create!(:component_id => component.id)
       #component.unit_cost_estimates.assigned.each {|uc| self.lines.build(:cost => uc).set_defaults.save! }
       #component.fixed_cost_estimates.assigned.each {|fc| self.lines.build(:cost => fc).set_defaults.save! }

@@ -17,6 +17,7 @@
   %h2 Set Invoice Markup Amounts
   =form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice) do |invoice_form|
     .field
+      =hidden_field_tag :update_markups, true
       -@project.active_markups.each do |markup|
         =check_box_tag 'included_markups[]', markup.id, @invoice.markup_lines.includes(:markup).where('markups.id = ?', markup.id).exists?
         ="#{markup.name} (#{number_to_percentage markup.percent, :precision => 0})"
@@ -37,6 +38,7 @@
         .field
           =f.label :material_retainage, "Material Retainage (#{number_to_currency markup_line.expected_material_retainage} expected)"
           =f.text_field :material_retainage
+        =f.hidden_field :id
       
     =hidden_field_tag :redirect_to, add_markups_invoice_path(@invoice)
     =invoice_form.submit 'Save Changes'

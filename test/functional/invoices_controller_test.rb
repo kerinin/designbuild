@@ -30,10 +30,13 @@ class InvoicesControllerTest < ActionController::TestCase
       [@project2, @task2, @mc2].each {|i| i.reload}
       [@project3, @component3, @task3, @fce3, @payment3].each {|i| i.reload}
       
-      @invoice = Factory :invoice, :project => @project1
+      @invoice = Factory :invoice, :project => @project1, :date => Date::today
+      @invoice.advance!
+      @invoice.markup_lines.create! :markup => @markup
+      
       sign_in Factory :user
     end
-     
+        
     context "with invoice in state new" do
       setup do
         @new_invoice = Factory :invoice, :project => @project1
@@ -535,6 +538,14 @@ class InvoicesControllerTest < ActionController::TestCase
       }
       assert_equal false, assigns(:invoice).valid?
       assert_redirected_to costs_specified_invoice_path(assigns(:invoice))
+    end
+
+    should "update nested attributes" do
+      put :update, :project_id => @project1.to_param, :id => @invoice.to_param, :invoice => {:lines_attributes => [ {:id => @invoice.lines[0].id, :labor_invoiced => 3.14}]}
+      assert_equal 3.14, assigns[:invoice].lines[0].labor_invoiced
+      
+      put :update, :project_id => @project1.to_param, :id => @invoice.to_param, :invoice => {:markup_lines_attributes => [ {:id => @invoice.markup_lines[0].id, :labor_invoiced => 3.14}]}
+      assert_equal 3.14, assigns[:invoice].markup_lines[0].labor_invoiced
     end
     
     should "destroy invoice" do

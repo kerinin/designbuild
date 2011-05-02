@@ -1,6 +1,8 @@
 %tr
   / Name
-  %td{:rowspan => 2}= line.component.name
+  %td{:rowspan => 2}
+    = '>' * line.component.depth
+    = line.component.name
   
   / Cost - estimated
   %td.currency{:rowspan => 2}= number_to_currency line.component.estimated_cost

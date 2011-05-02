@@ -24,7 +24,7 @@
   -else
     / Retainage Expected
     
-  -lines = @invoice.lines.paginate(:page => params[:page], :per_page => 20, :order => :id)
+  -lines = @invoice.lines.includes(:component).paginate(:page => params[:page], :per_page => 20, :order => 'id')
   =form_for [@project, @invoice], :url => project_invoice_path(@project, @invoice) do |invoice_form|
     =#render :partial => 'invoice_lines/lines', :locals => {:lines => @invoice.lines, :invoice_form => invoice_form}
     =render :partial => 'invoice_lines/lines', :locals => {:lines => lines, :invoice_form => invoice_form}
