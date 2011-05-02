@@ -28,13 +28,13 @@
     %td.currency= number_to_currency component.estimated_cost
   
     / Work Completed - From previous applications
-    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced_before(@invoice.date - 1)}
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced_before(@invoice.date - 1) + obj.material_invoiced_before(@invoice.date - 1)}
   
     / Work Complete - This period
-    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced(:recursive => true)}  #line.labor_invoiced
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.labor_invoiced_before(@invoice.date) - obj.labor_invoiced_before(@invoice.date - 1)}  #line.labor_invoiced
   
     / Materials Presently Stored
-    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.material_invoiced_before(@invoice.date)} #line.cost.material_invoiced_before(@invoice.date)
+    %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.material_invoiced_before(@invoice.date) - obj.material_invoiced_before(@invoice.date - 1)} #line.cost.material_invoiced_before(@invoice.date)
   
     / Total Completed and Stored
     %td.currency= number_to_currency component.subtree.inject(0) {|memo, obj| memo + obj.invoiced_before(@invoice.date)}  #line.cost.invoiced_before(@invoice.date)

@@ -35,7 +35,7 @@
       %td.currency= number_to_currency scheduled
       
       / Work Completed - From previous applications
-      %td.currency= number_to_currency all_lines.where('invoices.date <= ?', @invoice.date - 1).sum(:labor_invoiced)
+      %td.currency= number_to_currency all_lines.where('invoices.date <= ?', @invoice.date - 1).sum(:labor_invoiced) + all_lines.where('invoices.date <= ?', @invoice.date - 1).sum(:material_invoiced)
       
       / Work Completed - This Period
       %td.currency= number_to_currency markup_line.labor_invoiced
@@ -64,7 +64,7 @@
     %th.currency= number_to_currency @project.estimated_cost
     
     / Work Completed - From previous applications
-    %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date - 1)
+    %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date - 1) + @project.material_invoiced_before(@invoice.date - 1)
     
     / Work Complete - This period
     %th.currency= number_to_currency @project.labor_invoiced_before(@invoice.date) - @project.labor_invoiced_before(@invoice.date - 1)
