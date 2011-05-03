@@ -236,7 +236,7 @@ class InvoicesController < ApplicationController
     @invoice.destroy
 
     respond_to do |format|
-      format.html { redirect_to(project_invoices_url(@project)) }
+      format.html { redirect_to(invoicing_project_url(@project)) }
       format.xml  { head :ok }
     end
   end

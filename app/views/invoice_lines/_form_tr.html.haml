@@ -8,7 +8,7 @@
   %td.currency{:rowspan => 2}= number_to_currency line.component.estimated_cost
   
   / Cost - as of invoice date
-  %td.currency= number_to_currency line.component.labor_cost_before(@invoice.date)
+  %td.currency= number_to_currency line.component.labor_cost_before(@invoice.date) + line.component.contract_cost_before(@invoice.date)
   
   / Previous Invoices - Invoiced
   %td.currency= number_to_currency line.component.labor_invoiced_before(@invoice.date - 1)
@@ -23,7 +23,7 @@
   %td.currency= number_to_currency line.component.labor_retained_before(@invoice.date - 1)
   
   / Outstanding
-  %td.currency= number_to_currency line.component.labor_cost_before(@invoice.date - 1) - line.component.labor_invoiced_before(@invoice.date - 1)
+  %td.currency= number_to_currency line.component.labor_cost_before(@invoice.date - 1) + line.component.contract_cost_before(@invoice.date - 1) - line.component.labor_invoiced_before(@invoice.date - 1)
   
   / Current Invoice - Invoice
   %td.currency= f.text_field :labor_invoiced
