@@ -40,7 +40,7 @@
   -lines = @payment.lines.paginate(:page => params[:page], :per_page => 20, :order => :id)
   =form_for [@project, @payment], :url => project_payment_path(@project, @payment) do |payment_form|
     -if params[:page].nil? || params[:page] == 1
-      =render :partial => 'payment_markup_lines/lines', :locals => {:lines => @payment.markup_lines, :payment_form => payment_form}
+      =render :partial => 'payment_markup_lines/lines', :locals => {:payment_form => payment_form}
       
     =render :partial => 'payment_lines/lines', :locals => {:lines => lines, :payment_form => payment_form}
     =payment_form.submit 'Save Changes'

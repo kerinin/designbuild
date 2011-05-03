@@ -14,6 +14,9 @@
   / Previous Payments - Retained
   %td.currency= number_to_currency line.component.labor_retained_before(@payment.date - 1)
   
+  / Expected
+  %td.currency= number_to_currency line.component.labor_invoiced_before(@payment.date - 1) - line.component.labor_paid_before(@payment.date - 1)
+  
   / Current Payment - Paid
   %td.currency= f.text_field :labor_paid
   
@@ -35,6 +38,8 @@
   / Previous Payments - Retained
   %td.currency= number_to_currency line.component.material_retained_before(@payment.date - 1)
   
+  / Expected
+  %td.currency= number_to_currency line.component.material_invoiced_before(@payment.date - 1) - line.component.material_paid_before(@payment.date - 1)
   / Current Payment - Paid
   %td.currency= f.text_field :material_paid
   

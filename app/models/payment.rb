@@ -5,6 +5,7 @@ class Payment < ActiveRecord::Base
   has_many :markup_lines, :class_name => 'PaymentMarkupLine', :dependent => :destroy
   
   accepts_nested_attributes_for :lines
+  accepts_nested_attributes_for :markup_lines
   
   validates_presence_of :project
   validates_numericality_of :paid, :if => :paid?

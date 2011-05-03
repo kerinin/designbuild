@@ -12,9 +12,11 @@ class PaymentMarkupLine < ActiveRecord::Base
   before_save :set_sums
   after_save Proc.new {|pl| pl.payment(true).save }
 
+  # NOTE: this needs work...  should be the difference between invoiced and paid
   def set_defaults
     [:labor_paid, :labor_retained, :material_paid, :material_retained].each do |sym|
-      self.send("#{sym.to_s}=", self.markup.apply_to(self.payment.lines.includes(:component => :markups).where('markups.id = ?', self.markup_id).sum(sym)))
+      #self.send("#{sym.to_s}=", self.markup.apply_to(self.payment.lines.includes(:component => :markups).where('markups.id = ?', self.markup_id).sum(sym)))
+      self.send("#{sym.to_s}=", 0)
     end
     self.set_sums
   end

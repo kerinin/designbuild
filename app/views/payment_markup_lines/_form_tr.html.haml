@@ -3,16 +3,19 @@
   %td{:rowspan => 2}= "#{line.markup.name} (#{number_to_percentage line.markup.percent / 100.0, :precision => 0})"
   
   / Invoiced
-  %td.currency= number_to_currency line.markup.labor_invoiced_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_labor_invoiced_before(line.markup, @payment.date - 1) #line.markup.labor_invoiced_before(@payment.date - 1)
   
   / Invoiced - Retainage
-  %td.currency= number_to_currency line.markup.labor_retainage_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_labor_retainage_before(line.markup, @payment.date - 1) #line.markup.labor_retainage_before(@payment.date - 1)
   
   / Previous Payments - Paid
-  %td.currency= number_to_currency line.markup.labor_paid_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_labor_paid_before(line.markup, @payment.date - 1) #line.markup.labor_paid_before(@payment.date - 1)
   
   / Previous Payments - Retained
-  %td.currency= number_to_currency line.markup.labor_retained_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_labor_retained_before(line.markup, @payment.date - 1) #line.markup.labor_retained_before(@payment.date - 1)
+  
+  / Expected
+  %td.currency= number_to_currency @project.markup_labor_invoiced_before(line.markup, @payment.date - 1) - @project.markup_labor_paid_before(line.markup, @payment.date - 1)
   
   / Current Payment - Paid
   %td.currency= f.text_field :labor_paid
@@ -24,16 +27,19 @@
     %strong Labor
 %tr
   / Invoiced
-  %td.currency= number_to_currency line.markup.material_invoiced_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_material_invoiced_before(line.markup, @payment.date - 1) #line.markup.material_invoiced_before(@payment.date - 1)
   
   / Invoiced - Retainage
-  %td.currency= number_to_currency line.markup.material_retainage_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_material_retainage_before(line.markup, @payment.date - 1) #line.markup.material_retainage_before(@payment.date - 1)
   
   / Previous Payments - Paid
-  %td.currency= number_to_currency line.markup.material_paid_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_material_paid_before(line.markup, @payment.date - 1) #line.markup.material_paid_before(@payment.date - 1)
   
   / Previous Payments - Retained
-  %td.currency= number_to_currency line.markup.material_retained_before(@payment.date - 1)
+  %td.currency= number_to_currency @project.markup_material_retained_before(line.markup, @payment.date - 1) #line.markup.material_retained_before(@payment.date - 1)
+  
+  / Expected
+  %td.currency= number_to_currency @project.markup_material_invoiced_before(line.markup, @payment.date - 1) - @project.markup_material_paid_before(line.markup, @payment.date - 1)
   
   / Current Payment - Paid
   %td.currency= f.text_field :material_paid
