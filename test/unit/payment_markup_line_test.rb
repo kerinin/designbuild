@@ -40,14 +40,14 @@ class PaymentMarkupLineTest < ActiveSupport::TestCase
         end
       end
 
-      should "calculate default values" do
+      should_eventually "calculate default values" do
         assert_equal 10000, @obj.labor_paid
         assert_equal 100000, @obj.labor_retained
         assert_equal 1000000, @obj.material_paid
         assert_equal 10000000, @obj.material_retained
       end
 
-      should "sum values" do
+      should_eventually "sum values" do
         assert_equal 1010000, @obj.paid
         assert_equal 10100000, @obj.retained
       end

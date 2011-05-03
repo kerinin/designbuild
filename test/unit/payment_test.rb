@@ -31,6 +31,7 @@ class PaymentTest < ActiveSupport::TestCase
       )
       
       @markup_line = @obj.markup_lines.create!(:markup => @markup)
+      @obj.advance!
     end
     
     should "be valid" do

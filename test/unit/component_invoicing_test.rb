@@ -1,7 +1,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 # These must be saved to DB - testing functions which rely on DB.sum()
-class ComponentTest < ActiveSupport::TestCase
+class ComponentInvoicingTest < ActiveSupport::TestCase
   context "A component w/ actual costs" do
     setup do
       @project = Factory :project
@@ -21,6 +21,16 @@ class ComponentTest < ActiveSupport::TestCase
       [@obj, @project, @task, @fc, @q, @uc, @c, @b].each {|i| i.reload}
       
       @invoice = Factory :invoice, :project => @project, :date => Date::today
+      @i_line = Factory( :invoice_line,
+        :invoice => @invoice,
+        :component => @obj,
+        :labor_invoiced => 2,
+        :labor_retainage => 2,
+        :material_invoiced => 5,
+        :material_retainage => 5
+      )
+
+=begin
       @fc_inv = Factory( :invoice_line, 
         :invoice => @invoice,
         :cost => @fc, 
@@ -45,7 +55,17 @@ class ComponentTest < ActiveSupport::TestCase
         :material_invoiced => 500, 
         :material_retainage => 500
       )      
+=end
       @payment = Factory :payment, :project => @project, :date => Date::today
+      @p_line = Factory( :payment_line,
+        :payment => @payment,
+        :component => @obj,
+        :labor_paid => 1,
+        :labor_retained => 1, 
+        :material_paid => 3,
+        :material_retained => 3
+      )
+=begin
       @fc_pay = Factory( :payment_line, 
         :payment => @payment,
         :cost => @fc, 
@@ -69,18 +89,15 @@ class ComponentTest < ActiveSupport::TestCase
         :labor_retained => 100, 
         :material_paid => 300, 
         :material_retained => 300
-      )    
-      [@obj, @project, @task, @fc, @q, @uc, @c, @b, @invoice, @fc_inv, @uc_inv, @c_inv, @payment, @fc_pay, @uc_inv, @c_inv, @payment].each {|i| i.reload}
+      )
+=end
+      [@obj, @project, @task, @fc, @q, @uc, @c, @b, @invoice, @payment].each {|i| i.reload}
     end
       
     should "aggregate invoiced" do
-      assert_equal 700, @c_inv.invoiced
-      assert_contains @c.invoice_lines, @c_inv
-      assert_equal 700, @c.invoiced
-      
-      assert_equal 222, @obj.labor_invoiced
-      assert_equal 555, @obj.material_invoiced
-      assert_equal 777, @obj.invoiced
+      assert_equal 2, @obj.labor_invoiced
+      assert_equal 5, @obj.material_invoiced
+      assert_equal 7, @obj.invoiced
     end
 
     should_eventually "aggregate invoiced with cutoff" do
@@ -93,9 +110,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
     
     should "aggregate retainage" do
-      assert_equal 222, @obj.labor_retainage
-      assert_equal 555, @obj.material_retainage
-      assert_equal 777, @obj.retainage
+      assert_equal 2, @obj.labor_retainage
+      assert_equal 5, @obj.material_retainage
+      assert_equal 7, @obj.retainage
     end
 
     should "aggregate retainage with cutoff" do
@@ -105,9 +122,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
             
     should "aggregate paid" do
-      assert_equal 111, @obj.labor_paid
-      assert_equal 333, @obj.material_paid
-      assert_equal 444, @obj.paid 
+      assert_equal 1, @obj.labor_paid
+      assert_equal 3, @obj.material_paid
+      assert_equal 4, @obj.paid 
     end
 
     should "aggregate paid with cutoff" do
@@ -117,9 +134,9 @@ class ComponentTest < ActiveSupport::TestCase
     end
     
     should "aggregate retained" do
-      assert_equal 111, @obj.labor_retained
-      assert_equal 333, @obj.material_retained
-      assert_equal 444, @obj.retained
+      assert_equal 1, @obj.labor_retained
+      assert_equal 3, @obj.material_retained
+      assert_equal 4, @obj.retained
     end
     
     should "aggregate retained with cutoff" do
