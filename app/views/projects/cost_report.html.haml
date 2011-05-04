@@ -1,0 +1,54 @@
+.control
+  =render :partial => 'shared/project_nav', :locals => {:current => :reports}
+
+.container
+  %h1
+    = @project.name
+    Cost Summary
+  %h2= Date::today.to_s :long
+
+  %p.control
+    -if session[:break_out_costs]
+      %button=link_to "Show Without Cost Breakout", cost_report_for_project_path(@project, :break_out_costs => 0)
+    -else
+      %button=link_to "Show Cost Breakout", cost_report_for_project_path(@project, :break_out_costs => 1)
+
+  -@active_markups = @project.active_markups
+
+  %table.project_estimate
+    %tr
+      %th.control Expand
+      %th Building Component
+      -if session[:break_out_costs]
+        %th
+      %th.currency Cost to Date
+      %th.currency Estimated
+      
+    -@project.components.roots.each do |component|
+      =render :partial => 'cost_report', :locals => {:component => component, :indent => 0}
+
+    %tr.totals
+      %td.control
+      %td.right{:colspan => session[:break_out_costs] ? 2 : 1} Subtotal
+      %td.currency
+        %strong= number_to_currency @project.raw_cost
+      %td.currency= number_to_currency @project.estimated_raw_cost
+      
+    -@active_markups.each do |markup|
+      %tr.totals
+        %td.control
+        %td.right{:colspan => session[:break_out_costs] ? 2 : 1}
+          =markup.name
+          =number_to_percentage markup.percent, :precision => 0
+        %td.currency=# number_to_currency markup.apply_recursively_to(@project, :cost_markup_amount)
+        %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
+    
+    %tr.totals
+      %td.control
+      %td.right{:colspan => session[:break_out_costs] ? 2 : 1}
+        %strong Total
+      %td.currency
+        %strong=# number_to_currency @project.cost
+      %td.currency
+        %strong= number_to_currency @project.estimated_cost
+

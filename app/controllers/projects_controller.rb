@@ -141,7 +141,16 @@ class ProjectsController < ApplicationController
       format.html # show.html.erb
     end  
   end
-  
+
+  def cost_report
+    @project = Project.find(params[:id])
+    session[:break_out_costs] = (1 == params[:break_out_costs].to_i) if params.has_key?(:break_out_costs)
+
+    respond_to do |format|
+      format.html # show.html.erb
+    end  
+  end
+    
   # GET /projects
   # GET /projects.xml
   def index

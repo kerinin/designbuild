@@ -70,6 +70,10 @@
             =f.submit 'Show'
             
   -if @project.show_construction    
+    .right
+      =link_to cost_report_for_project_path(@project) do
+        %button Project Cost Summary
+
     .full_width
       %h3 Task Summary
       =render :partial => 'tasks/summary'

@@ -1,0 +1,59 @@
+-unless component.estimated_cost.nil?
+  %tr
+    %td.control
+      -unless component.children.empty?
+        =form_for( [@project, component], :html => { :id => "expand_#{component.id}" } ) do |f|
+          =f.check_box :expand_in_estimate, :onchange => "$('form#expand_#{component.id}').submit();"
+          =hidden_field_tag :redirect, estimate_report_for_project_path(@project)
+        
+    %td{:class => (indent == 0 ? nil : "indent_#{indent}" )}  
+      %strong= component.name if indent == 0
+      = component.name unless indent == 0
+      
+    -if session[:break_out_costs]
+      %td.currency
+      
+    %td.currency
+      %strong= number_to_currency component.cost if indent == 0
+      = number_to_currency component.cost unless indent == 0
+      
+    %td.currency
+      %strong= number_to_currency component.estimated_raw_cost if indent == 0
+      = number_to_currency component.estimated_raw_cost unless indent == 0
+        
+    -if session[:break_out_costs]
+      -component.labor_costs.each do |labor_cost|
+        %tr
+          %td.control
+          %td{:class => "indent_#{indent+1}"}
+            %i= "#{labor_cost.task.name} Labor, #{labor_cost.date.to_s(:long)}"
+          %td
+            %i= number_to_currency labor_cost.raw_cost
+          %td
+          %td
+        
+      -component.material_costs.each do |material_cost|
+        %tr
+          %td.control
+          %td{:class => "indent_#{indent+1}"}
+            %i= "#{material_cost.task.name} Material from #{material_cost.supplier.name}"
+          %td
+            %i= number_to_currency material_cost.raw_cost
+          %td
+          %td
+        
+      -component.contracts.each do |contract|
+        -contract.costs.each do |contract_cost|
+          %tr
+            %td.control
+            %td{:class => "indent_#{indent+1}"}
+              %i= "#{contract.name} Invoice dated #{contract_cost.date.to_s(:long)}"
+            %td
+              %i= number_to_currency contract_cost.raw_cost
+            %td       
+            %td 
+          
+        
+  -if component.expand_in_estimate
+    -component.children.each do |subcomponent|
+      =render :partial => 'cost_report', :locals => {:component => subcomponent, :indent => indent + 1}
