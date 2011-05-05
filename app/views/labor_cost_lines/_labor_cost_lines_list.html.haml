@@ -9,10 +9,17 @@
 
   - labor_cost_lines.each do |labor_cost_line|
     %tr{:id => "labor_cost_line_#{labor_cost_line.id}"}
-      %td= link_to labor_cost_line.laborer.name, labor_cost_line.laborer
+      %td
+        -unless labor_cost_line.laborer.blank?
+          = link_to labor_cost_line.laborer.name, labor_cost_line.laborer
+        -else
+          (employee deleted)
       %td.number= labor_cost_line.hours
       %td.currency
-        = number_to_currency(labor_cost_line.laborer.bill_rate)
+        -unless labor_cost_line.laborer.blank?
+          = number_to_currency(labor_cost_line.laborer.bill_rate)
+        -else
+          n/a
         \/hr
       %td.currency= number_to_currency(labor_cost_line.raw_cost)
       %td.control.edit= link_to 'Edit', edit_labor_cost_line_item_path(@labor_cost, labor_cost_line), :remote => true
