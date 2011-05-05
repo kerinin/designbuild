@@ -28,7 +28,7 @@ class LaborCostLine < ActiveRecord::Base
   end
   
   def set_costs
-    unless self.laborer.empty?
+    unless self.laborer.blank?
       self.raw_cost = self.hours * self.laborer.bill_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.bill_rate.nil? || self.laborer.destroyed? )
       self.laborer_pay = self.hours * self.laborer.pay_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.pay_rate.nil? || self.laborer.destroyed? )
     
