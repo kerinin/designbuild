@@ -7,7 +7,7 @@ class LaborCostLine < ActiveRecord::Base
   
   has_one :task, :through => :labor_set
   
-  validates_presence_of :labor_set, :laborer, :hours
+  validates_presence_of :labor_set, :hours
   
   validates_numericality_of :hours
   
@@ -28,10 +28,12 @@ class LaborCostLine < ActiveRecord::Base
   end
   
   def set_costs
-    self.raw_cost = self.hours * self.laborer.bill_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.bill_rate.nil? || self.laborer.destroyed? )
-    self.laborer_pay = self.hours * self.laborer.pay_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.pay_rate.nil? || self.laborer.destroyed? )
+    unless self.laborer.empty?
+      self.raw_cost = self.hours * self.laborer.bill_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.bill_rate.nil? || self.laborer.destroyed? )
+      self.laborer_pay = self.hours * self.laborer.pay_rate unless ( self.hours.nil? || self.laborer.blank? || self.laborer.pay_rate.nil? || self.laborer.destroyed? )
     
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
+      self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
+    end
   end
 
   def cascade_cache_values
