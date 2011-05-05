@@ -11,7 +11,7 @@ class Laborer < ActiveRecord::Base
   validates_numericality_of :pay_rate, :if => :pay_rate
   
   after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
+  #after_destroy :cascade_cache_values
 
   def cascade_cache_values
     self.labor_cost_lines(true).all.each {|lc| lc.save!}
