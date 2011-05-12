@@ -1,3 +1,7 @@
+Invoicing
+- payment line defaults wrong - should probably default to invoiced (at the time of the payment) minus paid
+
+
 To look into
 + in-line unit cost editing should only be at creation (link to quantity otherwise - allows unintentional editing of shared data)
 + Can't edit markups

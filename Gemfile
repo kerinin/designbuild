@@ -54,6 +54,7 @@ end
 
 group :production do
   gem 'dalli'
+  gem 'exception_notification', :require => 'exception_notifier'
 end
 
 
