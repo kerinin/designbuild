@@ -49,7 +49,7 @@ Designbuild::Application.configure do
   config.active_support.deprecation = :notify
 end
 
-Bcrails::Application.config.middleware.use ExceptionNotifier,
+Designbuild::Application.config.middleware.use ExceptionNotifier,
   :email_prefix => "[designbuild error] ",
   :sender_address => %{"notifier" <notifier@bcarc.com>},
   :exception_recipients => %w{ryan@bcarc.com}
