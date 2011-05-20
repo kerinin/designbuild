@@ -13,7 +13,7 @@ To look into
 + labor comments not showing
 + simple cost addition (insurance bill, etc)
 + labor cost date editing
-- make sure points are being deleted if base object deleted
++ make sure points are being deleted if base object deleted
 - make sure associations that aren't dep => destroy are cleared
 - markups overview page - list all components, contracts, & tasks - show checkboxes to apply relevant markups
     UI needs work
