@@ -39,4 +39,8 @@ class Forgery::DesignBuild < Forgery
   def self.markup_name
     dictionaries[:markups].random
   end
+  
+  def self.resource_name
+    dictionaries[:resource_name].random
+  end
 end

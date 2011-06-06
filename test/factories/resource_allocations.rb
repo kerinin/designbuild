@@ -3,4 +3,6 @@
 Factory.define :resource_allocation do |f|
   f.start_date "2011-06-06 15:48:16"
   f.duration 1.5
+  
+  f.resource_request {|p| p.association(:resource_request)}
 end

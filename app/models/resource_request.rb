@@ -6,6 +6,8 @@ class ResourceRequest < ActiveRecord::Base
   has_many :resource_allocations
   
   default_scope :order => :updated_at
+  
+  validates_presence_of :project, :resource
 end
 
 
