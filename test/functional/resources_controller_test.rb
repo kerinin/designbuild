@@ -1,8 +1,22 @@
-require 'test_helper'
+require File.dirname(__FILE__) + '/../test_helper'
 
 class ResourcesControllerTest < ActionController::TestCase
   setup do
-    @resource = resources(:one)
+    @project = Factory :project
+    @resource = Factory :resource
+    
+    @request1 = @resource.resource_requests.build :project => @project, :resource => @resource
+    @request2 = @resource.resource_requests.build :project => @project, :resource => @resource
+    
+    @allocation1 = @resource.resource_allocations.build :resource_request => @request1, :start_date => Date::today, :duration => 1
+    @allocation2 = @resource.resource_allocations.build :resource_request => @request2, :start_date => Date::today, :duration => 1
+    
+    sign_in Factory :user
+  end
+  
+  test "should route correctly" do
+    assert_routing '/resources', { :controller => "resources", :action => "index" }
+    assert_routing '/resources/1', { :controller => "resources", :action => "show", :id => "1" }
   end
 
   test "should get index" do
