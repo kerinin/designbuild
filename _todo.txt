@@ -1,3 +1,22 @@
+Resource allocation
+- manually enter a set of resources
+- request a resource for a given amount of time
+-- declare constraints; due date, priority, first day available, etc
+-- associate data; task, estimated cost, project, etc
+- allocate resources based on outstanding requests
+-- how do we differentiate between outstanding and fulfilled?
+-- not necessary - allow updating in the past
+
+Classes:
+- Resource
+- Request
+- Allocation
+
+
+
+
+
+
 Invoicing
 - payment line defaults wrong - should probably default to invoiced (at the time of the payment) minus paid
 
