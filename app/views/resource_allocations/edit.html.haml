@@ -1,7 +1,11 @@
-%h1 Editing resource_allocation
+=render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
-= render 'form'
+.container
 
-= link_to 'Show', @resource_allocation
-\|
-= link_to 'Back', resource_allocations_path
+  %h1 Editing resource_allocation
+
+  = render 'form'
+
+  = link_to 'Show', @resource_allocation
+  \|
+  = link_to 'Back', resource_allocations_path

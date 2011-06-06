@@ -1,5 +1,9 @@
-%h1 New resource_allocation
+=render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
-= render 'form'
+.container
 
-= link_to 'Back', resource_allocations_path
+  %h1 New resource_allocation
+
+  = render 'form'
+
+  = link_to 'Back', resource_allocations_path

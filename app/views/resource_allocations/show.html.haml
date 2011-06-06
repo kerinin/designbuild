@@ -1,12 +1,16 @@
-%p#notice= notice
+=render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
-%p
-  %b Start date:
-  = @resource_allocation.start_date
-%p
-  %b Duration:
-  = @resource_allocation.duration
+.container
 
-= link_to 'Edit', edit_resource_allocation_path(@resource_allocation)
-\|
-= link_to 'Back', resource_allocations_path
+  %p#notice= notice
+
+  %p
+    %b Start date:
+    = @resource_allocation.start_date
+  %p
+    %b Duration:
+    = @resource_allocation.duration
+
+  = link_to 'Edit', edit_resource_allocation_path(@resource_allocation)
+  \|
+  = link_to 'Back', resource_allocations_path

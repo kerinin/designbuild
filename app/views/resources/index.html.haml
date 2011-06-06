@@ -1,21 +1,24 @@
-%h1 Listing resources
+=render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
-%table
-  %tr
-    %th Name
-    %th Description
-    %th
-    %th
-    %th
+.container
+  %h1 Resources
 
-  - @resources.each do |resource|
+  %table
     %tr
-      %td= resource.name
-      %td= resource.description
-      %td= link_to 'Show', resource
-      %td= link_to 'Edit', edit_resource_path(resource)
-      %td= link_to 'Destroy', resource, :confirm => 'Are you sure?', :method => :delete
+      %th Name
+      %th Description
+      %th
+      %th
+      %th
 
-%br
+    - @resources.each do |resource|
+      %tr
+        %td= resource.name
+        %td= resource.description
+        %td= link_to 'Show', resource
+        %td= link_to 'Edit', edit_resource_path(resource)
+        %td= link_to 'Destroy', resource, :confirm => 'Are you sure?', :method => :delete
 
-= link_to 'New Resource', new_resource_path
+  %br
+
+  = link_to 'New Resource', new_resource_path

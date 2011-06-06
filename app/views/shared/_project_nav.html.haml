@@ -90,6 +90,7 @@
     %ul.nav_right
       %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
       %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
+      %li{:class => current == :resources ? :current : nil}=link_to 'Resources', resource_allocations_path
       %li=link_to 'Log Out', destroy_user_session_path
    
   .main_nav_spacer
