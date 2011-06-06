@@ -8,9 +8,9 @@ Resource allocation
 -- not necessary - allow updating in the past
 
 Classes:
-- Resource
-- Request
-- Allocation
+- Resource: name, description
+- Request: project, task(optional), priority, first_date, finish_date, duration, allocated, remaining
+- Allocation: request, start_date, duration
 
 
 

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110429144951) do
+ActiveRecord::Schema.define(:version => 20110606204816) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -391,6 +391,35 @@ ActiveRecord::Schema.define(:version => 20110429144951) do
   end
 
   add_index "quantities", ["component_id"], :name => "index_quantities_on_component_id"
+
+  create_table "resource_allocations", :force => true do |t|
+    t.datetime "start_date"
+    t.float    "duration"
+    t.integer  "resource_request_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "resource_requests", :force => true do |t|
+    t.boolean  "urgent"
+    t.date     "first_date"
+    t.date     "deadline"
+    t.float    "duration"
+    t.float    "allocated"
+    t.float    "remaining"
+    t.integer  "project_id"
+    t.integer  "task_id"
+    t.integer  "resource_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  create_table "resources", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "suppliers", :force => true do |t|
     t.string    "name"

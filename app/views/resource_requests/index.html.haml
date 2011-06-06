@@ -1,0 +1,29 @@
+%h1 Listing resource_requests
+
+%table
+  %tr
+    %th Urgent
+    %th First date
+    %th Deadline
+    %th Duration
+    %th Allocated
+    %th Remaining
+    %th
+    %th
+    %th
+
+  - @resource_requests.each do |resource_request|
+    %tr
+      %td= resource_request.urgent
+      %td= resource_request.first_date
+      %td= resource_request.deadline
+      %td= resource_request.duration
+      %td= resource_request.allocated
+      %td= resource_request.remaining
+      %td= link_to 'Show', resource_request
+      %td= link_to 'Edit', edit_resource_request_path(resource_request)
+      %td= link_to 'Destroy', resource_request, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Resource request', new_resource_request_path

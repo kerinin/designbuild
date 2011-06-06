@@ -1,0 +1,21 @@
+%h1 Listing resource_allocations
+
+%table
+  %tr
+    %th Start date
+    %th Duration
+    %th
+    %th
+    %th
+
+  - @resource_allocations.each do |resource_allocation|
+    %tr
+      %td= resource_allocation.start_date
+      %td= resource_allocation.duration
+      %td= link_to 'Show', resource_allocation
+      %td= link_to 'Edit', edit_resource_allocation_path(resource_allocation)
+      %td= link_to 'Destroy', resource_allocation, :confirm => 'Are you sure?', :method => :delete
+
+%br
+
+= link_to 'New Resource allocation', new_resource_allocation_path

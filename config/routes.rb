@@ -1,5 +1,11 @@
 Designbuild::Application.routes.draw do
   
+  resources :resource_allocations
+
+  resources :resource_requests
+
+  resources :resources
+
   resources :invoices do
     resources :invoice_lines
     resources :invoice_lines, :as => :line_items
