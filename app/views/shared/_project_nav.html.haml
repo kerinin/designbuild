@@ -90,7 +90,22 @@
     %ul.nav_right
       %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
       %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
-      %li{:class => current == :resources ? :current : nil}=link_to 'Resources', resource_allocations_path
+      %li{:class => current == :resources ? :current : nil}
+        =link_to 'Resources', resource_allocations_path
+        .expander
+          .activator=icon :expand_down
+          .positioner
+            %ul
+              %li.expand_active_area
+                .left=link_to 'Resource List', resources_path
+              %li.expand_active_area
+                .left=link_to 'Resource Allocation', resource_allocations_path
+              -unless @project.nil?
+                %li.expand_active_area
+                  .left=link_to 'Request Resources', project_resource_requests_path(@project)
+                  
+            &nbsp;
+            
       %li=link_to 'Log Out', destroy_user_session_path
    
   .main_nav_spacer
