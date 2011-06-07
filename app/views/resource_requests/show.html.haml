@@ -1,24 +1,28 @@
-%p#notice= notice
+=render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
-%p
-  %b Urgent:
-  = @resource_request.urgent
-%p
-  %b First date:
-  = @resource_request.first_date
-%p
-  %b Deadline:
-  = @resource_request.deadline
-%p
-  %b Duration:
-  = @resource_request.duration
-%p
-  %b Allocated:
-  = @resource_request.allocated
-%p
-  %b Remaining:
-  = @resource_request.remaining
+.container
 
-= link_to 'Edit', edit_resource_request_path(@resource_request)
-\|
-= link_to 'Back', resource_requests_path
+  %p#notice= notice
+
+  %p
+    %b Urgent:
+    = @resource_request.urgent
+  %p
+    %b First date:
+    = @resource_request.first_date
+  %p
+    %b Deadline:
+    = @resource_request.deadline
+  %p
+    %b Duration:
+    = @resource_request.duration
+  %p
+    %b Allocated:
+    = @resource_request.allocated
+  %p
+    %b Remaining:
+    = @resource_request.remaining
+
+  = link_to 'Edit', edit_resource_request_path(@resource_request)
+  \|
+  = link_to 'Back', resource_requests_path

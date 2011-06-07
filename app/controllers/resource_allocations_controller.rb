@@ -1,4 +1,6 @@
 class ResourceAllocationsController < ApplicationController
+  before_filter :get_project
+  
   # GET /resource_allocations
   # GET /resource_allocations.xml
   def index
@@ -79,5 +81,11 @@ class ResourceAllocationsController < ApplicationController
       format.html { redirect_to(resource_allocations_url) }
       format.xml  { head :ok }
     end
+  end
+  
+  private
+  
+  def get_project
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
   end
 end

@@ -5,8 +5,8 @@ class ResourceAllocationsControllerTest < ActionController::TestCase
     @project = Factory :project
     @resource = Factory :resource
     
-    @request1 = @resource.resource_requests.create :project => @project, :resource => @resource
-    @request2 = @resource.resource_requests.create :project => @project, :resource => @resource
+    @request1 = @resource.resource_requests.create :project => @project, :resources => [@resource]
+    @request2 = @resource.resource_requests.create :project => @project, :resources => [@resource]
     
     @allocation1 = Factory :resource_allocation, :resource_request => @request1, :start_date => Date::today, :duration => 1
     @allocation2 = Factory :resource_allocation, :resource_request => @request1, :start_date => Date::today, :duration => 1
@@ -70,10 +70,13 @@ class ResourceAllocationsControllerTest < ActionController::TestCase
     get :index, :project_id => @project.to_param
     assert_response :success
     assert_not_nil assigns(:resource_allocations)
+    assert_not_nil assigns(:project)
   end
 
   test "should show resource_allocation from project" do
     get :show, :project_id => @project.to_param, :id => @allocation1.to_param
     assert_response :success
+    assert_not_nil assigns(:resource_allocation)
+    assert_not_nil assigns(:project)
   end
 end

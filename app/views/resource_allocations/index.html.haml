@@ -23,3 +23,8 @@
   %br
 
   = link_to 'New Resource allocation', new_resource_allocation_path
+  
+  %p  
+    %h3 (To request a resource, click on the project below)
+    -Project.all.each do |project|
+      =link_to project.name, project_resource_requests_path(project)

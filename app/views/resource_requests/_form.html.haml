@@ -11,18 +11,15 @@
     = f.check_box :urgent
   .field
     = f.label :first_date
-    = f.date_select :first_date
+    = f.date_select :first_date, :include_blank => true
   .field
     = f.label :deadline
-    = f.date_select :deadline
+    = f.date_select :deadline, :include_blank => true
   .field
     = f.label :duration
     = f.text_field :duration
   .field
-    = f.label :allocated
-    = f.text_field :allocated
-  .field
-    = f.label :remaining
-    = f.text_field :remaining
+    = f.label :comment
+    = f.text_area :comment
   .actions
-    = f.submit 'Save'
+    = f.submit 'Request'
