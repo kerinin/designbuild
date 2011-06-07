@@ -23,6 +23,6 @@
     %b Remaining:
     = @resource_request.remaining
 
-  = link_to 'Edit', edit_resource_request_path(@resource_request)
+  = link_to 'Edit', edit_project_resource_request_path(@project, @resource_request)
   \|
-  = link_to 'Back', resource_requests_path
+  = link_to 'Back', project_resource_requests_path(@project)

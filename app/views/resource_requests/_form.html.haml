@@ -1,11 +1,20 @@
-= form_for @resource_request do |f|
+= form_for [@project, @resource_request] do |f|
   -if @resource_request.errors.any?
-    #error_explanation
+    #error_explanation.error
       %h2= "#{pluralize(@resource_request.errors.count, "error")} prohibited this resource_request from being saved:"
       %ul
         - @resource_request.errors.full_messages.each do |msg|
           %li= msg
 
+  %hr
+  
+  .field
+    -Resource.all.each do |resource|
+      = check_box_tag "resource_request[resource_ids][]", resource.id, @resource_request.resources.include?(resource)
+      = resource.name
+  
+  %hr
+    
   .field
     = f.label :urgent
     = f.check_box :urgent

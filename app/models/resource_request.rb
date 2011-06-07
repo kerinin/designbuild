@@ -8,7 +8,7 @@ class ResourceRequest < ActiveRecord::Base
   
   default_scope :order => :updated_at
   
-  validates_presence_of :project
+  validates_presence_of :project, :duration
 end
 
 

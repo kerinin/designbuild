@@ -17,7 +17,13 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @obj.save!
       assert @obj.valid?
     end
-    
+
+    should "require duration" do
+      assert_raise ActiveRecord::RecordInvalid do
+        Factory :resource_request, :duration => nil
+      end
+    end
+        
     should "require associated project" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :resource_request, :project_id => nil

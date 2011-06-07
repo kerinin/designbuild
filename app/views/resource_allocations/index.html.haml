@@ -1,28 +1,38 @@
+-content_for :head do
+  =javascript_include_tag 'protovis-d3.2.js'
+  
 =render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
 .container
 
   %h1 Resource Allocation
 
-  %table
-    %tr
-      %th Start date
-      %th Duration
-      %th
-      %th
-      %th
+  %h2 Timeline
+  %script{:type => 'text/javascript+protovis'}
+    / Includes the last point prior to the date range and the current value
+    
+    =render :partial => 'protovis_scheduling.js', :locals => {:height => 300, :width => 800, :xmin => 0, :xmax => 30, :ymin => 0}
 
-    - @resource_allocations.each do |resource_allocation|
-      %tr
-        %td= resource_allocation.start_date
-        %td= resource_allocation.duration
-        %td= link_to 'Show', resource_allocation
-        %td= link_to 'Edit', edit_resource_allocation_path(resource_allocation)
-        %td= link_to 'Destroy', resource_allocation, :confirm => 'Are you sure?', :method => :delete
-
-  %br
-
-  = link_to 'New Resource allocation', new_resource_allocation_path
+  
+  %h2 Resource Requests
+  -Project.includes(:resource_requests).each do |project|
+    -unless project.resource_requests.empty?
+      %h3=project.name
+      -project.resource_requests.each do |request|
+        %p
+          %strong="#{request.duration} days of #{request.resources.map{|r| r.name}.join(' & ')}"
+          =request.comment
+          %br
+          -if !request.first_date.nil? && !request.deadline.nil?
+            ="Between #{request.first_date.to_s(:short)} and #{request.deadline.to_s(:short)}"
+          -elsif !request.first_date.nil?
+            ="After #{request.first_date.to_s(:short)}"
+          -elsif !request.deadline.nil?
+            ="Before #{request.deadline.to_s(:short)}"
+          %br
+          %script{:type => 'text/javascript+protovis'}
+            =render :partial => 'protovis_bins.js', :locals => {:height => 20, :width => 200, :xmin => 0, :xmax => 20, :ymin => 0, :request => request}
+      
   
   %p  
     %h3 (To request a resource, click on the project below)

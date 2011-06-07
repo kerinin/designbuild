@@ -1,0 +1,13 @@
+new pv.Panel()
+    .width(<%= width %>)
+    .height(<%= height %>)
+  .add(pv.Bar)
+    //.data([[0, 1], [.5, 1.2], [.9, 1.7], [.2, 1.5], [.7, 2.2]])
+    .data( [[0,<%= request.duration %> ]])
+    .bottom(0)
+    .width(function(d) d[1] * 80)
+    .height(<%= height %>)
+    .left(function(d) d[0] * 80)
+    .fillStyle(pv.colors("blue", "green"))
+    .event('click', function(d) alert('hi') )
+  .root.render();

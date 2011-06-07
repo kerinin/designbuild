@@ -2,10 +2,10 @@
 
 .container
 
-  %h1 Editing resource_request
+  %h1 Editing Resource Request
 
   = render 'form'
 
-  = link_to 'Show', @resource_request
+  = link_to 'Show', [@project, @resource_request]
   \|
-  = link_to 'Back', resource_requests_path
+  = link_to 'Back', project_resource_requests_path(@project)

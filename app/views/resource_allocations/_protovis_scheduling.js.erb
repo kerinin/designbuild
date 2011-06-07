@@ -1,0 +1,63 @@
+<% resources ||= Resource.all %>
+<% start_date = ResourceAllocation.count == 0 ? Date::today : ResourceAllocation.first.date %>
+<% data = resources.map do |resource| %>
+  <% {
+    :name => resource.name,
+    :allocations => resource.resource_allocations.map{|alloc| 
+      { :project => alloc.project.name,
+      :start_date => alloc.start_date - start_date,
+      :end_date => alloc.start_date - start_date + alloc.duration,
+      :urgent => alloc.urgent,
+      :duration => alloc.duration}
+      }
+    } %>
+<% end %>
+<% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
+
+
+var scale = <%= Date::today == start_date ? 1 : 400/(Date::today - start_date) %>;
+var data = <%= raw data.to_json %>;
+var weeks = <%= raw weeks.to_json %>;
+var rangeStart = <%= Date::today - start_date > 60 ? (Date::today - start_date) - 60 : Date::today - start_date %>;
+var rangeEnd = <%= (Date::today - start_date) + 7 %>;
+
+var w = <%= width %>,
+    h = <%= height %>,
+    x = pv.Scale.linear(rangeStart, rangeEnd).range(0, w/1.25);
+    y = pv.Scale.linear(0, <%= resources.count %>).range(0, <%= resources.count %> * 25);
+    ww = pv.Scale.linear(0, (rangeEnd - rangeStart)).range(0, w/1.25);
+    color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
+    
+vis = new pv.Panel()
+    .def('hover', [-1,-1])
+    .width(w)
+    .height(h);
+        
+ 
+// Week Highlighting
+var weeks = vis.add(pv.Bar)
+    .data( weeks )
+    .top(0)
+    .bottom(0)
+    .width( function(d) ww(5) )
+    .left( function(d) x(d['value']) )
+    .fillStyle(pv.color('rgba(0,0,0,.05)') );
+    
+
+function transform() {
+  var t = this.transform().invert();
+  var k = Math.pow(t.k, 20);
+  
+  var xspan = rangeEnd - rangeStart;
+  
+  var xlow = rangeEnd-(xspan*k)+(t.x*(xspan/w*k));
+  var xhigh = rangeEnd+(t.x*(xspan/w*k));
+  
+  x.domain( xlow, xhigh );
+  ww.domain( 0, (xhigh - xlow) );
+  
+  y.range( -t.y, <%= resources.count %> * 25 - t.y);
+  vis.render();
+}
+
+vis.render();
