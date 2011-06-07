@@ -4,5 +4,5 @@ Factory.define :resource_request do |f|
   f.duration 1.5
   
   f.project {|p| p.association(:project)}
-  f.resources {|p| [p.association(:resource)]}
+  f.resource {|p| p.association(:resource)}
 end

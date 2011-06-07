@@ -1,16 +1,17 @@
 <% resources ||= Resource.all %>
-<% start_date = ResourceAllocation.count == 0 ? Date::today : ResourceAllocation.first.date %>
+<% start_date = ResourceAllocation.count == 0 ? Date::today : ResourceAllocation.first.start_date.to_date %>
 <% data = resources.map do |resource| %>
   <% {
     :name => resource.name,
-    :allocations => resource.resource_allocations.map{|alloc| 
+    :allocations => (ResourceAllocation.includes(:resource_request) & resource.resource_requests ).map{ |alloc| 
       { :project => alloc.project.name,
       :start_date => alloc.start_date - start_date,
       :end_date => alloc.start_date - start_date + alloc.duration,
       :urgent => alloc.urgent,
-      :duration => alloc.duration}
+      :duration => alloc.duration
       }
-    } %>
+    }
+  } %>
 <% end %>
 <% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
 
@@ -31,7 +32,8 @@ var w = <%= width %>,
 vis = new pv.Panel()
     .def('hover', [-1,-1])
     .width(w)
-    .height(h);
+    .height(h)
+    .event('click', function(d) alert(this.mouse()) );
         
  
 // Week Highlighting
@@ -42,6 +44,15 @@ var weeks = vis.add(pv.Bar)
     .width( function(d) ww(5) )
     .left( function(d) x(d['value']) )
     .fillStyle(pv.color('rgba(0,0,0,.05)') );
+    
+var resources = vis.add(pv.Panel)
+    .data(resources);
+var allocations = resources.add(pv.Bar)
+    .data( function(d) d['allocations'] )
+    .height(20)
+    .top( function() resources.index + 1 )
+    .width( function(d) d['duration'] )
+    .left( function(d) d['start_date'] )
     
 
 function transform() {

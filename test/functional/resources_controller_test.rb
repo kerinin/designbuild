@@ -5,8 +5,8 @@ class ResourcesControllerTest < ActionController::TestCase
     @project = Factory :project
     @resource = Factory :resource
     
-    @request1 = @resource.resource_requests.build :project => @project, :resources => [@resource]
-    @request2 = @resource.resource_requests.build :project => @project, :resources => [@resource]
+    @request1 = @resource.resource_requests.build :project => @project, :resource => @resource
+    @request2 = @resource.resource_requests.build :project => @project, :resource => @resource
     
     @allocation1 = @resource.resource_allocations.build :resource_request => @request1, :start_date => Date::today, :duration => 1
     @allocation2 = @resource.resource_allocations.build :resource_request => @request2, :start_date => Date::today, :duration => 1

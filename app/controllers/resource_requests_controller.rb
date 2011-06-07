@@ -59,7 +59,6 @@ class ResourceRequestsController < ApplicationController
   # PUT /resource_requests/1
   # PUT /resource_requests/1.xml
   def update
-    params[:resource_request][:resource_ids] ||= []
     @resource_request = ResourceRequest.find(params[:id])
 
     respond_to do |format|

@@ -18,7 +18,7 @@
       %tr{:class => (resource_request.urgent ? 'emphasize' : nil)}
         %td
           = '(Urgent)' if resource_request.urgent
-          = resource_request.resources.map{|r| r.name}.join(',')
+          = resource_request.resource.name
         %td= resource_request.first_date
         %td= resource_request.deadline
         %td= resource_request.duration

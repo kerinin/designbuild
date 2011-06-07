@@ -9,9 +9,7 @@
   %hr
   
   .field
-    -Resource.all.each do |resource|
-      = check_box_tag "resource_request[resource_ids][]", resource.id, @resource_request.resources.include?(resource)
-      = resource.name
+    = f.collection_select :resource_id, Resource.all, :id, :name
   
   %hr
     

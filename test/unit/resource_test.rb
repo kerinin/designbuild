@@ -8,8 +8,8 @@ class ResourceTest < ActiveSupport::TestCase
       
       @obj = Factory.build :resource
       
-      @rr1 = @obj.resource_requests.build :project => @project, :resources => [@resource]
-      @rr2 = @obj.resource_requests.build :project => @project, :resources => [@resource]
+      @rr1 = @obj.resource_requests.build :project => @project, :resource => @resource, :duration => 5
+      @rr2 = @obj.resource_requests.build :project => @project, :resource => @resource, :duration => 5
       
       @ra1 = @obj.resource_allocations.build :resource_request => @rr1, :start_date => Date::today, :duration => 1
       @ra2 = @obj.resource_allocations.build :resource_request => @rr1, :start_date => Date::today, :duration => 1

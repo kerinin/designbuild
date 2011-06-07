@@ -5,8 +5,8 @@ class ResourceRequestsControllerTest < ActionController::TestCase
     @project = Factory :project
     @resource = Factory :resource
     
-    @request1 = @resource.resource_requests.create :project => @project, :resources => [@resource]
-    @request2 = @resource.resource_requests.create :project => @project, :resources => [@resource]
+    @request1 = @resource.resource_requests.create :project => @project, :resource => @resource, :duration => 4
+    @request2 = @resource.resource_requests.create :project => @project, :resource => @resource, :duration => 4
     
     @allocation1 = @resource.resource_allocations.build :resource_request => @request1, :start_date => Date::today, :duration => 1
     @allocation2 = @resource.resource_allocations.build :resource_request => @request2, :start_date => Date::today, :duration => 1
@@ -38,7 +38,7 @@ class ResourceRequestsControllerTest < ActionController::TestCase
       post :create, :project_id => @project.to_param, :resource_request => @request1.attributes
     end
 
-    assert_redirected_to resource_request_path(assigns(:resource_request))
+    assert_redirected_to project_resource_request_path(@project, assigns(:resource_request))
   end
 
   test "should show resource_request from project" do
@@ -57,7 +57,7 @@ class ResourceRequestsControllerTest < ActionController::TestCase
 
   test "should update resource_request from project" do
     put :update, :project_id => @project.to_param, :id => @request1.to_param, :resource_request => @request1.attributes
-    assert_redirected_to resource_request_path(assigns(:resource_request))
+    assert_redirected_to project_resource_request_path(@project, assigns(:resource_request))
   end
 
   test "should destroy resource_request from project" do
@@ -65,6 +65,6 @@ class ResourceRequestsControllerTest < ActionController::TestCase
       delete :destroy, :project_id => @project.to_param, :id => @request1.to_param
     end
 
-    assert_redirected_to resource_requests_path
+    assert_redirected_to project_resource_requests_path(@project)
   end
 end

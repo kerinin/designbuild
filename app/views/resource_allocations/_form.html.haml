@@ -7,6 +7,8 @@
           %li= msg
 
   .field
+    = f.collection_select :resource_request_id, ResourceRequest.all, :id, :created_at
+  .field
     = f.label :start_date
     = f.datetime_select :start_date
   .field

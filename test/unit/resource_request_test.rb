@@ -7,7 +7,7 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @resource = Factory.build :resource
       @task = Factory.build :task
       
-      @obj = Factory.build :resource_request, :project => @project, :resources => [@resource], :task => @task
+      @obj = Factory.build :resource_request, :project => @project, :resource => @resource, :task => @task, :duration => 5
       
       @a1 = @obj.resource_allocations.build :resource_request => @obj, :start_date => Date::today, :duration => 1
       @a2 = @obj.resource_allocations.build :resource_request => @obj, :start_date => Date::today, :duration => 1
@@ -32,12 +32,12 @@ class ResourceRequestTest < ActiveSupport::TestCase
       assert_equal @project, @obj.project
     end
     
-    should_eventually "require associated resource" do
+    should "require associated resource" do
       assert_raise ActiveRecord::RecordInvalid do
         Factory :resource_request, :resource_id => nil
       end
       
-      assert_contains @obj.resources, @resource
+      assert_equal @resource, @obj.resource
     end
     
     should "allow associated task" do
