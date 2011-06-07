@@ -1,20 +1,19 @@
-<% resources ||= Resource.all %>
+<% resources ||= Resource.joins(:resource_allocations).all %>
 <% start_date = ResourceAllocation.count == 0 ? Date::today : ResourceAllocation.first.start_date.to_date %>
 <% data = resources.map do |resource| %>
   <% {
     :name => resource.name,
-    :allocations => (ResourceAllocation.includes(:resource_request) & resource.resource_requests ).map{ |alloc| 
-      { :project => alloc.project.name,
-      :start_date => alloc.start_date - start_date,
-      :end_date => alloc.start_date - start_date + alloc.duration,
-      :urgent => alloc.urgent,
+    :allocations => resource.resource_allocations.map{ |alloc| 
+      { #:project => alloc.project.name,
+      :x => alloc.start_date.to_date - start_date,
+      :end_date => alloc.start_date.to_date - start_date + alloc.duration,
+      :urgent => alloc.resource_request.urgent,
       :duration => alloc.duration
       }
     }
   } %>
 <% end %>
 <% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
-
 
 var scale = <%= Date::today == start_date ? 1 : 400/(Date::today - start_date) %>;
 var data = <%= raw data.to_json %>;
@@ -30,10 +29,10 @@ var w = <%= width %>,
     color = pv.Scale.linear(0, 75, 100).range('green', 'yellow', 'red');
     
 vis = new pv.Panel()
+    .def("i", -1)
     .def('hover', [-1,-1])
     .width(w)
-    .height(h)
-    .event('click', function(d) alert(this.mouse()) );
+    .height(h);
         
  
 // Week Highlighting
@@ -46,13 +45,33 @@ var weeks = vis.add(pv.Bar)
     .fillStyle(pv.color('rgba(0,0,0,.05)') );
     
 var resources = vis.add(pv.Panel)
-    .data(resources);
+    .data(data);
 var allocations = resources.add(pv.Bar)
     .data( function(d) d['allocations'] )
     .height(20)
-    .top( function() resources.index + 1 )
-    .width( function(d) d['duration'] )
-    .left( function(d) d['start_date'] )
+    
+    .left(function(d) 50 * parseInt( d.x / 50) )
+    .top(function(d) d.y)
+    
+    //.top( function() resources.index + 1 )
+    .width( function(d) x( d['duration'] ) )
+    //.left( function(d) x( d['start_date'] ) )
+    .event("mousedown", pv.Behavior.drag())
+    //.event("dragstart", function() (i = this.index, this))
+    .event("drag", vis)
+    .event("mouseover", function() vis.i(this.index))
+    .event("mouseout", function() vis.i(-1));
+    
+allocations.anchor('right').add(pv.Dot)
+    .size(40)
+    .fillStyle("rgba(255, 0, 0, .4)")
+    .strokeStyle("red")
+    .visible(function() vis.i() >= 0);
+
+      
+allocations.anchor('left').add(pv.Label)
+    .text(function(d) d.x);
+
     
 
 function transform() {

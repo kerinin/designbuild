@@ -20,7 +20,7 @@
       %h3=project.name
       -project.resource_requests.each do |request|
         %p
-          %strong="#{request.duration} days of #{request.resources.map{|r| r.name}.join(' & ')}"
+          %strong="#{request.duration} days of #{request.resource.name}"
           =request.comment
           %br
           -if !request.first_date.nil? && !request.deadline.nil?
