@@ -1,0 +1,7 @@
+-allocation ||= nil
+
+.allocation{:class => template ? 'insertion_content' : nil, :id => allocation.nil? ? nil : "allocation_#{allocation.id}"}
+  =request.project.name
+  -unless allocation.nil?
+    .delete
+      =link_to 'Delete', allocation, :method => :delete, :remote => true

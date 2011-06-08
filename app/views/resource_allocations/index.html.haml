@@ -17,12 +17,16 @@
       -day = Date.commercial(2011,1,weekday)
       %strong=day.strftime('%A')
   
-  -(start_date.to_date.cweek..end_date.to_date.cweek).each do |week|
-    .week
-      -(1..7).each do |weekday|
-        -day = Date.commercial(start_date.year, week, weekday)
-        .day{:id => day.to_s, :class => day == Date::today ? 'today' : nil}
-          .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
+  .weeks
+    -(start_date.to_date.cweek..end_date.to_date.cweek).each do |week|
+      .week
+        -(1..7).each do |weekday|
+          -day = Date.commercial(start_date.year, week, weekday)
+          -allocations = @resource.resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
+          .day{:id => day.to_s, :class => [ day == Date::today ? 'today' : nil, allocations.empty? ? nil : 'busy']}
+            -unless allocations.empty?
+              =render :partial => 'day_content', :locals => {:request => allocations.first.resource_request, :allocation => allocations.first, :template => false}
+            .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
   
   / Hidden form for ajax
   =form_for ResourceAllocation.new(:resource => @resource, :duration => 1), new_resource_allocation_path, :remote => true do |f|
@@ -40,8 +44,7 @@
         %h3=project.name
         -project.resource_requests.each do |request|
           .request{:id => "request_#{request.id}"}
-            .insertion_content
-              =project.name
+            =render :partial => 'day_content', :locals => {:request => request, :template => true}
               
             %strong="#{request.duration} days of #{request.resource.name}"
             =request.comment

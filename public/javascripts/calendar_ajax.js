@@ -9,19 +9,27 @@ $(document).ready( function() {
     $('.day').addClass('active')
   } );
   
+  $('.delete a').click( function(e) {
+    var dayElem = $(e.target).closest('.day');
+    dayElem.removeClass('busy');
+    $(e.target).closest('.allocation').remove();
+  })
   $('.day').click( function(e) {
-    var day = $(e.target).attr('id')
+    var dayElem = $(e.target).closest('.day')
+    var day = dayElem.attr('id')
     
-    if(active_project && active_request) {
-      // Create the new resource allocation
-      $('#new_resource_allocation input#resource_allocation_resource_request_id').val(active_request);
-      $('#new_resource_allocation input#resource_allocation_start_date').val(day);
-      //$('#new_resource_allocation').submit();
+    if( dayElem.hasClass('busy') ) {
       
-      // Update the display
-      var content = $('#'+active_project+' .insertion_content').clone().first();
-      $(e.target).find('.date_text').before( content.removeClass("insertion_content") );
-      $(e.target).addClass('busy')
-    }
+    } else if(active_project && active_request) {
+        // Create the new resource allocation
+        $('#new_resource_allocation input#resource_allocation_resource_request_id').val(active_request);
+        $('#new_resource_allocation input#resource_allocation_start_date').val(day);
+        $('#new_resource_allocation').submit();
+      
+        // Update the display
+        var content = $('#'+active_project+' .insertion_content').clone().first();
+        dayElem.find('.date_text').before( content.removeClass("insertion_content") );
+        dayElem.addClass('busy')
+      }
   } );
 })

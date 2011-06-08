@@ -9,6 +9,11 @@ body.bp
     margin-bottom : 10px
     height : 20px
     
+  .weeks
+    width : 960px
+    height : 400px
+    overflow : auto
+    
   .week
     .day
       position : relative
@@ -19,9 +24,15 @@ body.bp
       height : 80px
       border : 4px solid #ccc
     
+      .allocation .delete
+        display : none
+    
       &:hover
         color : black
         background : #eee
+        
+        .allocation .delete
+          display : block
         
       &.busy, &.busy.active
         color : white
