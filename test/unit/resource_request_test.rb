@@ -48,5 +48,27 @@ class ResourceRequestTest < ActiveSupport::TestCase
       assert_contains @obj.resource_allocations, @a1
       assert_contains @obj.resource_allocations, @a2
     end
+    
+    should "update allocated" do
+      @a1.save!
+      @a2.save!
+      @obj.save!
+      assert_equal 2, @obj.allocated
+    end
+    
+    should "update remaining" do
+      @a1.save!
+      @a2.save!
+      @obj.save!
+      assert_equal 3, @obj.remaining
+    end
+    
+    should "zero remaining if negative" do
+      @a1.save!
+      @a2.save!
+      @obj.resource_allocations.create :resource_request => @obj, :start_date => Date::today, :duration => 10
+      @obj.save!
+      assert_equal 0, @obj.remaining
+    end
   end
 end
