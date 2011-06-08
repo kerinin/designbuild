@@ -1,0 +1,19 @@
+<% if @resource_allocation.errors.any? %>
+  //Error
+
+<% else %>
+  //Success
+  
+  <% content_for :allocation do %>
+  	<%=render :partial => 'day_content', :locals => {:request => @resource_allocation.resource_request, :allocation => @resource_allocation, :template => false}%>
+  <% end %>
+  
+  <% content_for :request do %>
+  	
+  <% end %>
+  
+  // Replace the allocation div so the delete button shows up
+  $('#<%= @resource_allocation.start_date.to_date.to_s %> .allocation').replaceWith( "<%= escape_javascript( yield :allocation ) %>");
+  
+  // Update the request remaining
+<% end %>

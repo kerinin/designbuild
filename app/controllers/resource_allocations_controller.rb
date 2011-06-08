@@ -49,6 +49,7 @@ class ResourceAllocationsController < ApplicationController
       if @resource_allocation.save
         format.html { redirect_to(@resource_allocation, :notice => 'Resource allocation was successfully created.') }
         format.xml  { render :xml => @resource_allocation, :status => :created, :location => @resource_allocation }
+        format.js
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @resource_allocation.errors, :status => :unprocessable_entity }
