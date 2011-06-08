@@ -6,7 +6,9 @@ $(document).ready( function() {
     active_request = $(e.target).closest('[id]').attr('id').split('_')[1];
     active_project = $(e.target).closest('.project').attr('id');
     
-    $('.day').addClass('active')
+    $('.day').addClass('active');
+    $('.request').removeClass('active');
+    $(e.target).addClass('active');
   } );
   
   $('.delete a').click( function(e) {
@@ -32,4 +34,9 @@ $(document).ready( function() {
         dayElem.addClass('busy')
       }
   } );
+  
+  
+  $('.weeks').animate({
+      scrollTop: $(".today").offset().top - 310
+  }, 1000);
 })

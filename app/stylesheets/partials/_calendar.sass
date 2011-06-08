@@ -9,10 +9,26 @@ body.bp
     margin-bottom : 10px
     height : 20px
     
+  .project
+    width : 300px
+    float : left
+    
+    .request
+      cursor : pointer
+      border : 4px solid #ccc
+      margin-bottom : 15px
+    
+      &:hover
+        background : #eee
+    .request.active
+      border : 4px solid #FF8566
+  
   .weeks
     width : 960px
     height : 400px
     overflow : auto
+    
+    margin-bottom : 40px
     
   .week
     .day
