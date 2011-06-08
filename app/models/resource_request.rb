@@ -11,6 +11,8 @@ class ResourceRequest < ActiveRecord::Base
   
   before_save :update_totals
   
+  scope :active, lambda { where( 'remaining > 0' ) }
+  
   private
   
   def update_totals

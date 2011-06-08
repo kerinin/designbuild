@@ -1,0 +1,15 @@
+.request{:id => "request_#{request.id}", :class => active ? 'active' : nil}
+  =render :partial => 'day_content', :locals => {:request => request, :template => true}
+    
+  %strong="#{request.remaining} days"
+  
+  =request.comment
+  -if !request.first_date.nil? && !request.deadline.nil?
+    %br
+    ="Between #{request.first_date.to_s(:short)} and #{request.deadline.to_s(:short)}"
+  -elsif !request.first_date.nil?
+    %br
+    ="After #{request.first_date.to_s(:short)}"
+  -elsif !request.deadline.nil?
+    %br
+    ="Before #{request.deadline.to_s(:short)}"

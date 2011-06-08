@@ -4,16 +4,33 @@
 <% else %>
   //Success
   
-  <% content_for :allocation do %>
-  	<%=render :partial => 'day_content', :locals => {:request => @resource_allocation.resource_request, :allocation => @resource_allocation, :template => false}%>
-  <% end %>
+  <% request = @resource_allocation.resource_request %>
+  <% project = request.project %>
   
-  <% content_for :request do %>
-  	
+  <% content_for :allocation do %>
+  	<%=render :partial => 'day_content', :locals => {:request => request, :allocation => @resource_allocation, :template => false}%>
   <% end %>
   
   // Replace the allocation div so the delete button shows up
   $('#<%= @resource_allocation.start_date.to_date.to_s %> .allocation').replaceWith( "<%= escape_javascript( yield :allocation ) %>");
   
-  // Update the request remaining
+
+  <% unless @resource_allocation.resource_request.remaining == 0 %>
+    <% content_for :request do %>
+  	  <%=render :partial => 'request_block', :locals => {:request => request, :project => project, :active => true }%>
+    <% end %>
+
+    // Update the request remaining
+    $('#request_<%= @resource_allocation.resource_request_id %>').replaceWith( "<%= escape_javascript( yield :request ) %>");
+  <% else %>
+    $('#request_<%= @resource_allocation.resource_request_id %>').remove();
+    $('.day').removeClass('active');
+    
+    active_project = null;
+    active_request = null;
+  <% end %>
+  
+  <% if project.resource_requests.active.where(:resource_id => request.resource_id).empty? %>
+    $('#project_<%= project.id %>').remove();
+  <% end %>
 <% end %>
