@@ -53,11 +53,8 @@ var allocations = resources.add(pv.Bar)
     .left(function(d) 50 * parseInt( d.x / 50) )
     .top(function(d) d.y)
     
-    //.top( function() resources.index + 1 )
     .width( function(d) x( d['duration'] ) )
-    //.left( function(d) x( d['start_date'] ) )
     .event("mousedown", pv.Behavior.drag())
-    //.event("dragstart", function() (i = this.index, this))
     .event("drag", vis)
     .event("mouseover", function() vis.i(this.index))
     .event("mouseout", function() vis.i(-1));

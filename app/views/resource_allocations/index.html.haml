@@ -1,37 +1,60 @@
 -content_for :head do
-  =javascript_include_tag 'protovis-d3.2.js'
+  =javascript_include_tag 'calendar_ajax.js'
   
 =render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
 .container
 
-  %h1 Resource Allocation
+  %h1= "#{@resource.name} Schedule"
 
   %h2 Timeline
-  %script{:type => 'text/javascript+protovis'}
-    / Includes the last point prior to the date range and the current value
-    
-    =render :partial => 'protovis_scheduling.js', :locals => {:height => 300, :width => 800, :xmin => 0, :xmax => 30, :ymin => 0}
+  
+  -start_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.first.start_date.to_date) - 14
+  -end_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.last.start_date.to_date + @resource.resource_allocations.last.duration) + 14
 
+  -(1..7).each do |weekday|
+    .day_label
+      -day = Date.commercial(2011,1,weekday)
+      %strong=day.strftime('%A')
+  
+  -(start_date.to_date.cweek..end_date.to_date.cweek).each do |week|
+    .week
+      -(1..7).each do |weekday|
+        -day = Date.commercial(start_date.year, week, weekday)
+        .day{:id => day.to_s, :class => day == Date::today ? 'today' : nil}
+          .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
+  
+  / Hidden form for ajax
+  =form_for ResourceAllocation.new(:resource => @resource, :duration => 1), new_resource_allocation_path, :remote => true do |f|
+    =f.hidden_field :resource_request_id
+    =f.hidden_field :resource_id
+    =f.hidden_field :start_date
+    =f.hidden_field :duration
+    
   
   %h2 Resource Requests
-  -Project.includes(:resource_requests).each do |project|
+  
+  -Project.includes(:resource_requests).where('resource_requests.resource_id = ?', @resource.id).each do |project|
     -unless project.resource_requests.empty?
-      %h3=project.name
-      -project.resource_requests.each do |request|
-        %p
-          %strong="#{request.duration} days of #{request.resource.name}"
-          =request.comment
-          %br
-          -if !request.first_date.nil? && !request.deadline.nil?
-            ="Between #{request.first_date.to_s(:short)} and #{request.deadline.to_s(:short)}"
-          -elsif !request.first_date.nil?
-            ="After #{request.first_date.to_s(:short)}"
-          -elsif !request.deadline.nil?
-            ="Before #{request.deadline.to_s(:short)}"
-          %br
-          %script{:type => 'text/javascript+protovis'}
-            =render :partial => 'protovis_bins.js', :locals => {:height => 20, :width => 200, :xmin => 0, :xmax => 20, :ymin => 0, :request => request}
+      .project{:id => "project_#{project.id}"}
+        %h3=project.name
+        -project.resource_requests.each do |request|
+          .request{:id => "request_#{request.id}"}
+            .insertion_content
+              =project.name
+              
+            %strong="#{request.duration} days of #{request.resource.name}"
+            =request.comment
+            %br
+            -if !request.first_date.nil? && !request.deadline.nil?
+              ="Between #{request.first_date.to_s(:short)} and #{request.deadline.to_s(:short)}"
+            -elsif !request.first_date.nil?
+              ="After #{request.first_date.to_s(:short)}"
+            -elsif !request.deadline.nil?
+              ="Before #{request.deadline.to_s(:short)}"
+            %br
+            %script{:type => 'text/javascript+protovis'}
+              =render :partial => 'protovis_bins.js', :locals => {:height => 20, :width => 200, :xmin => 0, :xmax => 20, :ymin => 0, :request => request}
       
   
   %p  

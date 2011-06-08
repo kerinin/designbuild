@@ -1,0 +1,40 @@
+body.bp
+  .insertion_content
+    display : none
+    
+  .day_label
+    float : left
+    width: 110px
+    margin-right : 23px
+    margin-bottom : 10px
+    height : 20px
+    
+  .week
+    .day
+      position : relative
+      float : left
+      width : 110px
+      margin-right : 15px
+      margin-bottom : 15px
+      height : 80px
+      border : 4px solid #ccc
+    
+      &:hover
+        color : black
+        background : #eee
+        
+      &.busy, &.busy.active
+        color : white
+        background : #2E8AE6
+        border : 4px solid #2E8AE6 
+        
+      .date_text
+        position : absolute
+        right : 5px
+        bottom : 0
+    
+    .day.today, .day.active.today
+      border : 4px solid #FF8566
+      
+    .day.active
+      border : 4px solid #99CCFF

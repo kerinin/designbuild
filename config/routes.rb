@@ -4,7 +4,9 @@ Designbuild::Application.routes.draw do
 
   resources :resource_requests
 
-  resources :resources
+  resources :resources do
+    resources :resource_allocations
+  end
 
   resources :invoices do
     resources :invoice_lines
@@ -70,7 +72,7 @@ Designbuild::Application.routes.draw do
     resources :invoices     # re-nested
     resources :payments     # re-nested
     
-    resources :resource_allocations
+    # resources :resource_allocations
     resources :resource_requests
     
     member do

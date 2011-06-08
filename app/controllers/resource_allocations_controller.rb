@@ -1,5 +1,6 @@
 class ResourceAllocationsController < ApplicationController
   before_filter :get_project
+  before_filter :get_resource
   
   # GET /resource_allocations
   # GET /resource_allocations.xml
@@ -87,5 +88,9 @@ class ResourceAllocationsController < ApplicationController
   
   def get_project
     @project = Project.find(params[:project_id]) if params.has_key? :project_id
+  end
+  
+  def get_resource
+    @resource = Resource.find(params[:resource_id]) if params.has_key? :resource_id
   end
 end

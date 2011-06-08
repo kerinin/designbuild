@@ -385,7 +385,7 @@ ActiveRecord::Schema.define(:version => 20110607194441) do
     t.string    "name"
     t.float     "value"
     t.string    "unit"
-    t.integer   "component_id"
+    t.integer   "component_id"d
     t.timestamp "created_at"
     t.timestamp "updated_at"
   end
