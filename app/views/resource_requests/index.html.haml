@@ -7,6 +7,7 @@
   %table
     %tr
       %th Resources
+      %th Task
       %th First date
       %th Deadline
       %th Duration
@@ -20,6 +21,7 @@
         %td
           = icon(:error) if resource_request.urgent
           = resource_request.resource.name
+        %td= resource_request.task.name unless resource_request.task.blank?
         %td= resource_request.first_date
         %td= resource_request.deadline
         %td= resource_request.duration
