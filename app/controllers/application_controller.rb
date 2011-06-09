@@ -5,6 +5,7 @@ class ApplicationController < ActionController::Base
   before_filter :check_redirect, :set_context
   
   cache_sweeper :project_sweeper
+  cache_sweeper :resource_sweeper
   
   private
   
