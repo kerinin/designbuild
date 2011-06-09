@@ -26,7 +26,7 @@ class ResourceRequestsController < ApplicationController
   # GET /resource_requests/new
   # GET /resource_requests/new.xml
   def new
-    @resource_request = ResourceRequest.new
+    @resource_request = ResourceRequest.new(params[:resource_request])
 
     respond_to do |format|
       format.html # new.html.erb
@@ -47,7 +47,7 @@ class ResourceRequestsController < ApplicationController
 
     respond_to do |format|
       if @resource_request.save
-        format.html { redirect_to([@project, @resource_request], :notice => 'Resource request was successfully created.') }
+        format.html { redirect_to(resource_resource_allocations_path(@resource_request.resource), :notice => 'Resource request was successfully created.') }
         format.xml  { render :xml => @resource_request, :status => :created, :location => @resource_request }
       else
         format.html { render :action => "new" }
@@ -63,7 +63,7 @@ class ResourceRequestsController < ApplicationController
 
     respond_to do |format|
       if @resource_request.update_attributes(params[:resource_request])
-        format.html { redirect_to([@project, @resource_request], :notice => 'Resource request was successfully updated.') }
+        format.html { redirect_to(resource_resource_allocations_path(@resource_request.resource), :notice => 'Resource request was successfully updated.') }
         format.xml  { head :ok }
       else
         format.html { render :action => "edit" }

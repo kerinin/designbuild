@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110607194441) do
+ActiveRecord::Schema.define(:version => 20110609155113) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -371,6 +371,7 @@ ActiveRecord::Schema.define(:version => 20110607194441) do
     t.float     "estimated_raw_cost",          :default => 0.0
     t.float     "cost",                        :default => 0.0
     t.float     "raw_cost",                    :default => 0.0
+    t.integer   "color"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
@@ -385,7 +386,7 @@ ActiveRecord::Schema.define(:version => 20110607194441) do
     t.string    "name"
     t.float     "value"
     t.string    "unit"
-    t.integer   "component_id"d
+    t.integer   "component_id"
     t.timestamp "created_at"
     t.timestamp "updated_at"
   end

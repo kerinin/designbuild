@@ -10,16 +10,36 @@ body.bp
     height : 20px
     
   .project
-    width : 300px
+    width : 270px
     float : left
+    
+    border-left : 4px solid #ccc
+    padding-left : .5em
+    margin-right : 2em
+    margin-bottom : .5em
+    
+    &.project_color_1
+      border-left : 4px solid $project_color_1
+    &.project_color_2
+      border-left : 4px solid $project_color_2
+    &.project_color_3
+      border-left : 4px solid $project_color_3
+    &.project_color_4
+      border-left : 4px solid $project_color_4
+    &.project_color_5
+      border-left : 4px solid $project_color_5
+      
+    h3
+      margin-bottom : 0
     
     .request
       cursor : pointer
       border : 4px solid #ccc
-      margin-bottom : 15px
+      margin-top : 15px
     
       &:hover
         background : #eee
+      
     .request.active
       border : 4px solid #FF8566
   
@@ -49,22 +69,55 @@ body.bp
         
         .allocation .delete
           display : block
+      
+      &.active
+        border : 4px dashed #ccc
+        cursor : pointer
         
+      &.today, .day.active.today
+        /* border : 4px solid #FF8566
+             
       &.busy, &.busy.active
         color : white
-        background : #2E8AE6
-        border : 4px solid #2E8AE6 
+        border : 0
+        margin-right : 23px
+        margin-bottom : 23px
         
+        a
+          color : white
+          
         &.today
-          border : 4px solid 	#246BB2
-        
+          margin-right : 15px
+          margin-bottom : 15px
+          border : 4px solid black
+          
+          .allocation
+            width : 102px
+            height : 72px
+          
+        .allocation
+          width : 100%
+          height : 100%
+          padding : 4px
+          
+          &.project_color_1
+            background : $project_color_1
+            border : $project_color_1
+          &.project_color_2
+            background : $project_color_2
+            border : $project_color_2
+          &.project_color_3
+            background : $project_color_3
+            border : $project_color_3
+          &.project_color_4
+            background : $project_color_4
+            border : $project_color_4
+          &.project_color_5
+            background : $project_color_5
+            border : $project_color_5
+                
       .date_text
         position : absolute
         right : 5px
         bottom : 0
-    
-    .day.today, .day.active.today
-      border : 4px solid #FF8566
-      
-    .day.active
-      border : 4px solid #99CCFF
+

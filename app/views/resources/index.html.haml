@@ -10,11 +10,13 @@
       %th
       %th
       %th
+      %th
 
     - @resources.each do |resource|
       %tr
         %td= resource.name
         %td= resource.description
+        %td= link_to 'Schedule', resource_resource_allocations_path(resource)
         %td= link_to 'Show', resource
         %td= link_to 'Edit', edit_resource_path(resource)
         %td= link_to 'Destroy', resource, :confirm => 'Are you sure?', :method => :delete
@@ -22,8 +24,3 @@
   %br
 
   = link_to 'New Resource', new_resource_path
-  
-  %p  
-    %h3 (To request a resource, click on the project below)
-    -Project.all.each do |project|
-      =link_to project.name, project_resource_requests_path(project)

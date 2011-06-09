@@ -9,7 +9,12 @@
   %hr
   
   .field
+    = f.label :resource_id
     = f.collection_select :resource_id, Resource.all, :id, :name
+    
+  .field
+    = f.label :task_id
+    = f.collection_select :task_id, @project.tasks, :id, :name, :include_blank => true
   
   %hr
     

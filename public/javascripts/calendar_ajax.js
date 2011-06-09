@@ -17,6 +17,13 @@ function set_active_state() {
     set_active_state();
   } );
   
+  $('.request.active').click( function(e){
+    active_request = null;
+    active_project = null;
+    
+    set_active_state();
+  })
+  
   $('.day').click( function(e) {
     var dayElem = $(e.target).closest('.day');
     var day = dayElem.attr('id');

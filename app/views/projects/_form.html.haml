@@ -17,6 +17,11 @@
 
     =f.radio_button :fixed_bid, false
     =f.label :fixed_bid, "Cost-Plus Project"
+    
+  .field
+    -(1..5).each do |i|
+      =f.radio_button :color, i
+      =f.label :color, raw("<div class='color_swatch project_color_#{i}'>#{i}</div>")
 
 
   .actions

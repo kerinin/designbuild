@@ -91,19 +91,14 @@
       %li{:class => current == :projects ? :current : nil}=link_to 'Home', projects_path
       %li{:class => current == :reports ? :current : nil}=link_to 'Reports', reports_path
       %li{:class => current == :resources ? :current : nil}
-        =link_to 'Resources', resource_allocations_path
+        =link_to 'Resources', resources_path
         .expander
           .activator=icon :expand_down
           .positioner
             %ul
-              %li.expand_active_area
-                .left=link_to 'Resource List', resources_path
-              %li.expand_active_area
-                .left=link_to 'Resource Allocation', resource_allocations_path
-              -unless @project.nil?
-                %li.expand_active_area
-                  .left=link_to 'Request Resources', project_resource_requests_path(@project)
-                  
+              -Resource.all.each do |resource|
+                %li.expand_active_area= link_to resource.name, resource_resource_allocations_path(resource)
+
             &nbsp;
             
       %li=link_to 'Log Out', destroy_user_session_path
