@@ -4,7 +4,7 @@ class ResourceRequestsController < ApplicationController
   # GET /resource_requests
   # GET /resource_requests.xml
   def index
-    @resource_requests = ResourceRequest.all
+    @resource_requests = ResourceRequest.scoped
 
     respond_to do |format|
       format.html # index.html.erb

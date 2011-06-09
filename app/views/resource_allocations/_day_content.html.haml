@@ -1,6 +1,8 @@
 -allocation ||= nil
 
 .allocation{:class => [request.project.color.nil? ? "project_color_#{1+(request.project_id % 5)}" : "project_color_#{request.project.color}", template ? 'insertion_content' : nil], :id => allocation.nil? ? nil : "allocation_#{allocation.id}"}
+  -if request.urgent
+    =icon(:error)
   %strong=request.project.name
   =request.task.name unless request.task.blank?
   -unless allocation.nil?

@@ -10,11 +10,12 @@
       %th First date
       %th Deadline
       %th Duration
+      %th Remaining
       %th
       %th
       %th
 
-    - @resource_requests.each do |resource_request|
+    - @resource_requests.reorder('remaining DESC').each do |resource_request|
       %tr{:class => (resource_request.urgent ? 'emphasize' : nil)}
         %td
           = '(Urgent)' if resource_request.urgent
@@ -22,6 +23,7 @@
         %td= resource_request.first_date
         %td= resource_request.deadline
         %td= resource_request.duration
+        %td= resource_request.remaining
         %td= link_to 'Show', [@project, resource_request]
         %td= link_to 'Edit', edit_project_resource_request_path(@project, resource_request)
         %td= link_to 'Destroy', [@project, resource_request], :confirm => 'Are you sure?', :method => :delete

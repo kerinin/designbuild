@@ -1,6 +1,8 @@
 .request{:id => "request_#{request.id}", :class => active ? 'active' : nil}
   =render :partial => 'day_content', :locals => {:request => request, :template => true}
     
+  -if request.urgent
+    =icon(:error)
   %strong
     -unless request.task.blank?
       ="#{request.task.name}:"

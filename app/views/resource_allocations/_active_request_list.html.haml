@@ -8,6 +8,8 @@
       %h3
         =project.name
         =link_to icon(:add), new_project_resource_request_path(project, 'resource_request[resource_id]' => resource.id)
+      -unless project.resource_requests.empty?
+        =link_to 'view all requests', project_resource_requests_path(project)
       -project.resource_requests.where('remaining > 0').each do |request|
         =render :partial => 'request_block', :locals => {:request => request, :project => project, :active => false}
         
