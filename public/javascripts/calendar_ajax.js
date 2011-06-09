@@ -1,24 +1,25 @@
 var active_project, active_request;
 
-$(document).ready( function() {
-  //$('h2.project').wrap("<a href='#'");
+function set_active_state() {
+  if(active_request){
+    $('.day').addClass('active');
+  } else {
+    $('.day').removeClass('active');
+  }
+  
+  $(".request").removeClass('active');
+  $("#request_"+active_request).addClass('active');
+  
   $('.request').click( function(e){
     active_request = $(e.target).closest('[id]').attr('id').split('_')[1];
     active_project = $(e.target).closest('.project').attr('id');
     
-    $('.day').addClass('active');
-    $('.request').removeClass('active');
-    $(e.target).addClass('active');
+    set_active_state();
   } );
   
-  $('.delete a').click( function(e) {
-    var dayElem = $(e.target).closest('.day');
-    dayElem.removeClass('busy');
-    $(e.target).closest('.allocation').remove();
-  })
   $('.day').click( function(e) {
-    var dayElem = $(e.target).closest('.day')
-    var day = dayElem.attr('id')
+    var dayElem = $(e.target).closest('.day');
+    var day = dayElem.attr('id');
     
     if( dayElem.hasClass('busy') ) {
       
@@ -35,7 +36,16 @@ $(document).ready( function() {
       }
   } );
   
-  
+  $('.delete a').click( function(e) {
+    var dayElem = $(e.target).closest('.day');
+    dayElem.removeClass('busy');
+    $(e.target).closest('.allocation').remove();
+  } );
+}
+
+$(document).ready( function() {
+  set_active_state();
+
   $('.weeks').animate({
       scrollTop: $(".today").offset().top - 310
   }, 1000);

@@ -36,15 +36,4 @@
     =f.hidden_field :duration
     
   
-  %h2 Resource Requests
-  
-  -Project.includes(:resource_requests).where('resource_requests.resource_id = ? AND resource_requests.remaining > 0', @resource.id).each do |project|
-    .project{:id => "project_#{project.id}"}
-      %h3=project.name
-      -project.resource_requests.each do |request|
-        =render :partial => 'request_block', :locals => {:request => request, :project => project, :active => false}
-  
-  
-    / %h3 (To request a resource, click on the project below)
-    / -Project.all.each do |project|
-    /   =link_to project.name, project_resource_requests_path(project)
+  =render :partial => 'active_request_list', :locals => {:resource => @resource}
