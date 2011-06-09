@@ -165,17 +165,17 @@ ActiveRecord::Schema.define(:version => 20110609155113) do
   add_index "invoice_lines", ["invoice_id"], :name => "index_invoice_lines_on_invoice_id"
 
   create_table "invoice_markup_lines", :force => true do |t|
-    t.integer  "invoice_id"
-    t.integer  "markup_id"
-    t.string   "comment"
-    t.float    "labor_invoiced",     :default => 0.0
-    t.float    "labor_retainage",    :default => 0.0
-    t.float    "material_invoiced",  :default => 0.0
-    t.float    "material_retainage", :default => 0.0
-    t.float    "invoiced",           :default => 0.0
-    t.float    "retainage",          :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "invoice_id"
+    t.integer   "markup_id"
+    t.string    "comment"
+    t.float     "labor_invoiced",     :default => 0.0
+    t.float     "labor_retainage",    :default => 0.0
+    t.float     "material_invoiced",  :default => 0.0
+    t.float     "material_retainage", :default => 0.0
+    t.float     "invoiced",           :default => 0.0
+    t.float     "retainage",          :default => 0.0
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "invoices", :force => true do |t|
@@ -319,17 +319,17 @@ ActiveRecord::Schema.define(:version => 20110609155113) do
   add_index "payment_lines", ["payment_id"], :name => "index_payment_lines_on_payment_id"
 
   create_table "payment_markup_lines", :force => true do |t|
-    t.integer  "payment_id"
-    t.integer  "markup_id"
-    t.string   "comment"
-    t.float    "labor_paid",        :default => 0.0
-    t.float    "labor_retained",    :default => 0.0
-    t.float    "material_paid",     :default => 0.0
-    t.float    "material_retained", :default => 0.0
-    t.float    "paid",              :default => 0.0
-    t.float    "retained",          :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "payment_id"
+    t.integer   "markup_id"
+    t.string    "comment"
+    t.float     "labor_paid",        :default => 0.0
+    t.float     "labor_retained",    :default => 0.0
+    t.float     "material_paid",     :default => 0.0
+    t.float     "material_retained", :default => 0.0
+    t.float     "paid",              :default => 0.0
+    t.float     "retained",          :default => 0.0
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "payments", :force => true do |t|

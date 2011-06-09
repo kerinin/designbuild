@@ -2,7 +2,7 @@
 
 .container
 
-  %h1 Listing Requests
+  %h1="Listing Requests @ #{@project.name}"
 
   %table
     %tr
@@ -18,7 +18,7 @@
     - @resource_requests.reorder('remaining DESC').each do |resource_request|
       %tr{:class => (resource_request.urgent ? 'emphasize' : nil)}
         %td
-          = '(Urgent)' if resource_request.urgent
+          = icon(:error) if resource_request.urgent
           = resource_request.resource.name
         %td= resource_request.first_date
         %td= resource_request.deadline
