@@ -7,4 +7,4 @@
   =request.task.name unless request.task.blank?
   -unless allocation.nil?
     .delete
-      =link_to 'Delete', allocation, :method => :delete, :remote => true
+      =link_to icon(:delete), allocation, :method => :delete, :remote => true
