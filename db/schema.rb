@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110609155113) do
+ActiveRecord::Schema.define(:version => 20110609192426) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -394,12 +394,12 @@ ActiveRecord::Schema.define(:version => 20110609155113) do
   add_index "quantities", ["component_id"], :name => "index_quantities_on_component_id"
 
   create_table "resource_allocations", :force => true do |t|
-    t.datetime "start_date"
-    t.float    "duration"
-    t.integer  "resource_request_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "resource_id"
+    t.timestamp "start_date"
+    t.float     "duration"
+    t.integer   "resource_request_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "resource_id"
   end
 
   create_table "resource_requests", :force => true do |t|
@@ -414,14 +414,14 @@ ActiveRecord::Schema.define(:version => 20110609155113) do
     t.integer  "resource_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "comment"
+    t.text     "comment",     :limit => 255
   end
 
   create_table "resources", :force => true do |t|
-    t.string   "name"
-    t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string    "name"
+    t.string    "description"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "suppliers", :force => true do |t|
