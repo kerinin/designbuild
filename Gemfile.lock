@@ -55,6 +55,9 @@ GEM
     forgery (0.3.6)
     friendly_id (3.1.7)
       babosa (~> 0.2.0)
+    gcal4ruby (0.5.5)
+      gdata4ruby (>= 0.1.5)
+    gdata4ruby (0.1.5)
     haml (3.0.23)
     haml-rails (0.3.4)
       actionpack (~> 3.0)
@@ -143,6 +146,7 @@ DEPENDENCIES
   factory_girl_rails
   forgery
   friendly_id (~> 3.1)
+  gcal4ruby
   haml-rails
   jquery-rails
   paper_trail

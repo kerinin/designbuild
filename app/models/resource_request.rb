@@ -3,7 +3,7 @@ class ResourceRequest < ActiveRecord::Base
   belongs_to :task
   belongs_to :resource
   
-  has_many :resource_allocations
+  has_many :resource_allocations, :dependent => :destroy
   
   default_scope :order => :updated_at
   

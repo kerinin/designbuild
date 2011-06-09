@@ -41,6 +41,7 @@ gem 'paper_trail'
 gem 'state_machine'
 #gem 'pg'
 gem 'will_paginate', '>=3.0.pre'
+gem 'gcal4ruby'
 
 group :test, :development do
   gem "yaml_db"
