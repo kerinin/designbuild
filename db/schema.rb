@@ -180,17 +180,17 @@ ActiveRecord::Schema.define(:version => 20110609214028) do
   add_index "invoice_lines", ["invoice_id"], :name => "index_invoice_lines_on_invoice_id"
 
   create_table "invoice_markup_lines", :force => true do |t|
-    t.integer  "invoice_id"
-    t.integer  "markup_id"
-    t.string   "comment"
-    t.float    "labor_invoiced",     :default => 0.0
-    t.float    "labor_retainage",    :default => 0.0
-    t.float    "material_invoiced",  :default => 0.0
-    t.float    "material_retainage", :default => 0.0
-    t.float    "invoiced",           :default => 0.0
-    t.float    "retainage",          :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "invoice_id"
+    t.integer   "markup_id"
+    t.string    "comment"
+    t.float     "labor_invoiced",     :default => 0.0
+    t.float     "labor_retainage",    :default => 0.0
+    t.float     "material_invoiced",  :default => 0.0
+    t.float     "material_retainage", :default => 0.0
+    t.float     "invoiced",           :default => 0.0
+    t.float     "retainage",          :default => 0.0
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "invoices", :force => true do |t|
@@ -334,17 +334,17 @@ ActiveRecord::Schema.define(:version => 20110609214028) do
   add_index "payment_lines", ["payment_id"], :name => "index_payment_lines_on_payment_id"
 
   create_table "payment_markup_lines", :force => true do |t|
-    t.integer  "payment_id"
-    t.integer  "markup_id"
-    t.string   "comment"
-    t.float    "labor_paid",        :default => 0.0
-    t.float    "labor_retained",    :default => 0.0
-    t.float    "material_paid",     :default => 0.0
-    t.float    "material_retained", :default => 0.0
-    t.float    "paid",              :default => 0.0
-    t.float    "retained",          :default => 0.0
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "payment_id"
+    t.integer   "markup_id"
+    t.string    "comment"
+    t.float     "labor_paid",        :default => 0.0
+    t.float     "labor_retained",    :default => 0.0
+    t.float     "material_paid",     :default => 0.0
+    t.float     "material_retained", :default => 0.0
+    t.float     "paid",              :default => 0.0
+    t.float     "retained",          :default => 0.0
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   create_table "payments", :force => true do |t|
@@ -409,36 +409,36 @@ ActiveRecord::Schema.define(:version => 20110609214028) do
   add_index "quantities", ["component_id"], :name => "index_quantities_on_component_id"
 
   create_table "resource_allocations", :force => true do |t|
-    t.datetime "start_date"
-    t.float    "duration"
-    t.integer  "resource_request_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "resource_id"
-    t.string   "event_id"
+    t.timestamp "start_date"
+    t.float     "duration"
+    t.integer   "resource_request_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.integer   "resource_id"
+    t.string    "event_id"
   end
 
   create_table "resource_requests", :force => true do |t|
-    t.boolean  "urgent"
-    t.date     "first_date"
-    t.date     "deadline"
-    t.float    "duration"
-    t.float    "allocated"
-    t.float    "remaining"
-    t.integer  "project_id"
-    t.integer  "task_id"
-    t.integer  "resource_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "comment",     :limit => 255
+    t.boolean   "urgent"
+    t.date      "first_date"
+    t.date      "deadline"
+    t.float     "duration"
+    t.float     "allocated"
+    t.float     "remaining"
+    t.integer   "project_id"
+    t.integer   "task_id"
+    t.integer   "resource_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.text      "comment"
   end
 
   create_table "resources", :force => true do |t|
-    t.string   "name"
-    t.string   "description"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "calendar_id"
+    t.string    "name"
+    t.string    "description"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.string    "calendar_id"
   end
 
   create_table "suppliers", :force => true do |t|

@@ -6,11 +6,16 @@ class ResourceAllocation < ActiveRecord::Base
   
   validates_presence_of :start_date, :duration, :resource_request
   
-  before_save :create_event, :if => proc {|i| i.event_id.nil?}
+  after_create do |r|
+    r.delay.create_event if r.event_id.nil?
+  end
   #after_update :update_event
   after_save :update_request
   before_save :get_resource
-  after_destroy :update_request #, :delete_event
+  after_destroy :update_request
+  before_destroy do |r|
+    Delayed::Job.enqueue( DeleteEventJob.new(r.event_id) ) unless r.event_id.nil?
+  end
   
   private
   
@@ -37,7 +42,7 @@ class ResourceAllocation < ActiveRecord::Base
       :content => self.resource_request.comment
     })
     event.save
-    self.event_id = event.id
+    self.update_attributes( :event_id => event.id )
   end
   
   def update_event
@@ -56,4 +61,20 @@ class ResourceAllocation < ActiveRecord::Base
     event = GCal4Ruby::Event.find(service, {:id => self.event_id})
     event.delete
   end
+end
+
+class DeleteEventJob
+  attr_accessor :cal_id
+  
+  def initialize(cal_id)
+    self.cal_id = cal_id
+  end
+  
+  def perform
+    service = GCal4Ruby::Service.new
+    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+        
+    event = GCal4Ruby::Event.find(service, {:id => self.cal_id})
+    event.delete
+  end    
 end
