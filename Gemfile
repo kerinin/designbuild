@@ -43,6 +43,7 @@ gem 'state_machine'
 gem 'will_paginate', '>=3.0.pre'
 gem 'gcal4ruby'
 gem 'delayed_job'
+gem 'hirefireapp'
 
 group :test, :development do
   gem "yaml_db"
