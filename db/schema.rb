@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110609192426) do
+ActiveRecord::Schema.define(:version => 20110609214028) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -132,6 +132,21 @@ ActiveRecord::Schema.define(:version => 20110609192426) do
 
   add_index "deadlines", ["parent_deadline_id"], :name => "index_deadlines_on_parent_deadline_id"
   add_index "deadlines", ["project_id"], :name => "index_deadlines_on_project_id"
+
+  create_table "delayed_jobs", :force => true do |t|
+    t.integer  "priority",   :default => 0
+    t.integer  "attempts",   :default => 0
+    t.text     "handler"
+    t.text     "last_error"
+    t.datetime "run_at"
+    t.datetime "locked_at"
+    t.datetime "failed_at"
+    t.string   "locked_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
 
   create_table "fixed_cost_estimates", :force => true do |t|
     t.string    "name"
@@ -400,21 +415,22 @@ ActiveRecord::Schema.define(:version => 20110609192426) do
     t.timestamp "created_at"
     t.timestamp "updated_at"
     t.integer   "resource_id"
+    t.string    "event_id"
   end
 
   create_table "resource_requests", :force => true do |t|
-    t.boolean  "urgent"
-    t.date     "first_date"
-    t.date     "deadline"
-    t.float    "duration"
-    t.float    "allocated"
-    t.float    "remaining"
-    t.integer  "project_id"
-    t.integer  "task_id"
-    t.integer  "resource_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "comment",     :limit => 255
+    t.boolean   "urgent"
+    t.date      "first_date"
+    t.date      "deadline"
+    t.float     "duration"
+    t.float     "allocated"
+    t.float     "remaining"
+    t.integer   "project_id"
+    t.integer   "task_id"
+    t.integer   "resource_id"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
+    t.text      "comment"
   end
 
   create_table "resources", :force => true do |t|
@@ -422,6 +438,7 @@ ActiveRecord::Schema.define(:version => 20110609192426) do
     t.string    "description"
     t.timestamp "created_at"
     t.timestamp "updated_at"
+    t.string    "calendar_id"
   end
 
   create_table "suppliers", :force => true do |t|

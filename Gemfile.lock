@@ -39,8 +39,12 @@ GEM
     builder (2.1.2)
     compass (0.10.6)
       haml (>= 3.0.4)
+    daemons (1.1.3)
     dalli (1.0.0)
     database_cleaner (0.6.0)
+    delayed_job (2.1.4)
+      activesupport (~> 3.0)
+      daemons
     devise (1.1.3)
       bcrypt-ruby (~> 2.1.2)
       warden (~> 0.10.7)
@@ -141,6 +145,7 @@ DEPENDENCIES
   compass (>= 0.10.6)
   dalli
   database_cleaner
+  delayed_job
   devise
   exception_notification
   factory_girl_rails
