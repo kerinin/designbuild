@@ -20,6 +20,7 @@
   
   // Update the request list
   $('.requests').replaceWith( "<%= escape_javascript( yield :request_list) %>" );
+  
   set_active_state();
   
 <% end %>
