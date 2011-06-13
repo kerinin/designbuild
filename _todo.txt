@@ -1,18 +1,12 @@
-Resource allocation
-- manually enter a set of resources
-- request a resource for a given amount of time
--- declare constraints; due date, priority, first day available, etc
--- associate data; task, estimated cost, project, etc
-- allocate resources based on outstanding requests
--- how do we differentiate between outstanding and fulfilled?
--- not necessary - allow updating in the past
-
-Classes:
-- Resource: name, description
-- Request: project, task(optional), priority, first_date, finish_date, duration, allocated, remaining
-- Allocation: request, start_date, duration
-
-
+Resource allocation wishlist
+* fast switching btw schedules
+* way to view multiple calendars when scheduling
+* link to google calendar & feed (for putting on phone)
+* quick-add (click on day)
+* add/delete JS error
+* UI distinction between future & past allocations
+* half-day scheduling
+* drag & drop creation, movement
 
 
 
