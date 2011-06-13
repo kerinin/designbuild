@@ -31,6 +31,7 @@ class ResourceRequestsController < ApplicationController
     respond_to do |format|
       format.html # new.html.erb
       format.xml  { render :xml => @resource_request }
+      format.js
     end
   end
 
@@ -43,15 +44,17 @@ class ResourceRequestsController < ApplicationController
   # POST /resource_requests.xml
   def create
     @resource_request = ResourceRequest.new(params[:resource_request])
-    @resource_request.project = @project
+    @resource_request.project = @project unless @project.nil?
 
     respond_to do |format|
       if @resource_request.save
         format.html { redirect_to(resource_resource_allocations_path(@resource_request.resource), :notice => 'Resource request was successfully created.') }
         format.xml  { render :xml => @resource_request, :status => :created, :location => @resource_request }
+        format.js
       else
         format.html { render :action => "new" }
         format.xml  { render :xml => @resource_request.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
   end
@@ -87,6 +90,6 @@ class ResourceRequestsController < ApplicationController
   private
   
   def get_project
-    @project = Project.find(params[:project_id])
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
   end
 end

@@ -1,12 +1,11 @@
 Resource allocation wishlist
-* project abbreviations, prefix to task when sending to google
 * way to view multiple calendars when scheduling
-* link to google calendar & feed (for putting on phone)
 * quick-add (click on day)
 * add/delete JS error
 * UI distinction between future & past allocations
 * half-day scheduling
 * drag & drop creation, movement
+* link to google calendar & feed (for putting on phone)
 
 
 

@@ -1,0 +1,43 @@
+-@resource_request.resource_allocations
+
+= form_for [@resource_request], :remote => true do |f|
+  =hidden_field_tag :allocate_to, params[:allocate_to]
+  
+  -if @resource_request.errors.any?
+    #error_explanation.error
+      %h2= "#{pluralize(@resource_request.errors.count, "error")} prohibited this resource_request from being saved:"
+      %ul
+        - @resource_request.errors.full_messages.each do |msg|
+          %li= msg
+
+  %hr
+
+  .field
+    = f.hidden_field :resource_id
+    = f.fields_for :resource_allocations do |f_alloc|
+      = f_alloc.hidden_field :start_date
+      = f_alloc.hidden_field :duration
+    
+  .field
+    = f.label :project_id
+    = f.collection_select :project_id, Project.all, :id, :name, :include_blank => true
+  
+  %hr
+    
+  .field
+    = f.label :urgent
+    = f.check_box :urgent
+  .field
+    = f.label :first_date
+    = f.date_select :first_date, :include_blank => true
+  .field
+    = f.label :deadline
+    = f.date_select :deadline, :include_blank => true
+  .field
+    = f.label :duration, 'Duration (days)'
+    = f.text_field :duration
+  .field
+    = f.label :comment
+    = f.text_area :comment
+  .actions
+    = f.submit 'Add to Schedule'

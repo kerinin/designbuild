@@ -13,6 +13,8 @@ class ResourceRequest < ActiveRecord::Base
   
   scope :active, lambda { where( 'remaining > 0' ) }
   
+  accepts_nested_attributes_for :resource_allocations
+  
   private
   
   def update_totals
