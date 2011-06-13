@@ -34,7 +34,10 @@ class ResourceAllocation < ActiveRecord::Base
     calendar = GCal4Ruby::Calendar.find(service, {:id => self.resource.calendar_id})
     event = GCal4Ruby::Event.new(service, {
       :calendar => calendar, 
-      :title => self.resource_request.task.blank? ? self.resource_request.project.name : self.resource_request.task.name, 
+      :title => [
+        self.resource_request.project.short.nil? ? self.resource_request.project.name : self.resource_request.project.short,
+        self.resource_request.task.blank? ? nil : ": #{self.resource_request.task.name}"
+      ].join,
       :start_time => self.start_date, 
       :end_time => self.start_date,
       :where => self.resource_request.project.name,

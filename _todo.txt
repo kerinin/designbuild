@@ -1,5 +1,5 @@
 Resource allocation wishlist
-* fast switching btw schedules
+* project abbreviations, prefix to task when sending to google
 * way to view multiple calendars when scheduling
 * link to google calendar & feed (for putting on phone)
 * quick-add (click on day)

@@ -10,6 +10,11 @@
     .field
       = f.label :name
       = f.text_field :name
+  
+  .field
+    =f.label :short, 'Short Name (ie abbreviation)'
+    =f.text_field :short
+    
     
   .field
     =f.radio_button :fixed_bid, true

@@ -1,0 +1,26 @@
+$(document).ready( function() {
+  <% allocations.all.each do |allocation| %>
+    $('#allocation_<%= allocation.id %>').qtip({
+       content: '<%= escape_javascript( raw( textilize(allocation.resource_request.comment) ) ) %>',
+       show: 'mouseover',
+       hide: 'mouseout',
+       position: {
+          corner: {
+             target: 'bottomMiddle',
+             tooltip: 'topMiddle'
+          }
+       },
+       style: {
+         name: 'green',
+         border: {
+            radius: 8,
+            width: 4
+         },
+         tip: 'topMiddle',
+         width: {
+           max: 500
+         }
+       }
+    })
+  <% end %>
+});

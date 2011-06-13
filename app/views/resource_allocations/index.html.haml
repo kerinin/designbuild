@@ -1,5 +1,7 @@
 -content_for :head do
   =javascript_include_tag 'calendar_ajax.js'
+  %script{:type => 'text/javascript'}
+    =render :partial => 'allocation_qtips.js', :locals => {:allocations => ResourceAllocation.includes(:resource_request).where("resource_requests.comment IS NOT NULL")}
   
 =render :partial => 'shared/project_nav', :locals => {:current => :resources}
 

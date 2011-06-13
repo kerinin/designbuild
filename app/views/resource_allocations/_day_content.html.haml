@@ -3,7 +3,7 @@
 .allocation{:class => ["resource_#{request.resource_id}", request.project.color.nil? ? "project_color_#{1+(request.project_id % 5)}" : "project_color_#{request.project.color}", template ? 'insertion_content' : nil], :id => allocation.nil? ? nil : "allocation_#{allocation.id}"}
   -if request.urgent
     =icon(:error)
-  %strong=request.project.name
+  %strong=request.project.short.nil? ? request.project.name : request.project.short
   =request.task.name unless request.task.blank?
   -unless allocation.nil?
     .delete

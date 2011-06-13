@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110609214028) do
+ActiveRecord::Schema.define(:version => 20110613164052) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -134,16 +134,16 @@ ActiveRecord::Schema.define(:version => 20110609214028) do
   add_index "deadlines", ["project_id"], :name => "index_deadlines_on_project_id"
 
   create_table "delayed_jobs", :force => true do |t|
-    t.integer  "priority",   :default => 0
-    t.integer  "attempts",   :default => 0
-    t.text     "handler"
-    t.text     "last_error"
-    t.datetime "run_at"
-    t.datetime "locked_at"
-    t.datetime "failed_at"
-    t.string   "locked_by"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.integer   "priority",   :default => 0
+    t.integer   "attempts",   :default => 0
+    t.text      "handler"
+    t.text      "last_error"
+    t.timestamp "run_at"
+    t.timestamp "locked_at"
+    t.timestamp "failed_at"
+    t.string    "locked_by"
+    t.timestamp "created_at"
+    t.timestamp "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], :name => "delayed_jobs_priority"
@@ -387,6 +387,7 @@ ActiveRecord::Schema.define(:version => 20110609214028) do
     t.float     "cost",                        :default => 0.0
     t.float     "raw_cost",                    :default => 0.0
     t.integer   "color"
+    t.string    "short"
   end
 
   create_table "projects_users", :id => false, :force => true do |t|
