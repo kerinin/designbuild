@@ -2,7 +2,7 @@
   =javascript_include_tag 'calendar_ajax.js'
   =javascript_include_tag 'jquery.dimscreen.js'
   %script{:type => 'text/javascript'}
-    =render :partial => 'allocation_qtips.js', :locals => {:allocations => ResourceAllocation.includes(:resource_request).where("resource_requests.comment IS NOT NULL")}
+    =render :partial => 'allocation_qtips.js', :locals => {:allocations => ResourceAllocation.includes(:resource_request).where("resource_requests.comment IS NOT NULL AND resource_requests.comment != ?", "")}
   
 =render :partial => 'shared/project_nav', :locals => {:current => :resources}
 
@@ -38,11 +38,11 @@
           -(1..7).each do |weekday|
             -day = Date.commercial(start_date.year, week, weekday)
             -allocations = @resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
-            .day{:id => day.to_s, :class => day == Date::today ? 'today' : nil}
+            .day{:id => day.to_s, :class => [ day < Date::today ? 'past' : nil, day == Date::today ? 'today' : nil] }
               -allocations.all.each do |alloc|
                 =render :partial => 'day_content', :locals => {:request => alloc.resource_request, :allocation => alloc, :template => false}
               .quick_add
-                =link_to icon(:add), new_resource_request_path('resource_request[resource_id]' => @resource.id, 'resource_request[resource_allocations_attributes][0][start_date]' => day.to_s, 'resource_request[resource_allocations_attributes][0][duration]' => 1), :remote => true
+                =link_to icon(:add), new_resource_request_path('resource_request[resource_id]' => @resource.id, 'resource_request[duration]' => 1, 'resource_request[resource_allocations_attributes][][start_date]' => day.to_s, 'resource_request[resource_allocations_attributes][][duration]' => 1), :remote => true
               .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
   
     / Hidden form for ajax

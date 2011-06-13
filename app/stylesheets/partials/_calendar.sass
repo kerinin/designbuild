@@ -128,6 +128,13 @@ body.bp
         a
           color : white
           
+        &.past
+          margin-bottom : 15px
+          
+          .allocation
+            width : 102px
+            height : 72px
+            
         &.today
           margin-right : 15px
           margin-bottom : 15px
@@ -139,7 +146,7 @@ body.bp
             
         .quick_add
           display : none
-          
+        
       .allocation
         width : 100%
         height : 100%
@@ -151,20 +158,28 @@ body.bp
         
         &.project_color_1
           background : $project_color_1
-          border : $project_color_1
+          border-color : $project_color_1
         &.project_color_2
           background : $project_color_2
-          border : $project_color_2
+          border-color : $project_color_2
         &.project_color_3
           background : $project_color_3
-          border : $project_color_3
+          border-color : $project_color_3
         &.project_color_4
           background : $project_color_4
-          border : $project_color_4
+          border-color : $project_color_4
         &.project_color_5
           background : $project_color_5
-          border : $project_color_5
-                
+          border-color : $project_color_5
+
+      &.past 
+        color : black
+      
+      &.past .allocation
+        background : white
+        border-width : 4px
+        border-style : solid
+                            
       .date_text
         position : absolute
         right : 5px

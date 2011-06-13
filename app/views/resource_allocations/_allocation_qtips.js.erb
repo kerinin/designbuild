@@ -1,5 +1,5 @@
 $(document).ready( function() {
-  <% allocations.all.each do |allocation| %>
+  <% allocations.each do |allocation| %>
     $('#allocation_<%= allocation.id %>').qtip({
        content: '<%= escape_javascript( raw( textilize(allocation.resource_request.comment) ) ) %>',
        show: 'mouseover',

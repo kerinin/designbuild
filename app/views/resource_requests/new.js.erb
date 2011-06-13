@@ -8,14 +8,14 @@
 <% end %>
 
 <% content_for :cancel_link do %>
-  <%= link_to( 'Cancel', '/' ) %>
+  <%= link_to( 'Cancel', resource_resource_allocations_path(@resource_request.resource) ) %>
 <% end %>
 
 $.dimScreen(500, .25, function() {
   $("body").prepend("<%= escape_javascript( yield :content ) %>");
   $("form .submit").append("or <%= escape_javascript yield :cancel_link %>")
   
-  $("form a").click( function(e) {
+  $("form .submit a").click( function(e) {
     $('.fixed_wrapper').remove();
     $.dimScreenStop();
     e.preventDefault();

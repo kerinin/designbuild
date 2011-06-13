@@ -43,9 +43,15 @@ class ResourceRequestsController < ApplicationController
   # POST /resource_requests
   # POST /resource_requests.xml
   def create
+    if params[:resource_request].has_key? :resource_allocations_attributes
+       params[:resource_request][:resource_allocations_attributes].each { |key,attribute| 
+          attribute.merge!({:nested => true})
+    }
+    end
+    
     @resource_request = ResourceRequest.new(params[:resource_request])
     @resource_request.project = @project unless @project.nil?
-
+    
     respond_to do |format|
       if @resource_request.save
         format.html { redirect_to(resource_resource_allocations_path(@resource_request.resource), :notice => 'Resource request was successfully created.') }

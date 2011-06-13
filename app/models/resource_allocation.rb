@@ -1,10 +1,13 @@
 class ResourceAllocation < ActiveRecord::Base
+  attr_accessor :nested
+  
   belongs_to :resource_request
   belongs_to :resource
   
   default_scope :order => :start_date
   
-  validates_presence_of :start_date, :duration, :resource_request
+  validates_presence_of :start_date, :duration 
+  validates_presence_of :resource_request, :unless => :nested
   
   after_create do |r|
     r.delay.create_event if r.event_id.nil?

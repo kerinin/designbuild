@@ -32,15 +32,29 @@ class ResourceRequestsControllerTest < ActionController::TestCase
     assert_not_nil assigns(:resource_request)
     assert_not_nil assigns(:project)
   end
-
+  
+  test "should get xhr new" do
+    xhr :get, :new, :resource_request => {:resource_id => @resource.id, :resource_allocations_attributes => [ {:start_date => Date::today.to_s, :duration => 1 } ] }
+    assert_response :success
+    assert_not_nil assigns(:resource_request)
+    assert !assigns(:resource_request).resource_allocations.empty?
+  end
+    
   test "should create resource_request from project" do
     assert_difference('ResourceRequest.count') do
       post :create, :project_id => @project.to_param, :resource_request => @request1.attributes
     end
 
-    assert_redirected_to project_resource_request_path(@project, assigns(:resource_request))
+    assert_redirected_to resource_resource_allocations_path(assigns(:resource_request).resource)
   end
 
+  test "should create xhr resource_request" do
+    xhr :post, :create, :resource_request => {:resource_id => @resource.id, :resource_allocations_attributes => [ {:start_date => Date::today.to_s, :duration => 1 } ] }
+    assert_response :success
+    assert_not_nil assigns(:resource_request)
+    assert !assigns(:resource_request).resource_allocations.empty?
+  end
+  
   test "should show resource_request from project" do
     get :show, :project_id => @project.to_param, :id => @request1.to_param
     assert_response :success
@@ -57,7 +71,7 @@ class ResourceRequestsControllerTest < ActionController::TestCase
 
   test "should update resource_request from project" do
     put :update, :project_id => @project.to_param, :id => @request1.to_param, :resource_request => @request1.attributes
-    assert_redirected_to project_resource_request_path(@project, assigns(:resource_request))
+    assert_redirected_to resource_resource_allocations_path(assigns(:resource_request).resource)
   end
 
   test "should destroy resource_request from project" do

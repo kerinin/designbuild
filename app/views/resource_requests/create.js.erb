@@ -2,14 +2,17 @@
   //Error
   
   <% content_for :error_tr do %>
-    <%= error_messages_for(@resource_request) %>
+    <div class="error">
+      <%= error_messages_for(@resource_request) %>
+    </div>
   <% end %>
 
   //Hide the flash notice div
   $("#flash_notice").hide(300);
 
+  $(".fixed_wrapper .error").remove();
   $(".fixed_wrapper h1").after("<%= escape_javascript( yield :error_tr ) %>");
-
+  
 <% else %>
   //Success
   

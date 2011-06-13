@@ -1,7 +1,5 @@
 Resource allocation wishlist
 * way to view multiple calendars when scheduling
-* quick-add (click on day)
-* add/delete JS error
 * UI distinction between future & past allocations
 * half-day scheduling
 * drag & drop creation, movement
