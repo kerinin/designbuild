@@ -5,7 +5,7 @@ class ResourceAllocationsController < ApplicationController
   # GET /resource_allocations
   # GET /resource_allocations.xml
   def index
-    @resource_allocations = ResourceAllocation.all
+    @resource_allocations = ResourceAllocation.scoped
 
     respond_to do |format|
       format.html # index.html.erb

@@ -10,7 +10,7 @@
         %li= link_to resource.name, resource_resource_allocations_path(resource)
         
   -else
-    %h1= "#{@resource.name} Schedule"
+    %h1.resource{:id => "resource_#{@resource.id}"}= "#{@resource.name} Schedule"
     
     %h2 Timeline
     
@@ -34,10 +34,10 @@
         .week
           -(1..7).each do |weekday|
             -day = Date.commercial(start_date.year, week, weekday)
-            -allocations = @resource.resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
+            -allocations = @resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
             .day{:id => day.to_s, :class => day == Date::today ? 'today' : nil}
-              -unless allocations.empty?
-                =render :partial => 'day_content', :locals => {:request => allocations.first.resource_request, :allocation => allocations.first, :template => false}
+              -allocations.all.each do |alloc|
+                =render :partial => 'day_content', :locals => {:request => alloc.resource_request, :allocation => alloc, :template => false}
               .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
   
     / Hidden form for ajax

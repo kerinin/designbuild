@@ -16,7 +16,7 @@
   <% end %>
   
   // Replace the allocation div so the delete button shows up
-  $('#<%= @resource_allocation.start_date.to_date.to_s %> .allocation').replaceWith( "<%= escape_javascript( yield :allocation ) %>");
+  $('#<%= @resource_allocation.start_date.to_date.to_s %> .allocation:not([id])').replaceWith( "<%= escape_javascript( yield :allocation ) %>");
   
   // Update the request list
   $('.requests').replaceWith( "<%= escape_javascript( yield :request_list) %>");

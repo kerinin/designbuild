@@ -1,4 +1,4 @@
-var active_project, active_request, qv_id;
+var active_project, active_request, resource_id, qv_id;
 
 function handle_request(e) {
   var requestElem = $(e.target).closest('.request');
@@ -38,7 +38,6 @@ function handle_day(e) {
 
 function handle_delete(e) {
   var dayElem = $(e.target).closest('.day');
-  //dayElem.removeClass('busy');
   $(e.target).closest('.allocation').remove();
   
   refresh_view();  
@@ -64,8 +63,18 @@ function refresh_view() {
   }
   $(".request").removeClass('active');
   $("#request_"+active_request).addClass('active');
-  $('.day').not('.day:has(.allocation)').removeClass('busy');
-  $('.day').has('.allocation').addClass('busy');
+
+  // Switch off allocations for non-current resources (for quickview)
+  if( qv_id != null ){
+    $('.allocation').not('resource_'+qv_id).not('.insertion_content').removeClass('visible');
+    $('.allocation.resource_'+qv_id).not('.insertion_content').addClass('visible');
+  } else {
+    $('.allocation').not('resource_'+resource_id).not('.insertion_content').removeClass('visible');
+    $('.allocation.resource_'+resource_id).not('.insertion_content').addClass('visible');
+  }
+  
+  $('.day').not('.day:has(.allocation.visible)').removeClass('busy');
+  $('.day').has('.allocation.visible').addClass('busy');
 }
 
 function refresh_behavior() {
@@ -80,6 +89,8 @@ function refresh_behavior() {
 }
 
 $(document).ready( function() {
+  resource_id = $('h1.resource').attr('id').split('_')[1]
+  
   refresh_view();
   refresh_behavior();
 
