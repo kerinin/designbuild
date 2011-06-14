@@ -1,6 +1,6 @@
 .request{:id => "request_#{request.id}", :class => active ? 'active' : nil}
   =render :partial => 'day_content', :locals => {:request => request, :template => true}
-    
+  
   -if request.urgent
     =icon(:error)
   %strong
@@ -17,7 +17,7 @@
   -elsif !request.deadline.nil?
     %br
     ="Before #{request.deadline.to_s(:short)}"
-    
+  
   -if request.comment
     %br
     %i=request.comment

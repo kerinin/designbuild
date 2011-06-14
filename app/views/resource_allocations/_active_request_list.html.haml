@@ -1,8 +1,6 @@
+%h2 Resource Requests
+
 .requests
-  %h2
-    Resource Requests
-
-
   -Project.order(:name).all.each do |project|
     .project{:id => "project_#{project.id}", :class => [project.color.nil? ? "project_color_#{1+(project.id % 5)}" : "project_color_#{project.color}", project.resource_requests.active.empty? ? nil : 'active']}
       %h3

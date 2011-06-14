@@ -3,8 +3,6 @@ Resource allocation wishlist
 * half-day scheduling
 * drag & drop creation, movement
 * link to google calendar & feed (for putting on phone)
-* clean up requests list
-* deleting after quick add didn't work (maybe all deletes?)
 
 
 
