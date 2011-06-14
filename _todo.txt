@@ -1,5 +1,4 @@
 Resource allocation wishlist
-* way to view multiple calendars when scheduling
 * half-day scheduling
 * drag & drop creation, movement
 * link to google calendar & feed (for putting on phone)
