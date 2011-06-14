@@ -76,8 +76,8 @@ body.bp
         &:hover
           background : #eee
       
-      .request.active
-        border : 4px solid #FF8566
+        &.active
+          border : 4px solid #FF8566
   
   .weeks
     width : 960px
@@ -89,6 +89,7 @@ body.bp
     
   .week
     .day
+      // Base Styles
       position : relative
       float : left
       width : 110px
@@ -96,38 +97,34 @@ body.bp
       margin-bottom : 15px
       height : 80px
       border : 4px solid #ccc
-    
-      .allocation .delete
-        display : none
-        position : absolute
-        left : 4px
-        bottom : 0
-        
-      .quick_add
-        position : absolute
-        left : 45px
-        top : 30px
-        display : none
-    
       &:hover
         color : black
         background : #eee
-        
-        .allocation .delete
-          display : block
-          
-        .quick_add
-          display : block
-      
+      &.past 
+        color : black  
+      &.today
+        border : 4px solid black
+      &.busy
+        color : white
+        border : 0
+        margin-right : 23px
+        margin-bottom : 23px      
+        a
+          color : white    
+      &.busy.past
+        margin-bottom : 15px
+        color : black       
+      &.busy.today
+        margin-right : 15px
+        margin-bottom : 15px
+        border : 4px solid black  
+                             
+      // States
       &.active
         border : 4px dashed #ccc
         cursor : pointer
-        
-        .quick_add
-          display : none
-        
-      &.today, .day.active.today
-        border : 4px solid black
+        .today
+          border : 4px solid black  
              
       &.busy, &.busy.active
         color : white
@@ -141,33 +138,22 @@ body.bp
         &.past
           margin-bottom : 15px
           color : black
-          
-          .allocation
-            width : 102px
-            height : 72px
             
         &.today
           margin-right : 15px
           margin-bottom : 15px
           border : 4px solid black
-          
-          .allocation
-            width : 102px
-            height : 72px
             
-        .quick_add
-          display : none
-        
+      // Allocations
       .allocation
         width : 100%
         height : 100%
         padding : 4px
         display : none
         overflow : hidden
-        
+      
         &.visible
           display : block
-        
         &.project_color_1
           background : $project_color_1
           border-color : $project_color_1
@@ -183,15 +169,37 @@ body.bp
         &.project_color_5
           background : $project_color_5
           border-color : $project_color_5
-
-      &.past 
-        color : black
-      
+        
+        .delete
+          display : none
+          position : absolute
+          left : 4px
+          bottom : 0   
+      &:hover .allocation .delete
+        display : block
+      &.busy.past .allocation, &.busy.active.past .allocation, &.busy.today .allocation, &.busy.active.today .allocation
+        width : 102px
+        height : 72px
       &.past .allocation
         background : white
         border-width : 4px
         border-style : solid
-                            
+          
+      // Quick-Add
+      .quick_add
+        position : absolute
+        left : 45px
+        top : 30px
+        display : none
+      &:hover .quick_add
+        display : block
+      &.active .quick_add
+        display : none
+      &.busy .quick_add, &.busy.active .quick_add
+        display : none
+      
+              
+      // Date Text 
       .date_text
         position : absolute
         right : 5px
