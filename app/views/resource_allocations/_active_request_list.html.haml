@@ -1,15 +1,16 @@
-%h2 Resource Requests
-
 .requests
-  -Project.order(:name).all.each do |project|
-    .project{:id => "project_#{project.id}", :class => [project.color.nil? ? "project_color_#{1+(project.id % 5)}" : "project_color_#{project.color}", project.resource_requests.active.empty? ? nil : 'active']}
-      %h3
-        =project.name
-        =link_to icon(:add), new_project_resource_request_path(project, 'resource_request[resource_id]' => resource.id)
-      -unless project.resource_requests.empty?
-        =link_to 'view all requests', project_resource_requests_path(project)
-      -requests = project.resource_requests.where(:resource_id => resource.id).where('remaining > 0')
-      -requests.each do |request|
-        =render :partial => 'request_block', :locals => {:request => request, :project => project, :active => false}
+  %h2 Resource Requests
+
+  .projects
+    -Project.order(:name).all.each do |project|
+      .project{:id => "project_#{project.id}", :class => [project.color.nil? ? "project_color_#{1+(project.id % 5)}" : "project_color_#{project.color}", project.resource_requests.active.empty? ? nil : 'active']}
+        %h3
+          =project.name
+          =link_to icon(:add), new_project_resource_request_path(project, 'resource_request[resource_id]' => resource.id)
+        -unless project.resource_requests.empty?
+          =link_to 'view all requests', project_resource_requests_path(project)
+        -requests = project.resource_requests.where(:resource_id => resource.id).where('remaining > 0')
+        -requests.each do |request|
+          =render :partial => 'request_block', :locals => {:request => request, :project => project, :active => false}
         
-    / .includes(:resource_requests).where('resource_requests.resource_id = ? AND resource_requests.remaining > 0', resource.id)
+      / .includes(:resource_requests).where('resource_requests.resource_id = ? AND resource_requests.remaining > 0', resource.id)

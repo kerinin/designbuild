@@ -1,4 +1,7 @@
 Resource allocation wishlist
+* cache delete if being created
+* adding multiple
+* check for prior assignment on create
 * half-day scheduling
 * drag & drop creation, movement
 * link to google calendar & feed (for putting on phone)

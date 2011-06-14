@@ -12,6 +12,7 @@ function handle_request(e) {
   }
 
   refresh_view();  
+  //e.stopImmediatePropagation();
 }
 
 function handle_day(e) {
@@ -25,7 +26,7 @@ function handle_day(e) {
     // Create the new resource allocation
     $('#new_resource_allocation input#resource_allocation_resource_request_id').val(active_request);
     $('#new_resource_allocation input#resource_allocation_start_date').val(day);
-    $('#new_resource_allocation').submit();
+    $('form#new_resource_allocation').first().submit();
   
     // Update the display
     var content = $('#'+active_project+' .insertion_content').clone().first();
@@ -82,13 +83,13 @@ function refresh_view() {
 
 function refresh_behavior() {
   // Update Events
-  $('.request').click( handle_request );
+  $('.request').unbind('click').click( handle_request );
   
-  $('.day').click( handle_day);
+  $('.day').unbind('click').click( handle_day);
   
-  $('.delete a').click( handle_delete);
+  $('.delete a').unbind('click').click( handle_delete);
   
-  $('.quick_view .quick_view_item').hover(handle_quickview_over, handle_quickview_out);
+  $('.quick_view .quick_view_item').unbind('hover').hover(handle_quickview_over, handle_quickview_out);
 }
 
 $(document).ready( function() {
