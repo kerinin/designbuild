@@ -38,7 +38,9 @@ function handle_day(e) {
 
 function handle_delete(e) {
   var dayElem = $(e.target).closest('.day');
-  $(e.target).closest('.allocation').qtip('destroy');
+  $(e.target).closest('.allocation').each(function() {
+    if ($(this).data("qtip")) $(this).qtip("destroy");
+  });
   $(e.target).closest('.allocation').remove();
   
   refresh_view();  
