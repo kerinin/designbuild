@@ -76,8 +76,8 @@ function refresh_view() {
     $('.allocation.resource_'+resource_id).not('.insertion_content').addClass('visible');
   }
   
-  $('.day').not('.day:has(.allocation.visible)').removeClass('busy');
-  $('.day').has('.allocation.visible').addClass('busy');
+  $('.day').not('.day:has(.allocation.visible)').addClass('free');
+  $('.day').has('.allocation.visible').removeClass('free');
 }
 
 function refresh_behavior() {

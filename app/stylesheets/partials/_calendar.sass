@@ -87,121 +87,104 @@ body.bp
     
     margin-bottom : 40px
     
-  .week
-    .day
-      // Base Styles
-      position : relative
-      float : left
-      width : 110px
-      margin-right : 15px
-      margin-bottom : 15px
-      height : 80px
-      border : 4px solid #ccc
-      &:hover
-        color : black
-        background : #eee
-      &.past 
-        color : black  
-      &.today
-        border : 4px solid black
-      &.busy
+    .week
+      .day
+        // Base Styles
+        position : relative
+        float : left
+        width : 110px
+        margin-right : 15px
+        margin-bottom : 15px
+        height : 80px
+        border : 4px solid #ccc
         color : white
         border : 0
         margin-right : 23px
         margin-bottom : 23px      
         a
-          color : white    
-      &.busy.past
-        margin-bottom : 15px
-        color : black       
-      &.busy.today
-        margin-right : 15px
-        margin-bottom : 15px
-        border : 4px solid black  
-                             
-      // States
-      &.active
-        border : 4px dashed #ccc
-        cursor : pointer
-        .today
-          border : 4px solid black  
-             
-      &.busy, &.busy.active
-        color : white
-        border : 0
-        margin-right : 23px
-        margin-bottom : 23px
-        
-        a
           color : white
-          
-        &.past
+        &.past 
+          color : black  
           margin-bottom : 15px
           color : black
-            
         &.today
+          border : 4px solid black
           margin-right : 15px
           margin-bottom : 15px
           border : 4px solid black
+                
+                             
+        // States
+        &.free
+          color : black
+          border : 4px solid #ccc
+          margin-right : 15px
+          margin-bottom : 15px
+          &:hover
+            background : #eee
+        &.active.free
+          border : 4px dashed #ccc
+          cursor : pointer
+          .today
+            border : 4px solid black  
+             
             
-      // Allocations
-      .allocation
-        width : 100%
-        height : 100%
-        padding : 4px
-        display : none
-        overflow : hidden
-      
-        &.visible
-          display : block
-        &.project_color_1
-          background : $project_color_1
-          border-color : $project_color_1
-        &.project_color_2
-          background : $project_color_2
-          border-color : $project_color_2
-        &.project_color_3
-          background : $project_color_3
-          border-color : $project_color_3
-        &.project_color_4
-          background : $project_color_4
-          border-color : $project_color_4
-        &.project_color_5
-          background : $project_color_5
-          border-color : $project_color_5
-        
-        .delete
+        // Allocations
+        .allocation
+          width : 100%
+          height : 100%
+          padding : 4px
           display : none
-          position : absolute
-          left : 4px
-          bottom : 0   
-      &:hover .allocation .delete
-        display : block
-      &.busy.past .allocation, &.busy.active.past .allocation, &.busy.today .allocation, &.busy.active.today .allocation
-        width : 102px
-        height : 72px
-      &.past .allocation
-        background : white
-        border-width : 4px
-        border-style : solid
+          overflow : hidden
+      
+          &.visible
+            display : block
+          &.project_color_1
+            background : $project_color_1
+            border-color : $project_color_1
+          &.project_color_2
+            background : $project_color_2
+            border-color : $project_color_2
+          &.project_color_3
+            background : $project_color_3
+            border-color : $project_color_3
+          &.project_color_4
+            background : $project_color_4
+            border-color : $project_color_4
+          &.project_color_5
+            background : $project_color_5
+            border-color : $project_color_5
+        
+          .delete
+            display : none
+            position : absolute
+            left : 4px
+            bottom : 0   
+        &:hover .allocation .delete
+          display : block
+        &.past .allocation, &.active.past .allocation, &.today .allocation, &.active.today .allocation
+          width : 102px
+          height : 72px
+        &.past .allocation
+          background : white
+          border-width : 4px
+          border-style : solid
           
-      // Quick-Add
-      .quick_add
-        position : absolute
-        left : 45px
-        top : 30px
-        display : none
-      &:hover .quick_add
-        display : block
-      &.active .quick_add
-        display : none
-      &.busy .quick_add, &.busy.active .quick_add
-        display : none
+        // Quick-Add
+        .quick_add
+          position : absolute
+          left : 45px
+          top : 30px
+          display : none
+        &.free:hover .quick_add
+          display : block
+        &.free.active:hover .quick_add
+          display : none
       
               
-      // Date Text 
-      .date_text
-        position : absolute
-        right : 5px
-        bottom : 0
+        // Date Text 
+        .date_text
+          position : absolute
+          right : 5px
+          bottom : 0
 
