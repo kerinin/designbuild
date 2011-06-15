@@ -15,15 +15,17 @@ class Resource < ActiveRecord::Base
   end
   
   def create_calendar
+    puts "Starting create calendar for resource id #{self.id}"
     service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    puts "Authentication status: #{auth}"
     
     cal = GCal4Ruby::Calendar.new(service, {
       :title => "#{self.name} Schedule",
       :hidden => false
     })
-    cal.save
-    self.update_attributes(:calendar_id => cal.id)
+    puts "GCal save status: #{cal.save}"
+    puts "AR save status: #{self.update_attributes(:calendar_id => cal.id)}"
   end
 end
 
@@ -35,10 +37,15 @@ class DeleteCalendarJob
   end
   
   def perform
+    puts "Starting delete calendar for calendar #{self.cal_id}"
+    
     service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-
+    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    puts "Authentication status: #{auth}"
+    
     cal = GCal4Ruby::Calendar.find(service, {:id => cal_id})
-    cal.delete
+    puts "Calendar search result #{cal}"
+    
+    puts "Calendar delete status: #{cal.delete}"
   end    
 end

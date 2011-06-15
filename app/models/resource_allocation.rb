@@ -31,10 +31,14 @@ class ResourceAllocation < ActiveRecord::Base
   end
   
   def create_event
+    puts "Starting create event for resource allocation #{self.id}"
     service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    puts "Authentication Status: #{auth}"
     
     calendar = GCal4Ruby::Calendar.find(service, {:id => self.resource.calendar_id})
+    puts "Calendar search result: #{calendar}"
+    
     event = GCal4Ruby::Event.new(service, {
       :calendar => calendar, 
       :title => [
@@ -47,8 +51,8 @@ class ResourceAllocation < ActiveRecord::Base
       :all_day => true,
       :content => self.resource_request.comment
     })
-    event.save
-    self.update_attributes( :event_id => event.id )
+    puts "GCal Save status: #{event.save}"
+    puts "AR Save status: #{self.update_attributes( :event_id => event.id )}"
   end
   
   def update_event
@@ -77,10 +81,14 @@ class DeleteEventJob
   end
   
   def perform
+    puts "Starting delete event for event #{self.cal_id}"
     service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+    puts "Authentication status: #{auth}"  
         
     event = GCal4Ruby::Event.find(service, {:id => self.cal_id})
-    event.delete
+    puts "Event search result: #{event}"
+    
+    puts "Event delete status: #{event.delete}"
   end    
 end
