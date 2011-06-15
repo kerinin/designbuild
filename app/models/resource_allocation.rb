@@ -14,7 +14,7 @@ class ResourceAllocation < ActiveRecord::Base
     r.delay.create_event
   end
   after_update do |r|
-    unless r.event_id.nil?
+    unless r.event_id.nil? || ( r.event_id.changed? && r.event_id_was.nil? )
       r.delay.update_event 
     end
   end
