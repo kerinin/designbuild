@@ -42,7 +42,7 @@ gem 'state_machine'
 #gem 'pg'
 gem 'will_paginate', '>=3.0.pre'
 gem 'gcal4ruby'
-gem 'delayed_job'
+gem 'delayed_job', '=2.1.4'
 gem 'hirefireapp'
 gem 'RedCloth'
 
