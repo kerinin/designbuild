@@ -9,9 +9,9 @@ class ResourceAllocation < ActiveRecord::Base
   validates_presence_of :start_date, :duration 
   validates_presence_of :resource_request, :unless => :nested
   
-  after_validation do |r|
+  after_create do |r|
     r.delay.create_event if r.event_id.nil?
-    r.event_id = 'caching'
+    r.update_attributes(:event_id => 'caching')
   end
   after_update do |r|
     r.delay.update_event
