@@ -61,10 +61,13 @@ function handle_quickview_out(e) {
 function handle_allocation_drop(e, ui) {
   var targetDay = $(e.target).closest('.day');
   var draggable = ui.draggable;
+  var newDay = targetDay.attr('id');
 
   targetDay.append( draggable );
   
   // AJAX for changes...
+  draggable.find('form input#resource_allocation_start_date').val(newDay);
+  draggable.find('form').first().submit();
 }
 function handle_allocation_drag_start(e, ui) {
   $(e.target).closest('.day').addClass('free');

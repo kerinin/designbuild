@@ -1,0 +1,5 @@
+<% if @resource_allocation.errors.any? %>
+  //Error
+  
+  window.location.href = "<%= resource_resource_allocations_path(@resource) %>";
+<% end %>

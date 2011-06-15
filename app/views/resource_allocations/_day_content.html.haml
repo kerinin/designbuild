@@ -9,5 +9,5 @@
     .delete
       =link_to icon(:delete), allocation, :method => :delete, :remote => true
       
-    =form_for allocation do |f|
+    =form_for allocation, :remote => true do |f|
       =f.hidden_field :start_date

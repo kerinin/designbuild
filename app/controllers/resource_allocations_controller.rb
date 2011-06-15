@@ -66,9 +66,11 @@ class ResourceAllocationsController < ApplicationController
       if @resource_allocation.update_attributes(params[:resource_allocation])
         format.html { redirect_to(@resource_allocation, :notice => 'Resource allocation was successfully updated.') }
         format.xml  { head :ok }
+        format.js { render :nothing => true}
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @resource_allocation.errors, :status => :unprocessable_entity }
+        format.js
       end
     end
   end

@@ -109,8 +109,7 @@ body.bp
           border : 4px solid black
           margin-right : 15px
           margin-bottom : 15px
-          border : 4px solid black
-                
+          border : 4px solid black          
                              
         // States
         &.free
@@ -139,7 +138,7 @@ body.bp
           padding : 4px
           display : none
           overflow : hidden
-      
+                
           &.visible
             display : block
           &.project_color_1
@@ -158,7 +157,11 @@ body.bp
             background : $project_color_5
             border-color : $project_color_5
           &.ui-draggable-dragging
-            z-index : 10000        
+            z-index : 10000
+            -moz-box-shadow : 5px 5px 10px rgba(0,0,0,0.3)
+            -webkit-box-shadow : 5px 5px 10px rgba(0,0,0,0.3)
+            box-shadow : 5px 5px 10px rgba(0,0,0,0.3)
+            
           .delete
             display : none
             position : absolute

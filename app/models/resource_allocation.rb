@@ -12,7 +12,9 @@ class ResourceAllocation < ActiveRecord::Base
   after_create do |r|
     r.delay.create_event if r.event_id.nil?
   end
-  #after_update :update_event
+  after_update do |r|
+    r.delay.update_event unless r.event_id.nil?
+  end
   after_save :update_request
   before_save :get_resource
   after_destroy :update_request
@@ -56,41 +58,15 @@ class ResourceAllocation < ActiveRecord::Base
   end
   
   def update_event
-    service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-        
-    event = GCal4Ruby::Event.find(service, {:id => self.event_id})
-    event.title = self.resource_request.task.blank? ? self.resource_request.project.name : self.resource_request.task.name
-    event.save
-  end
-  
-  def delete_event
-    service = GCal4Ruby::Service.new
-    service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-        
-    event = GCal4Ruby::Event.find(service, {:id => self.event_id})
-    event.delete
-  end
-end
-
-=begin
-class DeleteEventJob
-  attr_accessor :cal_id
-  
-  def initialize(cal_id)
-    self.cal_id = cal_id
-  end
-  
-  def perform
-    puts "Starting delete event for event #{self.cal_id}"
+    puts "Starting update event for resource allocation #{self.id}"
     service = GCal4Ruby::Service.new
     auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-    puts "Authentication status: #{auth}"  
+    puts "Authentication Status: #{auth}"
         
-    event = GCal4Ruby::Event.find(service, {:id => self.cal_id})
+    event = GCal4Ruby::Event.find(service, {:id => self.event_id})
     puts "Event search result: #{event}"
     
-    puts "Event delete status: #{event.delete}"
-  end    
+    event.start_time = self.start_date
+    puts "GCal Save status: #{event.save}"
+  end
 end
-=end
