@@ -10,11 +10,13 @@ class ResourceAllocation < ActiveRecord::Base
   validates_presence_of :resource_request, :unless => :nested
   
   after_create do |r|
-    r.delay.create_event if r.event_id.nil?
     r.update_attributes(:event_id => 'caching')
+    r.delay.create_event
   end
   after_update do |r|
-    r.delay.update_event
+    unless r.event_id.nil?
+      r.delay.update_event 
+    end
   end
   after_save :update_request
   before_save :get_resource
@@ -61,7 +63,7 @@ class ResourceAllocation < ActiveRecord::Base
   def update_event
     if self.event_id = 'caching'
       puts "Deferring event update"
-      r.delay(:run_at => 2.minutes.from_now).update_event 
+      self.delay(:run_at => 2.minutes.from_now).update_event 
     else    
       puts "Starting update event for resource allocation #{self.id}"
       service = GCal4Ruby::Service.new
