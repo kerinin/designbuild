@@ -20,7 +20,7 @@ function handle_day(e) {
   var day = dayElem.attr('id');
   
   //$('.day').not('.day:has(.allocation)')
-  if( dayElem.hasClass('busy') ) {
+  if( !dayElem.hasClass('free') ) {
     
   } else if(active_project && active_request) {
     // Create the new resource allocation
@@ -33,7 +33,7 @@ function handle_day(e) {
     dayElem.find('.date_text').before( content.removeClass("insertion_content") );
     
     refresh_view();
-    refresh_behavior();  // Needed because we've inserted new nodes to the DOM
+    // refresh_behavior();  // Needed because we've inserted new nodes to the DOM
   }  
 }
 
@@ -60,14 +60,16 @@ function handle_quickview_out(e) {
 
 function handle_allocation_drop(e, ui) {
   var targetDay = $(e.target).closest('.day');
-  var draggable = ui.draggable;
+  var dragged = ui.draggable;
   var newDay = targetDay.attr('id');
-
-  targetDay.append( draggable );
+  
+  targetDay.append( dragged );
   
   // AJAX for changes...
-  draggable.find('form input#resource_allocation_start_date').val(newDay);
-  draggable.find('form').first().submit();
+  dragged.find('form input#resource_allocation_start_date').val(newDay);
+  dragged.find('form').first().submit();
+  
+  dragged.draggable('disable');
 }
 function handle_allocation_drag_start(e, ui) {
   $(e.target).closest('.day').addClass('free');
@@ -125,11 +127,11 @@ function refresh_behavior() {
   
   $('.quick_view .quick_view_item').unbind('hover').hover(handle_quickview_over, handle_quickview_out);
   
-  $( ".allocation" ).draggable({
+  $( ".day .allocation" ).draggable({
      start: handle_allocation_drag_start,
      //drag: function(event, ui) {},
      stop: handle_allocation_drag_stop
-  });
+  }).draggable('enable');
 }
 
 $(document).ready( function() {
