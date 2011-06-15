@@ -1,5 +1,4 @@
 Resource allocation wishlist
-* drag & drop creation, movement
 * check for prior assignment on create
 * half-day scheduling
 * link to google calendar & feed (for putting on phone)

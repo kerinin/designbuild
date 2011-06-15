@@ -63,7 +63,7 @@ function handle_allocation_drop(e, ui) {
   var dragged = ui.draggable;
   var newDay = targetDay.attr('id');
   
-  targetDay.append( dragged );
+  targetDay.prepend( dragged );
   
   // AJAX for changes...
   dragged.find('form input#resource_allocation_start_date').val(newDay);
@@ -84,7 +84,7 @@ function handle_allocation_drag_start(e, ui) {
 
   // Hide & Disable qtips
   $('.allocation').each(function() {
-    if ($(this).data("qtip")) $(this).qtip("hide").qtip("disable");
+    if ($(this).data("qtip")) $(this).qtip("disable").qtip("hide");
   });
 }
 function handle_allocation_drag_stop(e, ui) {
