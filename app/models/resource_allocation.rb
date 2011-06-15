@@ -9,12 +9,12 @@ class ResourceAllocation < ActiveRecord::Base
   validates_presence_of :start_date, :duration 
   validates_presence_of :resource_request, :unless => :nested
   
-  after_create do |r|
-    r.update_attributes(:event_id => 'caching')
+  after_validation :on => :create do |r|
+    r.event_id = 'caching'
     r.delay.create_event
   end
   after_update do |r|
-    unless r.event_id.nil? || ( r.event_id_changed? && r.event_id_was.nil? )
+    unless r.event_id.nil?
       r.delay.update_event 
     end
   end
@@ -61,7 +61,7 @@ class ResourceAllocation < ActiveRecord::Base
   end
   
   def update_event
-    if self.event_id = 'caching'
+    if self.event_id == 'caching'
       puts "Deferring event update"
       self.delay(:run_at => 2.minutes.from_now).update_event 
     else    
