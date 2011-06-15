@@ -58,6 +58,37 @@ function handle_quickview_out(e) {
   refresh_view();  
 }
 
+function handle_allocation_drop(e, ui) {
+  var targetDay = $(e.target).closest('.day');
+  var draggable = ui.draggable;
+
+  targetDay.append( draggable );
+  
+  // AJAX for changes...
+}
+function handle_allocation_drag_start(e, ui) {
+  $(e.target).closest('.day').addClass('free');
+  
+  // Setup drop targets
+  $(".day.free").droppable({
+    tolerance: 'pointer',
+    hoverClass: 'drop_hover',
+    activeClass: 'drop_active',
+    drop: handle_allocation_drop
+  });
+
+  // Hide & Disable qtips
+  $('.allocation').each(function() {
+    if ($(this).data("qtip")) $(this).qtip("hide").qtip("disable");
+  });
+}
+function handle_allocation_drag_stop(e, ui) {
+  // Remove the droppable handler (initialized on each drag start)
+  $(".day.free").droppable('destroy');
+  
+  $(this).css('left', 0).css('top',0).closest('.day').removeClass('free');
+}
+
 function refresh_view() {
   // Update Views
   if(active_request && qv_id == null){
@@ -90,6 +121,12 @@ function refresh_behavior() {
   $('.delete a').unbind('click').click( handle_delete);
   
   $('.quick_view .quick_view_item').unbind('hover').hover(handle_quickview_over, handle_quickview_out);
+  
+  $( ".allocation" ).draggable({
+     start: handle_allocation_drag_start,
+     //drag: function(event, ui) {},
+     stop: handle_allocation_drag_stop
+  });
 }
 
 $(document).ready( function() {

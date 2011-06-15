@@ -1,9 +1,6 @@
 Resource allocation wishlist
-* delete not working
-** either the DJ isn't being issued, or it's failing.  not sure which
-* cache delete if being created (may be automatic - deleting before DJ is executed may cancel the creation)
-* check for prior assignment on create
 * drag & drop creation, movement
+* check for prior assignment on create
 * half-day scheduling
 * link to google calendar & feed (for putting on phone)
 

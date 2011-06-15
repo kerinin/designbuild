@@ -120,11 +120,16 @@ body.bp
           margin-bottom : 15px
           &:hover
             background : #eee
-        &.active.free
+          &.drop_active:hover
+            background : white
+        &.active.free, &.drop_active.free
           border : 4px dashed #ccc
           cursor : pointer
           .today
             border : 4px solid black  
+
+        &.drop_hover.free
+          border : 4px dashed green
              
             
         // Allocations
@@ -152,7 +157,8 @@ body.bp
           &.project_color_5
             background : $project_color_5
             border-color : $project_color_5
-        
+          &.ui-draggable-dragging
+            z-index : 10000        
           .delete
             display : none
             position : absolute
@@ -176,7 +182,7 @@ body.bp
           display : none
         &.free:hover .quick_add
           display : block
-        &.free.active:hover .quick_add
+        &.free.active:hover .quick_add, &.free.drop_active:hover .quick_add
           display : none
       
               
