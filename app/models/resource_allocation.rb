@@ -73,20 +73,6 @@ class ResourceAllocation < ActiveRecord::Base
   end
 end
 
-class DeleteEventJob < Struct.new(:event_id)  
-  def perform
-    puts "Starting delete event for event #{event_id}"
-    service = GCal4Ruby::Service.new
-    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-    puts "Authentication status: #{auth}"  
-        
-    event = GCal4Ruby::Event.find(service, {:id => event_id})
-    puts "Event search result: #{event}"
-    
-    puts "Event delete status: #{event.delete}"
-  end
-end
-
 =begin
 class DeleteEventJob
   attr_accessor :cal_id
