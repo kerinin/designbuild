@@ -9,11 +9,12 @@ class ResourceAllocation < ActiveRecord::Base
   validates_presence_of :start_date, :duration 
   validates_presence_of :resource_request, :unless => :nested
   
-  after_create do |r|
+  after_validation do |r|
     r.delay.create_event if r.event_id.nil?
+    r.event_id = 'caching'
   end
   after_update do |r|
-    r.delay.update_event unless r.event_id.nil?
+    r.delay.update_event
   end
   after_save :update_request
   before_save :get_resource
@@ -58,15 +59,21 @@ class ResourceAllocation < ActiveRecord::Base
   end
   
   def update_event
-    puts "Starting update event for resource allocation #{self.id}"
-    service = GCal4Ruby::Service.new
-    auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
-    puts "Authentication Status: #{auth}"
+    if self.event_id = 'caching'
+      puts "Deferring event update"
+      r.delay(:run_at => 2.minutes.from_now).update_event 
+    else    
+      puts "Starting update event for resource allocation #{self.id}"
+      service = GCal4Ruby::Service.new
+      auth = service.authenticate(ENV['GOOGLE_EMAIL'], ENV['GOOGLE_LOGIN'])
+      puts "Authentication Status: #{auth}"
         
-    event = GCal4Ruby::Event.find(service, {:id => self.event_id})
-    puts "Event search result: #{event}"
+      event = GCal4Ruby::Event.find(service, {:id => self.event_id})
+      puts "Event search result: #{event}"
     
-    event.start_time = self.start_date
-    puts "GCal Save status: #{event.save}"
+      event.start_time = self.start_date
+      event.end_time = self.start_date + 8.hours
+      puts "GCal Save status: #{event.save}"
+    end
   end
 end
