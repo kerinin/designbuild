@@ -14,36 +14,37 @@
         
   -else
     %h1.resource{:id => "resource_#{@resource.id}"}= "#{@resource.name} Schedule"
-    
-    %h2 Timeline
-    
-    .quick_view
-      Other Schedules:
-      %ul
-        -Resource.where("id != ?", @resource.id).each do |resource|
-          %li.quick_view_item{:id => "quick_view_resource_#{resource.id}"}=link_to resource.name, resource_resource_allocations_path(resource)
-  
-    -start_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.first.start_date.to_date) - 14
-    -end_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.last.start_date.to_date + @resource.resource_allocations.last.duration) + 30
 
-    .day_labels
-      -(1..7).each do |weekday|
-        .day_label
-          -day = Date.commercial(2011,1,weekday)
-          %strong=day.strftime('%A')
+    .timeline
+      %h2 Timeline
+    
+      .quick_view
+        Other Schedules:
+        %ul
+          -Resource.where("id != ?", @resource.id).each do |resource|
+            %li.quick_view_item{:id => "quick_view_resource_#{resource.id}"}=link_to resource.name, resource_resource_allocations_path(resource)
   
-    .weeks
-      -(start_date.to_date.cweek..end_date.to_date.cweek).each do |week|
-        .week
-          -(1..7).each do |weekday|
-            -day = Date.commercial(start_date.year, week, weekday)
-            -allocations = @resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
-            .day{:id => day.to_s, :class => [ day < Date::today ? 'past' : nil, day == Date::today ? 'today' : nil] }
-              -allocations.all.each do |alloc|
-                =render :partial => 'day_content', :locals => {:request => alloc.resource_request, :allocation => alloc, :template => false}
-              .quick_add
-                =link_to icon(:add), new_resource_request_path('resource_request[resource_id]' => @resource.id, 'resource_request[duration]' => 1, 'resource_request[resource_allocations_attributes][][start_date]' => day.to_s, 'resource_request[resource_allocations_attributes][][duration]' => 1), :remote => true
-              .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
+      -start_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.first.start_date.to_date) - 14
+      -end_date = (@resource.resource_allocations.empty? ? Date::today : @resource.resource_allocations.last.start_date.to_date + @resource.resource_allocations.last.duration) + 30
+
+      .day_labels
+        -(1..7).each do |weekday|
+          .day_label
+            -day = Date.commercial(2011,1,weekday)
+            %strong=day.strftime('%A')
+  
+      .weeks
+        -(start_date.to_date.cweek..end_date.to_date.cweek).each do |week|
+          .week
+            -(1..7).each do |weekday|
+              -day = Date.commercial(start_date.year, week, weekday)
+              -allocations = @resource_allocations.where('start_date >= ? AND start_date < ?', day, day+1)
+              .day{:id => day.to_s, :class => [ day < Date::today ? 'past' : nil, day == Date::today ? 'today' : nil] }
+                -allocations.all.each do |alloc|
+                  =render :partial => 'day_content', :locals => {:request => alloc.resource_request, :allocation => alloc, :template => false}
+                .quick_add
+                  =link_to icon(:add), new_resource_request_path('resource_request[resource_id]' => @resource.id, 'resource_request[duration]' => 1, 'resource_request[resource_allocations_attributes][][start_date]' => day.to_s, 'resource_request[resource_allocations_attributes][][duration]' => 1), :remote => true
+                .date_text= Date.commercial(start_date.year, week, weekday).to_s(:short)
   
     / Hidden form for ajax
     =form_for ResourceAllocation.new(:resource => @resource, :duration => 1), new_resource_allocation_path, :remote => true do |f|
