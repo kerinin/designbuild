@@ -110,6 +110,8 @@ class MarkupsController < ApplicationController
         
     respond_to do |format|
       if @markup.save
+        @parent.markups << @markup unless @parent.nil?
+        
         format.js {
           @markups = @parent.markups unless @parent.nil?
           @markups ||= Markup.all
