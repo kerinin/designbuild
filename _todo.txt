@@ -1,9 +1,20 @@
+Removing Caching
+Now, markups are being applied to components.  The tricky part is that I'm trying to simplify showing
+specific markup amounts for a component, and this is being done by keeping the markup amount stored
+on the marking class.  In order to avoid caching this on the component (so components don't have to
+be updated each time they're edited) we'll need to store this information on the actual cost, which
+means applying markups directly to unit costs, etc.  Then, to figure out the markup amount for an individual
+markup, we'll need to query all the costs and sum over their markings.
+
+This will require a migration to add the marking to costs and calculate the per-cost markup. We'll want
+to keep the same marking class, we'll just avoid setting the markup cache on markings applied to
+components.
+
+
 Resource allocation wishlist
 * check for prior assignment on create
 * half-day scheduling
 * link to google calendar & feed (for putting on phone)
-
-
 
 
 Invoicing

@@ -41,6 +41,107 @@ class Component < ActiveRecord::Base
   
   default_scope :order => :position
   
+  # Probably need to investigate markups applied to leaves
+  # SQL summation
+  def estimated_component_fixed_cost
+    self.fixed_cost_estimates.sum(:cost).to_f
+  end
+  def estimated_component_unit_cost
+    self.unit_cost_estimates.sum(:cost).to_f
+  end
+  def estimated_component_contract_cost
+    self.contracts.sum(:estimated_cost).to_f
+  end
+  
+  def estimated_raw_component_fixed_cost
+    self.fixed_cost_estimates.sum(:raw_cost).to_f
+  end
+  def estimated_raw_component_unit_cost
+    self.unit_cost_estimates.sum(:raw_cost).to_f
+  end
+  def estimated_raw_component_contract_cost
+    self.contracts.sum(:estimated_raw_cost).to_f
+  end
+  
+  def estimated_subcomponent_fixed_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+  end
+  def estimated_subcomponent_unit_cost
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+  end
+  def estimated_subcomponent_contract_cost
+    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+
+  def estimated_raw_subcomponent_fixed_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_subcomponent_unit_cost
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_subcomponent_contract_cost
+    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+  
+  def estimated_fixed_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+  end
+  def estimated_unit_cost
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+  end
+  def estimated_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+
+  def estimated_raw_fixed_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_unit_cost
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+    
+  def estimated_component_cost
+    estimated_component_fixed_cost + estimated_component_unit_cost + estimated_component_contract_cost
+  end
+  def estimated_raw_component_cost
+    estimated_raw_component_fixed_cost + estimated_raw_component_unit_cost + estimated_raw_component_contract_cost
+  end
+
+  def estimated_subcomponent_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
+    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
+
+  end
+  def estimated_raw_subcomponent_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
+    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+
+  end
+  
+  def estimated_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+  def estimated_raw_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+  
+  def estimated_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+  def estimated_raw_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end    
+  
+  
   def tree
     recursion = Proc.new do |component, block|
       collector = [component]

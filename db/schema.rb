@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110613164052) do
+ActiveRecord::Schema.define(:version => 20110622205936) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -244,19 +244,14 @@ ActiveRecord::Schema.define(:version => 20110613164052) do
   end
 
   create_table "markings", :force => true do |t|
-    t.integer   "markupable_id"
-    t.string    "markupable_type"
-    t.integer   "markup_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.integer   "project_id"
-    t.float     "estimated_unit_cost_markup_amount",     :default => 0.0, :null => false
-    t.float     "estimated_fixed_cost_markup_amount",    :default => 0.0, :null => false
-    t.float     "estimated_contract_cost_markup_amount", :default => 0.0, :null => false
-    t.float     "estimated_cost_markup_amount",          :default => 0.0, :null => false
-    t.float     "labor_cost_markup_amount",              :default => 0.0, :null => false
-    t.float     "material_cost_markup_amount",           :default => 0.0, :null => false
-    t.float     "cost_markup_amount",                    :default => 0.0, :null => false
+    t.integer  "markupable_id"
+    t.string   "markupable_type"
+    t.integer  "markup_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "project_id"
+    t.float    "estimated_cost_markup_amount", :default => 0.0, :null => false
+    t.float    "cost_markup_amount",           :default => 0.0, :null => false
   end
 
   add_index "markings", ["markup_id"], :name => "index_markings_on_markup_id"
