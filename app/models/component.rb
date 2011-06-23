@@ -12,7 +12,7 @@ class Component < ActiveRecord::Base
   has_many :contracts, :order => :name, :dependent => :destroy
   
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save!}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save!}]
+  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -274,13 +274,20 @@ class Component < ActiveRecord::Base
   end
   
   def cascade_add_markup(markup)
-    self.children.all.each {|c| c.markups << markup unless c.markups.include? markup }
-    self.save
+    # Add the markup to everything in the component subtree
+    
+    markup.components << self.subtree
+    markup.fixed_cost_estimates << self.subtree.fixed_cost_estimates
+    markup.unit_cost_estimates << self.subtree.unit_cost_estimates
+    markup.contracts << self.subtree.contracts
+    markup.contract_costs << ContractCost.joins(:contract) & self.subtree.contracts #???
+    markup.labor_costs << self.subtree.labor_costs
+    markup.material_costs << self.subtree.material_costs
   end
   
   def cascade_remove_markup(markup)
-    self.children.all.each {|c| c.markups.delete( markup ) }
-    self.save
+    # remove the markup from everything in the component subtree
+    self.subtree.applied_markings.delete_all
   end
   
   def create_estimated_cost_points

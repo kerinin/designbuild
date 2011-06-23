@@ -5,9 +5,16 @@ class Markup < ActiveRecord::Base
   
   has_many :markings, :dependent => :destroy
   
-  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_add => :cascade_add, :before_remove => :cascade_remove
-  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :after_add => Proc.new{|m,t| t.save}, :after_remove => Proc.new{|m,t| t.save}
-  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :uniq => true, :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :uniq => true, :after_add => Proc.new{|m,t| t.save}, :after_remove => Proc.new{|m,t| t.save}
+  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :uniq => true, :after_add => :cascade_add, :before_remove => :cascade_remove
+  has_many :fixed_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'FixedCostEstimate', :uniq => true
+  has_many :unit_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'UnitCostEstimate', :uniq => true
+  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract', :uniq => true
+  has_many :contract_costs, :through => :markings, :source => :markupable, :source_type => 'ContractCost', :uniq => true
+  has_many :labor_costs, :through => :markings, :source => :markupable, :source_type => 'LaborCost', :uniq => true
+  has_many :material_costs, :through => :markings, :source => :markupable, :source_type => 'MaterialCost', :uniq => true
+  
   has_many :invoice_markup_lines
   has_many :payment_markup_lines
   

@@ -7,7 +7,7 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :task, :inverse_of => :unit_cost_estimates
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :uniq => true
     
   accepts_nested_attributes_for :quantity, :reject_if => :all_blank
   
@@ -17,12 +17,18 @@ class UnitCostEstimate < ActiveRecord::Base
   before_save :set_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
+  after_save :save_markings, :if => proc {|i| i.estimated_raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
+  
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
+  end
+  
+  def save_markings
+    self.markings.each {|m| m.save!}
   end
   
   def cost

@@ -14,7 +14,7 @@ class Task < ActiveRecord::Base
   has_many :milestones, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => :refresh_markup, :after_remove => :refresh_markup
+  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
   has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}, :dependent => :destroy
@@ -44,12 +44,6 @@ class Task < ActiveRecord::Base
     where(:percent_complete => 0).where(:active => false)
   }
   
-  
-  def refresh_markup(markup)
-    LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
-    self.material_costs.each {|mc| mc.save!}
-    self.save!
-  end
   
   def is_complete?
     self.percent_complete >= 100
@@ -224,5 +218,23 @@ class Task < ActiveRecord::Base
   def clear_associated
     self.fixed_cost_estimates.each {|fc| fc.task= nil; fc.save!}
     self.unit_cost_estimates.each {|uc| uc.task = nil; uc.save!}
+  end
+  
+  def cascade_add_markup(markup)
+    #LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
+    #self.material_costs.each {|mc| mc.save!}
+    #self.save!
+    
+    markup.labor_costs << self.labor_costs
+    markup.material_costs << self.material_costs
+  end
+  
+  def cascade_remove_markup(markup)
+    #LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
+    #self.material_costs.each {|mc| mc.save!}
+    #self.save!
+    
+    markup.labor_costs.delete( self.labor_costs )
+    markup.material_costs.delete( self.labor_costs )
   end
 end

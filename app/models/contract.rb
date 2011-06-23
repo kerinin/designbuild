@@ -13,7 +13,7 @@ class Contract < ActiveRecord::Base
   has_many :bids, :order => :contractor, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -28,6 +28,8 @@ class Contract < ActiveRecord::Base
   
   #after_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   #after_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
+
+  after_save :save_markings, :if => proc {|i| i.estimated_raw_cost_changed? }, :unless => proc {|i| i.markings.empty?}
     
   default_scope :order => :position
   
@@ -35,6 +37,10 @@ class Contract < ActiveRecord::Base
   
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
+  end
+  
+  def save_markings
+    self.markings.each {|m| m.save!}
   end
   
   def estimated_cost
@@ -100,5 +106,13 @@ class Contract < ActiveRecord::Base
   
   def check_project
     self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
+  end
+  
+  def cascade_add_markup(markup)
+    markup.contract_costs << self.contract_costs
+  end
+  
+  def cascade_remove_markup(markup)
+    markup.contract_costs.delete( self.contract_costs )
   end
 end

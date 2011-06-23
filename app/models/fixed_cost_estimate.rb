@@ -6,7 +6,7 @@ class FixedCostEstimate < ActiveRecord::Base
   belongs_to :task, :inverse_of => :fixed_cost_estimates, :autosave => true
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :uniq => true
     
   validates_presence_of :name, :raw_cost, :component
   
@@ -14,12 +14,18 @@ class FixedCostEstimate < ActiveRecord::Base
   
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
+  after_save :save_markings, :if => proc {|i| i.estimated_raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
+  
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
 
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
+  end
+  
+  def save_markings
+    self.markings.each {|m| m.save!}
   end
   
   def cost

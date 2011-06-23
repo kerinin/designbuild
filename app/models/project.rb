@@ -10,7 +10,7 @@ class Project < ActiveRecord::Base
   has_many :suppliers, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save}]
+  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :invoices, :order => 'invoices.date DESC'
@@ -258,18 +258,22 @@ class Project < ActiveRecord::Base
   protected
   
   def cascade_add_markup(markup)
-    # Ancestry doesn't seem to like working with other associations...
-    Component.roots.where(:project_id => self.id).all.each {|c| c.markups << markup unless c.markups.include? markup }
-
-    self.tasks.all.each {|t| t.markups << markup unless t.markups.include? markup }
-    self.save
+    # Add the markup to everything in the project
+    
+    markup.components << self.components
+    markup.tasks << self.tasks
+    markup.fixed_cost_estimates << self.fixed_cost_estimates
+    markup.unit_cost_estimates << self.unit_cost_estimates
+    markup.contracts << self.contracts
+    markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
+    markup.labor_costs << self.labor_costs
+    markup.material_costs << self.material_costs
   end
   
   def cascade_remove_markup(markup)
-    # Ancestry doesn't seem to like working with other associations...
-    Component.roots.where(:project_id => self.id).all.each {|c| c.markups.delete( markup ) }
-
-    self.tasks.all.each {|t| t.markups.delete( markup ) }
-    self.save
+    # remove the markup from everything in the project
+    
+    self.markings.where(:markup_id => markup.id).delete_all
+    self.applied_markings.where(:markup_id => markup.id).delete_all
   end
 end

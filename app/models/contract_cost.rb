@@ -5,7 +5,7 @@ class ContractCost < ActiveRecord::Base
   belongs_to :component
   
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :uniq => true
   
   validates_presence_of :date, :raw_cost, :contract
   
@@ -14,8 +14,14 @@ class ContractCost < ActiveRecord::Base
   before_save :assign_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
 
+  after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
+  
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
+  end
+  
+  def save_markings
+    self.markings.each {|m| m.save!}
   end
   
   def cost

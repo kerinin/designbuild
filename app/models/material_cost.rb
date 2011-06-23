@@ -9,7 +9,7 @@ class MaterialCost < ActiveRecord::Base
   has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   
   has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings
+  has_many :markups, :through => :markings, :uniq => true
   
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
@@ -17,6 +17,8 @@ class MaterialCost < ActiveRecord::Base
   before_save :set_project, :cache_values  
   before_save :auto_assign_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
+  
+  after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
   
   #after_save :create_points
   after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
@@ -37,6 +39,10 @@ class MaterialCost < ActiveRecord::Base
   
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
+  end
+  
+  def save_markings
+    self.markings.each {|m| m.save!}
   end
   
   def cost
