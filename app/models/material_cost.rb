@@ -8,15 +8,18 @@ class MaterialCost < ActiveRecord::Base
   
   has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
+  
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
-  before_save :set_project, :cache_values
-  
+  before_save :set_project, :cache_values  
   before_save :auto_assign_component
-  after_save :cascade_cache_values, :create_points
+  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
+  
+  #after_save :create_points
   after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
-  after_destroy :cascade_cache_values
   
   scope :purchase_order, lambda {
     where(:raw_cost => nil)
@@ -32,6 +35,10 @@ class MaterialCost < ActiveRecord::Base
     
   scope :by_project, lambda {|project| joins(:task).where('tasks.project_id = ?', project.id) } 
   
+  def update_markings
+    self.markings.update_all(:component_id => self.component_id)
+  end
+  
   def markups
     self.task.markups
   end
@@ -42,16 +49,6 @@ class MaterialCost < ActiveRecord::Base
   
   def supplier_name
     self.supplier.blank? ? nil : self.supplier.name
-  end
-
-  def cache_values
-    self.cost = add_or_nil self.raw_cost, self.markups.inject(0) {|memo,obj| add_or_nil memo, obj.apply_to(self, :raw_cost) }
-  end
-  
-  def cascade_cache_values
-    self.task.reload.save!
-    
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
   
   def create_points

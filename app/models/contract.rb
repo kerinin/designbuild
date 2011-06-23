@@ -12,6 +12,10 @@ class Contract < ActiveRecord::Base
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
 
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
+  has_many :applied_markings, :class_name => 'Marking'
+  
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
   has_many :cost_to_date_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :cost_to_date}, :dependent => :destroy
     
@@ -20,17 +24,18 @@ class Contract < ActiveRecord::Base
   validates_presence_of :name, :project, :component
 
   before_validation :check_project
-  before_save :cache_values
+  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
-  after_save :cascade_cache_values  
-  after_destroy :cascade_cache_values
-  
-  after_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  #after_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   #after_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
     
   default_scope :order => :position
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
+  
+  def update_markings
+    self.markings.update_all(:component_id => self.component_id)
+  end
   
   def markups
     self.component.markups
@@ -55,21 +60,6 @@ class Contract < ActiveRecord::Base
   
   def raw_cost_before(date)
     self.costs.where('date <= ?', date).sum(:raw_cost)
-  end
-  
-  def cache_values
-    [self.bids, self.costs, self.markups].each {|r| r.reload}
-    
-    self.cache_estimated_cost
-    self.cache_cost
-  end
-    
-  def cascade_cache_values
-    self.component.reload.save!
-    self.project.reload.save!
-    
-    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil? && Component.exists?(:id => self.component_id_was)
-    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil? && Project.exists?(:id => self.project_id_was)
   end
   
   def percent_complete
@@ -102,15 +92,5 @@ class Contract < ActiveRecord::Base
   
   def check_project
     self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
-  end
-  
-  def cache_estimated_cost
-    self.estimated_raw_cost = ( (self.active_bid.blank? || self.active_bid.destroyed?) ? 0 : self.active_bid.raw_cost )
-    self.estimated_cost = self.estimated_raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :estimated_raw_cost) }
-  end
-  
-  def cache_cost
-    self.raw_cost = self.costs.sum(:raw_cost)
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
 end

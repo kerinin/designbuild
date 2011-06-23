@@ -5,22 +5,25 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :component, :inverse_of => :unit_cost_estimates
   belongs_to :quantity, :inverse_of => :unit_cost_estimates
   belongs_to :task, :inverse_of => :unit_cost_estimates
-  
+
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
+    
   accepts_nested_attributes_for :quantity, :reject_if => :all_blank
   
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
   
   before_save :set_component
-  
-  before_save :cache_values
-  
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
+  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
+  
+  def update_markings
+    self.markings.update_all(:component_id => self.component_id)
+  end
   
   def markups
     self.component.markups
@@ -40,21 +43,6 @@ class UnitCostEstimate < ActiveRecord::Base
   
   def estimated_raw_cost
     self.raw_cost
-  end
-  
-  
-  def cache_values
-    self.quantity.reload
-    
-    self.cache_cost
-  end
-  
-  def cascade_cache_values
-    self.component.reload.save!
-    self.task.reload.save! unless self.task.blank?
-    
-    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil? && Component.exists?(:id => self.component_id_was)
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
   
   
@@ -109,11 +97,6 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   protected
-    
-  def cache_cost
-    self.raw_cost = self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
-  end
   
   def set_component
     self.component ||= self.quantity.component

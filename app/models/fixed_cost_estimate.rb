@@ -4,20 +4,24 @@ class FixedCostEstimate < ActiveRecord::Base
   
   belongs_to :component, :inverse_of => :fixed_cost_estimates, :autosave => true
   belongs_to :task, :inverse_of => :fixed_cost_estimates, :autosave => true
-  
+
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
+    
   validates_presence_of :name, :raw_cost, :component
   
   validates_numericality_of :raw_cost
   
-  before_save :cache_values
-  
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
+  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
-  
+
+  def update_markings
+    self.markings.update_all(:component_id => self.component_id)
+  end
+    
   def markups
     self.component.markups
   end
@@ -86,19 +90,5 @@ class FixedCostEstimate < ActiveRecord::Base
   
   def percent_complete_float
     self.task.percent_complete_float unless self.task.blank?
-  end
-  
-  protected
-  
-  def cache_values
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
-  end
-  
-  def cascade_cache_values
-    self.component.reload.save!
-    self.task.reload.save! unless self.task.blank?
-    
-    Component.find(self.component_id_was).save! if self.component_id_changed? && !self.component_id_was.nil? && Component.exists?(:id => self.component_id_was)
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
 end

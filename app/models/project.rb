@@ -29,12 +29,9 @@ class Project < ActiveRecord::Base
   validates_presence_of :name
   validates_numericality_of :labor_percent_retainage, :material_percent_retainage
   
-  before_save :cache_values
-  before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
-  before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
-  # cost to date points being created at cost creation
-  #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
-
+  #before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  #before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
+  
   def active_markups
     Markup.all.map {|m| m.apply_recursively_to(self, :estimated_cost_markup_amount) > 0 ? m : nil}.compact
   end
@@ -61,20 +58,6 @@ class Project < ActiveRecord::Base
   
   def projected_net
     subtract_or_nil self.estimated_cost, self.raw_projected_cost
-  end
-  
-  def cache_values
-    [self.components, self.contracts, self.tasks].each {|a| a.reload}
-    
-    self.cache_estimated_fixed_cost
-    self.cache_estimated_unit_cost
-    self.cache_estimated_contract_cost
-    self.cache_estimated_cost
-    self.cache_material_cost
-    self.cache_labor_cost
-    self.cache_contract_cost
-    self.cache_cost
-    self.cache_projected_cost
   end
   
   
@@ -164,7 +147,7 @@ class Project < ActiveRecord::Base
       self.payments.includes(:markup_lines).where("date <= ?", date).where('payment_markup_lines.markup_id = ?', markup.id).sum("payment_markup_lines.#{method}").to_f 
     end
   end
-      
+  
   def create_labeled_point(label, series = :estimated_cost, *args)
     self.send( "create_#{series}_points", *args )
     self.components.each {|c| c.send("create_#{series}_points", *args)}
@@ -198,61 +181,81 @@ class Project < ActiveRecord::Base
       p.save!
     end
   end
-      
-  protected
-    
-  def cache_estimated_fixed_cost
-    self.estimated_fixed_cost = self.components.roots.sum(:estimated_fixed_cost)
-    self.estimated_raw_fixed_cost = self.components.roots.sum(:estimated_raw_fixed_cost)
+  
+  
+  # Aggregators
+  
+  def estimated_fixed_cost
+    self.components.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+  end
+  def estimated_unit_cost
+    self.components.join(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+  end
+  def estimated_contract_cost
+    self.components.join(:contracts).sum('contracts.estimated_cost').to_f
+  end
+  def estimated_cost
+    estimated_fixed_cost + estimated_unit_cost + estimated_contract_cost
   end
   
-  def cache_estimated_unit_cost
-    self.estimated_unit_cost = self.components.roots.sum(:estimated_unit_cost)
-    self.estimated_raw_unit_cost = self.components.roots.sum(:estimated_raw_unit_cost)
+  def estimated_raw_fixed_cost
+    self.components.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost')
   end
-    
-  def cache_estimated_contract_cost
-    self.estimated_contract_cost = self.components.roots.sum(:estimated_contract_cost )
-    self.estimated_raw_contract_cost = self.components.roots.sum(:estimated_raw_contract_cost )
+  def estimated_raw_unit_cost
+    self.components.join(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost')
+  end
+  def estimated_raw_contract_cost
+    self.components.join(:contracts).sum('contracts.estimated_raw_cost')
+  end
+  def estimated_raw_cost
+    estimated_raw_fixed_cost + estimated_raw_unit_cost + estimated_raw_contract_cost
   end
 
-  def cache_estimated_cost
-    self.estimated_cost = self.components.roots.sum(:estimated_cost)
-    self.estimated_raw_cost = self.components.roots.sum(:estimated_raw_cost)
+  def material_cost
+    self.material_costs.sum(:cost)
+  end
+  def labor_cost
+    self.labor_costs.sum(:cost)
+  end
+  def contract_cost
+    self.contracts.joins(:contract_costs).sum('contract_costs.cost').to_f
+  end
+  def cost
+    material_cost + labor_cost + contract_cost
   end
   
-  def cache_material_cost
-    self.material_cost = self.tasks.sum(:material_cost)
-    self.raw_material_cost = self.tasks.sum(:raw_material_cost)
+  def material_raw_cost
+    self.material_costs.sum(:raw_cost)
   end
-  
-  def cache_labor_cost
-    self.labor_cost = self.tasks.sum(:labor_cost)
-    self.raw_labor_cost = self.tasks.sum(:raw_labor_cost)
+  def labor_raw_cost
+    self.labor_costs.sum(:raw_cost)
   end
-  
-  def cache_contract_cost
-    self.contract_cost = self.contracts.sum(:cost)
-    self.raw_contract_cost = self.contracts.sum(:raw_cost)
+  def contract_raw_cost
+    self.contracts.joins(:contract_costs).sum('contract_costs.raw_cost').to_f
   end
-    
-  def cache_cost
-    self.cost = self.labor_cost + self.material_cost + self.contract_cost
-    self.raw_cost = self.raw_labor_cost + self.raw_material_cost + self.raw_contract_cost
+  def raw_cost
+    material_cost + labor_cost + contract_cost
   end
-  
-  def cache_projected_cost
-    self.projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.projected_cost)} + 
+
+  def projected_cost
+    self.tasks.inject(0) do |memo,obj| 
+      add_or_nil(memo, obj.projected_cost)} + 
       self.estimated_contract_cost + 
       ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f + 
       ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f
-      
-    self.raw_projected_cost = self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)} + 
+    end
+  end
+  def raw_projected_cost
+    self.tasks.inject(0) do |memo,obj| 
+      add_or_nil(memo, obj.raw_projected_cost)} + 
       self.estimated_raw_contract_cost +
       ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
-      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f    
+      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f
+    end
   end
   
+  
+  protected
   
   def cascade_add_markup(markup)
     # Ancestry doesn't seem to like working with other associations...

@@ -13,6 +13,7 @@ class Component < ActiveRecord::Base
   
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :after_add => [:cascade_add_markup, Proc.new{|p,d| p.save!}], :after_remove => [:cascade_remove_markup, Proc.new{|p,d| p.save!}]
+  has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
   
@@ -23,124 +24,13 @@ class Component < ActiveRecord::Base
   
   has_and_belongs_to_many :tags
   
-  #acts_as_list :scope => 'ancestry'
-  #acts_as_list :scope => :parent_id
-  
   validates_presence_of :project, :name
   
   before_validation :check_project
-  after_create :add_parent_markups
   
-  before_save :cache_values, :if => :id
-  after_create [:cache_values, Proc.new{|c| c.save!}]
-  
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
-  
-  before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  #before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   
   default_scope :order => :position
-  
-  # Probably need to investigate markups applied to leaves
-  # SQL summation
-  def estimated_component_fixed_cost
-    self.fixed_cost_estimates.sum(:cost).to_f
-  end
-  def estimated_component_unit_cost
-    self.unit_cost_estimates.sum(:cost).to_f
-  end
-  def estimated_component_contract_cost
-    self.contracts.sum(:estimated_cost).to_f
-  end
-  
-  def estimated_raw_component_fixed_cost
-    self.fixed_cost_estimates.sum(:raw_cost).to_f
-  end
-  def estimated_raw_component_unit_cost
-    self.unit_cost_estimates.sum(:raw_cost).to_f
-  end
-  def estimated_raw_component_contract_cost
-    self.contracts.sum(:estimated_raw_cost).to_f
-  end
-  
-  def estimated_subcomponent_fixed_cost
-    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
-  end
-  def estimated_subcomponent_unit_cost
-    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
-  end
-  def estimated_subcomponent_contract_cost
-    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
-  end
-
-  def estimated_raw_subcomponent_fixed_cost
-    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
-  end
-  def estimated_raw_subcomponent_unit_cost
-    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
-  end
-  def estimated_raw_subcomponent_contract_cost
-    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-  end
-  
-  def estimated_fixed_cost
-    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
-  end
-  def estimated_unit_cost
-    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
-  end
-  def estimated_contract_cost
-    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
-  end
-
-  def estimated_raw_fixed_cost
-    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
-  end
-  def estimated_raw_unit_cost
-    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
-  end
-  def estimated_raw_contract_cost
-    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-  end
-    
-  def estimated_component_cost
-    estimated_component_fixed_cost + estimated_component_unit_cost + estimated_component_contract_cost
-  end
-  def estimated_raw_component_cost
-    estimated_raw_component_fixed_cost + estimated_raw_component_unit_cost + estimated_raw_component_contract_cost
-  end
-
-  def estimated_subcomponent_cost
-    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
-    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
-    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
-
-  end
-  def estimated_raw_subcomponent_cost
-    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
-    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
-    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-
-  end
-  
-  def estimated_contract_cost
-    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
-  end
-  def estimated_raw_contract_cost
-    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-  end
-  
-  def estimated_cost
-    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
-    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
-    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
-  end
-  def estimated_raw_cost
-    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
-    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
-    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-  end    
-  
   
   def tree
     recursion = Proc.new do |component, block|
@@ -286,99 +176,110 @@ class Component < ActiveRecord::Base
   def cost_before( date = Date::today )
     self.labor_cost_before(date) + self.material_cost_before(date) + self.contract_cost_before(date)
   end
-=begin  
-  [:cost, :labor_cost, :material_cost, :labor_invoiced, :material_invoiced, :invoiced, :labor_retainage, :material_retainage, :retainage, :labor_paid, :material_paid, :paid, :labor_retained, :material_retained, :retained, :labor_outstanding, :material_outstanding, :outstanding].each do |sym|
-    self.send(:define_method, sym) do |*args|
-      recursive = args[0] unless args.empty?
-      if recursive
-        fixed_cost_estimates = FixedCostEstimate.where('component_id IN (?)', self.subtree_ids)
-        unit_cost_estimates = UnitCostEstimate.where('component_id IN (?)', self.subtree_ids)
-        contracts = Contract.where('component_id IN (?)', self.subtree_ids)
-      else
-        fixed_cost_estimates = self.fixed_cost_estimates
-        unit_cost_estimates = self.unit_cost_estimates
-        contracts = self.contracts
-      end
-      
-      (fixed_cost_estimates.all + unit_cost_estimates.all + contracts.all).inject(0) do |memo, obj|
-        if obj.respond_to?(sym)
-          memo + obj.send(sym)
-        else
-          memo
-        end
-      end
-    end
+
+
+  # Aggregators
+  
+  def estimated_component_fixed_cost
+    self.fixed_cost_estimates.sum(:cost).to_f
+  end
+  def estimated_component_unit_cost
+    self.unit_cost_estimates.sum(:cost).to_f
+  end
+  def estimated_component_contract_cost
+    self.contracts.sum(:estimated_cost).to_f
+  end
+  
+  def estimated_raw_component_fixed_cost
+    self.fixed_cost_estimates.sum(:raw_cost).to_f
+  end
+  def estimated_raw_component_unit_cost
+    self.unit_cost_estimates.sum(:raw_cost).to_f
+  end
+  def estimated_raw_component_contract_cost
+    self.contracts.sum(:estimated_raw_cost).to_f
+  end
+  
+  def estimated_subcomponent_fixed_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+  end
+  def estimated_subcomponent_unit_cost
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+  end
+  def estimated_subcomponent_contract_cost
+    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
   end
 
-  [:cost_before, :labor_cost_before, :material_cost_before, :labor_invoiced_before, :material_invoiced_before, :invoiced_before, :labor_retainage_before, :material_retainage_before, :retainage_before, :labor_paid_before, :material_paid_before, :paid_before, :labor_retained_before, :material_retained_before, :retained_before, :labor_outstanding_before, :material_outstanding_before, :outstanding_before].each do |sym|
-    self.send(:define_method, sym) do |*args|
-      date, recursive = args
-      
-      date ||= Date::today
-      
-      if recursive
-        fixed_cost_estimates = FixedCostEstimate.where('component_id IN (?)', self.subtree_ids)
-        unit_cost_estimates = UnitCostEstimate.where('component_id IN (?)', self.subtree_ids)
-        contracts = Contract.where('component_id IN (?)', self.subtree_ids)
-      else
-        fixed_cost_estimates = self.fixed_cost_estimates
-        unit_cost_estimates = self.unit_cost_estimates
-        contracts = self.contracts
-      end
-      
-      (fixed_cost_estimates.all + unit_cost_estimates.all + contracts.all).inject(0) do |memo, obj|
-        if obj.respond_to?(sym)
-          memo + obj.send(sym, date)
-        else
-          memo
-        end
-      end
-    end
+  def estimated_raw_subcomponent_fixed_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
   end
-=end    
+  def estimated_raw_subcomponent_unit_cost
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_subcomponent_contract_cost
+    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+  
+  def estimated_fixed_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+  end
+  def estimated_unit_cost
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+  end
+  def estimated_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+
+  def estimated_raw_fixed_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_unit_cost
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+    
+  def estimated_component_cost
+    estimated_component_fixed_cost + estimated_component_unit_cost + estimated_component_contract_cost
+  end
+  def estimated_raw_component_cost
+    estimated_raw_component_fixed_cost + estimated_raw_component_unit_cost + estimated_raw_component_contract_cost
+  end
+
+  def estimated_subcomponent_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
+    self.descendants.joins(:contracts).sum('contracts.estimated_cost').to_f
+
+  end
+  def estimated_raw_subcomponent_cost
+    self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
+    self.descendants.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
+    self.descendants.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+
+  end
+  
+  def estimated_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+  def estimated_raw_contract_cost
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+  
+  def estimated_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f +
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f +
+    self.subtree.joins(:contracts).sum('contracts.estimated_cost').to_f
+  end
+  def estimated_raw_cost
+    self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f +
+    self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f +
+    self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
+  end
+  
 
   protected
-  
-  def cache_estimated_costs
-    self.estimated_raw_component_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_raw_subcomponent_fixed_cost = self.descendants.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
-    self.estimated_raw_fixed_cost = self.subtree.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
-
-    self.estimated_raw_component_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_raw_subcomponent_unit_cost = self.children.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
-    self.estimated_raw_unit_cost = self.subtree.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
-
-    self.estimated_raw_component_contract_cost = self.contracts.sum(:estimated_raw_cost)
-    self.estimated_raw_subcomponent_contract_cost = self.children.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-    self.estimated_raw_contract_cost = self.subtree.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
-
-    # Leaving this as addition to reduce SQL transactions
-    self.estimated_raw_component_cost = self.estimated_raw_component_unit_cost + self.estimated_raw_component_fixed_cost + self.estimated_raw_component_contract_cost 
-    self.estimated_raw_subcomponent_cost = self.estimated_raw_subcomponent_unit_cost + self.estimated_raw_subcomponent_fixed_cost + self.estimated_raw_subcomponent_contract_cost    
-    self.estimated_raw_cost = self.estimated_raw_unit_cost + self.estimated_raw_fixed_cost + self.estimated_raw_contract_cost
-    
-    
-    self.markings.each {|m| m.set_markup_amount_from!(self) }
-    
-    
-    self.estimated_component_fixed_cost = self.estimated_raw_component_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
-    self.estimated_subcomponent_fixed_cost = self.estimated_raw_subcomponent_fixed_cost + self.children.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
-    self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
-
-    self.estimated_component_unit_cost = self.estimated_raw_component_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
-    self.estimated_subcomponent_unit_cost = self.estimated_raw_subcomponent_unit_cost + self.children.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
-    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.subtree.joins(:markings).sum('markings.estimated_unit_cost_markup_amount').to_f
-
-    self.estimated_component_contract_cost = self.estimated_raw_component_contract_cost + self.markings.sum(:estimated_contract_cost_markup_amount)
-    self.estimated_subcomponent_contract_cost = self.estimated_raw_subcomponent_contract_cost + self.children.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
-    self.estimated_contract_cost = self.estimated_raw_contract_cost + self.subtree.joins(:markings).sum('markings.estimated_contract_cost_markup_amount').to_f
-
-    # Leaving this as addition to reduce SQL transactions
-    self.estimated_component_cost = self.estimated_component_unit_cost + self.estimated_component_fixed_cost + self.estimated_component_contract_cost
-    self.estimated_subcomponent_cost = self.estimated_subcomponent_unit_cost + self.estimated_subcomponent_fixed_cost + self.estimated_subcomponent_contract_cost
-    self.estimated_cost = self.estimated_unit_cost + self.estimated_fixed_cost + self.estimated_contract_cost
-  end
-      
       
   def check_project
     self.project ||= self.parent.project if !self.parent.nil? && !self.parent.project.nil?

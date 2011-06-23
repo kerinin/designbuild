@@ -24,14 +24,8 @@ class Task < ActiveRecord::Base
 
   after_create :add_project_markups
   
-  before_save :cache_values
-  
-  after_save :cascade_cache_values
-  after_destroy :clear_associated
-  after_destroy :cascade_cache_values
-  
-  before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
-  before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
+  #before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
+  #before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
   # cost to date points being created at cost creation
   #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
 
@@ -119,18 +113,6 @@ class Task < ActiveRecord::Base
     add_or_nil raw_labor_cost_before(date), raw_material_cost_before(date)
   end
   
-  def cache_values
-    [self.unit_cost_estimates, self.fixed_cost_estimates, self.labor_costs, self.material_costs, self.markups].each {|a| a.reload}
-  
-    self.cache_estimated_costs
-    self.cache_costs
-    self.cache_projected_cost
-  end
-    
-  def cascade_cache_values
-    self.project.reload.save!
-  end
-  
   
   # Invoicing
   
@@ -178,66 +160,8 @@ class Task < ActiveRecord::Base
     end
   end
     
+    
   protected
-    
-  # NOTE: this component_estimated stuff is hacky - think of a better way
-  def cache_estimated_costs
-    self.estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.estimated_raw_cost = estimated_raw_fixed_cost + estimated_raw_unit_cost
-
-    self.component_estimated_raw_unit_cost = self.unit_cost_estimates.sum(:raw_cost)
-    self.component_estimated_raw_fixed_cost = self.fixed_cost_estimates.sum(:raw_cost)
-    self.component_estimated_raw_cost = component_estimated_raw_fixed_cost + component_estimated_raw_unit_cost
-
-    
-    self.markings.each {|m| m.set_markup_amount_from!(self) }
-    
-    self.estimated_unit_cost = self.estimated_raw_unit_cost + self.markings.sum(:estimated_unit_cost_markup_amount)
-    self.estimated_fixed_cost = self.estimated_raw_fixed_cost + self.markings.sum(:estimated_fixed_cost_markup_amount)
-    self.estimated_cost = self.estimated_unit_cost + self.estimated_fixed_cost
-    
-    self.component_estimated_unit_cost = self.unit_cost_estimates.sum(:cost)
-    self.component_estimated_fixed_cost = self.fixed_cost_estimates.sum(:cost)
-    self.component_estimated_cost = component_estimated_fixed_cost + component_estimated_unit_cost
-  end
-  
-  def cache_costs
-    self.raw_labor_cost = self.labor_costs.sum(:raw_cost)
-    self.raw_material_cost = self.material_costs.sum(:raw_cost)
-    self.raw_cost = raw_labor_cost + raw_material_cost
-    
-    self.markings.each {|m| m.set_markup_amount_from!(self) }
-        
-    #self.labor_cost = self.raw_labor_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_labor_cost) }
-    self.labor_cost = self.raw_labor_cost + self.markings.sum(:labor_cost_markup_amount)
-    #self.material_cost = self.raw_material_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_material_cost) }
-    self.material_cost = self.raw_material_cost + self.markings.sum(:material_cost_markup_amount)
-    self.cost = labor_cost + material_cost
-  end
-  
-  def cache_projected_cost
-    if self.percent_complete >= 100
-      self.raw_projected_cost = self.raw_cost
-    else
-      # This comparison should work for raw and marked-up, since both will be
-      # mutliplied by the same markup (per-task)
-      est = self.estimated_raw_cost
-      act = self.raw_cost
-      if act.nil?
-        self.raw_projected_cost = self.estimated_raw_cost
-      elsif est.nil?
-        self.raw_projected_cost = self.raw_cost
-      elsif act > est
-        self.raw_projected_cost = self.raw_cost
-      else
-        self.raw_projected_cost = self.estimated_raw_cost
-      end 
-    end
-    
-    self.projected_cost = self.raw_projected_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_projected_cost) }
-  end
-  
   
   def update_invoicing_state
     self.project.invoices.each {|i| i.save!}

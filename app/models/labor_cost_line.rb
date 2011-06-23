@@ -14,8 +14,6 @@ class LaborCostLine < ActiveRecord::Base
   before_save :set_costs
   
   before_save :set_project
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
   
   scope :by_project, lambda {|project| where(:project_id => project.id )  } 
   
@@ -34,9 +32,5 @@ class LaborCostLine < ActiveRecord::Base
     
       self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
     end
-  end
-
-  def cascade_cache_values
-    self.labor_set.reload.save!
   end
 end

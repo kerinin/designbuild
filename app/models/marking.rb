@@ -3,10 +3,13 @@ class Marking < ActiveRecord::Base
   
   belongs_to :markupable, :polymorphic => true
   belongs_to :project
+  belongs_to :component
 
   belongs_to :markup
   
   before_save :set_project
+  
+  validates_presence_of :markupable, :markup, :project
   
   def set_project
     self.project = self.markupable.class == Project ? self.markupable : self.markupable.project

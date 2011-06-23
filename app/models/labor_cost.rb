@@ -9,18 +9,21 @@ class LaborCost < ActiveRecord::Base
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
   
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings
+  
   validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
   before_save :set_project, :cache_values
   before_save :auto_assign_component
+  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   after_save :deactivate_task_if_done
   after_save :set_task_percent_complete
   
-  after_save :cascade_cache_values, :create_points
+  #after_save :create_points
   after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
-  after_destroy :cascade_cache_values
   
   scope :by_project, lambda {|project| where(:project_id => project.id ) }
   
@@ -28,20 +31,12 @@ class LaborCost < ActiveRecord::Base
     where(:component_id => nil)
   }
 
+  def update_markings
+    self.markings.update_all(:component_id => self.component_id)
+  end
+  
   def markups
     self.task.markups
-  end
-  
-  def cache_values
-    self.line_items.reload
-    
-    self.cache_cost
-  end
-  
-  def cascade_cache_values
-    self.task.reload.save!
-    
-    Task.find(self.task_id_was).save! if self.task_id_changed? && !self.task_id_was.nil? && Task.exists?(:id => self.task_id_was)
   end
 
   protected
@@ -66,11 +61,6 @@ class LaborCost < ActiveRecord::Base
   
   def set_project
     self.project = self.task.project
-  end
-  
-  def cache_cost
-    self.raw_cost = self.line_items.sum(:raw_cost)
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost) }
   end
   
   def deactivate_task_if_done

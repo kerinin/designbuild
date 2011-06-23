@@ -141,6 +141,9 @@ class RefactorMarkings < ActiveRecord::Migration
     add_column :markings, :estimated_cost_markup_amount, :float, :default => 0, :null => false
     add_column :markings, :cost_markup_amount, :float, :default => 0, :null => false
     
+    add_column :markings, :component_id, :integer
+    add_column :contract_costs, :component_id, :integer
+    
     
     # Add markings to leaves
     puts "Adding markups for UnitCostEstimate"
@@ -164,27 +167,27 @@ class RefactorMarkings < ActiveRecord::Migration
       mc.markups << mc.task.markups
     end
     puts "Adding markups for ContractCost"
-    ContractCost.all.each do |cc|
+    ContractCost.includes(:contract).all.each do |cc|
       cc.markups << cc.contract.markups
+      cc.update_attributes( :component_id => cc.contract.component_id )
     end
     
     # Re-calculate markup amount
     Marking.includes(:markup, :markupable).all.each do |m|
-      puts "Re-calculating markup #{m.id}"
+      puts "Re-calculating marking #{m.id}"
       
-      case m.markupable.class
-      when UnitCostEstimate, FixedCostEstimate
-        m.update_attributes( :estimated_cost_markup_amount, m.markup.apply_to(m.markupable, :raw_cost) )
-        m.markupable.update_attributes( :cost, m.markupable.raw_cost + m.estimated_cost_markup_amount )
+      case m.markupable_type
+      when 'UnitCostEstimate', 'FixedCostEstimate'
+        m.update_attributes( :component_id => m.markupable.component_id, :estimated_cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
+        m.markupable.update_attributes( :cost => m.markupable.raw_cost + m.estimated_cost_markup_amount )
         
-      when Contract
-        m.update_attributes( :estimated_cost_markup_amount, m.markup.apply_to(m.markupable, :estimated_raw_cost) )
-        m.markupable.update_attributes( :estimated_cost, m.markupable.estimated_raw_cost + m.estimated_cost_markup_amount )
+      when 'Contract'
+        m.update_attributes( :component_id => m.markupable.component_id, :estimated_cost_markup_amount => m.markup.apply_to(m.markupable, :estimated_raw_cost) )
+        m.markupable.update_attributes( :estimated_cost => m.markupable.estimated_raw_cost + m.estimated_cost_markup_amount )
         
-      when LaborCost, MaterialCost, ContractCost
-        m.update_attributes( :cost_markup_amount, m.markup.apply_to(m.markupable, :raw_cost) )
-        m.markupable.update_attributes( :cost, m.markupable.raw_cost + m.cost_markup_amount )
-        
+      when 'LaborCost', 'MaterialCost', 'ContractCost'
+        m.update_attributes( :component_id => m.markupable.component_id, :cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
+        m.markupable.update_attributes( :cost => m.markupable.raw_cost + m.cost_markup_amount )
       end
     end
   end
