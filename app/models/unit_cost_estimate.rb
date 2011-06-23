@@ -14,7 +14,7 @@ class UnitCostEstimate < ActiveRecord::Base
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
   
-  before_save :set_component
+  before_save :set_component, :set_raw_cost
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -107,6 +107,10 @@ class UnitCostEstimate < ActiveRecord::Base
   end
   
   protected
+  
+  def set_raw_cost
+    self.raw_cost = self.quantity.value * self.unit_cost * ( self.drop.nil? ? 1 : (1.0 + (self.drop / 100.0) ) )
+  end
   
   def set_component
     self.component ||= self.quantity.component

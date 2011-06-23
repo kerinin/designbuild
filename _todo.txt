@@ -10,6 +10,12 @@ This will require a migration to add the marking to costs and calculate the per-
 to keep the same marking class, we'll just avoid setting the markup cache on markings applied to
 components.
 
+ResourceRequest
+ProjectCaching
+Payment
+Markup
+InvoiceCollector
+DatePoint
 
 Resource allocation wishlist
 * check for prior assignment on create

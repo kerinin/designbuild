@@ -6,10 +6,7 @@ class Bid < ActiveRecord::Base
   validates_presence_of :contractor, :date, :raw_cost, :contract
   validates_numericality_of :raw_cost
   
-  before_save :cache_values
-  
-  after_save :cascade_cache_values
-  after_destroy :cascade_cache_values
+  after_save :update_contract
   
   attr_accessor :is_active_bid
   
@@ -36,13 +33,9 @@ class Bid < ActiveRecord::Base
     "#{self.contractor} (#{self.date.to_s :short}: $#{self.raw_cost.to_i})"
   end
   
-  def cascade_cache_values
-    self.contract.reload.save!
-  end
-  
   protected
   
-  def cache_values
-    self.cost = self.raw_cost + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_cost)}
+  def update_contract
+    self.contract.save!
   end
 end

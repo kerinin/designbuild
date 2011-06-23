@@ -24,6 +24,7 @@ class Contract < ActiveRecord::Base
   validates_presence_of :name, :project, :component
 
   before_validation :check_project
+  before_save :update_estimated_cost
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   #after_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
@@ -35,6 +36,10 @@ class Contract < ActiveRecord::Base
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
   
+  def update_estimated_cost
+    self.estimated_raw_cost = self.active_bid.raw_cost unless self.active_bid.blank?
+  end
+  
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
   end
@@ -44,13 +49,17 @@ class Contract < ActiveRecord::Base
   end
   
   def estimated_cost
-    self.estimated_raw_cost + self.markings.sum(:estimated_cost_markup_amount)
+    self.estimated_raw_cost + self.markings.sum(:estimated_cost_markup_amount).to_f
   end
 
   def cost
-    self.contract_costs.joins(:markings).sum("contract_costs.raw_cost + markings.cost_markup_amount")
+    raw_cost + self.costs.joins(:markings).sum("markings.cost_markup_amount").to_f
   end
-    
+
+  def raw_cost
+    self.costs.sum("contract_costs.raw_cost").to_f
+  end
+      
   def markups
     self.component.markups
   end

@@ -5,14 +5,15 @@ class TaskTest < ActiveSupport::TestCase
     setup do
       @dl1 = Factory :deadline
       @ctr = Factory :contract
+      @component = Factory :component
       
       @obj = Factory :task, :deadline => @dl1, :contract => @ctr
       
       @q = Factory :quantity, :value => 1
-      @fce1 = Factory :fixed_cost_estimate, :task => @obj, :raw_cost => 1
-      @fce2 = Factory :fixed_cost_estimate, :task => @obj, :raw_cost => 10
-      @uce1 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 100, :drop => 0
-      @uce2 = Factory :unit_cost_estimate, :task => @obj, :quantity => @q, :unit_cost => 1000, :drop => 0
+      @fce1 = Factory :fixed_cost_estimate, :task => @obj, :component => @component, :raw_cost => 1
+      @fce2 = Factory :fixed_cost_estimate, :task => @obj, :component => @component, :raw_cost => 10
+      @uce1 = Factory :unit_cost_estimate, :task => @obj, :component => @component, :quantity => @q, :unit_cost => 100, :drop => 0
+      @uce2 = Factory :unit_cost_estimate, :task => @obj, :component => @component, :quantity => @q, :unit_cost => 1000, :drop => 0
       @lc1 = Factory :labor_cost, :task => @obj, :percent_complete => 10, :date => Date::today
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 20, :date => Date::today + 5
       @lc2 = Factory :labor_cost, :task => @obj, :percent_complete => 30, :date => Date::today - 5
@@ -214,10 +215,18 @@ class TaskTest < ActiveSupport::TestCase
     end
     
     should "determine projected_net" do
+      assert_equal 1111, @obj.estimated_raw_cost
+      assert_equal 1111, @obj.estimated_cost
+      assert_equal 222222, @obj.raw_projected_cost
+      
       # estimated - projected net
       @markup = Factory :markup, :percent => 100
-      @obj.markups << @markup
-      assert_equal (2222 - 222222), @obj.reload.projected_net
+      @component.markups << @markup
+      @obj.reload
+      assert_equal 2222, @obj.estimated_cost
+      
+      assert_equal @obj.estimated_cost - @obj.raw_projected_cost, @obj.projected_net
+      assert_equal (2222 - 222222), @obj.projected_net
     end
  
     should "de-associate costs when destroyed" do

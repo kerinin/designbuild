@@ -186,13 +186,13 @@ class Project < ActiveRecord::Base
   # Aggregators
   
   def estimated_fixed_cost
-    self.components.joins(:fixed_cost_estimates => :markings ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_fixed_cost + self.components.joins(:fixed_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_unit_cost
-    self.components.joins(:unit_cost_estimates => :markings ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_unit_cost + self.components.joins(:unit_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_contract_cost
-    self.components.joins(:contracts => :markings ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_contract_cost + self.components.joins(:contracts => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_cost
     estimated_fixed_cost + estimated_unit_cost + estimated_contract_cost
@@ -212,13 +212,13 @@ class Project < ActiveRecord::Base
   end
 
   def material_cost
-    self.material_costs.joins(:markings).sum('material_costs.raw_cost + markings.cost_markup_amount').to_f
+    raw_material_cost + self.material_costs.joins(:markings).sum('markings.cost_markup_amount').to_f
   end
   def labor_cost
-    self.labor_costs.joins(:markings).sum('labor_costs.raw_cost + markings.cost_markup_amount').to_f
+    raw_labor_cost + self.labor_costs.joins( :line_items => :markings).sum('markings.cost_markup_amount').to_f
   end
   def contract_cost
-    self.contracts.joins(:costs => :markings ).sum('contract_costs.raw_cost + markings.cost_markup_amount').to_f
+    raw_contract_cost + self.contracts.joins(:costs => :markings ).sum('markings.cost_markup_amount').to_f
   end
   def cost
     material_cost + labor_cost + contract_cost
@@ -228,7 +228,7 @@ class Project < ActiveRecord::Base
     self.material_costs.sum(:raw_cost).to_f
   end
   def raw_labor_cost
-    self.labor_costs.sum(:raw_cost).to_f
+    self.labor_costs.joins(:line_items).sum('labor_cost_lines.raw_cost').to_f
   end
   def raw_contract_cost
     self.contracts.joins(:costs).sum('contract_costs.raw_cost').to_f

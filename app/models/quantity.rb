@@ -8,7 +8,7 @@ class Quantity < ActiveRecord::Base
   validates_presence_of :name, :component, :value
   validates_numericality_of :value
   
-  after_save :cascade_cache_values
+  after_save :cascade_cache_values, :if => proc {|i| i.value_changed? }
   after_destroy :cascade_cache_values
   
   def optgroup_label
@@ -16,7 +16,6 @@ class Quantity < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    return unless changed?
     self.unit_cost_estimates(true).all.each {|uc| uc.save!}
   end
 end

@@ -12,7 +12,7 @@ class Markup < ActiveRecord::Base
   has_many :unit_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'UnitCostEstimate', :uniq => true
   has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract', :uniq => true
   has_many :contract_costs, :through => :markings, :source => :markupable, :source_type => 'ContractCost', :uniq => true
-  has_many :labor_costs, :through => :markings, :source => :markupable, :source_type => 'LaborCost', :uniq => true
+  has_many :labor_cost_lines, :through => :markings, :source => :markupable, :source_type => 'LaborCostLine', :uniq => true
   has_many :material_costs, :through => :markings, :source => :markupable, :source_type => 'MaterialCost', :uniq => true
   
   has_many :invoice_markup_lines

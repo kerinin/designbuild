@@ -9,20 +9,14 @@ class LaborCost < ActiveRecord::Base
   
   has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
   
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true
-  
   validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
   before_save :set_project
   before_save :auto_assign_component
-  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
   after_save :deactivate_task_if_done
   after_save :set_task_percent_complete
-  
-  after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
   
   #after_save :create_points
   after_save :advance_invoicing, :if => Proc.new {|mc| mc.component_id_changed?}
@@ -32,19 +26,15 @@ class LaborCost < ActiveRecord::Base
   scope :unassigned, lambda {
     where(:component_id => nil)
   }
-
-  def update_markings
-    self.markings.update_all(:component_id => self.component_id)
-  end
-  
-  def save_markings
-    self.markings.each {|m| m.save!}
-  end
   
   def cost
-    self.raw_cost + self.markings.sum(:cost_markup_amount)
+    raw_cost + self.line_items.joins(:markings).sum('markings.cost_markup_amount').to_f
   end
-  
+
+  def raw_cost
+    self.line_items.sum('labor_cost_lines.raw_cost').to_f
+  end
+    
   def markups
     self.task.markups
   end

@@ -32,7 +32,6 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.string   "ancestry"
     t.boolean  "expand_in_estimate"
     t.boolean  "show_costs_in_estimate"
-    t.float    "total_markup"
     t.integer  "position"
     t.boolean  "expand_in_invoice",      :default => false
   end
@@ -66,8 +65,6 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.datetime "updated_at"
     t.integer  "bid_id"
     t.float    "estimated_raw_cost", :default => 0.0
-    t.float    "raw_cost",           :default => 0.0
-    t.float    "total_markup"
     t.integer  "position"
     t.integer  "component_id"
   end
@@ -179,15 +176,14 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
   add_index "invoices", ["project_id"], :name => "index_invoices_on_project_id"
 
   create_table "labor_cost_lines", :force => true do |t|
-    t.float     "hours"
-    t.integer   "labor_set_id"
-    t.integer   "laborer_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "cost"
-    t.float     "raw_cost",     :default => 0.0
-    t.float     "laborer_pay",  :default => 0.0
-    t.integer   "project_id"
+    t.float    "hours"
+    t.integer  "labor_set_id"
+    t.integer  "laborer_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "raw_cost",     :default => 0.0
+    t.float    "laborer_pay",  :default => 0.0
+    t.integer  "project_id"
   end
 
   add_index "labor_cost_lines", ["labor_set_id"], :name => "index_labor_cost_lines_on_labor_set_id"
@@ -199,7 +195,6 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "task_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "raw_cost",         :default => 0.0
     t.string   "note"
     t.integer  "project_id"
     t.integer  "component_id"
@@ -412,7 +407,6 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.float    "total_markup"
     t.float    "percent_complete", :default => 0.0,   :null => false
   end
 

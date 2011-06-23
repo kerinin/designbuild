@@ -29,8 +29,9 @@ class Task < ActiveRecord::Base
   # cost to date points being created at cost creation
   #before_save :create_cost_to_date_points, :if => proc {|i| i.cost_changed? && ( !i.new_record? || ( !i.cost.nil? && i.cost > 0 ) )}
 
-  
   after_save :update_invoicing_state
+  
+  after_destroy :clear_associated
   
   scope :active, lambda {
     where(:active => true)
@@ -74,37 +75,35 @@ class Task < ActiveRecord::Base
   end
   
   def projected_net
-    subtract_or_nil self.estimated_cost, self.raw_projected_cost unless self.estimated_cost.nil?
+    self.estimated_cost - self.raw_projected_cost
   end
 
   def component_projected_net
-    subtract_or_nil self.component_estimated_cost, self.raw_projected_cost unless self.component_estimated_cost.nil?
+    self.component_estimated_cost - self.raw_projected_cost
   end
 
-  def labor_cost_before(date)
-    self.raw_labor_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_labor_cost_before, date)}
+  def labor_cost_before( date = Date::today )
+    raw_labor_cost_before(date) + self.labor_costs.joins(:line_items => :markings).where( "labor_costs.date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
-  
-  def raw_labor_cost_before(date)
-    #self.labor_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-    self.labor_costs.where('labor_costs.date <= ?', date).sum(:raw_cost)
+    
+  def raw_labor_cost_before( date = Date::today )
+    self.labor_costs.joins(:line_items).where( "labor_costs.date <= ?", date ).sum('labor_cost_lines.raw_cost').to_f
   end
-  
-  def material_cost_before(date)
-    self.raw_material_cost_before(date) + self.markups.inject(0) {|memo,obj| memo + obj.apply_to(self, :raw_material_cost_before, date)}
+    
+  def material_cost_before( date = Date::today )
+    raw_material_cost_before(date) + self.material_costs.joins(:markings).where( "material_costs.date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
-  
-  def raw_material_cost_before(date)
-    #self.material_costs.where('date <= ?', date).all.inject(nil) {|memo,obj| add_or_nil(memo, obj.raw_cost)}
-    self.material_costs.where('material_costs.date <= ?', date).sum(:raw_cost)
+    
+  def raw_material_cost_before( date = Date::today )
+    self.material_costs.where( "material_costs.date <= ?", date ).sum('material_costs.raw_cost').to_f
   end
-  
+    
   def cost_before(date)
-    add_or_nil labor_cost_before(date), material_cost_before(date)
+    labor_cost_before(date) + material_cost_before(date)
   end
   
   def raw_cost_before(date)
-    add_or_nil raw_labor_cost_before(date), raw_material_cost_before(date)
+    raw_labor_cost_before(date) + raw_material_cost_before(date)
   end
   
   
@@ -155,16 +154,13 @@ class Task < ActiveRecord::Base
   end
     
   def estimated_unit_cost
-    self.unit_cost_estimates.joins(:markings).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_unit_cost + self.unit_cost_estimates.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_fixed_cost
-    self.fixed_cost_estimates.joins(:markings).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
-  end
-  def estimated_contract_cost
-    self.contracts.joins(:markings).sum('contracts.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_fixed_cost + self.fixed_cost_estimates.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_cost
-    estimated_unit_cost + estimated_fixed_cost + estimated_contract_cost
+    estimated_unit_cost + estimated_fixed_cost
   end
 
   def estimated_raw_unit_cost
@@ -173,34 +169,66 @@ class Task < ActiveRecord::Base
   def estimated_raw_fixed_cost
     self.fixed_cost_estimates.sum('fixed_cost_estimates.raw_cost').to_f
   end
-  def estimated_raw_contract_cost
-    self.contracts.sum('contracts.raw_cost').to_f
-  end
   def estimated_raw_cost
-    estimated_raw_unit_cost + estimated_raw_fixed_cost + estimated_raw_contract_cost
+    estimated_raw_unit_cost + estimated_raw_fixed_cost
   end
   
   def labor_cost
-    self.labor_costs.joins(:markings).sum('labor_costs.raw_cost + markings.cost_markup_amount').to_f
+    raw_labor_cost + self.labor_costs.joins(:line_items => :markings).sum('markings.cost_markup_amount').to_f
   end
   def material_cost
-    self.material_costs.joins(:markings).sum('material_costs.raw_cost + markings.cost_markup_amount').to_f
-  end
-  def contract_cost
-    self.contracts.joins( :contract_costs => :markings).sum('contract_costs.raw_cost + markings.cost_markup_amount').to_f
+    raw_material_cost + self.material_costs.joins(:markings).sum('markings.cost_markup_amount').to_f
   end
   def cost
-    labor_cost + material_cost + contract_cost
+    labor_cost + material_cost
   end
-  
+
+  def raw_labor_cost
+    self.labor_costs.joins(:line_items).sum('labor_cost_lines.raw_cost').to_f
+  end
+  def raw_material_cost
+    self.material_costs.sum('material_costs.raw_cost').to_f
+  end
+  def raw_cost
+    raw_labor_cost + raw_material_cost
+  end
+
   def projected_cost
-    # ???
-    raise
+    if self.percent_complete >= 100
+      self.cost
+    else
+      est = self.estimated_cost
+      act = self.cost
+      
+      if act.nil?
+        est
+      elsif est.nil?
+        act
+      elsif act > est
+        act
+      else
+        est
+      end
+    end
   end
-  
+      
   def raw_projected_cost
-    # ???
-    raise
+    if self.percent_complete >= 100
+      self.raw_cost
+    else
+      est = self.estimated_raw_cost
+      act = self.raw_cost
+      
+      if act.nil?
+        est
+      elsif est.nil?
+        act
+      elsif act > est
+        act
+      else
+        est
+      end
+    end
   end
   
   protected
@@ -221,20 +249,12 @@ class Task < ActiveRecord::Base
   end
   
   def cascade_add_markup(markup)
-    #LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
-    #self.material_costs.each {|mc| mc.save!}
-    #self.save!
-    
-    markup.labor_costs << self.labor_costs
+    markup.labor_cost_lines << LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids)
     markup.material_costs << self.material_costs
   end
   
   def cascade_remove_markup(markup)
-    #LaborCostLine.includes(:labor_set).where('labor_costs.task_id' => self.id).each {|lcl| lcl.save!}
-    #self.material_costs.each {|mc| mc.save!}
-    #self.save!
-    
-    markup.labor_costs.delete( self.labor_costs )
-    markup.material_costs.delete( self.labor_costs )
+    markup.labor_cost_lines.delete( LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids) )
+    markup.material_costs.delete( self.material_costs )
   end
 end

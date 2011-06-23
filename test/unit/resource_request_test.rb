@@ -50,20 +50,23 @@ class ResourceRequestTest < ActiveSupport::TestCase
     end
     
     should "determine allocated" do
+      @obj.save!
       @a1.save!
       @a2.save!
-      @obj.save!
+      #@obj.save!
       assert_equal 2, @obj.allocated
     end
     
     should "determine remaining" do
+      @obj.save!
       @a1.save!
       @a2.save!
-      @obj.save!
+      #@obj.save!
       assert_equal 3, @obj.remaining
     end
     
     should "zero remaining if negative" do
+      @obj.save!
       @a1.save!
       @a2.save!
       @obj.resource_allocations.create :resource_request => @obj, :start_date => Date::today, :duration => 10
@@ -72,9 +75,10 @@ class ResourceRequestTest < ActiveSupport::TestCase
     end
     
     should "update allocated on new allocation" do
+      @obj.save!
       @a1.save!
       @a2.save!
-      @obj.save!
+      #@obj.save!
       assert_equal 2, @obj.reload.allocated
       
       ResourceAllocation.create!( :resource_request => @obj, :duration => 1, :start_date => Date::today)
@@ -82,9 +86,10 @@ class ResourceRequestTest < ActiveSupport::TestCase
     end
     
     should "update allocation on destroyed allocation" do
+      @obj.save!
       @a1.save!
       @a2.save!
-      @obj.save!
+      #@obj.save!
       assert_equal 2, @obj.reload.allocated
       
       @a1.destroy

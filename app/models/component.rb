@@ -130,27 +130,27 @@ class Component < ActiveRecord::Base
   end
   
   def labor_cost
-    self.labor_costs.sum(:raw_cost)
+    raw_labor_cost + self.labor_costs.joins(:line_items => :markings).sum('markings.cost_markup_amount').to_f
   end
   
   def labor_cost_before( date = Date::today )
-    self.labor_costs.where( "date <= ?", date ).sum(:raw_cost)
+    raw_labor_cost_before(date) + self.labor_costs.joins(:line_items => :markings).where( "labor_costs.date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
   
   def material_cost
-    self.material_costs.sum(:raw_cost)
+    raw_material_cost + self.material_costs.joins(:markings).sum('markings.cost_markup_amount').to_f
   end
   
   def material_cost_before( date = Date::today )
-    self.material_costs.where( "date <= ?", date ).sum(:raw_cost)
+    raw_material_cost_before(date) + self.material_costs.joins(:markings).where( "date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
   
   def contract_cost
-    self.contracts.sum(:raw_cost)
+    raw_contract_cost + self.contracts.joins(:costs => :markings).sum('markings.cost_markup_amount').to_f
   end
   
   def contract_cost_before( date = Date::today )
-    self.contracts.includes(:costs).where( "contract_costs.date <= ?", date).sum( 'contract_costs.raw_cost' )
+    raw_contract_cost_before(date) + self.contracts.joins(:costs => :markings).where( "contract_costs.date <= ?", date).sum( 'markings.cost_markup_amount' ).to_f
   end
   
   def cost
@@ -165,13 +165,13 @@ class Component < ActiveRecord::Base
   # Aggregators
   
   def estimated_component_fixed_cost
-    self.fixed_cost_estimates.joins(:markings).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_component_fixed_cost + self.fixed_cost_estimates.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_component_unit_cost
-    self.unit_cost_estimates.joins(:markings).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_component_unit_cost + self.unit_cost_estimates.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_component_contract_cost
-    self.contracts.joins(:markings).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_component_contract_cost + self.contracts.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_component_cost
     estimated_component_fixed_cost + estimated_component_unit_cost + estimated_component_contract_cost
@@ -191,13 +191,13 @@ class Component < ActiveRecord::Base
   end
     
   def estimated_subcomponent_fixed_cost
-    self.descendants.joins(:fixed_cost_estimates => :markings ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_subcomponent_fixed_cost + self.descendants.joins(:fixed_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_subcomponent_unit_cost
-    self.descendants.joins(:unit_cost_estimates => :markings ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_subcomponent_unit_cost + self.descendants.joins(:unit_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_subcomponent_contract_cost
-    self.descendants.joins(:contracts => :markings ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_subcomponent_contract_cost + self.descendants.joins(:contracts => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_subcomponent_cost
     estimated_subcomponent_fixed_cost + estimated_subcomponent_unit_cost + estimated_subcomponent_contract_cost
@@ -217,13 +217,13 @@ class Component < ActiveRecord::Base
   end
     
   def estimated_fixed_cost
-    self.subtree.joins(:fixed_cost_estimates => :markings ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_fixed_cost + self.subtree.joins(:fixed_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_unit_cost
-    self.subtree.joins(:unit_cost_estimates => :markings ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_unit_cost + self.subtree.joins(:unit_cost_estimates => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_contract_cost
-    self.subtree.joins(:contracts => :markings ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
+    estimated_raw_contract_cost + self.subtree.joins(:contracts => :markings ).sum('markings.estimated_cost_markup_amount').to_f
   end
   def estimated_cost
     estimated_fixed_cost + estimated_unit_cost + estimated_contract_cost
@@ -263,8 +263,8 @@ class Component < ActiveRecord::Base
     markup.fixed_cost_estimates << self.fixed_cost_estimates
     markup.unit_cost_estimates << self.unit_cost_estimates
     markup.contracts << self.contracts
-    markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
-    markup.labor_costs << self.labor_costs
+    markup.contract_costs << ContractCost.where('contract_id in (?)', self.contract_ids)
+    markup.labor_cost_lines << LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids)
     markup.material_costs << self.material_costs
     
     markup.components << self.descendants
@@ -272,7 +272,8 @@ class Component < ActiveRecord::Base
   
   def cascade_remove_markup(markup)
     # remove the markup from everything in the component subtree
-    self.subtree.applied_markings.delete_all
+    Marking.where('component_id in (?)', self.subtree_ids).delete_all
+    #self.subtree.applied_markings.delete_all
   end
   
   def create_estimated_cost_points

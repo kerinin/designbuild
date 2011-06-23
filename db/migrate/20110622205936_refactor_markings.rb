@@ -30,7 +30,18 @@ class Marking < ActiveRecord::Base
   before_save :set_project
   
   def set_project
-    self.project = self.markupable.class == Project ? self.markupable : self.markupable.project
+    case self.markupable_type
+    when "Project"
+      self.project_id = self.markupable.id
+    when "ContractCost"
+      self.project_id = self.markupable.contract.project_id
+    when "FixedCostEstimate", 'UnitCostEstimate'
+      self.project_id = self.markupable.component.project_id
+    when "LaborCostLine"
+      self.project_id = self.markupable.labor_set.project_id
+    else
+      self.project_id = self.markupable.project_id
+    end
   end
 end
 
@@ -102,6 +113,12 @@ class LaborCost < ActiveRecord::Base
   belongs_to :project
   belongs_to :component
   belongs_to :task, :inverse_of => :labor_costs
+  
+  has_many :line_items, :class_name => "LaborCostLine", :foreign_key => :labor_set_id, :dependent => :destroy
+end
+
+class LaborCostLine < ActiveRecord::Base
+  belongs_to :labor_set, :class_name => "LaborCost", :inverse_of => :line_items
   
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings
@@ -208,9 +225,17 @@ class RefactorMarkings < ActiveRecord::Migration
     remove_column :unit_cost_estimates, :cost
     remove_column :contracts, :estimated_cost
     remove_column :contracts, :cost
+    remove_column :contracts, :raw_cost
     remove_column :contract_costs, :cost
     remove_column :labor_costs, :cost
+    remove_column :labor_costs, :raw_cost
+    remove_column :labor_cost_lines, :cost
+    remove_column :labor_cost_lines, :laborer_pay
     remove_column :material_costs, :cost
+    
+    remove_column :components, :total_markup
+    remove_column :contracts, :total_markup
+    remove_column :tasks, :total_markup
     
         
     add_column :markings, :estimated_cost_markup_amount, :float, :default => 0, :null => false
@@ -234,8 +259,8 @@ class RefactorMarkings < ActiveRecord::Migration
       c.markups << c.component.markups
     end
     puts "Adding markups for LaborCost"
-    LaborCost.all.each do |lc|
-      lc.markups << lc.task.markups
+    LaborCostLine.all.each do |lc|
+      lc.markups << lc.labor_set.task.markups
     end
     puts "Adding markups for MaterialCost"
     MaterialCost.all.each do |mc|
@@ -258,8 +283,12 @@ class RefactorMarkings < ActiveRecord::Migration
       when 'Contract'
         m.update_attributes( :component_id => m.markupable.component_id, :estimated_cost_markup_amount => m.markup.apply_to(m.markupable, :estimated_raw_cost) )
         
-      when 'LaborCost', 'MaterialCost', 'ContractCost'
+      when 'MaterialCost', 'ContractCost'
         m.update_attributes( :component_id => m.markupable.component_id, :cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
+
+      when 'LaborCostLine'
+        m.update_attributes( :component_id => m.markupable.labor_set.component_id, :cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
+        
       end
     end
   end

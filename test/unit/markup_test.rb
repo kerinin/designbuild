@@ -133,7 +133,10 @@ class MarkupTest < ActiveSupport::TestCase
     end
     
     should "apply to markupable and children" do
-      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
+      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
+      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      
+      assert_equal 50, FixedCostEstimate.where('fixed_cost_estimates.component_id in (?)', @subcomponent.subtree_ids).joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
       assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
       
       assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)

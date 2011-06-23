@@ -13,15 +13,26 @@ class Marking < ActiveRecord::Base
   validates_presence_of :markupable, :markup, :project
   
   def set_project
-    self.project = self.markupable_type == "Project" ? self.markupable : self.markupable.project
+    case self.markupable_type
+    when "Project"
+      self.project_id = self.markupable.id
+    when "ContractCost"
+      self.project_id = self.markupable.contract.project_id
+    when "FixedCostEstimate", 'UnitCostEstimate'
+      self.project_id = self.markupable.component.project_id
+    when "LaborCostLine"
+      self.project_id = self.markupable.labor_set.project_id
+    else
+      self.project_id = self.markupable.project_id
+    end
   end
   
   def set_markup_amount
     case self.markupable_type
     when "FixedCostEstimate", "UnitCostEstimate", "Contract"
-      self.estimated_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_cost)
-    when "LaborCost", "MaterialCost", "ContractCost"
-      self.cost_markup_amount = self.markup.apply_to(self.markupable, :raw_cost)
+      self.estimated_cost_markup_amount = self.markup.apply_to(self.markupable, :estimated_raw_cost) || 0
+    when "LaborCostLine", "MaterialCost", "ContractCost"
+      self.cost_markup_amount = self.markup.apply_to(self.markupable, :raw_cost) || 0
     end
   end
 end
