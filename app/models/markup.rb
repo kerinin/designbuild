@@ -62,7 +62,6 @@ class Markup < ActiveRecord::Base
   end
 
   def cascade_cache_values
-    self.tasks(true).all.each {|t| t.save!}
-    self.components(true).all.each {|c| c.save!}
+    self.markings.all.each {|m| m.save!}
   end
 end

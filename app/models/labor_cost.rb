@@ -15,7 +15,7 @@ class LaborCost < ActiveRecord::Base
   validates_presence_of :task, :percent_complete, :date
   validates_numericality_of :percent_complete
   
-  before_save :set_project, :cache_values
+  before_save :set_project
   before_save :auto_assign_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   

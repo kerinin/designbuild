@@ -50,22 +50,6 @@ class Component < ActiveRecord::Base
     (self.ancestors.all + [self]).map {|c| c.name}.join(' > ')
   end
   
-  def cache_values
-    [self.children, self.fixed_cost_estimates, self.unit_cost_estimates, self.contracts, self.markups].each {|a| a.reload}
-    
-    self.cache_estimated_costs
-  end
-    
-  def cascade_cache_values
-    if self.is_root?
-      self.project.reload.save!
-    else
-      self.parent.reload.save!
-    end
-    
-    Project.find(self.project_id_was).save! if self.project_id_changed? && !self.project_id_was.nil? && Project.exists?(:id => self.project_id_was)
-  end
-  
   
   # Invoicing
 
@@ -276,13 +260,14 @@ class Component < ActiveRecord::Base
   def cascade_add_markup(markup)
     # Add the markup to everything in the component subtree
     
-    markup.components << self.subtree
-    markup.fixed_cost_estimates << self.subtree.fixed_cost_estimates
-    markup.unit_cost_estimates << self.subtree.unit_cost_estimates
-    markup.contracts << self.subtree.contracts
-    markup.contract_costs << ContractCost.joins(:contract) & self.subtree.contracts #???
-    markup.labor_costs << self.subtree.labor_costs
-    markup.material_costs << self.subtree.material_costs
+    markup.fixed_cost_estimates << self.fixed_cost_estimates
+    markup.unit_cost_estimates << self.unit_cost_estimates
+    markup.contracts << self.contracts
+    markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
+    markup.labor_costs << self.labor_costs
+    markup.material_costs << self.material_costs
+    
+    markup.components << self.descendants
   end
   
   def cascade_remove_markup(markup)

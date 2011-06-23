@@ -186,26 +186,26 @@ class Project < ActiveRecord::Base
   # Aggregators
   
   def estimated_fixed_cost
-    self.components.joins(:fixed_cost_estimates => {:markings} ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    self.components.joins(:fixed_cost_estimates => :markings ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_unit_cost
-    self.components.join(:unit_cost_estimates => {:markings} ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+    self.components.joins(:unit_cost_estimates => :markings ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_contract_cost
-    self.components.join(:contracts => {:markings} ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
+    self.components.joins(:contracts => :markings ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_cost
     estimated_fixed_cost + estimated_unit_cost + estimated_contract_cost
   end
   
   def estimated_raw_fixed_cost
-    self.components.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost')
+    self.components.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.raw_cost').to_f
   end
   def estimated_raw_unit_cost
-    self.components.join(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost')
+    self.components.joins(:unit_cost_estimates).sum('unit_cost_estimates.raw_cost').to_f
   end
   def estimated_raw_contract_cost
-    self.components.join(:contracts).sum('contracts.estimated_raw_cost')
+    self.components.joins(:contracts).sum('contracts.estimated_raw_cost').to_f
   end
   def estimated_raw_cost
     estimated_raw_fixed_cost + estimated_raw_unit_cost + estimated_raw_contract_cost
@@ -218,40 +218,36 @@ class Project < ActiveRecord::Base
     self.labor_costs.joins(:markings).sum('labor_costs.raw_cost + markings.cost_markup_amount').to_f
   end
   def contract_cost
-    self.contracts.joins(:contract_costs => {:markings} ).sum('contract_costs.cost + markings.cost_markup_amount').to_f
+    self.contracts.joins(:costs => :markings ).sum('contract_costs.raw_cost + markings.cost_markup_amount').to_f
   end
   def cost
     material_cost + labor_cost + contract_cost
   end
   
-  def material_raw_cost
-    self.material_costs.sum(:raw_cost)
+  def raw_material_cost
+    self.material_costs.sum(:raw_cost).to_f
   end
-  def labor_raw_cost
-    self.labor_costs.sum(:raw_cost)
+  def raw_labor_cost
+    self.labor_costs.sum(:raw_cost).to_f
   end
-  def contract_raw_cost
-    self.contracts.joins(:contract_costs).sum('contract_costs.raw_cost').to_f
+  def raw_contract_cost
+    self.contracts.joins(:costs).sum('contract_costs.raw_cost').to_f
   end
   def raw_cost
     material_cost + labor_cost + contract_cost
   end
 
   def projected_cost
-    self.tasks.inject(0) do |memo,obj| 
-      add_or_nil(memo, obj.projected_cost)} + 
-      self.estimated_contract_cost + 
-      ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f + 
-      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f
-    end
+    self.tasks.inject(0) { |memo,obj| add_or_nil(memo, obj.projected_cost) } + 
+    self.estimated_contract_cost + 
+    ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f + 
+    ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:cost).to_f
   end
   def raw_projected_cost
-    self.tasks.inject(0) do |memo,obj| 
-      add_or_nil(memo, obj.raw_projected_cost)} + 
-      self.estimated_raw_contract_cost +
-      ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
-      ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f
-    end
+    self.tasks.inject(0) {|memo,obj| add_or_nil(memo, obj.raw_projected_cost)} + 
+    self.estimated_raw_contract_cost +
+    ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
+    ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f
   end
   
   
@@ -260,14 +256,14 @@ class Project < ActiveRecord::Base
   def cascade_add_markup(markup)
     # Add the markup to everything in the project
     
-    markup.components << self.components
+    markup.components << self.components.roots
     markup.tasks << self.tasks
-    markup.fixed_cost_estimates << self.fixed_cost_estimates
-    markup.unit_cost_estimates << self.unit_cost_estimates
+    #markup.fixed_cost_estimates << self.fixed_cost_estimates
+    #markup.unit_cost_estimates << self.unit_cost_estimates
     markup.contracts << self.contracts
-    markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
-    markup.labor_costs << self.labor_costs
-    markup.material_costs << self.material_costs
+    #markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
+    #markup.labor_costs << self.labor_costs
+    #markup.material_costs << self.material_costs
   end
   
   def cascade_remove_markup(markup)

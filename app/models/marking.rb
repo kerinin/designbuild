@@ -7,12 +7,13 @@ class Marking < ActiveRecord::Base
 
   belongs_to :markup
   
-  before_save :set_project, :set_markup_amount
+  before_validation :set_project
+  before_save :set_markup_amount
   
   validates_presence_of :markupable, :markup, :project
   
   def set_project
-    self.project = self.markupable.class == Project ? self.markupable : self.markupable.project
+    self.project = self.markupable_type == "Project" ? self.markupable : self.markupable.project
   end
   
   def set_markup_amount

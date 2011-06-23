@@ -17,7 +17,7 @@ class UnitCostEstimate < ActiveRecord::Base
   before_save :set_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
-  after_save :save_markings, :if => proc {|i| i.estimated_raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
+  after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
   
