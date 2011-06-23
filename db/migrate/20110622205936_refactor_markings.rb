@@ -137,7 +137,82 @@ class RefactorMarkings < ActiveRecord::Migration
     remove_column :markings, :labor_cost_markup_amount
     remove_column :markings, :material_cost_markup_amount
     remove_column :markings, :cost_markup_amount
+
+    remove_column :projects, :estimated_fixed_cost
+    remove_column :projects, :estimated_raw_fixed_cost
+    remove_column :projects, :estimated_unit_cost
+    remove_column :projects, :estimated_raw_unit_cost
+    remove_column :projects, :estimated_contract_cost
+    remove_column :projects, :estimated_raw_contract_cost
+    remove_column :projects, :material_cost
+    remove_column :projects, :raw_material_cost
+    remove_column :projects, :labor_cost
+    remove_column :projects, :raw_labor_cost
+    remove_column :projects, :contract_cost
+    remove_column :projects, :raw_contract_cost
+    remove_column :projects, :projected_cost
+    remove_column :projects, :raw_projected_cost
+    remove_column :projects, :estimated_cost
+    remove_column :projects, :estimated_raw_cost
+    remove_column :projects, :cost
+    remove_column :projects, :raw_cost
+
+    remove_column :components, :estimated_fixed_cost
+    remove_column :components, :estimated_unit_cost
+    remove_column :components, :estimated_raw_fixed_cost
+    remove_column :components, :estimated_raw_unit_cost
+    remove_column :components, :estimated_contract_cost
+    remove_column :components, :estimated_raw_contract_cost
+    remove_column :components, :estimated_component_fixed_cost
+    remove_column :components, :estimated_raw_component_fixed_cost
+    remove_column :components, :estimated_subcomponent_fixed_cost
+    remove_column :components, :estimated_raw_subcomponent_fixed_cost
+    remove_column :components, :estimated_component_unit_cost
+    remove_column :components, :estimated_raw_component_unit_cost
+    remove_column :components, :estimated_subcomponent_unit_cost
+    remove_column :components, :estimated_raw_subcomponent_unit_cost
+    remove_column :components, :estimated_component_contract_cost
+    remove_column :components, :estimated_raw_component_contract_cost
+    remove_column :components, :estimated_subcomponent_contract_cost
+    remove_column :components, :estimated_raw_subcomponent_contract_cost
+    remove_column :components, :estimated_component_cost
+    remove_column :components, :estimated_raw_component_cost
+    remove_column :components, :estimated_subcomponent_cost
+    remove_column :components, :estimated_raw_subcomponent_cost
+    remove_column :components, :estimated_cost
+    remove_column :components, :estimated_raw_cost
+
+
+    remove_column :tasks, :estimated_raw_unit_cost
+    remove_column :tasks, :estimated_raw_fixed_cost
+    remove_column :tasks, :raw_labor_cost
+    remove_column :tasks, :raw_material_cost
+    remove_column :tasks, :estimated_unit_cost
+    remove_column :tasks, :estimated_fixed_cost
+    remove_column :tasks, :estimated_cost
+    remove_column :tasks, :estimated_raw_cost
+    remove_column :tasks, :component_estimated_unit_cost
+    remove_column :tasks, :component_estimated_raw_unit_cost
+    remove_column :tasks, :component_estimated_fixed_cost
+    remove_column :tasks, :component_estimated_raw_fixed_cost
+    remove_column :tasks, :component_estimated_cost
+    remove_column :tasks, :component_estimated_raw_cost
+    remove_column :tasks, :labor_cost
+    remove_column :tasks, :material_cost
+    remove_column :tasks, :cost
+    remove_column :tasks, :raw_cost
+    remove_column :tasks, :projected_cost
+    remove_column :tasks, :raw_projected_cost
+          
+    remove_column :fixed_cost_estimates, :cost
+    remove_column :unit_cost_estimates, :cost
+    remove_column :contracts, :estimated_cost
+    remove_column :contracts, :cost
+    remove_column :contract_costs, :cost
+    remove_column :labor_costs, :cost
+    remove_column :material_costs, :cost
     
+        
     add_column :markings, :estimated_cost_markup_amount, :float, :default => 0, :null => false
     add_column :markings, :cost_markup_amount, :float, :default => 0, :null => false
     
@@ -179,15 +254,12 @@ class RefactorMarkings < ActiveRecord::Migration
       case m.markupable_type
       when 'UnitCostEstimate', 'FixedCostEstimate'
         m.update_attributes( :component_id => m.markupable.component_id, :estimated_cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
-        m.markupable.update_attributes( :cost => m.markupable.raw_cost + m.estimated_cost_markup_amount )
         
       when 'Contract'
         m.update_attributes( :component_id => m.markupable.component_id, :estimated_cost_markup_amount => m.markup.apply_to(m.markupable, :estimated_raw_cost) )
-        m.markupable.update_attributes( :estimated_cost => m.markupable.estimated_raw_cost + m.estimated_cost_markup_amount )
         
       when 'LaborCost', 'MaterialCost', 'ContractCost'
         m.update_attributes( :component_id => m.markupable.component_id, :cost_markup_amount => m.markup.apply_to(m.markupable, :raw_cost) )
-        m.markupable.update_attributes( :cost => m.markupable.raw_cost + m.cost_markup_amount )
       end
     end
   end

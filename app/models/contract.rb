@@ -37,6 +37,14 @@ class Contract < ActiveRecord::Base
     self.markings.update_all(:component_id => self.component_id)
   end
   
+  def estimated_cost
+    self.estimated_raw_cost + self.markings.sum(:estimated_cost_markup_amount)
+  end
+
+  def cost
+    self.contract_costs.joins(:markings).sum("contract_costs.raw_cost + markings.cost_markup_amount")
+  end
+    
   def markups
     self.component.markups
   end

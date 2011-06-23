@@ -35,6 +35,10 @@ class LaborCost < ActiveRecord::Base
     self.markings.update_all(:component_id => self.component_id)
   end
   
+  def cost
+    self.raw_cost + self.markings.sum(:cost_markup_amount)
+  end
+  
   def markups
     self.task.markups
   end

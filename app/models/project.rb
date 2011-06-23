@@ -186,13 +186,13 @@ class Project < ActiveRecord::Base
   # Aggregators
   
   def estimated_fixed_cost
-    self.components.joins(:fixed_cost_estimates).sum('fixed_cost_estimates.cost').to_f
+    self.components.joins(:fixed_cost_estimates => {:markings} ).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_unit_cost
-    self.components.join(:unit_cost_estimates).sum('unit_cost_estimates.cost').to_f
+    self.components.join(:unit_cost_estimates => {:markings} ).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_contract_cost
-    self.components.join(:contracts).sum('contracts.estimated_cost').to_f
+    self.components.join(:contracts => {:markings} ).sum('contracts.estimated_raw_cost + markings.estimated_cost_markup_amount').to_f
   end
   def estimated_cost
     estimated_fixed_cost + estimated_unit_cost + estimated_contract_cost
@@ -212,13 +212,13 @@ class Project < ActiveRecord::Base
   end
 
   def material_cost
-    self.material_costs.sum(:cost)
+    self.material_costs.joins(:markings).sum('material_costs.raw_cost + markings.cost_markup_amount').to_f
   end
   def labor_cost
-    self.labor_costs.sum(:cost)
+    self.labor_costs.joins(:markings).sum('labor_costs.raw_cost + markings.cost_markup_amount').to_f
   end
   def contract_cost
-    self.contracts.joins(:contract_costs).sum('contract_costs.cost').to_f
+    self.contracts.joins(:contract_costs => {:markings} ).sum('contract_costs.cost + markings.cost_markup_amount').to_f
   end
   def cost
     material_cost + labor_cost + contract_cost

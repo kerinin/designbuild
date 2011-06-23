@@ -160,7 +160,55 @@ class Task < ActiveRecord::Base
     end
   end
     
-    
+  def estimated_unit_cost
+    self.unit_cost_estimates.joins(:markings).sum('unit_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+  end
+  def estimated_fixed_cost
+    self.fixed_cost_estimates.joins(:markings).sum('fixed_cost_estimates.raw_cost + markings.estimated_cost_markup_amount').to_f
+  end
+  def estimated_contract_cost
+    self.contracts.joins(:markings).sum('contracts.raw_cost + markings.estimated_cost_markup_amount').to_f
+  end
+  def estimated_cost
+    estimated_unit_cost + estimated_fixed_cost + estimated_contract_cost
+  end
+
+  def estimated_raw_unit_cost
+    self.unit_cost_estimates.sum('unit_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_fixed_cost
+    self.fixed_cost_estimates.sum('fixed_cost_estimates.raw_cost').to_f
+  end
+  def estimated_raw_contract_cost
+    self.contracts.sum('contracts.raw_cost').to_f
+  end
+  def estimated_raw_cost
+    estimated_raw_unit_cost + estimated_raw_fixed_cost + estimated_raw_contract_cost
+  end
+  
+  def labor_cost
+    self.labor_costs.joins(:markings).sum('labor_costs.raw_cost + markings.cost_markup_amount').to_f
+  end
+  def material_cost
+    self.material_costs.joins(:markings).sum('material_costs.raw_cost + markings.cost_markup_amount').to_f
+  end
+  def contract_cost
+    self.contracts.joins( :contract_costs => :markings).sum('contract_costs.raw_cost + markings.cost_markup_amount').to_f
+  end
+  def cost
+    labor_cost + material_cost + contract_cost
+  end
+  
+  def projected_cost
+    # ???
+    raise
+  end
+  
+  def raw_projected_cost
+    # ???
+    raise
+  end
+  
   protected
   
   def update_invoicing_state
