@@ -17,6 +17,10 @@ Markup
 InvoiceCollector
 DatePoint
 
+
+NOTE: think about the relationship between tasks & components re: markups.  Maybe talk over w/ Tom
+
+
 Resource allocation wishlist
 * check for prior assignment on create
 * half-day scheduling

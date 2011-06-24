@@ -9,8 +9,8 @@ class Project < ActiveRecord::Base
   has_many :deadlines, :order => "deadlines.date", :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :invoices, :order => 'invoices.date DESC'
@@ -248,28 +248,5 @@ class Project < ActiveRecord::Base
     self.estimated_raw_contract_cost +
     ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
     ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f
-  end
-  
-  
-  protected
-  
-  def cascade_add_markup(markup)
-    # Add the markup to everything in the project
-    
-    markup.components << self.components.roots
-    markup.tasks << self.tasks
-    #markup.fixed_cost_estimates << self.fixed_cost_estimates
-    #markup.unit_cost_estimates << self.unit_cost_estimates
-    markup.contracts << self.contracts
-    #markup.contract_costs << ContractCost.joins(:contract) & self.contracts #???
-    #markup.labor_costs << self.labor_costs
-    #markup.material_costs << self.material_costs
-  end
-  
-  def cascade_remove_markup(markup)
-    # remove the markup from everything in the project
-    
-    self.markings.where(:markup_id => markup.id).delete_all
-    self.applied_markings.where(:markup_id => markup.id).delete_all
   end
 end

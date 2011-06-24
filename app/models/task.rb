@@ -13,8 +13,8 @@ class Task < ActiveRecord::Base
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
   has_many :milestones, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
   has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}, :dependent => :destroy
@@ -22,7 +22,7 @@ class Task < ActiveRecord::Base
   
   validates_presence_of :name, :project
 
-  after_create :add_project_markups
+  after_create :inherit_markups
   
   #before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   #before_save :create_projected_cost_points, :if => proc {|i| i.projected_cost_changed? && ( !i.new_record? || ( !i.projected_cost.nil? && i.projected_cost > 0 ) )}
@@ -237,24 +237,13 @@ class Task < ActiveRecord::Base
     self.project.invoices.each {|i| i.save!}
     self.project.payments.each {|i| i.save!}
   end
-     
         
-  def add_project_markups
-    self.project.markups.all.each {|m| self.markups << m unless self.markups.include? m }
+  def inherit_markups
+    self.project.markups.each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def clear_associated
     self.fixed_cost_estimates.each {|fc| fc.task= nil; fc.save!}
     self.unit_cost_estimates.each {|uc| uc.task = nil; uc.save!}
-  end
-  
-  def cascade_add_markup(markup)
-    markup.labor_cost_lines << LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids)
-    markup.material_costs << self.material_costs
-  end
-  
-  def cascade_remove_markup(markup)
-    markup.labor_cost_lines.delete( LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids) )
-    markup.material_costs.delete( self.material_costs )
   end
 end

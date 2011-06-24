@@ -4,17 +4,23 @@ class ContractCost < ActiveRecord::Base
   belongs_to :contract, :inverse_of => :costs
   belongs_to :component
   
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
   
   validates_presence_of :date, :raw_cost, :contract
   
   validates_numericality_of :raw_cost
   
+  after_create :inherit_markups
+  
   before_save :assign_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
 
   after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
+  
+  def inherit_markups
+    self.contract.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+  end
   
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
@@ -30,10 +36,6 @@ class ContractCost < ActiveRecord::Base
   
   def assign_component
     self.component_id = self.contract.component_id
-  end
-  
-  def markups
-    self.contract.markups
   end
   
   protected

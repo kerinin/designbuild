@@ -6,13 +6,15 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :quantity, :inverse_of => :unit_cost_estimates
   belongs_to :task, :inverse_of => :unit_cost_estimates
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
     
   accepts_nested_attributes_for :quantity, :reject_if => :all_blank
   
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
+  
+  after_create :inherit_markups
   
   before_save :set_component, :set_raw_cost
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -22,6 +24,10 @@ class UnitCostEstimate < ActiveRecord::Base
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
   
   scope :unassigned, lambda { where( {:task_id => nil} ) }
+  
+  def inherit_markups
+    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+  end
   
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
@@ -33,10 +39,6 @@ class UnitCostEstimate < ActiveRecord::Base
   
   def cost
     self.raw_cost + self.markings.sum(:estimated_cost_markup_amount)
-  end
-  
-  def markups
-    self.component.markups
   end
   
   def task_name=(string)

@@ -11,8 +11,8 @@ class Component < ActiveRecord::Base
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
   has_many :contracts, :order => :name, :dependent => :destroy
   
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -26,11 +26,26 @@ class Component < ActiveRecord::Base
   
   validates_presence_of :project, :name
   
+  after_create :inherit_markups
+  
   before_validation :check_project
   
   #before_save :create_estimated_cost_points, :if => proc {|i| i.estimated_cost_changed? && ( !i.new_record? || ( !i.estimated_cost.nil? && i.estimated_cost > 0 ) )}
   
   default_scope :order => :position
+  
+  def update_markings(markup=nil)
+    #puts "updating markings for component #{self.id}"
+    self.markings.update_all(:component_id => self.id)
+  end
+  
+  def inherit_markups
+    if self.is_root?
+      self.project.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    else
+      self.parent.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    end
+  end
   
   def tree
     recursion = Proc.new do |component, block|
@@ -255,25 +270,6 @@ class Component < ActiveRecord::Base
     else
       self.parent.markups.all.each {|m| self.markups << m unless self.markups.include? m }
     end
-  end
-  
-  def cascade_add_markup(markup)
-    # Add the markup to everything in the component subtree
-    
-    markup.fixed_cost_estimates << self.fixed_cost_estimates
-    markup.unit_cost_estimates << self.unit_cost_estimates
-    markup.contracts << self.contracts
-    markup.contract_costs << ContractCost.where('contract_id in (?)', self.contract_ids)
-    markup.labor_cost_lines << LaborCostLine.where('labor_set_id in (?)', self.labor_cost_ids)
-    markup.material_costs << self.material_costs
-    
-    markup.components << self.descendants
-  end
-  
-  def cascade_remove_markup(markup)
-    # remove the markup from everything in the component subtree
-    Marking.where('component_id in (?)', self.subtree_ids).delete_all
-    #self.subtree.applied_markings.delete_all
   end
   
   def create_estimated_cost_points

@@ -2,15 +2,17 @@ class FixedCostEstimate < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   #has_invoices
   
-  belongs_to :component, :inverse_of => :fixed_cost_estimates, :autosave => true
-  belongs_to :task, :inverse_of => :fixed_cost_estimates, :autosave => true
+  belongs_to :component, :inverse_of => :fixed_cost_estimates #, :autosave => true
+  belongs_to :task #, :inverse_of => :fixed_cost_estimates #, :autosave => true
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
     
   validates_presence_of :name, :raw_cost, :component
   
   validates_numericality_of :raw_cost
+  
+  after_create :inherit_markups
   
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
@@ -20,7 +22,12 @@ class FixedCostEstimate < ActiveRecord::Base
   
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
 
+  def inherit_markups
+    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+  end
+  
   def update_markings
+    # NOTE: this puts AR out of sync with the DB
     self.markings.update_all(:component_id => self.component_id)
   end
   
@@ -30,10 +37,6 @@ class FixedCostEstimate < ActiveRecord::Base
   
   def cost
     self.raw_cost + self.markings.sum(:estimated_cost_markup_amount)
-  end
-  
-  def markups
-    self.component.markups
   end
   
   def task_name=(string)

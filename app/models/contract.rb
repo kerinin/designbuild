@@ -12,8 +12,8 @@ class Contract < ActiveRecord::Base
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true, :after_add => :cascade_add_markup, :after_remove => :cascade_remove_markup
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -23,6 +23,8 @@ class Contract < ActiveRecord::Base
   
   validates_presence_of :name, :project, :component
 
+  after_create :inherit_markups
+  
   before_validation :check_project
   before_save :update_estimated_cost
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -35,6 +37,10 @@ class Contract < ActiveRecord::Base
   default_scope :order => :position
   
   scope :without_component, lambda { where( {:component_id => nil} ) }
+  
+  def inherit_markups
+    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+  end
   
   def update_estimated_cost
     self.estimated_raw_cost = self.active_bid.raw_cost unless self.active_bid.blank?
@@ -58,10 +64,6 @@ class Contract < ActiveRecord::Base
 
   def raw_cost
     self.costs.sum("contract_costs.raw_cost").to_f
-  end
-      
-  def markups
-    self.component.markups
   end
   
   def percent_invoiced
@@ -115,13 +117,5 @@ class Contract < ActiveRecord::Base
   
   def check_project
     self.project ||= self.component.project if !self.component.nil? && !self.component.project.nil?
-  end
-  
-  def cascade_add_markup(markup)
-    markup.contract_costs << self.contract_costs
-  end
-  
-  def cascade_remove_markup(markup)
-    markup.contract_costs.delete( self.contract_costs )
   end
 end

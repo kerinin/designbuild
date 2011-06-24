@@ -12,19 +12,19 @@ class MarkupTest < ActiveSupport::TestCase
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
-      @obj.components << @component
-      @obj.tasks << @task
+      #@obj.components << @component
+      #@obj.tasks << @task
 
       @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
       #@component.children << @subcomponent
       @inherited_component = Factory :component, :project => @project
       @inherited_task = Factory :task, :project => @project
       
-      Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
-      Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
-      Factory :material_cost, :task => @task, :raw_cost => 100
+      @fc1 = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
+      @fc2 = Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 100
+      @mc = Factory :material_cost, :task => @task, :raw_cost => 100
       
-      [@project, @component, @subcomponent, @task, @bid, @obj].each {|i| i.reload}
+      [@project, @component, @subcomponent, @task, @contract, @inherited_component, @inherited_task, @bid, @obj, @fc1, @fc2, @mc].each {|i| i.reload}
     end
 
     should "be valid" do
@@ -63,19 +63,24 @@ class MarkupTest < ActiveSupport::TestCase
       @new2 = Factory :markup
       @new3 = Factory :markup, :markings_attributes => [{:markupable_type => 'Project', :markupable_id => @project.id}]
       @new1.projects << @project
+      
       @project.markups << @new2
+      
       
       assert_contains @inherited_task.markups.reload.all, @new1
       assert_contains @inherited_task.markups.reload.all, @new2
       assert_contains @new3.projects, @project
       assert_contains @new3.components, @inherited_component
       
+      puts '-------'
       @new1.projects.delete( @project )
+      puts '^^^^^^^'
       @project.markups.delete( @new2 )
       
-      # AR not keeping up...
-      assert_does_not_contain Task.find(@inherited_task.id).markups, @new1
-      assert_does_not_contain Task.find(@inherited_task.id).markups, @new2
+      #assert @new2.reload
+      assert_does_not_contain @project.reload.markups, @new1
+      assert_does_not_contain @inherited_task.reload.markups, @new1
+      assert_does_not_contain @inherited_task.reload.markups, @new2
     end
     
     should "copy from project to component" do
@@ -118,13 +123,16 @@ class MarkupTest < ActiveSupport::TestCase
       @sub2.markups.delete(@new2)
       @sub3.markups << @new2
       @new1.components.delete( @component )
-      @component.markups.delete( @new2 )
+      @component.markups.destroy( @new2 )
       
-      assert_does_not_contain @subcomponent.markups.reload.all, @new1
-      assert_does_not_contain @subcomponent.markups.reload.all, @new2
-      assert_does_not_contain @sub3.markups.reload.all, @new2
+      @subcomponent.reload
+      @sub3.reload
+      
+      assert_does_not_contain @subcomponent.markups.all, @new1
+      assert_does_not_contain @subcomponent.markups.all, @new2
+      assert_does_not_contain @sub3.markups.all, @new2
     end
-    
+        
     # -----------------------CALCULATIONS
 
     should "apply to markupable" do
@@ -136,8 +144,21 @@ class MarkupTest < ActiveSupport::TestCase
       #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
       #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
       
-      assert_equal 50, FixedCostEstimate.where('fixed_cost_estimates.component_id in (?)', @subcomponent.subtree_ids).joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
-      assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      #assert_equal 50, FixedCostEstimate.where('fixed_cost_estimates.component_id in (?)', @subcomponent.subtree_ids).joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      
+      @fc2.reload
+      @fc2.markups.reload
+      @fc2.markings.reload
+      
+      assert_contains @subcomponent.markups, @obj
+      assert_contains @fc2.markups, @obj
+      assert_equal @fc2.component, @subcomponent
+      
+      #puts @fc2.markups.map{|m| puts m.markings.map(&:markupable_type).join(',') }
+      #puts Marking.where(:markup_id => @fc2.markups.first.id).where(:markupable_id => @fc2.id).where(:markupable_type => "FixedCostEstimate").count
+      #puts @fc2.markings.map{|i| i.component_id }.join(',')
+      #puts @subcomponent.applied_markings.map {|i| i.markupable.to_s}
       
       assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)

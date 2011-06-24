@@ -8,11 +8,13 @@ class MaterialCost < ActiveRecord::Base
   
   has_many :line_items, :class_name => "MaterialCostLine", :foreign_key => :material_set_id, :order => :name, :dependent => :destroy
   
-  has_many :markings, :as => :markupable, :dependent => :destroy
-  has_many :markups, :through => :markings, :uniq => true
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
+  has_many :markups, :through => :markings, :dependent => :destroy
   
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
+  
+  after_create :inherit_markups
   
   before_save :set_project  
   before_save :auto_assign_component
@@ -37,6 +39,11 @@ class MaterialCost < ActiveRecord::Base
     
   scope :by_project, lambda {|project| joins(:task).where('tasks.project_id = ?', project.id) } 
   
+  
+  def inherit_markups
+    self.task.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+  end
+  
   def update_markings
     self.markings.update_all(:component_id => self.component_id)
   end
@@ -47,10 +54,6 @@ class MaterialCost < ActiveRecord::Base
   
   def cost
     self.raw_cost + self.markings.sum(:cost_markup_amount)
-  end
-  
-  def markups
-    self.task.markups
   end
   
   def supplier_name=(string)
