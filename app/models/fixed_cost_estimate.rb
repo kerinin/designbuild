@@ -12,7 +12,7 @@ class FixedCostEstimate < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
   
@@ -23,12 +23,12 @@ class FixedCostEstimate < ActiveRecord::Base
   scope :assigned, lambda { where( 'task_id IS NOT NULL' ) }
 
   def inherit_markups
-    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.markups << self.component.markups(true)
   end
   
   def update_markings
     # NOTE: this puts AR out of sync with the DB
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings

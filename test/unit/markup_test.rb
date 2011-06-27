@@ -3,20 +3,18 @@ require File.dirname(__FILE__) + '/../test_helper'
 class MarkupTest < ActiveSupport::TestCase
   context "A Markup" do
     setup do
-      puts '---------'
       @project = Factory :project, :name => 'project'
       @component = @project.components.create! :name => 'component'
       @task = @project.tasks.create! :name => 'task'
       @contract = @project.contracts.create! :name => 'contract', :component => @component
       @component.contracts << @contract
       @bid = @contract.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
+      @contract.update_attributes(:active_bid => @bid)
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
       #@obj.components << @component
       #@obj.tasks << @task
-
-      puts '^^^^^^^^^^^'
       
       @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
       #@component.children << @subcomponent
@@ -137,15 +135,12 @@ class MarkupTest < ActiveSupport::TestCase
 
     should "apply to markupable" do
       assert_equal 50, @obj.apply_to(@subcomponent, :estimated_raw_component_cost)
-      assert_equal 50, @obj.apply_to(@component, :estimated_raw_component_cost)
+      assert_equal 100, @obj.apply_to(@component, :estimated_raw_component_cost)
     end
     
     should "apply to markupable and children" do
-      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_fixed_cost_markup_amount').to_f
-      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
-      
-      #assert_equal 50, FixedCostEstimate.where('fixed_cost_estimates.component_id in (?)', @subcomponent.subtree_ids).joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
-      #assert_equal 50, @subcomponent.subtree.joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      assert_equal 50, FixedCostEstimate.where('fixed_cost_estimates.component_id in (?)', @subcomponent.subtree_ids).joins(:markings).sum('markings.estimated_cost_markup_amount').to_f
+      assert_equal 50, @subcomponent.subtree.joins(:applied_markings).sum('markings.estimated_cost_markup_amount').to_f
       
       @fc2.reload
       @fc2.markups.reload
@@ -154,20 +149,14 @@ class MarkupTest < ActiveSupport::TestCase
       assert_contains @subcomponent.markups, @obj
       assert_contains @fc2.markups, @obj
       assert_equal @fc2.component, @subcomponent
-      
-      #puts @fc2.markups.map{|m| puts m.markings.map(&:markupable_type).join(',') }
-      #puts Marking.where(:markup_id => @fc2.markups.first.id).where(:markupable_id => @fc2.id).where(:markupable_type => "FixedCostEstimate").count
-      #puts @fc2.markings.map{|i| i.component_id }.join(',')
-      #puts @subcomponent.applied_markings.map {|i| i.markupable.to_s}
-      
-      assert_contains @component.markups, @obj
-      assert_contains @component.applied_markings.map(&:markup), @obj
-      assert_contains @component.applied_markings.map(&:markupable), @fc1
-      assert_contains @component.applied_markings.map(&:markupable), @fc2
-      
+
       assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@project, :estimated_cost_markup_amount)
+      
+      assert_equal 0, @obj.apply_recursively_to(@subcomponent, :cost_markup_amount)
+      assert_equal 0, @obj.apply_recursively_to(@component, :cost_markup_amount)
+      assert_equal 50, @obj.apply_recursively_to(@project, :cost_markup_amount)
     end
   end
 end

@@ -26,7 +26,7 @@ class Component < ActiveRecord::Base
   
   validates_presence_of :project, :name
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_validation :check_project
   
@@ -36,14 +36,14 @@ class Component < ActiveRecord::Base
   
   def update_markings(markup=nil)
     #puts "updating markings for component #{self.id}"
-    self.markings.update_all(:component_id => self.id)
+    self.markings(true).update_all(:component_id => self.id)
   end
   
   def inherit_markups
     if self.is_root?
-      self.project.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+      self.project.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
     else
-      self.parent.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+      self.parent.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
     end
   end
   
@@ -283,13 +283,13 @@ class Component < ActiveRecord::Base
   
   def cascade_add(markup)
     # Being called on marking.create, code here to compare add/remove
-    self.fixed_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i }
-    self.unit_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i }
-    self.contracts.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.fixed_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.id }
+    self.unit_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.id }
+    self.contracts.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.id }
     #ContractCost.joins(:contract).where("contracts.component_id in (?)", self.subtree_ids).each {|i| Marking.create :markup => markup, :markupable => i }
-    LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.labor_cost_ids).each {|i| Marking.create :markup => markup, :markupable => i }
-    self.material_costs.each {|i| Marking.create :markup => markup, :markupable => i }
-    self.children.each {|i| Marking.create :markup => markup, :markupable => i }
+    LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.labor_cost_ids).each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.id }
+    self.material_costs.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.id }
+    self.children.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => i.id }
   end
   
   def cascade_remove(markup)

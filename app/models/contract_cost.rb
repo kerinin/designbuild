@@ -11,7 +11,7 @@ class ContractCost < ActiveRecord::Base
   
   validates_numericality_of :raw_cost
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_save :assign_component
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -19,11 +19,11 @@ class ContractCost < ActiveRecord::Base
   after_save :save_markings, :if => proc {|i| i.raw_cost_changed? }, :unless => proc {|i| i.markings.empty? }
   
   def inherit_markups
-    self.contract.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.contract.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def update_markings
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings

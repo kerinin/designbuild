@@ -14,7 +14,7 @@ class LaborCostLine < ActiveRecord::Base
   
   validates_numericality_of :hours
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_save :set_costs
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -27,11 +27,11 @@ class LaborCostLine < ActiveRecord::Base
   
   
   def inherit_markups
-    self.task.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.task.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def update_markings
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings

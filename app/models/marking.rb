@@ -7,11 +7,11 @@ class Marking < ActiveRecord::Base
 
   belongs_to :markup, :inverse_of => :markings
   
-  before_create :set_component
+  #before_create :set_component
   after_create :cascade_add
   
   before_validation :set_project
-  before_save :set_markup_amount
+  before_save :set_markup_amount, :set_component
   
   #after_destroy :cascade_remove
   
@@ -46,22 +46,21 @@ class Marking < ActiveRecord::Base
     #puts "set_component, type #{self.markupable_type}"
     case self.markupable_type
     when "Component"
-      self.component_id = self.markupable_id
+      self.component_id ||= self.markupable_id
     when "FixedCostEstimate", "UnitCostEstimate", "Contract", "MaterialCost"
-      self.component_id = self.markupable.component.id
-      #puts "Setting #{self.markupable_type} component id: #{self.markupable.component.nil?}"
+      self.component_id ||= self.markupable.component_id
     when "ContractCost"
-      self.component_id = self.markupable.contract.component_id
+      self.component_id ||= self.markupable.contract.component_id
     when "LaborCostLine"
-      self.component_id = self.markupable.labor_set.component_id
+      self.component_id ||= self.markupable.labor_set.component_id
     #else
     #  puts "markupable_type not recognized (#{self.markupable_type})"
     end
   end    
   
-  def self.safeadd(markup, markupable)
+  def self.safeadd(markup, markupable, component_id = nil)
     begin
-      Marking.create(:markup => markup, :markupable => markupable)
+      Marking.create(:markup => markup, :markupable => markupable, :component_id => component_id)
     rescue ActiveRecord::RecordInvalid => e
       raise e unless e.message == 'Validation failed: Markup has already been taken'
     end

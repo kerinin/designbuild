@@ -14,7 +14,7 @@ class MaterialCost < ActiveRecord::Base
   validates_presence_of :task, :supplier, :date
   validates_numericality_of :raw_cost, :if => :raw_cost
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_save :set_project  
   before_save :auto_assign_component
@@ -41,11 +41,11 @@ class MaterialCost < ActiveRecord::Base
   
   
   def inherit_markups
-    self.task.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.task.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def update_markings
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings

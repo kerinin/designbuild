@@ -14,7 +14,7 @@ class UnitCostEstimate < ActiveRecord::Base
   validates_presence_of :name, :quantity, :unit_cost
   validates_numericality_of :unit_cost
   
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_save :set_component, :set_raw_cost
   before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
@@ -26,11 +26,11 @@ class UnitCostEstimate < ActiveRecord::Base
   scope :unassigned, lambda { where( {:task_id => nil} ) }
   
   def inherit_markups
-    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.component.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def update_markings
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings

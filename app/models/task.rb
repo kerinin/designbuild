@@ -249,7 +249,7 @@ class Task < ActiveRecord::Base
   end
         
   def inherit_markups
-    self.project.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.project.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def clear_associated

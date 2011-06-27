@@ -258,7 +258,7 @@ class Project < ActiveRecord::Base
     #LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
     #MaterialCost.where("component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
     self.tasks.each {|i| Marking.create :markup => markup, :markupable => i }
-    self.components.roots.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.components.roots.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => i.id }
   end
   
   def cascade_remove(markup)

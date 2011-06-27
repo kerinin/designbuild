@@ -23,7 +23,7 @@ class Contract < ActiveRecord::Base
   
   validates_presence_of :name, :project, :component
 
-  after_create :inherit_markups
+  after_create :inherit_markups, :update_markings
   
   before_validation :check_project
   before_save :update_estimated_cost
@@ -39,7 +39,7 @@ class Contract < ActiveRecord::Base
   scope :without_component, lambda { where( {:component_id => nil} ) }
   
   def inherit_markups
-    self.component.markups.each {|m| self.markups << m unless self.markups.include?(m)}
+    self.component.markups(true).each {|m| self.markups << m unless self.markups.include?(m)}
   end
   
   def update_estimated_cost
@@ -47,7 +47,7 @@ class Contract < ActiveRecord::Base
   end
   
   def update_markings
-    self.markings.update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.component_id)
   end
   
   def save_markings
@@ -114,7 +114,7 @@ class Contract < ActiveRecord::Base
   end
     
   def cascade_add(markup)
-    self.costs.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.costs.each {|i| Marking.create :markup => markup, :markupable => i, :component_id => self.component_id }
   end
   
   def cascade_remove(markup)
