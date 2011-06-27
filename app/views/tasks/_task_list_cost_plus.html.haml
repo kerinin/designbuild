@@ -55,11 +55,11 @@
     %td
       %strong Total
     %td.currency
-      %strong= number_to_currency( tasks.sum(:estimated_cost))
+      %strong= number_to_currency( tasks.map(&:estimated_cost).sum )
     %td.currency
-      %strong= number_to_currency( tasks.sum(:cost))
+      %strong= number_to_currency( tasks.map(&:cost).sum )
     %td.currency
-      %strong= number_to_currency( tasks.sum(:projected_cost))
+      %strong= number_to_currency( tasks.map(&:projected_cost).sum )
     %td.number
       %strong
         ='--/'

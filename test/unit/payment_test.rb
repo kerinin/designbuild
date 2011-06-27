@@ -32,6 +32,7 @@ class PaymentTest < ActiveSupport::TestCase
       
       @markup_line = @obj.markup_lines.create!(:markup => @markup)
       @obj.advance!
+      @obj.reload
     end
     
     should "be valid" do
@@ -55,7 +56,20 @@ class PaymentTest < ActiveSupport::TestCase
       assert_contains @obj.lines, @line2
     end
     
+    # This seems to be failing for no reason whatsoever.  Works in console...
     should "aggregate values" do
+      assert_contains @obj.lines, @line1
+      assert_contains @obj.lines, @line2
+      
+      assert_equal @line1.labor_paid, 1
+      assert_equal @line2.labor_paid, 10000
+      
+      assert_contains PaymentLine.all, @line1
+      assert_contains PaymentLine.all, @line2
+      
+      assert_equal PaymentLine.sum('payment_lines.labor_paid'), 10001
+      assert_equal @obj.lines(true).sum('payment_lines.labor_paid'), 10001
+      
       assert_equal 15001.5, @obj.labor_paid
       assert_equal 150015, @obj.material_paid
       assert_equal 1500150, @obj.labor_retained

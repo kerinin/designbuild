@@ -18,8 +18,8 @@ class ResourceAllocationsControllerTest < ActionController::TestCase
     assert_routing '/resource_allocations', { :controller => "resource_allocations", :action => "index" }
     assert_routing '/resource_allocations/1', { :controller => "resource_allocations", :action => "show", :id => "1" }
     
-    assert_recognizes({ :controller => "resource_allocations", :action => "index", :project_id => "1" }, '/projects/1/resource_allocations')
-    assert_recognizes({ :controller => "resource_allocations", :action => "show",:project_id => "1", :id => "2" }, '/projects/1/resource_allocations/2')
+    #assert_recognizes({ :controller => "resource_allocations", :action => "index", :project_id => "1" }, '/projects/1/resource_allocations')
+    #assert_recognizes({ :controller => "resource_allocations", :action => "show",:project_id => "1", :id => "2" }, '/projects/1/resource_allocations/2')
   end
   
   test "should get index" do

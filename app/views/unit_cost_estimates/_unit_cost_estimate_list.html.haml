@@ -60,8 +60,8 @@
     %td.right{:colspan => 5}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.sum(:raw_cost))
+      %strong= number_to_currency( unit_cost_estimates.map(&:raw_cost).sum )
     %td.currency
-      %strong= number_to_currency( unit_cost_estimates.sum(:cost))
+      %strong= number_to_currency( unit_cost_estimates.map(&:cost).sum )
     %td{:colspan => 2}
     

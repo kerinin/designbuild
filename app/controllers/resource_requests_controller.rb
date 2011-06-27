@@ -45,7 +45,7 @@ class ResourceRequestsController < ApplicationController
   def create
     if params[:resource_request].has_key? :resource_allocations_attributes
        params[:resource_request][:resource_allocations_attributes].each { |key,attribute| 
-          attribute.merge!({:nested => true})
+          attribute.merge!({:nested => true}) unless attribute.nil?
     }
     end
     

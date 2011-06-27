@@ -19,7 +19,7 @@
         %td.drag_handle= link_to contract.name, edit_component_contract_path(contract.component_id, contract)
         %td= contract.active_bid.contractor unless contract.active_bid.blank?
         %td.currency= number_to_currency contract.estimated_raw_cost
-        %td.number= number_to_percentage contract.total_markup, :precision => 0
+        %td.number= number_to_percentage contract.markups.sum(:percent), :precision => 0
         %td.currency= number_to_currency contract.estimated_cost
         -if context == :contract
           %td.currency= number_to_currency contract.raw_cost
@@ -44,13 +44,13 @@
     %td{:colspan => 2}
       %strong Total
     %td.currency
-      %strong= number_to_currency( contracts.sum(:estimated_raw_cost))
+      %strong= number_to_currency( contracts.map(&:estimated_raw_cost).sum )
     %td
     %td.currency
-      %strong= number_to_currency( contracts.sum(:estimated_cost))
+      %strong= number_to_currency( contracts.map(&:estimated_cost).sum )
     -if context == :contract
       %td.currency
-        %strong= number_to_currency( contracts.sum(:raw_cost))
+        %strong= number_to_currency( contracts.map(&:raw_cost).sum )
       %td.number
         %strong= number_to_percentage( multiply_or_nil( 100, divide_or_nil( @project.contract_cost, @project.estimated_contract_cost ) ), :precision => 1 )
     %td{:colspan => 3}

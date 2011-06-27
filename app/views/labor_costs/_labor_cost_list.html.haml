@@ -27,8 +27,8 @@
     %td.right{:colspan => 2}
       %strong Subtotal
     %td.currency
-      %strong= number_to_currency( labor_costs.sum(:raw_cost) )
+      %strong= number_to_currency( labor_costs.map(&:raw_cost).sum )
     %td.currency
-      %strong= number_to_currency( labor_costs.sum(:cost) )
+      %strong= number_to_currency( labor_costs.map(&:cost).sum )
     %td{:colspan => 3}
     
