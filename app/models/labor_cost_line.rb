@@ -7,8 +7,8 @@ class LaborCostLine < ActiveRecord::Base
   
   has_one :task, :through => :labor_set
   
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}, :uniq => true
+  has_many :markups, :through => :markings, :dependent => :destroy, :uniq => true
   
   validates_presence_of :labor_set, :hours
   

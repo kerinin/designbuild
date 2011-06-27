@@ -4,8 +4,8 @@ class ContractCost < ActiveRecord::Base
   belongs_to :contract, :inverse_of => :costs
   belongs_to :component
   
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}, :uniq => true
+  has_many :markups, :through => :markings, :dependent => :destroy, :uniq => true
   
   validates_presence_of :date, :raw_cost, :contract
   

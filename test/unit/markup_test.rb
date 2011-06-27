@@ -3,7 +3,8 @@ require File.dirname(__FILE__) + '/../test_helper'
 class MarkupTest < ActiveSupport::TestCase
   context "A Markup" do
     setup do
-      @project = Factory :project
+      puts '---------'
+      @project = Factory :project, :name => 'project'
       @component = @project.components.create! :name => 'component'
       @task = @project.tasks.create! :name => 'task'
       @contract = @project.contracts.create! :name => 'contract', :component => @component
@@ -15,9 +16,11 @@ class MarkupTest < ActiveSupport::TestCase
       #@obj.components << @component
       #@obj.tasks << @task
 
+      puts '^^^^^^^^^^^'
+      
       @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
       #@component.children << @subcomponent
-      @inherited_component = Factory :component, :project => @project
+      @inherited_component = Factory :component, :project => @project, :name => 'inherited component'
       @inherited_task = Factory :task, :project => @project
       
       @fc1 = Factory :fixed_cost_estimate, :component => @component, :raw_cost => 100
@@ -59,22 +62,19 @@ class MarkupTest < ActiveSupport::TestCase
     end
     
     should "cascade add / delete from project to task" do
-      @new1 = Factory :markup
-      @new2 = Factory :markup
-      @new3 = Factory :markup, :markings_attributes => [{:markupable_type => 'Project', :markupable_id => @project.id}]
+      @new1 = Factory :markup, :name => 'new1'
+      @new2 = Factory :markup, :name => 'new2'
+      @new3 = Factory :markup, :name => 'new3', :markings_attributes => [{:markupable_type => 'Project', :markupable_id => @project.id}]
       @new1.projects << @project
       
       @project.markups << @new2
-      
       
       assert_contains @inherited_task.markups.reload.all, @new1
       assert_contains @inherited_task.markups.reload.all, @new2
       assert_contains @new3.projects, @project
       assert_contains @new3.components, @inherited_component
       
-      puts '-------'
       @new1.projects.delete( @project )
-      puts '^^^^^^^'
       @project.markups.delete( @new2 )
       
       #assert @new2.reload
@@ -159,6 +159,11 @@ class MarkupTest < ActiveSupport::TestCase
       #puts Marking.where(:markup_id => @fc2.markups.first.id).where(:markupable_id => @fc2.id).where(:markupable_type => "FixedCostEstimate").count
       #puts @fc2.markings.map{|i| i.component_id }.join(',')
       #puts @subcomponent.applied_markings.map {|i| i.markupable.to_s}
+      
+      assert_contains @component.markups, @obj
+      assert_contains @component.applied_markings.map(&:markup), @obj
+      assert_contains @component.applied_markings.map(&:markupable), @fc1
+      assert_contains @component.applied_markings.map(&:markupable), @fc2
       
       assert_equal 50, @obj.apply_recursively_to(@subcomponent, :estimated_cost_markup_amount)
       assert_equal 150, @obj.apply_recursively_to(@component, :estimated_cost_markup_amount)

@@ -12,8 +12,8 @@ class Contract < ActiveRecord::Base
   has_many :costs, :class_name => "ContractCost", :order => "date DESC", :dependent => :destroy
   has_many :bids, :order => :contractor, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :dependent => :destroy, :after_remove => :cascade_remove
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -113,6 +113,14 @@ class Contract < ActiveRecord::Base
     end
   end
     
+  def cascade_add(markup)
+    self.costs.each {|i| Marking.create :markup => markup, :markupable => i }
+  end
+  
+  def cascade_remove(markup)
+    Marking.where(:markupable_type => 'ContractCost', :markup_id => markup.id).where( "markupable_id in (?)", self.cost_ids ).delete_all
+  end
+  
   protected  
   
   def check_project

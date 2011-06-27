@@ -11,8 +11,8 @@ class Component < ActiveRecord::Base
   has_many :unit_cost_estimates, :order => :name, :dependent => :destroy
   has_many :contracts, :order => :name, :dependent => :destroy
   
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :after_remove => :cascade_remove
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
@@ -279,5 +279,26 @@ class Component < ActiveRecord::Base
       p.value = self.estimated_cost || 0
       p.save!
     end
+  end
+  
+  def cascade_add(markup)
+    # Being called on marking.create, code here to compare add/remove
+    self.fixed_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.unit_cost_estimates.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.contracts.each {|i| Marking.create :markup => markup, :markupable => i }
+    #ContractCost.joins(:contract).where("contracts.component_id in (?)", self.subtree_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.labor_cost_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    self.material_costs.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.children.each {|i| Marking.create :markup => markup, :markupable => i }
+  end
+  
+  def cascade_remove(markup)
+    Marking.where(:markupable_type => 'FixedCostEstimate', :markup_id => markup.id).where( "markupable_id in (?)", FixedCostEstimate.where("component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'UnitCostEstimate', :markup_id => markup.id).where( "markupable_id in (?)", UnitCostEstimate.where("component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'Contract', :markup_id => markup.id).where( "markupable_id in (?)", Contract.where("component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'ContractCost', :markup_id => markup.id).where( "markupable_id in (?)", ContractCost.joins(:contract).where("contracts.component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'LaborCostLine', :markup_id => markup.id).where( "markupable_id in (?)", LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'MaterialCost', :markup_id => markup.id).where( "markupable_id in (?)", MaterialCost.where("component_id in (?)", self.subtree_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'Component', :markup_id => markup.id).where( "markupable_id in (?)", self.subtree_ids ).delete_all
   end
 end

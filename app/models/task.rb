@@ -13,8 +13,8 @@ class Task < ActiveRecord::Base
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
   has_many :milestones, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :dependent => :destroy, :after_remove => :cascade_remove
   
   has_many :estimated_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :estimated_cost}, :dependent => :destroy
   has_many :projected_cost_points, :as => :source, :class_name => 'DatePoint', :order => :date, :conditions => {:series => :projected_cost}, :dependent => :destroy
@@ -229,6 +229,16 @@ class Task < ActiveRecord::Base
         est
       end
     end
+  end
+  
+  def cascade_add(markup)
+    LaborCostLine.where("labor_set_id in (?)", self.labor_cost_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    self.material_costs.each {|i| Marking.create :markup => markup, :markupable => i }
+  end
+  
+  def cascade_remove(markup)
+    Marking.where(:markupable_type => 'LaborCostLine', :markup_id => markup.id).where( "markupable_id in (?)", LaborCostLine.where("labor_set_id in (?)", sekf.labor_cost_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'MaterialCost', :markup_id => markup.id).where( "markupable_id in (?)", self.material_cost_ids ).delete_all
   end
   
   protected

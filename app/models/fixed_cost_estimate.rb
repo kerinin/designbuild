@@ -5,8 +5,8 @@ class FixedCostEstimate < ActiveRecord::Base
   belongs_to :component, :inverse_of => :fixed_cost_estimates #, :autosave => true
   belongs_to :task #, :inverse_of => :fixed_cost_estimates #, :autosave => true
 
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}, :uniq => true
+  has_many :markups, :through => :markings, :dependent => :destroy, :uniq => true
     
   validates_presence_of :name, :raw_cost, :component
   

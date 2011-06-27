@@ -3,17 +3,17 @@ class Markup < ActiveRecord::Base
   
   has_paper_trail :ignore => [:created_at, :updated_at]
   
-  has_many :markings, :dependent => :destroy, :inverse_of => :markup, :after_remove => proc {|i,m| puts "markings"}
+  has_many :markings, :dependent => :destroy, :inverse_of => :markup
   
-  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_remove => proc {|i,m| puts "markup.projects"}
-  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :dependent => :destroy
-  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :dependent => :destroy
-  has_many :fixed_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'FixedCostEstimate', :dependent => :destroy
-  has_many :unit_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'UnitCostEstimate', :dependent => :destroy
-  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract', :dependent => :destroy
-  has_many :contract_costs, :through => :markings, :source => :markupable, :source_type => 'ContractCost', :dependent => :destroy
-  has_many :labor_cost_lines, :through => :markings, :source => :markupable, :source_type => 'LaborCostLine', :dependent => :destroy
-  has_many :material_costs, :through => :markings, :source => :markupable, :source_type => 'MaterialCost', :dependent => :destroy
+  has_many :projects, :through => :markings, :source => :markupable, :source_type => 'Project', :after_remove => :cascade_remove
+  has_many :tasks, :through => :markings, :source => :markupable, :source_type => 'Task', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :components, :through => :markings, :source => :markupable, :source_type => 'Component', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :fixed_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'FixedCostEstimate', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :unit_cost_estimates, :through => :markings, :source => :markupable, :source_type => 'UnitCostEstimate', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :contracts, :through => :markings, :source => :markupable, :source_type => 'Contract', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :contract_costs, :through => :markings, :source => :markupable, :source_type => 'ContractCost', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :labor_cost_lines, :through => :markings, :source => :markupable, :source_type => 'LaborCostLine', :dependent => :destroy, :after_remove => :cascade_remove
+  has_many :material_costs, :through => :markings, :source => :markupable, :source_type => 'MaterialCost', :dependent => :destroy, :after_remove => :cascade_remove
   
   has_many :invoice_markup_lines
   has_many :payment_markup_lines
@@ -52,5 +52,13 @@ class Markup < ActiveRecord::Base
   
   def select_label
     "#{self.name} (#{self.percent}%)"
+  end
+  
+  def cascade_add(m)
+    m.send(:cascade_add, self) if m.respond_to? :cascade_add
+  end
+  
+  def cascade_remove(m)
+    m.send(:cascade_remove, self) if m.respond_to? :cascade_remove
   end
 end

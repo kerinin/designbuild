@@ -9,8 +9,8 @@ class Project < ActiveRecord::Base
   has_many :deadlines, :order => "deadlines.date", :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :dependent => :destroy, :after_remove => :cascade_remove
   has_many :applied_markings, :class_name => 'Marking'
   
   has_many :invoices, :order => 'invoices.date DESC'
@@ -248,5 +248,27 @@ class Project < ActiveRecord::Base
     self.estimated_raw_contract_cost +
     ( FixedCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f + 
     ( UnitCostEstimate.unassigned.includes(:component).where('components.project_id = ?', self.id) ).sum(:raw_cost).to_f
+  end
+  
+  def cascade_add(markup)
+    #FixedCostEstimate.where("component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    #UnitCostEstimate.where("component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    #Contract.where("component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    #ContractCost.joins(:contract).where("contracts.component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    #LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    #MaterialCost.where("component_id in (?)", self.component_ids).each {|i| Marking.create :markup => markup, :markupable => i }
+    self.tasks.each {|i| Marking.create :markup => markup, :markupable => i }
+    self.components.roots.each {|i| Marking.create :markup => markup, :markupable => i }
+  end
+  
+  def cascade_remove(markup)
+    Marking.where(:markupable_type => 'FixedCostEstimate', :markup_id => markup.id).where( "markupable_id in (?)", FixedCostEstimate.where("component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'UnitCostEstimate', :markup_id => markup.id).where( "markupable_id in (?)", UnitCostEstimate.where("component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'Contract', :markup_id => markup.id).where( "markupable_id in (?)", Contract.where("component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'ContractCost', :markup_id => markup.id).where( "markupable_id in (?)", ContractCost.joins(:contract).where("contracts.component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'LaborCostLine', :markup_id => markup.id).where( "markupable_id in (?)", LaborCostLine.joins(:labor_set).where("labor_costs.component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'MaterialCost', :markup_id => markup.id).where( "markupable_id in (?)", MaterialCost.where("component_id in (?)", self.component_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'Task', :markup_id => markup.id).where( "markupable_id in (?)", self.task_ids ).delete_all
+    Marking.where(:markupable_type => 'Component', :markup_id => markup.id).where( "markupable_id in (?)", self.component_ids ).delete_all
   end
 end

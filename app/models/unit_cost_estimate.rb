@@ -6,8 +6,8 @@ class UnitCostEstimate < ActiveRecord::Base
   belongs_to :quantity, :inverse_of => :unit_cost_estimates
   belongs_to :task, :inverse_of => :unit_cost_estimates
 
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}
-  has_many :markups, :through => :markings, :dependent => :destroy
+  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}, :uniq => true
+  has_many :markups, :through => :markings, :dependent => :destroy, :uniq => true
     
   accepts_nested_attributes_for :quantity, :reject_if => :all_blank
   
