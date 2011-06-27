@@ -1,7 +1,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class InvoiceableTest < ActiveSupport::TestCase
-=begin
   context "Given a project" do
     setup do
       @project = Factory :project
@@ -266,5 +265,4 @@ class InvoiceableTest < ActiveSupport::TestCase
       end
     end
   end
-=end
 end

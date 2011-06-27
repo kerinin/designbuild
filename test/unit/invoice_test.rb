@@ -33,7 +33,6 @@ class InvoiceTest < ActiveSupport::TestCase
       )
       
       @markup_line = @obj.markup_lines.create!(:markup => @markup)
-      #@obj.advance
     end  
 
     should "accept_nested_attributes" do

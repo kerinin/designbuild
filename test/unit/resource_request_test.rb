@@ -53,7 +53,6 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @obj.save!
       @a1.save!
       @a2.save!
-      #@obj.save!
       assert_equal 2, @obj.allocated
     end
     
@@ -61,7 +60,6 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @obj.save!
       @a1.save!
       @a2.save!
-      #@obj.save!
       assert_equal 3, @obj.remaining
     end
     
@@ -78,7 +76,6 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @obj.save!
       @a1.save!
       @a2.save!
-      #@obj.save!
       assert_equal 2, @obj.reload.allocated
       
       ResourceAllocation.create!( :resource_request => @obj, :duration => 1, :start_date => Date::today)
@@ -89,7 +86,6 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @obj.save!
       @a1.save!
       @a2.save!
-      #@obj.save!
       assert_equal 2, @obj.reload.allocated
       
       @a1.destroy

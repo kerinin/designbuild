@@ -13,11 +13,8 @@ class MarkupTest < ActiveSupport::TestCase
  
       @obj = Factory( :markup, :name => 'test markup', :percent => 50 )
       @obj.projects << @project
-      #@obj.components << @component
-      #@obj.tasks << @task
       
       @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
-      #@component.children << @subcomponent
       @inherited_component = Factory :component, :project => @project, :name => 'inherited component'
       @inherited_task = Factory :task, :project => @project
       
@@ -75,7 +72,6 @@ class MarkupTest < ActiveSupport::TestCase
       @new1.projects.delete( @project )
       @project.markups.delete( @new2 )
       
-      #assert @new2.reload
       assert_does_not_contain @project.reload.markups, @new1
       assert_does_not_contain @inherited_task.reload.markups, @new1
       assert_does_not_contain @inherited_task.reload.markups, @new2

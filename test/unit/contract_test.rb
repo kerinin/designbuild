@@ -5,12 +5,9 @@ class ContractTest < ActiveSupport::TestCase
     setup do
       @project = Factory.build :project
       
-      #@component = Factory :component, :project => @project
       @component = @project.components.build :name => 'component', :project => @project
       
-      #@obj = Factory :contract, :component => @component
       @obj = @component.contracts.build :name => 'contract', :project => @project, :component => @component
-      #@contract2 = Factory :contract, :project => @project, :component => @component
       @contract2 = @component.contracts.build :name => 'contract2', :project => @project, :component => @component
     end
     
@@ -30,16 +27,11 @@ class ContractTest < ActiveSupport::TestCase
   
     context "with costs" do
       setup do
-        #@c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1, :date => Date::today
         @c1 = @obj.costs.build :raw_cost => 1, :date => Date::today
-        #@c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10, :date => Date::today
         @c2 = @obj.costs.build :raw_cost => 10, :date => Date::today
-        #@b1 = Factory :bid, :contract => @obj
         @b1 = @obj.bids.build :contractor => 'foo', :raw_cost => 0, :date => Date::today
-        #@b2 = Factory :bid, :contract => @obj, :raw_cost => 100
         @b2 = @obj.bids.build :contractor => 'foo', :raw_cost => 0, :date => Date::today
         @obj.active_bid = @b2
-        #@obj.save
       end
               
       should "allow multiple costs" do
@@ -98,13 +90,9 @@ class ContractTest < ActiveSupport::TestCase
       
       context "and costs" do
         setup do
-          #@c1 = Factory :contract_cost, :contract => @obj, :raw_cost => 1, :date => Date::today
           @c1 = @obj.costs.create! :raw_cost => 1, :date => Date::today
-          #@c2 = Factory :contract_cost, :contract => @obj, :raw_cost => 10, :date => Date::today
           @c2 = @obj.costs.create! :raw_cost => 10, :date => Date::today
-          #@b1 = Factory :bid, :contract => @obj
           @b1 = @obj.bids.create! :contractor => 'foo', :raw_cost => 0, :date => Date::today
-          #@b2 = Factory :bid, :contract => @obj, :raw_cost => 100
           @b2 = @obj.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
           @obj.update_attributes :active_bid => @b2
           

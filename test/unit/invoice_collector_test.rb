@@ -35,7 +35,7 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
       assert_equal 10010, @project.material_cost
       assert_equal 10010, @component.material_cost
     end
-=begin    
+ 
     context "with invoices & payments" do
       setup do
         @targets = [@fce, @contract]
@@ -156,7 +156,6 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
         assert_equal (4004-6006) + (40040-60060), @component.outstanding
       end
     end
-=end
   end
 
   context "An invoice collector with cutoff date" do
@@ -193,7 +192,6 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
       assert_equal 10000, @component.material_cost_before(Date::today - 5)
     end
 
-=begin   
     context "with invoices & payments" do
       setup do
         @targets = [@fce, @contract]
@@ -314,6 +312,5 @@ class InvoiceCollectorTest < ActiveSupport::TestCase
         assert_equal (4000-6000) + (40000-60000), @component.outstanding_before(Date::today - 5)
       end
     end
-=end
   end  
 end

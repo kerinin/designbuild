@@ -29,7 +29,7 @@ class ComponentInvoicingTest < ActiveSupport::TestCase
         :material_invoiced => 5,
         :material_retainage => 5
       )
-
+# Pre-component-based invoicing stuff
 =begin
       @fc_inv = Factory( :invoice_line, 
         :invoice => @invoice,

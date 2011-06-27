@@ -144,34 +144,54 @@ class Component < ActiveRecord::Base
     self.labor_outstanding_before(date) + self.material_outstanding_before(date)
   end
   
+  def raw_labor_cost
+    self.labor_costs.joins(:line_items).sum('labor_cost_lines.raw_cost').to_f
+  end
   def labor_cost
     raw_labor_cost + self.labor_costs.joins(:line_items => :markings).sum('markings.cost_markup_amount').to_f
   end
-  
+  def raw_labor_cost_before( date = Date::today )
+    self.labor_costs.joins(:line_items).where( "labor_costs.date <= ?", date ).sum('labor_cost_lines.raw_cost')
+  end
   def labor_cost_before( date = Date::today )
     raw_labor_cost_before(date) + self.labor_costs.joins(:line_items => :markings).where( "labor_costs.date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
   
+  def raw_material_cost
+    self.material_costs.sum(:raw_cost).to_f
+  end
   def material_cost
     raw_material_cost + self.material_costs.joins(:markings).sum('markings.cost_markup_amount').to_f
   end
-  
+  def raw_material_cost_before( date = Date::today )
+    self.material_costs.where( "date <= ?", date ).sum(:raw_cost).to_f
+  end
   def material_cost_before( date = Date::today )
     raw_material_cost_before(date) + self.material_costs.joins(:markings).where( "date <= ?", date ).sum('markings.cost_markup_amount').to_f
   end
   
+  def raw_contract_cost
+    self.contracts.joins(:costs).sum('contract_costs.raw_cost').to_f
+  end
   def contract_cost
     raw_contract_cost + self.contracts.joins(:costs => :markings).sum('markings.cost_markup_amount').to_f
   end
-  
+  def raw_contract_cost_before( date = Date::today )
+    self.contracts.joins(:costs).where( "contract_costs.date <= ?", date).sum('contract_costs.raw_cost').to_f
+  end
   def contract_cost_before( date = Date::today )
     raw_contract_cost_before(date) + self.contracts.joins(:costs => :markings).where( "contract_costs.date <= ?", date).sum( 'markings.cost_markup_amount' ).to_f
   end
   
+  def raw_cost
+    self.raw_labor_cost + self.raw_material_cost + self.raw_contract_cost
+  end
   def cost
     self.labor_cost + self.material_cost + self.contract_cost
   end
-  
+  def raw_cost_before( date = Date::today )
+    self.raw_labor_cost_before(date) + self.raw_material_cost_before(date) + self.raw_contract_cost_before(date)
+  end
   def cost_before( date = Date::today )
     self.labor_cost_before(date) + self.material_cost_before(date) + self.contract_cost_before(date)
   end

@@ -172,7 +172,6 @@ class InvoiceLineTest < ActiveSupport::TestCase
 
   end
   
-=begin
   context "Given a T&M Project" do
     setup do
       @l = Factory :laborer, :bill_rate => 1
@@ -542,5 +541,4 @@ class InvoiceLineTest < ActiveSupport::TestCase
       end
     end
   end
-=end
 end
