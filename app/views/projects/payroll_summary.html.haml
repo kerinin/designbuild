@@ -23,7 +23,7 @@
   -@projects ||= Project.where(:id => @project.id)
   -@laborers = Laborer.scoped
   -time_scope = LaborCostLine.includes(:labor_set).where('labor_costs.date <= ?', end_day).where('labor_costs.date >= ?', start_day)
-  -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:cost)
+  -total_bill_grouped = time_scope.group('labor_cost_lines.project_id').sum(:raw_cost)
   -project_ids = total_bill_grouped.map{|id,billed| id unless billed.nil? || billed == 0}.compact
 
   %table

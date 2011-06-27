@@ -10,7 +10,7 @@
   <%= link_to( 'Cancel', get_redirect || markups_path ) %>
 <% end %>
 
-form = $("<%= escape_javascript( yield :wrapping_form) %>")
+form = $("<%= escape_javascript( yield( :wrapping_form ) ) %>");
 contents = form.children().detach();
 
 $("table.markups").wrap(form).append(contents);

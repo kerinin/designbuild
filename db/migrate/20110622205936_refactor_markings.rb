@@ -29,6 +29,9 @@ class Marking < ActiveRecord::Base
   
   before_save :set_project
   
+  validates_presence_of :markupable, :markup
+  validates_uniqueness_of :markup_id, :scope => [:markupable_id, :markupable_type]
+  
   def set_project
     case self.markupable_type
     when "Project"
@@ -230,7 +233,6 @@ class RefactorMarkings < ActiveRecord::Migration
     remove_column :labor_costs, :cost
     remove_column :labor_costs, :raw_cost
     remove_column :labor_cost_lines, :cost
-    remove_column :labor_cost_lines, :laborer_pay
     remove_column :material_costs, :cost
     
     remove_column :components, :total_markup
@@ -244,6 +246,8 @@ class RefactorMarkings < ActiveRecord::Migration
     add_column :markings, :component_id, :integer
     add_column :contract_costs, :component_id, :integer
     
+    # Remove orphan markings
+    Marking.all.each {|m| m.destroy if m.markupable.nil? }
     
     # Add markings to leaves
     puts "Adding markups for UnitCostEstimate"
@@ -256,7 +260,8 @@ class RefactorMarkings < ActiveRecord::Migration
     end
     puts "Adding markups for Contract"
     Contract.all.each do |c|
-      c.markups << c.component.markups
+      c.component.markups.each {|m| c.markups << m unless c.markups.include? m}
+      #c.markups << c.component.markups
     end
     puts "Adding markups for LaborCost"
     LaborCostLine.all.each do |lc|
@@ -291,6 +296,9 @@ class RefactorMarkings < ActiveRecord::Migration
         
       end
     end
+    
+    # Remove invalid markings
+    Marking.all.each {|m| m.destroy unless m.valid? }
   end
 
   def self.down

@@ -1,4 +1,4 @@
--contracts = @project.contracts.where('contracts.raw_cost > 0').where('contracts.raw_cost < contracts.estimated_raw_cost')
+-contracts = @project.contracts.joins(:costs)
 
 #currently_invoicing_contracts
   %table
