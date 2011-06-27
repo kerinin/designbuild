@@ -237,7 +237,7 @@ class Task < ActiveRecord::Base
   end
   
   def cascade_remove(markup)
-    Marking.where(:markupable_type => 'LaborCostLine', :markup_id => markup.id).where( "markupable_id in (?)", LaborCostLine.where("labor_set_id in (?)", sekf.labor_cost_ids).map(&:id) ).delete_all
+    Marking.where(:markupable_type => 'LaborCostLine', :markup_id => markup.id).where( "markupable_id in (?)", LaborCostLine.where("labor_set_id in (?)", self.labor_cost_ids).map(&:id) ).delete_all
     Marking.where(:markupable_type => 'MaterialCost', :markup_id => markup.id).where( "markupable_id in (?)", self.material_cost_ids ).delete_all
   end
   

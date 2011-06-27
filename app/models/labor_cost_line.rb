@@ -7,8 +7,8 @@ class LaborCostLine < ActiveRecord::Base
   
   has_one :task, :through => :labor_set
   
-  has_many :markings, :as => :markupable, :dependent => :destroy, :after_remove => proc {|i,m| m.destroy}, :uniq => true
-  has_many :markups, :through => :markings, :dependent => :destroy, :uniq => true
+  has_many :markings, :as => :markupable, :dependent => :destroy
+  has_many :markups, :through => :markings, :dependent => :destroy
   
   validates_presence_of :labor_set, :hours
   
@@ -17,7 +17,7 @@ class LaborCostLine < ActiveRecord::Base
   after_create :inherit_markups, :update_markings
   
   before_save :set_costs
-  before_save :update_markings, :if => proc {|i| i.component_id_changed? }, :unless => proc {|i| i.markings.empty? }
+  before_save :update_markings, :unless => proc {|i| i.markings.empty? }
   
   before_save :set_project
   
@@ -31,7 +31,7 @@ class LaborCostLine < ActiveRecord::Base
   end
   
   def update_markings
-    self.markings(true).update_all(:component_id => self.component_id)
+    self.markings(true).update_all(:component_id => self.labor_set.component_id)
   end
   
   def save_markings
