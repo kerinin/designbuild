@@ -10,12 +10,14 @@ This will require a migration to add the marking to costs and calculate the per-
 to keep the same marking class, we'll just avoid setting the markup cache on markings applied to
 components.
 
-ResourceRequest
 ProjectCaching
+
 Payment
-Markup
 InvoiceCollector
 DatePoint
+ResourceRequest
+
+
 
 
 NOTE: think about the relationship between tasks & components re: markups.  Maybe talk over w/ Tom

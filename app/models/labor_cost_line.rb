@@ -10,7 +10,7 @@ class LaborCostLine < ActiveRecord::Base
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :dependent => :destroy
   
-  validates_presence_of :labor_set, :hours
+  validates_presence_of :labor_set, :hours, :laborer
   
   validates_numericality_of :hours
   

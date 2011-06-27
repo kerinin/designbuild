@@ -7,6 +7,7 @@ class Bid < ActiveRecord::Base
   validates_numericality_of :raw_cost
   
   after_save :update_contract
+  after_destroy :update_contract
   
   attr_accessor :is_active_bid
   
@@ -36,6 +37,6 @@ class Bid < ActiveRecord::Base
   protected
   
   def update_contract
-    self.contract.save!
+    self.contract(true).save!
   end
 end

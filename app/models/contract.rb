@@ -43,7 +43,7 @@ class Contract < ActiveRecord::Base
   end
   
   def update_estimated_cost
-    self.estimated_raw_cost = self.active_bid.raw_cost unless self.active_bid.blank?
+    self.estimated_raw_cost = self.active_bid(true).blank? ? 0 : self.active_bid.raw_cost
   end
   
   def update_markings
@@ -51,7 +51,7 @@ class Contract < ActiveRecord::Base
   end
   
   def save_markings
-    self.markings.each {|m| m.save!}
+    self.markings(true).each {|m| m.save!}
   end
   
   def estimated_cost

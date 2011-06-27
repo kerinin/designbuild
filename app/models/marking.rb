@@ -10,12 +10,12 @@ class Marking < ActiveRecord::Base
   #before_create :set_component
   after_create :cascade_add
   
-  before_validation :set_project
+  before_save :set_project, :on => :create
   before_save :set_markup_amount, :set_component
   
   #after_destroy :cascade_remove
   
-  validates_presence_of :markupable, :markup, :project
+  validates_presence_of :markupable, :markup
   validates_uniqueness_of :markup_id, :scope => [:markupable_id, :markupable_type]
   
   def set_project

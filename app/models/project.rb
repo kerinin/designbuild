@@ -234,7 +234,7 @@ class Project < ActiveRecord::Base
     self.contracts.joins(:costs).sum('contract_costs.raw_cost').to_f
   end
   def raw_cost
-    material_cost + labor_cost + contract_cost
+    raw_material_cost + raw_labor_cost + raw_contract_cost
   end
 
   def projected_cost
