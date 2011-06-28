@@ -1,3 +1,31 @@
+* test for changing hierarchy - moving components around, moving costs around, etc
+
+* Markup add form should allow existing markups, and filter by project
+* Contract markup form doesn't allow editing or removing
+
+
+* clicking 'show planning' redirects to wrong project
+* projects not being sorted properly in drop-down menu
+* cost estimate report markup table not aligned properly (showing unit costs & markups)
+* markup checkbox should be remote (ajax), and fix the UI
+* AJAX contract editing returns wrong view, delete redirects to component, links to edit (should link to show)
+* AJAX bid creation form doesn't have enough space, same for invoices
+* Edit contract form doesn't submit (contract#edit)
+* When adding to table, would be really nice to highlight newly added entries
+* AJAX editing task redirects to component#markups?
+* Popup Material cost creation redirects to project#index, even when clicking from task#show
+* Show projected cost (in bold) in task#show
+* Tasks#estimated_costs should be AJAX so multiple costs can be added. Also, include the dollar amount in the list
+* task#edit redirects to markups (I think these redirect problems are the result of using the session for redirects, but not always redirecting if the session is set)
+
+
+
+
+
+
+
+
+
 Removing Caching
 Now, markups are being applied to components.  The tricky part is that I'm trying to simplify showing
 specific markup amounts for a component, and this is being done by keeping the markup amount stored

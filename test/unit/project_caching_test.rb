@@ -5,8 +5,7 @@ class ProjectCachingTest < ActiveSupport::TestCase
     setup do
       @project = Factory :project, :markups => [ Factory :markup, :percent => 100 ], :name => 'project'
       @component = @project.components.create! :name => 'component'
-      @subcomponent = @project.components.create! :name => 'subcomponent'
-      @component.children << @subcomponent
+      @subcomponent = @project.components.create! :name => 'subcomponent', :parent => @component
       @task = @project.tasks.create! :name => 'task'
       @contract = @project.contracts.create! :name => 'contract', :component => @component
       @contract1 = @project.contracts.create! :name => 'contract1', :component => @component
@@ -20,6 +19,45 @@ class ProjectCachingTest < ActiveSupport::TestCase
       [@project, @component, @subcomponent].each {|i| i.reload}
     end
 
+    should "allow changes to the hierarchy" do
+      @q = Factory :quantity, :component => @component, :value => 1
+      @uc = Factory :unit_cost_estimate, :component => @subcomponent, :quantity => @q, :unit_cost => 1, :drop => 0
+      @fc = Factory :fixed_cost_estimate, :component => @subcomponent, :raw_cost => 10
+      @bid = @contract2.bids.create! :contractor => 'foo', :raw_cost => 100, :date => Date::today
+      @contract2.active_bid = @bid
+      @contract2.save
+      
+      assert_equal 222, @component.estimated_cost
+      assert_equal 111, @component.estimated_raw_cost
+      assert_equal 222, @component.estimated_cost
+      assert_equal 111, @component.estimated_raw_cost
+      assert_equal 222, @component.estimated_cost
+                  
+      @newcomponent = @project.components.create! :name => 'new component'
+      @subcomponent.update_attributes :parent => @newcomponent
+      
+      assert_equal 222, @newcomponent.estimated_cost
+      assert_equal 111, @newcomponent.estimated_raw_cost
+      assert_equal 222, @subcomponent.estimated_cost
+      assert_equal 111, @subcomponent.estimated_raw_cost
+      assert_equal 0, @component.estimated_cost
+      
+      @uc.update_attributes :component => @component
+      @fc.update_attributes :component => @component
+      @contract2.update_attributes :component => @component
+
+      assert_equal 0, @newcomponent.estimated_cost
+      assert_equal 0, @newcomponent.estimated_raw_cost
+      assert_equal 0, @subcomponent.estimated_cost
+      assert_equal 0, @subcomponent.estimated_raw_cost
+      
+      assert_equal 222, @component.estimated_cost
+      assert_equal 111, @component.estimated_raw_cost
+      assert_equal 222, @component.estimated_cost
+      assert_equal 111, @component.estimated_raw_cost
+      assert_equal 222, @component.estimated_cost      
+    end
+     
     should "reflect root unit costs" do
       @q = Factory :quantity, :component => @component, :value => 1
       @uc = Factory :unit_cost_estimate, :component => @component, :quantity => @q, :unit_cost => 100, :drop => 0
