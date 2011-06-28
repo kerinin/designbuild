@@ -1,5 +1,3 @@
-* test for changing hierarchy - moving components around, moving costs around, etc
-
 * Markup add form should allow existing markups, and filter by project
 * Contract markup form doesn't allow editing or removing
 
