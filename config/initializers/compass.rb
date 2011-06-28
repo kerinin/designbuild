@@ -8,5 +8,5 @@ Rails.configuration.middleware.delete('Sass::Plugin::Rack')
 Rails.configuration.middleware.insert_before('Rack::Sendfile', 'Sass::Plugin::Rack')
 
 Rails.configuration.middleware.insert_before('Rack::Sendfile', 'Rack::Static',
-    :urls => ['/stylesheets/compiled'],
-    :root => "#{Rails.root}/tmp/stylesheets")
+    :urls => ['/stylesheets'],
+    :root => "#{Rails.root}/tmp")
