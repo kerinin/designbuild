@@ -1,9 +1,9 @@
 %table.tasks
   %tr
     %th Name
-    %th.currency Est. Cost
-    %th.currency Cost-to-Date
-    %th.currency.qtip_projected Projected Cost
+    %th.currency Est. Cost (marked up)
+    %th.currency Cost-to-Date (raw)
+    %th.currency.qtip_projected Projected Cost (raw)
     %th.currency Est. Net
     %th.currency.qtip_net Net to Date
     %th.number % Complete (Est./Act.)
@@ -15,15 +15,15 @@
   - tasks.each do |task|
     %tr{:id => "task_#{task.id}"}
       %td= link_to task.name, [@project, task]
-      / Est. Raw Cost
-      %td.currency= number_to_currency(task.estimated_raw_cost)
+      / Est. Cost
+      %td.currency= number_to_currency(task.estimated_cost)
       / Cost-to-Date
-      %td.currency= number_to_currency(task.cost)
+      %td.currency= number_to_currency(task.raw_cost)
       / Projected Cost
-      %td.currency.de_emphasize= number_to_currency(task.projected_cost)
+      %td.currency.de_emphasize= number_to_currency(task.raw_projected_cost)
       / Est. Net
       / (Should be based on estimates)
-      %td.currency= number_to_currency( subtract_or_nil(task.estimated_cost, task.estimated_raw_cost ) )
+      %td.currency= number_to_currency( task.estimated_cost - task.estimated_raw_cost )
       / Net
       %td.currency{:class => (!task.projected_net.nil? && task.projected_net < 0 ? 'negative' : nil)}= number_to_currency task.projected_net
       / % Complete
