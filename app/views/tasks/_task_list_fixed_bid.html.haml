@@ -23,14 +23,14 @@
       %td.currency.de_emphasize= number_to_currency(task.projected_cost)
       / Est. Net
       / (Should be based on estimates)
-      %td.currency= number_to_currency( subtract_or_nil(task.component_estimated_cost, task.component_estimated_raw_cost ) )
+      %td.currency= number_to_currency( subtract_or_nil(task.estimated_cost, task.estimated_raw_cost ) )
       / Net
-      %td.currency{:class => (!task.component_projected_net.nil? && task.component_projected_net < 0 ? 'negative' : nil)}= number_to_currency task.component_projected_net
+      %td.currency{:class => (!task.projected_net.nil? && task.projected_net < 0 ? 'negative' : nil)}= number_to_currency task.projected_net
       / % Complete
       %td.number
         = number_to_percentage( task.percent_complete, :precision => 0 )
         ='/'
-        = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.component_estimated_raw_cost )), :precision => 0) || '--'
+        = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_raw_cost )), :precision => 0) || '--'
       / 
         Active
         %td.check_box
@@ -68,9 +68,9 @@
     %td.currency
       %strong= number_to_currency( tasks.map(&:projected_cost).sum )
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, subtract_or_nil(obj.component_estimated_cost, obj.component_estimated_raw_cost ) })
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, subtract_or_nil(obj.estimated_cost, obj.estimated_raw_cost ) })
     %td.currency
-      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.component_projected_net })
+      %strong= number_to_currency( tasks.inject(0) {|memo,obj| add_or_nil memo, obj.projected_net })
     %td.number
       %strong
         ='--/'
