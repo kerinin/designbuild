@@ -47,7 +47,7 @@
           %tr
             %td.control
             %td{:class => "indent_#{indent+1}"}
-              %i= "#{contract_cost.date.to_s(:long)}: #{contract.name} Invoice"
+              %i= "#{contract_cost.date.to_s(:long)}: #{contract.name} Invoice from #{contract.active_bid.contractor}"
             %td
               %i= number_to_currency contract_cost.raw_cost
             %td       
