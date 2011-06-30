@@ -4,6 +4,30 @@
 body.bp {
   @include blueprint-print(true); }
 
+// Combine the partials into a single screen stylesheet.
+@import "partials/page";
+@import "partials/form";
+@import "partials/two_col";
+
+@import "partials/reset";
+@import "partials/table";
+@import "partials/nav";
+@import "partials/popup";
+@import "partials/ajax_progress";
+@import "partials/form";
+
+@import "partials/project_index";
+@import "partials/timeline";
+@import "partials/steps";
+@import "partials/payment";
+@import "partials/project_nav";
+@import "partials/costs";
+@import "partials/cost_creation";
+@import "partials/labor_costs";
+@import "partials/markup_table";
+@import "partials/calendar";
+  
+  
 @import "partials/reset";
 @import "partials/table";
 @import "partials/nav";
@@ -24,3 +48,6 @@ body.bp {
   margin-right : 5em;
   margin-bottom : 5em;
 }
+
+
+

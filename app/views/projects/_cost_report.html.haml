@@ -22,32 +22,32 @@
       = number_to_currency component.estimated_raw_cost unless indent == 0
         
     -if session[:break_out_costs]
-      -component.labor_costs.each do |labor_cost|
+      -component.labor_costs.reorder(:date).each do |labor_cost|
         %tr
           %td.control
           %td{:class => "indent_#{indent+1}"}
-            %i= "#{labor_cost.task.name} Labor, #{labor_cost.date.to_s(:long)}"
+            %i= "#{labor_cost.date.to_s(:long)}: #{labor_cost.task.name} Labor"
           %td
             %i= number_to_currency labor_cost.raw_cost
           %td
           %td
         
-      -component.material_costs.each do |material_cost|
+      -component.material_costs.reorder(:date).each do |material_cost|
         %tr
           %td.control
           %td{:class => "indent_#{indent+1}"}
-            %i= "#{material_cost.task.name} Material from #{material_cost.supplier.name}"
+            %i= "#{material_cost.date.to_s(:long)}: #{material_cost.task.name} Material from #{material_cost.supplier.name}"
           %td
             %i= number_to_currency material_cost.raw_cost
           %td
           %td
         
       -component.contracts.each do |contract|
-        -contract.costs.each do |contract_cost|
+        -contract.costs.reorder(:date).each do |contract_cost|
           %tr
             %td.control
             %td{:class => "indent_#{indent+1}"}
-              %i= "#{contract.name} Invoice dated #{contract_cost.date.to_s(:long)}"
+              %i= "#{contract_cost.date.to_s(:long)}: #{contract.name} Invoice"
             %td
               %i= number_to_currency contract_cost.raw_cost
             %td       
