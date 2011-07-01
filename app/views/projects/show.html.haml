@@ -32,7 +32,10 @@
           .boxed
             %script{:type => 'text/javascript+protovis'}
               / Includes the last point prior to the date range and the current value
-              -data = [ @project.estimated_cost_points.where('date < ?', 30.days.ago).last ].map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
+              -if @project.estimated_cost_points.where('date < ?', 30.days.ago).empty?
+                =data = []
+              -else
+                -data = [ @project.estimated_cost_points.where('date < ?', 30.days.ago).last ].map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
               -data += @project.estimated_cost_points.where('date > ?', 30.days.ago).all.map {|d| {:x => (d.date - 30.days.ago.to_date), :y => d.value, :label => "#{d.date.strftime('%b %d')}: #{number_to_currency d.value, :precision => 0}"} }
               -data += [ {:x => 30, :y => @project.estimated_cost, :label => "#{Date.today.strftime('%b %d')}: #{number_to_currency @project.estimated_cost, :precision => 0}"} ]
               -unless data.empty?
