@@ -53,8 +53,8 @@ class ApplicationController < ActionController::Base
   end
   
   def get_task
-    @task = Task.find(params[:task_id])
-    @project = @task.project
+    @task = Task.find(params[:task_id]) if params.has_key? :task_id
+    @project = @task.project unless @task.nil?
   end
   
   def get_contract

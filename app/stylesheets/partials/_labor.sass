@@ -1,0 +1,36 @@
+body.bp
+  .labor_nav, .labor_costs
+    h2
+      font-size : 18px
+      margin : 0
+      
+    height : 500px
+    overflow : auto
+          
+  .labor_nav
+    ul.grouper
+      border-top : 1px solid #bbb
+      margin-right : 2em
+
+      
+      & li.current:hover
+        background : white
+        
+      li
+        border-bottom : 1px solid #bbb
+        
+        &:hover
+          background : #eee
+          cursor : pointer
+          
+      
+    ul.group
+      display : none
+      
+      li
+        border-bottom : 0
+    
+    .current ul.group
+      display : block
+        
+        

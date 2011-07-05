@@ -1,0 +1,25 @@
+.right.labor_costs
+  %ul
+    %li
+      =add_button 'Add Hours', new_task_labor_cost_path( @task)
+      
+    -if @task.labor_costs.empty?
+      %li (none)
+    -@task.labor_costs.each do |labor_cost|
+      %li
+        %h2
+          =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(@task, labor_cost)
+          ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
+          =link_to icon(:wrench), '/'
+          =link_to icon(:delete), '/'
+        %ul
+          -labor_cost.line_items.each do |line_item|
+            %li
+              ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
+              =link_to icon(:wrench), '/'
+              =link_to icon(:delete), '/'
+              
+            %li
+              (New line item form here)
+            
+        

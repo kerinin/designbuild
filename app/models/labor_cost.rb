@@ -34,7 +34,11 @@ class LaborCost < ActiveRecord::Base
   def raw_cost
     self.line_items.sum('labor_cost_lines.raw_cost').to_f
   end
-    
+
+  def laborer_pay
+    self.line_items.sum('labor_cost_lines.laborer_pay').to_f
+  end
+      
   def markups
     self.task.markups
   end

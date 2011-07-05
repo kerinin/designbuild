@@ -196,6 +196,8 @@ Designbuild::Application.routes.draw do
   
   devise_for :users
   
+  match 'labor', :controller => :labor_costs, :action => :root_index
+  
   match 'reports', :controller => :reports, :action => :index, :as => :reports
   match 'reports/:action', :controller => :reports
   
