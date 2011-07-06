@@ -1,0 +1,5 @@
+<% content_for :insert do %>
+  <%= render :partial => 'costs' %>
+<% end %>
+
+$('.labor_costs').replaceWith('<%= escape_javascript( yield :insert ) %>');

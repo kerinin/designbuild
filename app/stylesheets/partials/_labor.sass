@@ -1,36 +1,45 @@
 body.bp
+
+  .labor_nav.left
+    width : 475px
+    margin-right : 25px
   .labor_nav, .labor_costs
     h2
       font-size : 18px
       margin : 0
-      
+      display : inline
+    .f_right
+      float : right
     height : 500px
     overflow : auto
-          
-  .labor_nav
-    ul.grouper
-      border-top : 1px solid #bbb
-      margin-right : 2em
-
-      
-      & li.current:hover
-        background : white
-        
-      li
-        border-bottom : 1px solid #bbb
-        
-        &:hover
-          background : #eee
-          cursor : pointer
-          
-      
-    ul.group
-      display : none
-      
-      li
-        border-bottom : 0
     
-    .current ul.group
-      display : block
+    li.active:hover
+      background : #eee
+      cursor : pointer
+      
+    ul.grouper
+      border-top : 1px solid #aaa
+      
+      li.group_title
+        border-bottom : 1px solid #bbb
+        line-height : 2.5em
+        &:hover .expand_icon
+          display : inline
+      li.group_title.current
+        &:hover .collapse_icon
+          display : inline
+        &:hover .expand_icon
+          display : none
+          
+      li.group
+        padding-left : 1em
+        border-bottom : 1px solid #bbb
+        ul li
+          border-bottom : 1px solid #ddd
+          line-height : 2em
+        ul li:last-child
+          border-bottom : 0
+      li.group.current
+        display : block
         
         

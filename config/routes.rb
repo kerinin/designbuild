@@ -163,6 +163,10 @@ Designbuild::Application.routes.draw do
     
   resources :labor_costs do    
     resources :labor_cost_lines, :as => :line_items
+    
+    collection do
+      get :overview
+    end
   end
   
   resources :material_costs do
@@ -196,7 +200,7 @@ Designbuild::Application.routes.draw do
   
   devise_for :users
   
-  match 'labor', :controller => :labor_costs, :action => :root_index
+  #match 'labor', :controller => :labor_costs, :action => :root_index
   
   match 'reports', :controller => :reports, :action => :index, :as => :reports
   match 'reports/:action', :controller => :reports

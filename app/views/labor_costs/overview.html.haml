@@ -1,0 +1,21 @@
+-params[:by] ||= 'project'
+=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
+
+.container
+  .header
+    %h1 Labor
+  
+    .main_actions.inline
+      View by:
+      =link_to 'Project/Task', url_for(:by => 'project')
+      =link_to 'Employee', url_for(:by => 'employee')
+      =link_to 'Date/Time', url_for(:by => 'date')
+  %hr
+  
+  =render :partial => 'nav'
+  
+  =render :partial => 'costs'
+
+    
+    
+=javascript_include_tag 'labor.js'
