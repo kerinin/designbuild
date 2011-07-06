@@ -1,0 +1,25 @@
+%ul{:id => "overview_list_#{labor_cost.id}"}
+  -line_items.each do |line_item|
+    
+    %li
+      ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
+      .f_right
+        =link_to icon(:wrench), '/'
+        =link_to icon(:delete), '/'
+  
+  %li.add
+    .label
+      =link_to labor_cost_line_items_path(labor_cost) do
+        =icon(:add)
+        (Add Hours)
+    =form_for [labor_cost, LaborCostLine.new(:labor_set => labor_cost)], :url => labor_cost_line_items_path(labor_cost), :remote => true do |f|
+      %strong= f.label :employee
+      = f.collection_select :laborer_id, Laborer.all, :id, :name
+      
+      %strong= f.label :hours
+      = f.text_field :hours
+      
+      .f_right
+        = hidden_field_tag :from_overview, true
+        = f.hidden_field :labor_set_id
+        = f.submit 'Save'

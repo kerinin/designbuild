@@ -1,7 +1,7 @@
 -case params[:by]
 -when nil, 'project'
   -unless @task.nil?
-    =add_button 'New Date', new_task_labor_cost_path( @task)
+    =#add_button 'New Date', new_task_labor_cost_path( @task)
 
     %ul.grouper
       -if @task.labor_costs.empty?
@@ -15,20 +15,13 @@
               =link_to icon(:wrench), '/'
               =link_to icon(:delete), '/'
         %li.group
-          %ul
-            -labor_cost.line_items.each do |line_item|
-              %li
-                ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
-                .f_right
-                  =link_to icon(:wrench), '/'
-                  =link_to icon(:delete), '/'
-            
-            %li
-              (New line item form here)
+          =render :partial => 'labor_cost_lines/overview_list', :locals => {:labor_cost => labor_cost, :line_items => labor_cost.line_items}
+
 -when 'employee'  
   -unless @employee.nil?
     %ul.grouper
-      -@employee.labor_cost_lines.joins(:labor_set).group('labor_costs.date').reorder('labor_costs.date DESC').each do |date_line|
+      -dates = @employee.labor_cost_lines.joins(:labor_set).group('labor_costs.date').paginate( :page => params[:employee_date_page], :per_page => 10, :order => 'labor_costs.date DESC')
+      -dates.each do |date_line|
         %li.group_title
           %h2
             =date_line.labor_set.date.to_s :long
@@ -40,6 +33,9 @@
                 .f_right
                   =link_to icon(:wrench), '/'
                   =link_to icon(:delete), '/'  
+      -unless dates.next_page.nil?
+        %li.pagination
+          =link_to 'View Older', params.merge(:employee_date_page => dates.next_page), :remote => true
 -when 'date'
   -unless @date.nil?
     %ul.grouper

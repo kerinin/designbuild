@@ -5,6 +5,20 @@
 <% content_for :content do %>
   <%= render :partial => 'costs' %>
 <% end %>
+  
+<% if params.has_key? :date_nav_page %>
+  $('li.pagination').remove();
+  $('.labor_nav').append('<%= escape_javascript( yield :nav_content) %>');
+<% elsif !params.has_key?(:by) || params[:by] != 'date' %>
+  $('.labor_nav').empty().append('<%= escape_javascript( yield :nav_content) %>');
+<% else %>
+  $('li.group_title').removeClass('viewing');
+  $('li.group_title#date_group_title_<%= @date.to_s %>').addClass('viewing');
+<% end %>
 
-$('.labor_nav').empty().append('<%= escape_javascript( yield :nav_content) %>');
-$('.labor_costs').empty().append('<%= escape_javascript( yield :content ) %>').scrollTop(0);
+<% if params.has_key? :employee_date_page %>
+  $('li.pagination').remove();
+  $('.labor_costs').append('<%= escape_javascript( yield :content ) %>');
+<% else %>
+  $('.labor_costs').empty().append('<%= escape_javascript( yield :content ) %>').scrollTop(0);
+<% end %>
