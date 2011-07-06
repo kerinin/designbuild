@@ -1,20 +1,28 @@
 -case params[:by]
 -when nil, 'project'
-  .left.labor_nav
-    %ul.grouper.by_project
-      -@projects.includes(:tasks).all.each do |project|
-        -unless project.tasks.empty?
-          %li.group_title.active{:id => "project_group_title_#{project.id}", :class => (!@project.nil? && @project == project ? 'current' : nil) }
-            %h2=project.name
-            .f_right
-              .hidden.expand_icon=icon(:arrow_down)
-              .hidden.collapse_icon=icon(:arrow_up)
-          %li.group{:id => "project_group_#{project.id}", :class => (!@project.nil? && @project == project ? nil : 'hidden') }
-            %ul
-              -project.tasks.all.each do |task|
-                %li
-                  =link_to task.name, overview_labor_costs_path(:by => params[:by], :project_id => project.id, :task_id => task.id), :remote => true
-                  =number_to_currency task.raw_labor_cost
+  %ul.grouper.by_project
+    -@projects.includes(:tasks).all.each do |project|
+      -unless project.tasks.empty?
+        %li.group_title.active{:id => "project_group_title_#{project.id}", :class => (!@project.nil? && @project == project ? 'current' : nil) }
+          %h2=project.name
+          .f_right
+            .hidden.expand_icon=icon(:arrow_down)
+            .hidden.collapse_icon=icon(:arrow_up)
+        %li.group{:id => "project_group_#{project.id}", :class => (!@project.nil? && @project == project ? nil : 'hidden') }
+          %ul
+            -project.tasks.all.each do |task|
+              %li{:class => (!@task.nil? && @task == task ? 'viewing' : nil)}
+                =link_to task.name, overview_labor_costs_path(:by => params[:by], :project_id => project.id, :task_id => task.id), :remote => true
+                =number_to_currency task.raw_labor_cost
+
 -when 'employee'
-  
+  %ul.grouper.by_employee
+    -@employees.all.each do |employee|
+      %li.group_title{:id => "employee_group_title_#{employee.id}", :class => (!@employee.nil? && @employee == employee ? 'current viewing' : nil) }
+        %h2=link_to employee.name, overview_labor_costs_path(:by => 'employee', :employee_id => employee.id), :remote => true
+
 -when 'date'
+  %ul.grouper.by_date
+    -@lines.joins(:labor_set).group('labor_costs.date').reorder('labor_costs.date DESC').each do |date_line|
+      %li.group_title{:id => "date_group_title_#{date_line.labor_set.date}", :class => (!@date.nil? && @date == date_line.labor_set.date.to_s ? 'current viewing' : nil) }
+        %h2=link_to date_line.labor_set.date.to_s( :long ), overview_labor_costs_path(:by => 'date', :date => date_line.labor_set.date), :remote => true

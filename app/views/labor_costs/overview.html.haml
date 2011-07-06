@@ -12,9 +12,11 @@
       =link_to 'Date/Time', url_for(:by => 'date')
   %hr
   
-  =render :partial => 'nav'
-  
-  =render :partial => 'costs'
+  .left.labor_nav
+    =render :partial => 'nav'
+    
+  .right.labor_costs
+    =render :partial => 'costs'
 
     
     

@@ -1,34 +1,59 @@
 -case params[:by]
 -when nil, 'project'
-  .right.labor_costs
-    -unless @task.nil?
-      =add_button 'New Date', new_task_labor_cost_path( @task)
-  
-      %ul.grouper
-        -if @task.labor_costs.empty?
-          %li (none)
-        -@task.labor_costs.each do |labor_cost|
-          %li.group_title
-            %h2
-              =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(@task, labor_cost)
-              .f_right
-                ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
-                =link_to icon(:wrench), '/'
-                =link_to icon(:delete), '/'
-          %li.group
-            %ul
-              -labor_cost.line_items.each do |line_item|
-                %li
-                  ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
-                  .f_right
-                    =link_to icon(:wrench), '/'
-                    =link_to icon(:delete), '/'
-              
+  -unless @task.nil?
+    =add_button 'New Date', new_task_labor_cost_path( @task)
+
+    %ul.grouper
+      -if @task.labor_costs.empty?
+        %li (none)
+      -@task.labor_costs.each do |labor_cost|
+        %li.group_title
+          %h2
+            =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(@task, labor_cost)
+            .f_right
+              ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
+              =link_to icon(:wrench), '/'
+              =link_to icon(:delete), '/'
+        %li.group
+          %ul
+            -labor_cost.line_items.each do |line_item|
               %li
-                (New line item form here)
--when 'employee'
-  
+                ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
+                .f_right
+                  =link_to icon(:wrench), '/'
+                  =link_to icon(:delete), '/'
+            
+            %li
+              (New line item form here)
+-when 'employee'  
+  -unless @employee.nil?
+    %ul.grouper
+      -@employee.labor_cost_lines.joins(:labor_set).group('labor_costs.date').reorder('labor_costs.date DESC').each do |date_line|
+        %li.group_title
+          %h2
+            =date_line.labor_set.date.to_s :long
+        %li.group
+          %ul
+            -@employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date_line.labor_set.date).each do |line|
+              %li
+                ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
+                .f_right
+                  =link_to icon(:wrench), '/'
+                  =link_to icon(:delete), '/'  
 -when 'date'
+  -unless @date.nil?
+    %ul.grouper
+      -Laborer.includes(:labor_cost_lines => :labor_set).where('labor_costs.date = ?', @date).each do |employee|
+        %li.group_title
+          %h2=employee.name
+        %li.group
+          %ul
+            -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', @date).each do |line|
+              %li
+                ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
+                .f_right
+                  =link_to icon(:wrench), '/'
+                  =link_to icon(:delete), '/'
 
 
 

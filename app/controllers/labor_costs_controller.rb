@@ -4,8 +4,13 @@ class LaborCostsController < ApplicationController
   def overview
     @labor_costs = LaborCost.scoped
     @projects = Project.scoped
+    @employees = Laborer.scoped
+    @lines = LaborCostLine.scoped
+    
     @project = Project.find(params[:project_id]) if params.has_key? :project_id
     @task = Task.find(params[:task_id]) if params.has_key? :project_id
+    @employee = Laborer.find(params[:employee_id]) if params.has_key? :employee_id
+    @date = params[:date] if params.has_key? :date
     
     respond_to do |format|
       format.html # index.html.erb
