@@ -1,0 +1,13 @@
+<% case params[:by] %>
+<% when nil, 'project' %>
+  // Project
+  $("#overview_list_<%= @labor_cost_line.labor_set.task_id %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_project', :locals => {:task => @labor_cost_line.labor_set.task} ) %>');
+  $(".labor_nav .grouper").replaceWith('<%= escape_javascript render(:partial => 'labor_costs/nav_by_project', :locals => {:projects => Project.scoped, :project => @labor_cost_line.labor_set.project, :task => @labor_cost_line.labor_set.task}) %>');
+<% when 'employee' %>
+  // Employee
+  $("#overview_list_<%= @labor_cost_line.laborer.id %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_employee', :locals => {:employee => @labor_cost_line.laborer} ) %>');
+  <% when 'date' %>
+  // Date
+  $("#overview_list_<%= @labor_cost_line.labor_set.date %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_date', :locals => {:date => @labor_cost_line.labor_set.date} ) %>');
+  $(".labor_nav .grouper").replaceWith('<%= escape_javascript render(:partial => 'labor_costs/nav_by_date', :locals => {:lines => LaborCostLine.scoped, :date => @labor_cost_line.labor_set.date}) %>');
+<% end %>

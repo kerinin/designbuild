@@ -1,37 +1,54 @@
-<% if @labor_cost_line.errors.any? %>
-  //Error
+<% unless params[:from_overview] %>
+  <% if @labor_cost_line.errors.any? %>
+    //Error
   
-  <% content_for :error_tr do %>
-    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@labor_cost_line) %></strong></td></tr>
+    <% content_for :error_tr do %>
+      <tr class='error'><td colspan = 10><strong><%= error_messages_for(@labor_cost_line) %></strong></td></tr>
+    <% end %>
+
+    //Hide the flash notice div
+    $("#flash_notice").hide(300);
+
+    //Add a table row above the input with error info
+    $("table.labor_cost_lines tr.error").remove();
+    $("table.labor_cost_lines tr.labor_cost_line_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+
+  <% else %>
+    //Success
+  
+    <% content_for :table do %>
+    	<%=render :partial => 'labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost_lines} %>
+    <% end %>
+
+    //Update the html of the div flash_notice with the new one
+    $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
+
+    //Show the flash_notice div
+    $("#flash_notice").show(300);
+
+    //Replace the html of the div post_lists with the updated new one
+    $('form').html( "<%= escape_javascript( yield :table ) %>");
+
+    //Remove the form
+    $('table.labor_cost_lines').unwrap();
+  
+    //Load a new entry field
+    $('tr.add_button > td > a').click();
+  
   <% end %>
-
-  //Hide the flash notice div
-  $("#flash_notice").hide(300);
-
-  //Add a table row above the input with error info
-  $("table.labor_cost_lines tr.error").remove();
-  $("table.labor_cost_lines tr.labor_cost_line_fields").before("<%= escape_javascript( yield :error_tr ) %>");
-
 <% else %>
-  //Success
-  
-  <% content_for :table do %>
-  	<%=render :partial => 'labor_cost_lines_list', :locals => {:labor_cost_lines => @labor_cost_lines} %>
+
+  <% case params[:by] %>
+  <% when nil, 'project' %>
+    // Project
+    $("#overview_list_<%= @labor_cost_line.labor_set.task_id %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_project', :locals => {:task => @labor_cost_line.labor_set.task} ) %>');
+    $(".labor_nav .grouper").replaceWith('<%= escape_javascript render(:partial => 'labor_costs/nav_by_project', :locals => {:projects => Project.scoped, :project => @labor_cost_line.labor_set.project, :task => @labor_cost_line.labor_set.task}) %>');
+  <% when 'employee' %>
+    // Employee
+    $("#overview_list_<%= @labor_cost_line.laborer.id %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_employee', :locals => {:employee => @labor_cost_line.laborer} ) %>');
+    <% when 'date' %>
+    // Date
+    $("#overview_list_<%= @labor_cost_line.labor_set.date %>").replaceWith('<%= escape_javascript render( :partial => 'overview_by_date', :locals => {:date => @labor_cost_line.labor_set.date} ) %>');
+    $(".labor_nav .grouper").replaceWith('<%= escape_javascript render(:partial => 'labor_costs/nav_by_date', :locals => {:lines => LaborCostLine.scoped, :date => @labor_cost_line.labor_set.date}) %>');
   <% end %>
-
-  //Update the html of the div flash_notice with the new one
-  $("#flash_notice").html("<%= escape_javascript(flash[:notice])%>");
-
-  //Show the flash_notice div
-  $("#flash_notice").show(300);
-
-  //Replace the html of the div post_lists with the updated new one
-  $('form').html( "<%= escape_javascript( yield :table ) %>");
-
-  //Remove the form
-  $('table.labor_cost_lines').unwrap();
-  
-  //Load a new entry field
-  $('tr.add_button > td > a').click();
-  
 <% end %>

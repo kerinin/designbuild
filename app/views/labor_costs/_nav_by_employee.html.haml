@@ -1,0 +1,5 @@
+-# employees, employee
+%ul.grouper.by_employee
+  -employees.all.each do |current_employee|
+    %li.group_title{:id => "employee_group_title_#{current_employee.id}", :class => (!employee.nil? && employee == current_employee ? 'current viewing' : nil) }
+      %h2=link_to current_employee.name, overview_labor_costs_path(:by => 'employee', :employee_id => current_employee.id), :remote => true

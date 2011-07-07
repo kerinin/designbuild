@@ -1,0 +1,14 @@
+-case params[:by]
+-when nil, 'project'
+  =render :partial => 'labor_cost_lines/overview_by_project', :locals => {:task => @task}
+
+-when 'employee'  
+  =render :partial => 'labor_cost_lines/overview_by_employee', :locals => {:employee => @employee}
+          
+-when 'date'
+  =render :partial => 'labor_cost_lines/overview_by_date', :locals => {:date => @date}
+
+
+
+            
+        

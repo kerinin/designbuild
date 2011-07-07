@@ -1,0 +1,2 @@
+$("#overview_list_<%= @labor_cost.task_id %>").replaceWith('<%= escape_javascript render( :partial => 'labor_cost_lines/overview_by_project', :locals => {:task => @labor_cost.task} ) %>');
+$(".labor_nav .grouper").replaceWith('<%= escape_javascript render(:partial => 'nav_by_project', :locals => {:projects => Project.scoped, :project => @labor_cost.project, :task => @labor_cost.task}) %>');

@@ -1,0 +1,60 @@
+body.bp
+
+  .labor_nav.left
+    width : 475px
+    margin-right : 25px
+  .labor_costs.right
+    input[type=text]
+      width : 4em
+      
+    li.add form
+      display : none
+      
+  .labor_nav, .labor_costs
+    h2
+      font-size : 18px
+      margin : 0
+      display : inline
+    .f_right
+      float : right
+      margin-right : 1em
+    .edit, .delete
+      display : inline
+    .edit_form
+      display : none
+      
+    height : 500px
+    overflow : auto
+    
+    li.active:hover
+      background : #eee
+      cursor : pointer
+
+    li.viewing
+      background : #DFE7F0
+              
+    ul.grouper
+      border-top : 1px solid #aaa
+      
+      li.group_title
+        border-bottom : 1px solid #bbb
+        line-height : 2.5em
+        &:hover .expand_icon
+          display : inline
+      li.group_title.current
+        &:hover .collapse_icon
+          display : inline
+        &:hover .expand_icon
+          display : none
+      li.group
+        padding-left : 1em
+        border-bottom : 1px solid #bbb
+        ul li
+          border-bottom : 1px solid #ddd
+          line-height : 2em
+        ul li:last-child
+          border-bottom : 0
+      li.group.current
+        display : block
+        
+        

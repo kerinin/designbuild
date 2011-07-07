@@ -1,6 +1,24 @@
 class LaborCostsController < ApplicationController
   before_filter :get_task
   
+  def overview
+    @labor_costs = LaborCost.scoped
+    @projects = Project.scoped
+    @employees = Laborer.scoped
+    @lines = LaborCostLine.scoped
+    
+    @project = Project.find(params[:project_id]) if params.has_key? :project_id
+    @task = Task.find(params[:task_id]) if params.has_key? :project_id
+    @employee = Laborer.find(params[:employee_id]) if params.has_key? :employee_id
+    @date = params[:date] if params.has_key? :date
+    
+    respond_to do |format|
+      format.html # index.html.erb
+      format.xml  { render :xml => @labor_costs }
+      format.js
+    end
+  end
+        
   # GET /labor_costs
   # GET /labor_costs.xml
   def index
@@ -84,6 +102,7 @@ class LaborCostsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(project_task_url(@project, @task)) }
       format.xml  { head :ok }
+      format.js
     end
   end
 end
