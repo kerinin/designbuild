@@ -1,16 +1,23 @@
-%ul{:id => "overview_list_#{date}"}
-  -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).each do |line|
-    %li
-      ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
-      .f_right
-        .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(line.labor_set, line)
-        .delete=link_to icon(:delete), labor_cost_line_item_path(line.labor_set, line), :confirm => 'Are you sure?', :method => :delete, :remote => true  
+-unless date.nil?
+  %ul.grouper{:id => "overview_list_#{date}"}
+    -Laborer.includes(:labor_cost_lines => :labor_set).where('labor_costs.date = ?', date).each do |employee|
+      %li.group_title
+        %h2=employee.name
+      %li.group
+        %ul
+          -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).each do |line|
+            %li
+              ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
+              .f_right
+                .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(line.labor_set, line)
+                .delete=link_to icon(:delete), labor_cost_line_item_path(line.labor_set, line, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
 
-    %li.edit_form
-      =form_for [line.labor_set, line], :url => labor_cost_line_item_path(line.labor_set, line), :remote => true do |f|
-        ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}:"
-        =f.text_field :hours
+            %li.edit_form
+              =form_for [line.labor_set, line], :url => labor_cost_line_item_path(line.labor_set, line), :remote => true do |f|
+                ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}:"
+                =f.text_field :hours
 
-        .f_right
-          =hidden_field_tag :from_overview, true
-          =f.submit 'Save'
+                .f_right
+                  =hidden_field_tag :from_overview, true
+                  =hidden_field_tag :by, params[:by]
+                  =f.submit 'Save'

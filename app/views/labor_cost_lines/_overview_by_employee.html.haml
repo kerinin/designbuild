@@ -1,16 +1,30 @@
-%ul{:id => "overview_list_#{employee.id}"}
-  -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).each do |line|
-    %li
-      ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
-      .f_right
-        .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(line.labor_set, line)
-        .delete=link_to icon(:delete), labor_cost_line_item_path(line.labor_set, line), :confirm => 'Are you sure?', :method => :delete, :remote => true  
+-unless employee.nil?
+  %ul.grouper{:id => "overview_list_#{employee.id}"}
+    -dates = employee.labor_cost_lines.joins(:labor_set).group('labor_costs.date').paginate( :page => params[:employee_date_page], :per_page => 10, :order => 'labor_costs.date DESC')
+    -dates.each do |date_line|
+      %li.group_title
+        %h2
+          =date_line.labor_set.date.to_s :long
+      %li.group
 
-    %li.edit_form
-      =form_for [line.labor_set, line], :url => labor_cost_line_item_path(line.labor_set, line), :remote => true do |f|
-        ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}:"
-        =f.text_field :hours
+        %ul
+          -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date_line.labor_set.date).each do |line|
+            %li
+              ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
+              .f_right
+                .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(line.labor_set, line)
+                .delete=link_to icon(:delete), labor_cost_line_item_path(line.labor_set, line, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
 
-        .f_right
-          =hidden_field_tag :from_overview, true
-          =f.submit 'Save'
+            %li.edit_form
+              =form_for [line.labor_set, line], :url => labor_cost_line_item_path(line.labor_set, line), :remote => true do |f|
+                ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}:"
+                =f.text_field :hours
+
+                .f_right
+                  =hidden_field_tag :from_overview, true
+                  =hidden_field_tag :by, params[:by]
+                  =f.submit 'Save'
+                
+    -unless dates.next_page.nil?
+      %li.pagination
+        =link_to 'View Older', params.merge(:employee_date_page => dates.next_page), :remote => true

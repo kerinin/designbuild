@@ -1,44 +1,13 @@
 -case params[:by]
 -when nil, 'project'
-  -unless @task.nil?
-    =#add_button 'New Date', new_task_labor_cost_path( @task)
-
-    %ul.grouper
-      -if @task.labor_costs.empty?
-        %li (none)
-      -@task.labor_costs.each do |labor_cost|
-        %li.group_title
-          %h2
-            =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(@task, labor_cost)
-            .f_right
-              ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
-              =link_to icon(:wrench), '/'
-              =link_to icon(:delete), '/'
-        %li.group
-          =render :partial => 'labor_cost_lines/overview_by_project', :locals => {:labor_cost => labor_cost, :line_items => labor_cost.line_items}
+  =render :partial => 'labor_cost_lines/overview_by_project', :locals => {:task => @task}
 
 -when 'employee'  
-  -unless @employee.nil?
-    %ul.grouper
-      -dates = @employee.labor_cost_lines.joins(:labor_set).group('labor_costs.date').paginate( :page => params[:employee_date_page], :per_page => 10, :order => 'labor_costs.date DESC')
-      -dates.each do |date_line|
-        %li.group_title
-          %h2
-            =date_line.labor_set.date.to_s :long
-        %li.group
-          =render :partial => 'labor_cost_lines/overview_by_employee', :locals => {:employee => @employee, :date => date_line.labor_set.date}
-
-      -unless dates.next_page.nil?
-        %li.pagination
-          =link_to 'View Older', params.merge(:employee_date_page => dates.next_page), :remote => true
+  =render :partial => 'labor_cost_lines/overview_by_employee', :locals => {:employee => @employee}
+          
 -when 'date'
-  -unless @date.nil?
-    %ul.grouper
-      -Laborer.includes(:labor_cost_lines => :labor_set).where('labor_costs.date = ?', @date).each do |employee|
-        %li.group_title
-          %h2=employee.name
-        %li.group
-          =render :partial => 'labor_cost_lines/overview_by_date', :locals => {:employee => employee, :date => @date}
+  =render :partial => 'labor_cost_lines/overview_by_date', :locals => {:date => @date}
+
 
 
             

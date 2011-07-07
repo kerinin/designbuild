@@ -1,33 +1,50 @@
-%ul{:id => "overview_list_#{labor_cost.id}"}
-  -line_items.each do |line_item|
+-unless @task.nil?
+  =#add_button 'New Date', new_task_labor_cost_path( @task)
+
+  %ul.grouper{:id => "overview_list_#{task.id}"}
+    -if task.labor_costs.empty?
+      %li (none)
+    -task.labor_costs.each do |labor_cost|
+      %li.group_title
+        %h2
+          =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(task, labor_cost)
+          .f_right
+            ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
+            =link_to icon(:wrench), '/'
+            =link_to icon(:delete), '/'
+      %li.group
+        %ul
+          -labor_cost.line_items.each do |line_item|
   
-    %li
-      ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
-      .f_right
-        .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(labor_cost, line_item)
-        .delete=link_to icon(:delete), labor_cost_line_item_path(labor_cost, line_item, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
-    %li.edit_form
-      =form_for [labor_cost, line_item], :url => labor_cost_line_item_path(labor_cost, line_item), :remote => true do |f|
-        ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}:"
-        =f.text_field :hours
+            %li
+              ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}: #{line_item.hours} hours"
+              .f_right
+                .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(labor_cost, line_item)
+                .delete=link_to icon(:delete), labor_cost_line_item_path(labor_cost, line_item, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
+            %li.edit_form
+              =form_for [labor_cost, line_item], :url => labor_cost_line_item_path(labor_cost, line_item), :remote => true do |f|
+                ="#{line_item.laborer.nil? ? '(employee deleted)' : line_item.laborer.name}:"
+                =f.text_field :hours
         
-        .f_right
-          =hidden_field_tag :from_overview, true
-          =f.submit 'Save'
+                .f_right
+                  =hidden_field_tag :from_overview, true
+                  =hidden_field_tag :by, params[:by]
+                  =f.submit 'Save'
         
-  %li.add
-    .label
-      =link_to labor_cost_line_items_path(labor_cost) do
-        =icon(:add)
-        (Add Hours)
-    =form_for [labor_cost, LaborCostLine.new(:labor_set => labor_cost)], :url => labor_cost_line_items_path(labor_cost), :remote => true do |f|
-      %strong= f.label :employee
-      = f.collection_select :laborer_id, Laborer.all, :id, :name
+          %li.add
+            .label
+              =link_to labor_cost_line_items_path(labor_cost) do
+                =icon(:add)
+                (Add Hours)
+            =form_for [labor_cost, LaborCostLine.new(:labor_set => labor_cost)], :url => labor_cost_line_items_path(labor_cost), :remote => true do |f|
+              %strong= f.label :employee
+              = f.collection_select :laborer_id, Laborer.all, :id, :name
     
-      %strong= f.label :hours
-      = f.text_field :hours
+              %strong= f.label :hours
+              = f.text_field :hours
     
-      .f_right
-        = hidden_field_tag :from_overview, true
-        = f.hidden_field :labor_set_id
-        = f.submit 'Save'
+              .f_right
+                = hidden_field_tag :from_overview, true
+                = hidden_field_tag :by, params[:by]
+                = f.hidden_field :labor_set_id
+                = f.submit 'Save'

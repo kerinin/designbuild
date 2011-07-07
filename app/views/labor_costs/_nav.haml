@@ -13,7 +13,7 @@
             -project.tasks.all.each do |task|
               %li{:class => (!@task.nil? && @task == task ? 'viewing' : nil)}
                 =link_to task.name, overview_labor_costs_path(:by => params[:by], :project_id => project.id, :task_id => task.id), :remote => true
-                =number_to_currency task.raw_labor_cost
+                .f_right=number_to_currency task.raw_labor_cost
 
 -when 'employee'
   %ul.grouper.by_employee
@@ -26,8 +26,9 @@
     -dates = @lines.joins(:labor_set).group('labor_costs.date').paginate( :page => params[:date_nav_page], :per_page => 10, :order => 'labor_costs.date DESC')
     -dates.each do |date_line|
       %li.group_title{:id => "date_group_title_#{date_line.labor_set.date}", :class => (!@date.nil? && @date == date_line.labor_set.date.to_s ? 'current viewing' : nil) }
-        %h2=link_to date_line.labor_set.date.to_s( :long ), overview_labor_costs_path(:by => 'date', :date => date_line.labor_set.date), :remote => true
-        
+        %h2
+          =link_to date_line.labor_set.date.to_s( :long ), overview_labor_costs_path(:by => 'date', :date => date_line.labor_set.date), :remote => true
+          .f_right="#{LaborCostLine.includes(:labor_set).where('labor_costs.date = ?', date_line.labor_set.date).sum(:hours)} hours"
     -unless dates.next_page.nil?
       %li.pagination
         =link_to 'View Older', params.merge(:date_nav_page => dates.next_page), :remote => true
