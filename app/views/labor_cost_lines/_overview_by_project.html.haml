@@ -1,4 +1,4 @@
--unless @task.nil?
+-unless task.nil?
   =#add_button 'New Date', new_task_labor_cost_path( @task)
 
   %ul.grouper{:id => "overview_list_#{task.id}"}
@@ -7,11 +7,10 @@
     -task.labor_costs.each do |labor_cost|
       %li.group_title
         %h2
-          =link_to labor_cost.date.to_s(:long), edit_task_labor_cost_path(task, labor_cost)
+          =link_to l(labor_cost.date, :format => :std), edit_task_labor_cost_path(task, labor_cost)
           .f_right
             ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
-            =link_to icon(:wrench), '/'
-            =link_to icon(:delete), '/'
+            =link_to icon(:delete), labor_cost_path(labor_cost, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
       %li.group
         %ul
           -labor_cost.line_items.each do |line_item|

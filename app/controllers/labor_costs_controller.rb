@@ -102,6 +102,7 @@ class LaborCostsController < ApplicationController
     respond_to do |format|
       format.html { redirect_to(project_task_url(@project, @task)) }
       format.xml  { head :ok }
+      format.js
     end
   end
 end

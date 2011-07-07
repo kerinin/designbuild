@@ -7,3 +7,7 @@ en:
   tasks: Tasks
   contracts: Contracts
   deadlines: Deadlines
+
+  date:
+    formats:
+      std: "%A %b %e '%y"

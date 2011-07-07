@@ -1,0 +1,15 @@
+-# projects, project
+%ul.grouper.by_project
+  -projects.includes(:tasks).all.each do |current_project|
+    -unless current_project.tasks.empty?
+      %li.group_title.active{:id => "project_group_title_#{current_project.id}", :class => (!project.nil? && @project == current_project ? 'current' : nil) }
+        %h2=current_project.name
+        .f_right
+          .hidden.expand_icon=icon(:arrow_down)
+          .hidden.collapse_icon=icon(:arrow_up)
+      %li.group{:id => "project_group_#{current_project.id}", :class => (!project.nil? && project == current_project ? nil : 'hidden') }
+        %ul
+          -current_project.tasks.all.each do |current_task|
+            %li{:class => (!task.nil? && task == current_task ? 'viewing' : nil)}
+              =link_to current_task.name, overview_labor_costs_path(:by => params[:by], :project_id => current_project.id, :task_id => current_task.id), :remote => true
+              .f_right=number_to_currency current_task.raw_labor_cost

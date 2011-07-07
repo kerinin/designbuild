@@ -1,5 +1,5 @@
 -params[:by] ||= 'project'
-=render :partial => 'shared/project_nav', :locals => {:current => :tasks}
+=render :partial => 'shared/project_nav', :locals => {:current => :labor}
 
 .container
   .header
@@ -13,7 +13,15 @@
   %hr
   
   .left.labor_nav
-    =render :partial => 'nav'
+    -case params[:by]
+    -when nil, 'project'
+      =render :partial => 'nav_by_project', :locals => {:projects => @projects, :project => @project, :task => @task}
+
+    -when 'employee'
+      =render :partial => 'nav_by_employee', :locals => {:employees => @employees, :employee => @employee}
+
+    -when 'date'
+      =render :partial => 'nav_by_date', :locals => {:lines => @lines, :date => @date}
     
   .right.labor_costs
     =render :partial => 'costs'

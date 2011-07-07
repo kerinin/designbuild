@@ -4,7 +4,7 @@
     -dates.each do |date_line|
       %li.group_title
         %h2
-          =date_line.labor_set.date.to_s :long
+          =l date_line.labor_set.date, :format => :std
       %li.group
 
         %ul

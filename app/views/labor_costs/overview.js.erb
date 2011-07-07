@@ -1,5 +1,15 @@
 <% content_for :nav_content do %>
-  <%= render :partial => 'nav' %>
+  <% case params[:by] %>
+  <% when nil, 'project' %>
+    <%=render :partial => 'nav_by_project', :locals => {:projects => @projects, :project => @project, :task => @task} %>
+
+  <% when 'employee' %>
+    <%=render :partial => 'nav_by_employee', :locals => {:employees => @employees, :employee => @employee} %>
+
+  <% when 'date' %>
+    <%=render :partial => 'nav_by_date', :locals => {:lines => @lines, :date => @date} %>
+  <% end %>
+  
 <% end %>
 
 <% content_for :content do %>
