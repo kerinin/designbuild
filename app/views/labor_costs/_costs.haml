@@ -1,5 +1,7 @@
 -case params[:by]
 -when nil, 'project'
+  =add_button 'New Date', new_task_labor_cost_path( @task, :by => params[:by] ), :remote => true
+
   =render :partial => 'labor_cost_lines/overview_by_project', :locals => {:task => @task}
 
 -when 'employee'  

@@ -1,9 +1,7 @@
 -unless task.nil?
-  =#add_button 'New Date', new_task_labor_cost_path( @task)
-
   %ul.grouper{:id => "overview_list_#{task.id}"}
     -if task.labor_costs.empty?
-      %li (none)
+      %li.empty (none)
     -task.labor_costs.each do |labor_cost|
       %li.group_title
         %h2
@@ -11,6 +9,9 @@
           .f_right
             ="#{labor_cost.line_items.sum(:hours)} hours, #{number_to_currency labor_cost.raw_cost}/#{number_to_currency labor_cost.laborer_pay}"
             =link_to icon(:delete), labor_cost_path(labor_cost, :by => params[:by]), :confirm => 'Are you sure?', :method => :delete, :remote => true  
+        -unless labor_cost.note.blank?
+          %p
+            %i=labor_cost.note
       %li.group
         %ul
           -labor_cost.line_items.each do |line_item|

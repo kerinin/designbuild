@@ -1,20 +1,26 @@
-<% if @labor_cost.errors.any? %>
-  //Error
+<% unless params.has_key? :by %>
+  <% if @labor_cost.errors.any? %>
+    //Error
   
-  <% content_for :error_tr do %>
-    <div class='error'><strong><%= error_messages_for(@labor_cost) %></strong></div>
+    <% content_for :error_tr do %>
+      <div class='error'><strong><%= error_messages_for(@labor_cost) %></strong></div>
+    <% end %>
+
+    //Hide the flash notice div
+    $("#flash_notice").hide(300);
+
+    //Add a table row above the input with error info
+    $("div.error").remove();
+    $("h1.new_order").after("<%= escape_javascript( yield :error_tr ) %>");
+
+  <% else %>
+    //Success
+  
+    window.location.href = "<%=task_labor_cost_url(@task, @labor_cost)%>";
+  
   <% end %>
-
-  //Hide the flash notice div
-  $("#flash_notice").hide(300);
-
-  //Add a table row above the input with error info
-  $("div.error").remove();
-  $("h1.new_order").after("<%= escape_javascript( yield :error_tr ) %>");
-
 <% else %>
-  //Success
-  
-  window.location.href = "<%=task_labor_cost_url(@task, @labor_cost)%>";
-  
+
+  $("#overview_list_<%= @labor_cost.task_id %>").replaceWith('<%= escape_javascript render( :partial => 'labor_cost_lines/overview_by_project', :locals => {:task => @labor_cost.task} ) %>');  
+  $('.labor_costs > form').remove();
 <% end %>
