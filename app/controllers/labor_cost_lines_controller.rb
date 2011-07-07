@@ -87,10 +87,12 @@ class LaborCostLinesController < ApplicationController
   def destroy
     @labor_cost_line = LaborCostLine.find(params[:id])
     @labor_cost_line.destroy
-
+    @labor_cost.reload
+    
     respond_to do |format|
       format.html { redirect_to(task_labor_cost_url(@task, @labor_cost)) }
       format.xml  { head :ok }
+      format.js
     end
   end
 end

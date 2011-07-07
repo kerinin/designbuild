@@ -1,20 +1,35 @@
-<% if @labor_cost_line.errors.any? %>
-  //Error
+<% unless params[:from_overview] %>
+  <% if @labor_cost_line.errors.any? %>
+    //Error
   
-  <% content_for :error_tr do %>
-    <tr class='error'><td colspan = 10><strong><%= error_messages_for(@labor_cost_line) %></strong></td></tr>
+    <% content_for :error_tr do %>
+      <tr class='error'><td colspan = 10><strong><%= error_messages_for(@labor_cost_line) %></strong></td></tr>
+    <% end %>
+
+    //Hide the flash notice div
+    $("#flash_notice").hide(300);
+
+    //Add a table row above the input with error info
+    $("tr.error").remove();
+    $("tr.labor_cost_line_fields").before("<%= escape_javascript( yield :error_tr ) %>");
+
+  <% else %>
+    //Success
+  
+    location.reload();
+  
+  <% end %>
+<% else %>
+  <% content_for :overview_list do %>
+    <% case params[:by] %>
+    <% when nil, 'project' %>
+      <%= render :partial => 'overview_by_project', :locals => {:labor_cost => @labor_cost_line.labor_set, :line_items => @labor_cost_line.labor_set.line_items} %>
+    <% when 'employee' %>
+      <%= render :partial => 'overview_by_employee', :locals => {:employee => @labor_cost_line.laborer, :date => @labor_cost_line.labor_set.date} %>
+    <% when 'date' %>
+      <%= render :partial => 'overview_by_employee', :locals => {:employee => @labor_cost_line.laborer, :date => @labor_cost_line.labor_set.date} %>
+    <% end %>
   <% end %>
 
-  //Hide the flash notice div
-  $("#flash_notice").hide(300);
-
-  //Add a table row above the input with error info
-  $("tr.error").remove();
-  $("tr.labor_cost_line_fields").before("<%= escape_javascript( yield :error_tr ) %>");
-
-<% else %>
-  //Success
-  
-  location.reload();
-  
+  $("#overview_list_<%= @labor_cost_line.labor_set_id %>").replaceWith('<%= escape_javascript( yield :overview_list ) %>');
 <% end %>

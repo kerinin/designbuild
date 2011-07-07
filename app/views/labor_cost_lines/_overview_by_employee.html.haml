@@ -1,0 +1,16 @@
+%ul{:id => "overview_list_#{employee.id}"}
+  -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).each do |line|
+    %li
+      ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}: #{line.hours} hours"
+      .f_right
+        .edit=link_to icon(:wrench), edit_labor_cost_line_item_path(line.labor_set, line)
+        .delete=link_to icon(:delete), labor_cost_line_item_path(line.labor_set, line), :confirm => 'Are you sure?', :method => :delete, :remote => true  
+
+    %li.edit_form
+      =form_for [line.labor_set, line], :url => labor_cost_line_item_path(line.labor_set, line), :remote => true do |f|
+        ="#{line.labor_set.task.name} @ #{line.labor_set.project.name}:"
+        =f.text_field :hours
+
+        .f_right
+          =hidden_field_tag :from_overview, true
+          =f.submit 'Save'
