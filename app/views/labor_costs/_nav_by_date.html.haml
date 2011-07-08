@@ -1,11 +1,11 @@
 -# lines, date
 %ul.grouper.by_date
-  -dates = lines.joins(:labor_set).group('labor_costs.date').paginate( :page => params[:date_nav_page], :per_page => 10, :order => 'labor_costs.date DESC')
-  -dates.each do |date_line|
-    %li.group_title{:id => "date_group_title_#{date_line.labor_set.date}", :class => (!date.nil? && date == date_line.labor_set.date.to_s ? 'current viewing' : nil) }
+  -dates = LaborCost.paginate_by_sql( 'SELECT DISTINCT date FROM labor_costs AS date', :page => params[:date_nav_page], :per_page => 10, :order => 'date DESC' )
+  -dates.map(&:date).each do |current_date|
+    %li.group_title{:id => "date_group_title_#{current_date}", :class => (!date.nil? && date == current_date ? 'current viewing' : nil) }
       %h2
-        =link_to l(date_line.labor_set.date, :format => :std ), overview_labor_costs_path(:by => 'date', :date => date_line.labor_set.date), :remote => true
-        .f_right="#{LaborCostLine.includes(:labor_set).where('labor_costs.date = ?', date_line.labor_set.date).sum(:hours)} hours"
+        =link_to l(current_date, :format => :std ), overview_labor_costs_path(:by => 'date', :date => current_date), :remote => true
+        .f_right="#{LaborCostLine.includes(:labor_set).where('labor_costs.date = ?', current_date).sum(:hours)} hours"
   -unless dates.next_page.nil?
     %li.pagination
       =link_to 'View Older', params.merge(:date_nav_page => dates.next_page), :remote => true

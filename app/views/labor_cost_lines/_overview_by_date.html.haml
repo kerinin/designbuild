@@ -2,7 +2,11 @@
   %ul.grouper{:id => "overview_list_#{date}"}
     -Laborer.includes(:labor_cost_lines => :labor_set).where('labor_costs.date = ?', date).each do |employee|
       %li.group_title
-        %h2=employee.name
+        %h2
+          =employee.name
+          .f_right
+            =employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).sum(:hours)
+            hours
       %li.group
         %ul
           -employee.labor_cost_lines.includes(:labor_set).where('labor_costs.date = ?', date).each do |line|
