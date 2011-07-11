@@ -1,6 +1,6 @@
 -# lines, date
 %ul.grouper.by_date
-  -dates = LaborCost.paginate_by_sql( 'SELECT DISTINCT date FROM labor_costs AS date', :page => params[:date_nav_page], :per_page => 10, :order => 'date DESC' )
+  -dates = LaborCost.paginate_by_sql( 'SELECT DISTINCT date FROM labor_costs AS date ORDER BY date DESC', :page => params[:date_nav_page], :per_page => 10 )
   -dates.map(&:date).each do |current_date|
     %li.group_title{:id => "date_group_title_#{current_date}", :class => (!date.nil? && date == current_date ? 'current viewing' : nil) }
       %h2
