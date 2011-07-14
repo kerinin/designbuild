@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110622205936) do
+ActiveRecord::Schema.define(:version => 20110714190320) do
 
   create_table "bids", :force => true do |t|
     t.string   "contractor"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
   end
 
   add_index "bids", ["contract_id"], :name => "index_bids_on_contract_id"
+  add_index "bids", ["date"], :name => "index_bids_on_date"
 
   create_table "components", :force => true do |t|
     t.string   "name"
@@ -37,6 +38,7 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
   end
 
   add_index "components", ["ancestry"], :name => "index_components_on_ancestry"
+  add_index "components", ["position"], :name => "index_components_on_position"
   add_index "components", ["project_id"], :name => "index_components_on_project_id"
 
   create_table "components_tags", :id => false, :force => true do |t|
@@ -56,7 +58,9 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "component_id"
   end
 
+  add_index "contract_costs", ["component_id"], :name => "index_contract_costs_on_component_id"
   add_index "contract_costs", ["contract_id"], :name => "index_contract_costs_on_contract_id"
+  add_index "contract_costs", ["date"], :name => "index_contract_costs_on_date"
 
   create_table "contracts", :force => true do |t|
     t.string   "name"
@@ -69,7 +73,9 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "component_id"
   end
 
+  add_index "contracts", ["bid_id"], :name => "index_contracts_on_bid_id"
   add_index "contracts", ["component_id"], :name => "index_contracts_on_component_id"
+  add_index "contracts", ["position"], :name => "index_contracts_on_position"
   add_index "contracts", ["project_id"], :name => "index_contracts_on_project_id"
 
   create_table "date_points", :force => true do |t|
@@ -86,6 +92,7 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
   add_index "date_points", ["date"], :name => "index_date_points_on_date"
   add_index "date_points", ["label"], :name => "index_date_points_on_label"
   add_index "date_points", ["series"], :name => "index_date_points_on_series"
+  add_index "date_points", ["source_id", "source_type"], :name => "index_date_points_on_source_id_and_source_type"
   add_index "date_points", ["source_id"], :name => "index_date_points_on_source_id"
   add_index "date_points", ["source_type"], :name => "index_date_points_on_source_type"
   add_index "date_points", ["value"], :name => "index_date_points_on_value"
@@ -187,6 +194,7 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
   end
 
   add_index "labor_cost_lines", ["labor_set_id"], :name => "index_labor_cost_lines_on_labor_set_id"
+  add_index "labor_cost_lines", ["laborer_id"], :name => "index_labor_cost_lines_on_laborer_id"
   add_index "labor_cost_lines", ["project_id"], :name => "index_labor_cost_lines_on_project_id"
 
   create_table "labor_costs", :force => true do |t|
@@ -200,7 +208,9 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "component_id"
   end
 
+  add_index "labor_costs", ["component_id"], :name => "index_labor_costs_on_component_id"
   add_index "labor_costs", ["project_id"], :name => "index_labor_costs_on_project_id"
+  add_index "labor_costs", ["task_id"], :name => "index_labor_costs_on_task_id"
 
   create_table "laborers", :force => true do |t|
     t.string   "name"
@@ -222,9 +232,11 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "component_id"
   end
 
+  add_index "markings", ["component_id"], :name => "index_markings_on_component_id"
   add_index "markings", ["markup_id"], :name => "index_markings_on_markup_id"
   add_index "markings", ["markupable_id"], :name => "index_markings_on_markupable_id"
   add_index "markings", ["markupable_type"], :name => "index_markings_on_markupable_type"
+  add_index "markings", ["project_id"], :name => "index_markings_on_project_id"
 
   create_table "markups", :force => true do |t|
     t.string   "name"
@@ -255,6 +267,8 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.integer  "component_id"
   end
 
+  add_index "material_costs", ["component_id"], :name => "index_material_costs_on_component_id"
+  add_index "material_costs", ["project_id"], :name => "index_material_costs_on_project_id"
   add_index "material_costs", ["supplier_id"], :name => "index_material_costs_on_supplier_id"
   add_index "material_costs", ["task_id"], :name => "index_material_costs_on_task_id"
 
@@ -363,6 +377,11 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.string   "event_id"
   end
 
+  add_index "resource_allocations", ["event_id"], :name => "index_resource_allocations_on_event_id"
+  add_index "resource_allocations", ["resource_id"], :name => "index_resource_allocations_on_resource_id"
+  add_index "resource_allocations", ["resource_request_id"], :name => "index_resource_allocations_on_resource_request_id"
+  add_index "resource_allocations", ["start_date"], :name => "index_resource_allocations_on_start_date"
+
   create_table "resource_requests", :force => true do |t|
     t.boolean  "urgent"
     t.date     "first_date"
@@ -377,6 +396,10 @@ ActiveRecord::Schema.define(:version => 20110622205936) do
     t.datetime "updated_at"
     t.text     "comment"
   end
+
+  add_index "resource_requests", ["project_id"], :name => "index_resource_requests_on_project_id"
+  add_index "resource_requests", ["resource_id"], :name => "index_resource_requests_on_resource_id"
+  add_index "resource_requests", ["task_id"], :name => "index_resource_requests_on_task_id"
 
   create_table "resources", :force => true do |t|
     t.string   "name"
