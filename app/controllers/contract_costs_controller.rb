@@ -71,8 +71,12 @@ class ContractCostsController < ApplicationController
     respond_to do |format|
       if @contract_cost.update_attributes(params[:contract_cost])
         format.js {
-          @inactive_markups = Markup.scoped - @contract.markups
-          @contract_costs = @contract.costs
+          if params[:render_nothing]
+            render :nothing => true
+          else
+            @inactive_markups = Markup.scoped - @contract.markups
+            @contract_costs = @contract.costs
+          end
         }
         format.html { redirect_to(contract_contract_cost_path(@contract, @contract_cost), :notice => 'Contract cost was successfully updated.') }
         format.xml  { head :ok }

@@ -12,6 +12,7 @@
       
     -if session[:break_out_costs]
       %td.currency
+      %td.boolean.control
       
     %td.currency
       %strong= number_to_currency component.cost if indent == 0
@@ -29,6 +30,10 @@
             %i= "#{labor_cost.date.to_s(:long)}: #{labor_cost.task.name} Labor"
           %td
             %i= number_to_currency labor_cost.raw_cost
+          %td.control
+            =form_for labor_cost, :remote => true do |f|
+              =hidden_field_tag :render_nothing, true
+              =f.check_box :reconciled, {:onchange => "$(this.form).submit();"}
           %td
           %td
         
@@ -39,6 +44,10 @@
             %i= "#{material_cost.date.to_s(:long)}: #{material_cost.task.name} Material from #{material_cost.supplier.name}"
           %td
             %i= number_to_currency material_cost.raw_cost
+          %td.control
+            =form_for material_cost, :remote => true do |f|
+              =hidden_field_tag :render_nothing, true
+              =f.check_box :reconciled, {:onchange => "$(this.form).submit();"}
           %td
           %td
         
@@ -50,6 +59,10 @@
               %i= "#{contract_cost.date.to_s(:long)}: #{contract.name} Invoice from #{contract.active_bid.contractor}"
             %td
               %i= number_to_currency contract_cost.raw_cost
+            %td.control
+              =form_for [contract, contract_cost], :remote => true do |f|
+                =hidden_field_tag :render_nothing, true
+                =f.check_box :reconciled, {:onchange => "$(this.form).submit();"}
             %td       
             %td 
           

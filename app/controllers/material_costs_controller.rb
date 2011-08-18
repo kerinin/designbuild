@@ -74,6 +74,7 @@ class MaterialCostsController < ApplicationController
       if @material_cost.update_attributes(params[:material_cost])
         format.html { redirect_from_session_or([@project, @task], :notice => 'Material cost was successfully updated.') }
         format.xml  { head :ok }
+        format.js { render :nothing => true }
       else
         format.html { render :action => "edit" }
         format.xml  { render :xml => @material_cost.errors, :status => :unprocessable_entity }

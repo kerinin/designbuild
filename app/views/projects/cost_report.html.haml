@@ -21,6 +21,7 @@
       %th Building Component
       -if session[:break_out_costs]
         %th
+        %th.boolean.control Reconciled
       %th.currency Cost to Date
       %th.currency Estimated
       
@@ -29,7 +30,7 @@
 
     %tr.totals
       %td.control
-      %td.right{:colspan => session[:break_out_costs] ? 2 : 1} Subtotal
+      %td.right{:colspan => session[:break_out_costs] ? 3 : 1} Subtotal
       %td.currency
         %strong= number_to_currency @project.raw_cost
       %td.currency= number_to_currency @project.estimated_raw_cost
@@ -37,7 +38,7 @@
     -@active_markups.each do |markup|
       %tr.totals
         %td.control
-        %td.right{:colspan => session[:break_out_costs] ? 2 : 1}
+        %td.right{:colspan => session[:break_out_costs] ? 3 : 1}
           =markup.name
           =number_to_percentage markup.percent, :precision => 0
         %td.currency=# number_to_currency markup.apply_recursively_to(@project, :cost_markup_amount)
@@ -45,7 +46,7 @@
     
     %tr.totals
       %td.control
-      %td.right{:colspan => session[:break_out_costs] ? 2 : 1}
+      %td.right{:colspan => session[:break_out_costs] ? 3 : 1}
         %strong Total
       %td.currency
         %strong=# number_to_currency @project.cost
