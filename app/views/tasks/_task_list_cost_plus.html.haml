@@ -5,6 +5,7 @@
     %th.currency Cost-to-Date
     %th.currency.qtip_projected Projected Cost
     %th.number % Complete (Est./Act.)
+    %th Status
     / %th.check_box Active
     / %th Deadline
     %th.control
@@ -24,6 +25,17 @@
         = number_to_percentage( task.percent_complete, :precision => 0 )
         ='/'
         = number_to_percentage( multiply_or_nil( 100, divide_or_nil(task.cost, task.estimated_cost )), :precision => 0) || '--'
+      %td
+        =form_for [@project, task], :url => project_task_path(@project,task, :render_nothing => true), :remote => true do |f|
+          
+          =f.radio_button :active, nil, {:onchange => '$(this.form).submit();'}
+          =f.label 'Future'
+          
+          =f.radio_button :active, false, {:onchange => '$(this.form).submit();'}
+          =f.label 'Active'
+          
+          =f.radio_button :active, true, {:onchange => '$(this.form).submit();'}
+          =f.label 'Complete'
       / 
         Active
         %td.check_box

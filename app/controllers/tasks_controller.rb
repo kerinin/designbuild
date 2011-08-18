@@ -113,7 +113,11 @@ class TasksController < ApplicationController
     respond_to do |format|
       if @task.update_attributes(params[:task])
         format.js { 
-          @tasks = @project.tasks
+          if params[:render_nothing]
+            render :nothing => true
+          else
+            @tasks = @project.tasks
+          end
         }
         format.html { redirect_from_session_or([@project, @task], :notice => 'Task was successfully updated.') }
         format.xml  { head :ok }

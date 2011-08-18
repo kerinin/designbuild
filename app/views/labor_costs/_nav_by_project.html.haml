@@ -9,7 +9,21 @@
           .hidden.collapse_icon=icon(:arrow_up)
       %li.group{:id => "project_group_#{current_project.id}", :class => (!project.nil? && project == current_project ? nil : 'hidden') }
         %ul
-          -current_project.tasks.all.each do |current_task|
+          %li.heading Active Tasks
+          -current_project.tasks.active.each do |current_task|
             %li{:class => (!task.nil? && task == current_task ? 'viewing' : nil)}
               =link_to current_task.name, overview_labor_costs_path(:by => params[:by], :project_id => current_project.id, :task_id => current_task.id), :remote => true
               .f_right=number_to_currency current_task.raw_labor_cost
+
+          %li.heading Future Tasks
+          -current_project.tasks.future.each do |current_task|
+            %li{:class => (!task.nil? && task == current_task ? 'viewing' : nil)}
+              =link_to current_task.name, overview_labor_costs_path(:by => params[:by], :project_id => current_project.id, :task_id => current_task.id), :remote => true
+              .f_right=number_to_currency current_task.raw_labor_cost
+
+          %li.heading Completed Tasks
+          -current_project.tasks.completed.each do |current_task|
+            %li{:class => (!task.nil? && task == current_task ? 'viewing' : nil)}
+              =link_to current_task.name, overview_labor_costs_path(:by => params[:by], :project_id => current_project.id, :task_id => current_task.id), :remote => true
+              .f_right=number_to_currency current_task.raw_labor_cost
+

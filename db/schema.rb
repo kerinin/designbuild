@@ -10,7 +10,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20110818140000) do
+ActiveRecord::Schema.define(:version => 20110818182229) do
 
   create_table "bids", :force => true do |t|
     t.string    "contractor"
@@ -426,14 +426,14 @@ ActiveRecord::Schema.define(:version => 20110818140000) do
   end
 
   create_table "tasks", :force => true do |t|
-    t.string    "name"
-    t.boolean   "active",           :default => false
-    t.integer   "contract_id"
-    t.integer   "deadline_id"
-    t.integer   "project_id"
-    t.timestamp "created_at"
-    t.timestamp "updated_at"
-    t.float     "percent_complete", :default => 0.0,   :null => false
+    t.string   "name"
+    t.boolean  "active"
+    t.integer  "contract_id"
+    t.integer  "deadline_id"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.float    "percent_complete", :default => 0.0, :null => false
   end
 
   add_index "tasks", ["contract_id"], :name => "index_tasks_on_contract_id"
