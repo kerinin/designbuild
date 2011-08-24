@@ -31,10 +31,10 @@
           =f.radio_button :active, nil, {:onchange => '$(this.form).submit();'}
           =f.label 'Future'
           
-          =f.radio_button :active, false, {:onchange => '$(this.form).submit();'}
+          =f.radio_button :active, true, {:onchange => '$(this.form).submit();'}
           =f.label 'Active'
           
-          =f.radio_button :active, true, {:onchange => '$(this.form).submit();'}
+          =f.radio_button :active, false, {:onchange => '$(this.form).submit();'}
           =f.label 'Complete'
       / 
         Active
