@@ -49,14 +49,14 @@
       %tr.totals
         %td.control
         %td.control
-        %td.right{:colspan => session[:break_out_unit_costs] ? 3 : (session[:show_graph] ? 2 : 1)} Subtotal
+        %td.right{:colspan => session[:break_out_unit_costs] ? 5 : (session[:show_graph] ? 2 : 1)} Subtotal
         %td.currency= number_to_currency @project.estimated_raw_cost
         
       -@active_markups.each do |markup|
         %tr.totals
           %td.control
           %td.control
-          %td.right{:colspan => session[:break_out_unit_costs] ? 3 : (session[:show_graph] ? 2 : 1)}
+          %td.right{:colspan => session[:break_out_unit_costs] ? 5 : (session[:show_graph] ? 2 : 1)}
             =markup.name
             =number_to_percentage markup.percent, :precision => 0
           %td.currency= number_to_currency markup.apply_recursively_to(@project, :estimated_cost_markup_amount)
@@ -64,7 +64,7 @@
     %tr.totals
       %td.control
       %td.control
-      %td.right{:colspan => session[:break_out_unit_costs] ? 3 : (session[:show_graph] ? 2 : 1)}
+      %td.right{:colspan => session[:break_out_unit_costs] ? 5 : (session[:show_graph] ? 2 : 1)}
         %strong Total
       %td.currency
         %strong= number_to_currency @project.estimated_cost
