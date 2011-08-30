@@ -134,3 +134,34 @@
           %button Project Purchase Orders
         =link_to purchase_order_list_projects_path do
           %button All Purchase Orders
+          
+    .full_width
+      %h3 Costs with ambiguous components
+      
+      %table
+        %tr
+          %th.date Date
+          %th Task
+          %th Note
+          %th.currency Cost
+          %th
+          
+        -@project.labor_costs.where(:component_id => nil).reorder(:date).each do |cost|
+          %tr
+            %td.date= cost.date.to_s(:long)
+            %td= cost.task.name
+            %td= cost.note
+            %td.currency= number_to_currency cost.raw_cost
+            %td
+              =form_for [cost.task, cost], :remote => true do |f|
+                =f.collection_select :component_id, @project.component_tree, :id, :select_label, {:include_blank => '--- Choose Component ---'}, {:onchange => "$(this.form).submit();"}
+
+        -@project.material_costs.where(:component_id => nil).reorder(:date).each do |cost|
+          %tr
+            %td.date= cost.date.to_s(:long)
+            %td= cost.task.name
+            %td= "#{cost.note} @ #{cost.supplier.name}"
+            %td.currency= number_to_currency cost.raw_cost
+            %td
+              =form_for [cost.task, cost], :remote => true do |f|
+                =f.collection_select :component_id, @project.component_tree, :id, :select_label, {:include_blank => '--- Choose Component ---'}, {:onchange => "$(this.form).submit();"}
