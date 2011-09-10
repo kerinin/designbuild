@@ -3,11 +3,10 @@ require File.dirname(__FILE__) + '/../test_helper'
 class TaskTest < ActiveSupport::TestCase
   context "A Task" do
     setup do
-      @dl1 = Factory :deadline
       @ctr = Factory :contract
       @component = Factory :component
       
-      @obj = Factory :task, :deadline => @dl1, :contract => @ctr
+      @obj = Factory :task, :contract => @ctr
       
       @q = Factory :quantity, :value => 1
       @fce1 = Factory :fixed_cost_estimate, :task => @obj, :component => @component, :raw_cost => 1
@@ -28,7 +27,7 @@ class TaskTest < ActiveSupport::TestCase
       @lcl3 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 20000
       @lcl4 = Factory :labor_cost_line, :labor_set => @lc2, :laborer => @laborer, :hours => 200000
       
-      [@obj, @lc1, @lc2, @q, @ctr, @dl1, @laborer, @lcl1, @lcl2, @lcl3, @lcl4].each {|i| i.reload}
+      [@obj, @lc1, @lc2, @q, @ctr, @laborer, @lcl1, @lcl2, @lcl3, @lcl4].each {|i| i.reload}
     end
 
     should "update labor cost lines when markup added/removed" do
@@ -67,11 +66,6 @@ class TaskTest < ActiveSupport::TestCase
       assert_raise ActiveRecord::RecordInvalid do
         Factory :task, :project => nil
       end
-    end
-    
-    should "allow a deadline" do
-      assert_equal @obj.deadline, @dl1
-      assert_contains @dl1.tasks, @obj
     end
     
     should_eventually "scope active tasks" do

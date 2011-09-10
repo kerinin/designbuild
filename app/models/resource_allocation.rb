@@ -1,7 +1,7 @@
 class ResourceAllocation < ActiveRecord::Base
   attr_accessor :nested
   
-  belongs_to :resource_request
+  belongs_to :resource_request, :inverse_of => :resource_allocations
   belongs_to :resource
   
   default_scope :order => :start_date
@@ -18,9 +18,7 @@ class ResourceAllocation < ActiveRecord::Base
       r.delay.update_event 
     end
   end
-  after_save :update_request
   before_save :get_resource
-  after_destroy :update_request
   before_destroy do |r|
     Delayed::Job.enqueue( DeleteEventJob.new(r.event_id) ) unless r.event_id.nil? || r.event_id == 'caching'
   end
@@ -29,10 +27,6 @@ class ResourceAllocation < ActiveRecord::Base
   
   def get_resource
     self.resource = self.resource_request.resource
-  end
-  
-  def update_request
-    self.resource_request.save!
   end
   
   def create_event

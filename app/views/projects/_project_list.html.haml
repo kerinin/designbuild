@@ -18,7 +18,6 @@
       %td.control= link_to 'Components', project_components_path(project)
       %td.control= link_to 'Tasks', project_tasks_path(project)
       %td.control= link_to 'Contracts', project_contracts_path(project)
-      %td.control= link_to 'Deadlines', project_deadlines_path(project)
       %td.control.edit= link_to 'Rename', edit_project_path(project), :remote => true
       %td.control.destroy= link_to icon(:delete), project, :confirm => 'Are you sure?', :method => :delete
       

@@ -5,21 +5,20 @@ class ResourceRequest < ActiveRecord::Base
   
   has_many :resource_allocations, :dependent => :destroy
   
-  default_scope :order => :updated_at
+  default_scope :order => 'resource_requests.updated_at'
   
   validates_presence_of :project, :duration, :resource
   
-  before_save :update_totals
-  
-  scope :active, lambda { where( 'remaining > 0' ) }
+  scope :active, lambda { includes(:resource_allocations).where('(SELECT SUM(resource_allocations.duration)) < resource_requests.duration') }
   
   accepts_nested_attributes_for :resource_allocations
   
-  private
+  def allocated
+    self.resource_allocations.sum(:duration)
+  end
   
-  def update_totals
-    self.allocated = self.resource_allocations.sum(:duration)
-    self.remaining = self.allocated > self.duration ? 0 : self.duration - self.allocated
+  def remaining
+    self.allocated > self.duration ? 0 : self.duration - self.allocated
   end
 end
 

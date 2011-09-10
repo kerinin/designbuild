@@ -93,23 +93,6 @@ namespace :db do
             Factory :contract_cost, :contract => contract
           }
         }
-      
-        # Deadlines
-        (rand(5)+5).times {
-          deadline = Factory :deadline, :project => project
-        
-          (rand(4)).times {
-            Factory :deadline, :parent_deadline => deadline, :interval => rand(30)
-          }
-        }
-        
-        # Assign tasks to deadlines
-        project.tasks.all.each do |task|
-          task.deadline = case rand(3)
-          when 0
-            project.deadlines[ rand(project.deadlines.count) ]
-          end
-        end
         
         # Add markups
         #rand(3).times {

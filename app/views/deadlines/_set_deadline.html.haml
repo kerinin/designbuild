@@ -1,7 +1,0 @@
-Set Deadline:
-= link_to 'New', new_task_deadline_path(task, :context => context), :remote => true
--unless @project.deadlines.empty?
-  or
-  =form_for [@project,task], :url => project_task_path(@project, task, :redirect_to => project_path(@project)), :html => {:id => "edit_task_#{task.id}_deadline"} do |f|
-    =f.collection_select :deadline_id, @project.deadlines, :id, :select_label_short, {:include_blank => 'Existing'}, :onchange => "$('#edit_task_#{task.id}_deadline').submit();"
-

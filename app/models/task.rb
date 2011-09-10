@@ -4,14 +4,12 @@ class Task < ActiveRecord::Base
   has_paper_trail :ignore => [:created_at, :updated_at]
   
   belongs_to :contract, :inverse_of => :tasks
-  belongs_to :deadline, :inverse_of => :tasks
   belongs_to :project, :inverse_of => :tasks
   
   has_many :unit_cost_estimates, :order => :name
   has_many :fixed_cost_estimates, :order => :name
   has_many :labor_costs, :order => 'date DESC', :dependent => :destroy
   has_many :material_costs, :order => 'date DESC', :dependent => :destroy
-  has_many :milestones, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy
   has_many :markups, :through => :markings, :dependent => :destroy, :after_remove => :cascade_remove

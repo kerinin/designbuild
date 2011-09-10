@@ -6,7 +6,6 @@ class Project < ActiveRecord::Base
   has_many :components, :order => "components.position", :dependent => :destroy
   has_many :tasks, :order => "tasks.name", :dependent => :destroy
   has_many :contracts, :order => "contracts.position", :dependent => :destroy
-  has_many :deadlines, :order => "deadlines.date", :dependent => :destroy
   has_many :suppliers, :dependent => :destroy
 
   has_many :markings, :as => :markupable, :dependent => :destroy

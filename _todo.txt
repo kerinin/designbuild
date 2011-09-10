@@ -1,3 +1,11 @@
+DatePoint
+InvoiceCollector
+InvoiceLine
+Invoiceable
+Payment
+
+
+
 * Refactor graph points as cron task
 
 * Markup add form should allow existing markups, and filter by project

@@ -91,5 +91,15 @@ class ResourceRequestTest < ActiveSupport::TestCase
       @a1.destroy
       assert_equal 1, @obj.reload.allocated
     end
+    
+    should "scope active" do
+      @obj.save!
+      assert_contains ResourceRequest.active.all, @obj
+      
+      @obj2 = Factory :resource_request, :project => @project, :resource => @resource, :task => @task, :duration => 1
+      @a3 = @obj.resource_allocations.create :resource_request => @obj, :start_date => Date::today, :duration => 1
+      
+      assert_does_not_contain ResourceRequest.active.all, @obj2
+    end
   end
 end

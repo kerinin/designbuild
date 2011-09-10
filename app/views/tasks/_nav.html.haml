@@ -8,6 +8,5 @@
   %li{:class => current == :estimated_costs ? 'current' : nil}=link_to "Estimated Costs", estimated_costs_task_path( @task )
   %li{:class => current == :markups ? 'current' : nil}=link_to "Markups(#{@task.markups.count})", task_markups_path(@task)
   %li{:class => current == :costs ? 'current' : nil}=link_to "Costs", costs_task_path( @task )
-  %li{:class => current == :scheduling ? 'current' : nil}=link_to "Scheduling", scheduling_task_path( @task )
   %li{:class => current == :edit ? 'current' : nil}=link_to 'Edit Task', edit_task_path(@task)
 %hr

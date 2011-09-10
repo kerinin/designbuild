@@ -31,17 +31,6 @@ $(document).ready( function() {
         }
      }
   });
-  
-  $('.qtip_deadline').qtip({
-     content: '<p>Deadlines can be associated with multiple tasks to describe when those tasks should be completed</p><p>Deadlines come in two flavors: absolute and relative.  Absolute Deadlines are determined by a given date, while relative deadlines are calculated using a reference deadline and an interval.  The interval is added to the reference deadline, so an interval of +5 indicates 5 days after the reference deadline</p>',
-     show: {delay: 1000},
-     position: {
-        corner: {
-           target: 'topLeft',
-           tooltip: 'topRight'
-        }
-     }
-   });
      
    $('.qtip_net').qtip({
       content: '<p>The difference between the estimated cost (including markup) and the projected cost (without markup)</p>',

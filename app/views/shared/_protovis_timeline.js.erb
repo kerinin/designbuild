@@ -11,8 +11,7 @@
       :percent_of_estimated => lc.task.version_at(lc.date).nil? || lc.task.version_at(lc.date).percent_of_estimated.nil? ? lc.percent_complete : lc.task.version_at(lc.date).percent_of_estimated,
       :label => lc.task.version_at(lc.date).nil? || lc.task.version_at(lc.date).percent_of_estimated.nil? ? "#{number_to_percentage lc.percent_complete, :precision => 0} complete" : "#{number_to_percentage lc.percent_complete, :precision => 0} complete, #{number_to_percentage lc.task.version_at(lc.date).percent_of_estimated, :precision => 0} of est.", 
       :date => lc.date - start_date }
-    }, 
-    :deadline => task.deadline.blank? ? {:id => nil, :name => nil, :date => nil, :label => nil } : {:id => task.deadline.id, :name => task.deadline.name, :date => task.deadline.date - start_date, :label => "#{task.deadline.name}: #{task.deadline.date.strftime('%b %d')}" }
+    }
     } %>
 <% end %>
 <% weeks = (0..60).to_a.reverse.map{|week| day = weekday(1, (week-4).weeks.ago.to_date ); {:name => day.strftime('%b %d'), :value => day - start_date}} %>
@@ -83,21 +82,6 @@ var labor_bars = labor.add(pv.Bar)
     .fillStyle( function(d) color( d['percent_of_estimated'] ) )
     .event('mouseover', function(d) vis.hover( ['labor', d['id']] ) )
     .event('mouseout', function(d) vis.hover( [-1,-1] ) );
-
-// Deadlines
-tasks.add(pv.Dot)
-    .visible(function(d) d['deadline']['date'] )
-    .left(function(d) x(d['deadline']['date']) )
-    .top(function() y( this.index ) + 10)
-    .strokeStyle('blue')
-    .fillStyle(pv.rgb(0, 0, 255, .25))
-    .radius(function() 6 / this.scale)
-    .event('mouseover', function(d) vis.hover( ['deadline', d['deadline']['id'] ] ) )
-    .event('mouseout', function(d) vis.hover( [-1,-1] ) )
-  .anchor('top').add(pv.Label)
-    .textBaseline('bottom')
-    .text( function(d) d['deadline']['label'] )
-    .visible( function(d) vis.hover()[0] == 'deadline' && vis.hover()[1] == d['deadline']['id'] );
 
 
 // Labels

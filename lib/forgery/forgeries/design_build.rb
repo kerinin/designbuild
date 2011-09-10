@@ -12,10 +12,6 @@ class Forgery::DesignBuild < Forgery
     dictionaries[:costs].random
   end
   
-  def self.deadline_name
-    dictionaries[:deadlines].random
-  end
-  
   def self.quantity_name
     dictionaries[:quantities].random
   end

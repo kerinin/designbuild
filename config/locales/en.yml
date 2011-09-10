@@ -6,7 +6,6 @@ en:
   components: Components
   tasks: Tasks
   contracts: Contracts
-  deadlines: Deadlines
 
   date:
     formats:

@@ -45,10 +45,6 @@
         =link_to estimate_report_for_project_path(@project) do
           %button Project Cost Estimate
           
-    .right
-      %h3 Tasks without a Deadline
-        
-      .boxed= render :partial => 'tasks/without_deadline'
     .left
       %h3 Unassigned Unit Costs
       .boxed=render :partial => 'unit_cost_estimates/unassigned', :locals => {:unit_cost_estimates => @project.unit_cost_estimates.unassigned,}

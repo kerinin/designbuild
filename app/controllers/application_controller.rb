@@ -66,11 +66,6 @@ class ApplicationController < ActionController::Base
     @invoice = Invoice.find(params[:invoice_id])
     @project = @invoice.project
   end
-    
-  def get_deadline
-    @deadline = Deadline.find(params[:deadline_id])
-    @project = @deadline.project
-  end
   
   def get_labor_set
     @labor_cost = LaborCost.find(params[:labor_cost_id])
